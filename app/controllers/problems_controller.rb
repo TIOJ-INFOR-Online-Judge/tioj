@@ -3,12 +3,12 @@ class ProblemsController < ApplicationController
   before_filter :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_filter :set_contest, only: [:show]
   layout :set_contest_layout, only: [:show]
-  
+
   def ranklist
     @submissions = @problem.submissions.where("contest_id is NULL AND result = ?", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC")
     set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name
   end
-  
+
   def index
     if not params[:search_id].blank?
       redirect_to problem_path(params[:search_id])
@@ -28,7 +28,7 @@ class ProblemsController < ApplicationController
 
   def show
     unless user_signed_in? && current_user.admin == true
-      if @problem.visible_state == 1 
+      if @problem.visible_state == 1
         if params[:contest_id].blank?
           redirect_to :back, :notice => 'Insufficient User Permissions.'
           return
@@ -84,7 +84,7 @@ class ProblemsController < ApplicationController
     redirect_to action:'index'
     return
     # 'Deletion of problem may cause unwanted paginate behavior.'
-    
+
     #@problem.destroy
     respond_to do |format|
       format.html { redirect_to problems_url, notice: 'Deletion of problem may cause unwanted paginate behavior.' }
@@ -96,37 +96,37 @@ class ProblemsController < ApplicationController
     def set_problem
       @problem = Problem.find(params[:id])
     end
-    
+
     def set_contest
       @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
     end
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
       params.require(:problem).permit(
-        :id, 
-        :name, 
-        :description, 
-        :input, 
-        :output, 
+        :id,
+        :name,
+        :description,
+        :input,
+        :output,
         :example_input,
         :example_output,
-        :hint, 
-        :source, 
-        :limit, 
+        :hint,
+        :source,
+        :limit,
         :page,
-	:visible_state,
+        :visible_state,
         :tag_list,
         :problem_type,
         :sjcode,
         :interlib,
         :old_pid,
-	testdata_sets_attributes:
-	[
-	  :id,
-	  :from,
-	  :to,
-	  :score,
-	  :_destroy
+        testdata_sets_attributes:
+        [
+          :id,
+          :from,
+          :to,
+          :score,
+          :_destroy
         ]
       )
     end
