@@ -33,6 +33,16 @@ th {
 }
 </style>
 
+<% if @submissions.size() > 50 %>
+  <span class="pager">
+    <span class="right">
+      <span class="prev">&nbsp;&nbsp;&lt; </span>
+      <span class="pagecount"></span>
+      <span class="next"> &gt;&nbsp;&nbsp;</span>
+    </span>
+  </span>
+<% end %>
+
 <table class="table table-hover tablesorter">
   <thead>
     <tr>
@@ -126,6 +136,20 @@ $.tablesorter.addParser({
 })
 $(document).ready(function() 
     { 
+        $.tablesorter.customPagerControls({
+          table          : $('.table'),
+          pager          : $('.pager'),
+          currentPage    : '.right a',
+          ends           : 2,
+          aroundCurrent  : 5,
+          link           : '<a href="#">{page}</a>',
+          currentClass   : 'current',
+          adjacentSpacer : '<span>  |  <span>',
+          distanceSpacer : '<span>  &#133;  <span>',
+          addKeyboard    : true,
+          pageKeyStep    : 3
+        });
+
         $(".tablesorter").tablesorter({
             cancelSelection: true,
             sortList: [[0,0]],
@@ -134,8 +158,12 @@ $(document).ready(function()
                 2: { sorter: false},
                 3: { sorter: false},
                 7: { sorter: 'file-size'}
-            }
-        }); 
+            },
+            theme: 'meow' // non-existent theme
+        }).tablesorterPager({
+            container: $('.pager'),
+            size: 50
+        });
     } 
 ); 
 $("table").bind("sortEnd",function() {
@@ -148,6 +176,15 @@ $("table").bind("sortEnd",function() {
 })
 </script>
 
+<% if @submissions.size() > 50 %>
+  <span class="pager">
+    <span class="right">
+      <span class="prev">&nbsp;&nbsp;&lt; </span>
+      <span class="pagecount"></span>
+      <span class="next"> &gt;&nbsp;&nbsp;</span>
+    </span>
+  </span>
+<% end %>
 
 <div class="row">
   <div class="col-md-2">

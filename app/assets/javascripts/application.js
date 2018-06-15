@@ -28,5 +28,7 @@
 //= require bootstrap-select
 //= require bootstrap-switch
 //= require jquery_nested_form
-//= require jquery.tablesorter.min
+//= require jquery-tablesorter
+//= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
+//= require jquery-tablesorter/beta-testing/pager-custom-controls
 //= require_self

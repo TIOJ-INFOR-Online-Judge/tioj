@@ -91,3 +91,6 @@ gem 'tzinfo-data'
 
 # Ordered list management: https://github.com/swanandp/acts_as_list
 gem 'acts_as_list'
+
+# Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
+gem 'jquery-tablesorter'
