@@ -185,7 +185,7 @@
         <th>No.</th>
         <th>Time Limit (ms)</th>
         <th>Memory Limit (KiB)</th>
-        <th>Output Limit (KiB)</th>
+        <!--<th>Output Limit (KiB)</th>-->
       </tr>
     </thead>
     <tbody>
@@ -194,7 +194,7 @@
           <td><%= index %></td>
           <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
           <td><%= testdatum.limit.memory.blank? ? "Nil" : testdatum.limit.memory %></td>
-          <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
+          <!--<td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>-->
         </tr>
       <% end %>
     </tbody>

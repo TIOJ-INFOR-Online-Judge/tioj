@@ -118,10 +118,14 @@ class FetchController < ApplicationController
   end
   
   def submission
-    @submission = Submission.where("`result` = 'queued' AND `contest_id` IS NOT NULL").first
+    @submission = Submission.where("`result` = 'queued' AND `contest_id` IS NOT NULL").order('id').first
     if not @submission
-      @submission = Submission.where("`result` = 'queued'").first
+      @submission = Submission.where("`result` = 'queued'").order('id').first
     end
+    #@submission = Submission.where("`result` = 'queued' AND `contest_id` IS NULL").order('id desc').first
+    #if not @submission
+    #  @submission = Submission.where("`result` = 'queued'").order('id desc').first
+    #end
     if @submission
       @result = @submission.id.to_s
       @result += "\n"
