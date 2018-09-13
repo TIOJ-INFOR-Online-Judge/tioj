@@ -8,7 +8,7 @@ gem 'rdoc', '~> 4.0'
 gem 'mysql2' 
 
 # Use SCSS for stylesheets
-gem 'sass-rails'
+gem 'sassc-rails'
 gem 'less'
 gem 'less-rails'
 gem 'less-rails-bootstrap'
@@ -56,7 +56,7 @@ gem "mathjax-rails"
 gem 'acts-as-taggable-on'
 
 # Active Admin, db admin tool: https://github.com/gregbell/active_admin
-gem 'activeadmin', github: 'activeadmin/activeadmin'
+gem 'activeadmin'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
