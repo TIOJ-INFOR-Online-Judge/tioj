@@ -86,6 +86,9 @@ GEM
       execjs (~> 2.0)
     bcrypt (3.1.11)
     builder (3.2.3)
+    bullet (5.7.6)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11.0)
     carrierwave (1.2.1)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -298,6 +301,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
+    uniform_notifier (1.11.0)
     warden (1.2.7)
       rack (>= 1.0)
     webrobots (0.1.2)
@@ -310,6 +314,7 @@ DEPENDENCIES
   acts-as-taggable-on
   acts_as_list
   annotate!
+  bullet
   carrierwave
   coffee-rails
   devise (= 3.5.10)

@@ -94,3 +94,6 @@ gem 'acts_as_list'
 
 # Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
 gem 'jquery-tablesorter'
+
+# Bullet for debugging
+gem 'bullet', group: 'development'
