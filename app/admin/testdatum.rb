@@ -1,6 +1,11 @@
 ActiveAdmin.register Testdatum do
 
-  
+  preserve_default_filters!
+  remove_filter :problem
+  remove_filter :limit
+  filter :id
+  filter :problem_id
+
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #

@@ -6,8 +6,16 @@ ActiveAdmin.register User do
       scoped_collection.friendly.find(params[:id])
     end
   end
+  
   preserve_default_filters!
+  remove_filter :submissions
+  remove_filter :encrypted_password
+  remove_filter :reset_password_token
   filter :id
+  filter :username
+  filter :nickname
+  filter :name
+  filter :admin
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #

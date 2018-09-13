@@ -15,7 +15,11 @@ ActiveAdmin.register Submission do
   end
   
   preserve_default_filters!
-  filter :id
+  remove_filter :problem
+  remove_filter :user
+  filter :problem_id
+  filter :user_id
+  #filter 
   
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

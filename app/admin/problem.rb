@@ -3,7 +3,17 @@ ActiveAdmin.register Problem do
       :problem_type, :sjcode, :interlib
   
   preserve_default_filters!
+  remove_filter :contest_problem_joints
+  remove_filter :submissions
+  remove_filter :posts
+  remove_filter :testdata
+  remove_filter :testdata_sets
+  remove_filter :base_tags
+  remove_filter :tag_taggings
+  remove_filter :taggings
   filter :id
+  filter :visible_state
+  filter :problem_type
   
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
