@@ -5,16 +5,16 @@ gem 'rails', '~> 4.2'
 gem 'rdoc', '~> 4.0'
 
 # Use mysql2 as the database for Active Record
-gem 'mysql2' 
+gem 'mysql2', '~> 0.4.0'
 
 # Use SCSS for stylesheets
-gem 'sassc-rails'
+gem 'sass-rails'
 gem 'less'
 gem 'less-rails'
-gem 'less-rails-bootstrap'
-gem 'sprockets', '3.6.3'
+gem 'less-rails-bootstrap', git: 'https://github.com/veelenga/less-rails-bootstrap', :ref => '7c479c2fdff500dc036c15364aa085332a73c642'
+gem 'sprockets'
 # user
-gem 'devise', '3.5.10'
+gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
 # Use Redcarpet to render Markdown
@@ -29,8 +29,6 @@ gem 'therubyracer'
 
 # use Kaminari to paginate
 gem 'kaminari'
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -43,14 +41,14 @@ gem 'json'
 gem 'jbuilder'
 
 # nested form: https://github.com/ryanb/nested_form
-gem "nested_form"
+gem 'nested_form'
 
 # carrierwave, upload handler: https://github.com/carrierwaveuploader/carrierwave
-gem "carrierwave"
-gem "mini_magick"
+gem 'carrierwave'
+gem 'mini_magick'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
-gem "mathjax-rails"
+gem 'mathjax-rails'
 
 # tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
@@ -78,12 +76,12 @@ end
 gem 'mechanize'
 
 # friendly id for SEO
-gem 'friendly_id', github: 'norman/friendly_id'
+gem 'friendly_id'
 
 # annotate (showing model info in model.rb)
-gem 'annotate', github: 'ctran/annotate_models'
+gem 'annotate'
 
-gem 'seo_helper', '~> 1.0', :git => 'git://github.com/techbang/seo_helper.git'
+gem 'seo_helper'
 gem 'nokogiri' #getting old tioj probs
 
 # Timezone data
