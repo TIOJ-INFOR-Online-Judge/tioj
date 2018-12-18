@@ -94,7 +94,7 @@
   
   <% if @problem.problem_type == 1 %>
     <div class="form-group">
-      <%= f.label :sjcode, raw('Special Judge Code ( <code>argv[1]: testee output, argv[2]: testdata input, argv[3]: testdata output, output 0 for AC otherwise WA</code> )') %>
+      <%= f.label :sjcode, raw("Special Judge Code (output 0 for AC, otherwise WA)<br><code>argv[1]: path to testee output</code>  <code>argv[2]: path to testdata input</code>  <code>argv[3]: path to testdata output</code>  <code>argv[4]: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</code>  <code>argv[5]: path to source code</code>") %>
       <%= f.text_area :sjcode, :class => 'form-control flat', :rows => '7', :id => "code-input" %>
     </div>
   <% elsif @problem.problem_type == 2 %>
