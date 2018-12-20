@@ -47,7 +47,17 @@
         <td><%= User.find(s[0]).nickname %></td>
         <% if @contest.contest_type == 2 %>
           <% s[3].each do |t|%>
-            <td><%= t[0].to_s + "/" + t[1].to_s %></td>
+            <td>
+              <% if t[2] %>
+                <span style="color:#008000;"><strong><%= t[0].to_s %><small><%= "/" + t[1].to_s %></small></strong></span>
+              <% elsif t[1] >= 0 %>
+                <span class="text-success"><strong><%= t[0].to_s %></strong></span><small><%= "/" + t[1].to_s %></small>
+              <% elsif t[0] > 0 %>
+                <span class="text-danger"><strong><%= t[0].to_s %></strong></span><small><%= "/-" %></small>
+              <% else %>
+                <%= '-' %>
+              <% end %>
+            </td>
           <% end %>
           <td><%= s[1].to_s + "/" + s[2].to_s %></td>
           <td><%= s[4] %></td>

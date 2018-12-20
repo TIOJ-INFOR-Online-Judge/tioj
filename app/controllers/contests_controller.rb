@@ -43,6 +43,7 @@ class ContestsController < ApplicationController
       @submissions << c_submissions.where("problem_id = ?", task.id)
       @participants = @participants | @submissions[index].map{|e| e.user_id}
     end
+    first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by{|a| a.id}}.map{|a| a ? a.id : -1}
     @scores = []
     if @contest.contest_type == 2
       #penalty
@@ -50,24 +51,27 @@ class ContestsController < ApplicationController
         t = []
         total_attm = 0
         total_solv = 0
+        last_ac = 0
         penalty = 0
         (0..(@tasks.size-1)).each do |index|
           succ = @submissions[index].select{|a| a.user_id == u and a.result == 'AC'}.min_by{|a| a.id}
           if succ
-            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id}.size
-            t << [attm+1, (succ.created_at - @contest.start_time).to_i / 60]
+            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER'])}.size
+            tm = (succ.created_at - @contest.start_time).to_i / 60
+            last_ac = [last_ac, tm].max
+            t << [attm + 1, tm, succ.id == first_solved[index]]
             total_solv += 1
-            total_attm += attm+1
+            total_attm += attm + 1
             penalty += attm * 20
           else
-            attm = @submissions[index].select{|a| a.user_id == u}.size
-            t << [attm, 0]
+            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'Validating'])}.size
+            t << [attm, -1, false]
             total_attm += attm
           end
         end
-        @scores << [u, total_attm, total_solv, t, t.map{|a| a[1]}.sum + penalty]
+        @scores << [u, total_attm, total_solv, t, t.map{|a| a[1] == -1 ? 0 : a[1]}.sum + penalty, last_ac]
       end
-      @scores = @scores.sort{|a, b| a[2] != b[2] ? -(a[2] <=> b[2]) : a[4] <=> b[4]}
+      @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     else
