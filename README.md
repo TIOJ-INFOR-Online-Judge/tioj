@@ -3,6 +3,166 @@
 
 ### Remember to change secret token in production!!!
 
-## Current Development Environment 
+## Current Development Environment
 Ruby: 2.4.3
-Rails: 4.2.10
+Rails: 4.2.11
+
+## Installation guide
+
+It is recommended to deploy TIOJ on Ubuntu 16.04 LTS or 18.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
+
+#### 1. Install prerequisites
+
+You need to follow the instructions on the screen when installing / setting up those packages.
+
+```
+# sudo add-apt-repository ppa:ubuntu-toolchain-r/test # If Ubuntu 16.04 LTS is used
+sudo apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
+wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
+sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
+sudo apt update
+sudo apt install g++-8 python python3 ghc rvm \
+  mysql-server libmysqlclient-dev libcurl4-openssl-dev
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 \
+  --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
+  --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 \
+  --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 \
+  --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8 # Use GCC 8 as default
+sudo mysql_secure_installation # Setup MySQL
+sudo usermod -a -G rvm $USER
+echo 'source /etc/profile.d/rvm.sh' >> .bashrc
+echo 'PATH=$HOME/.rvm/gems/ruby-2.4.3/bin:$PATH' >> .bashrc
+source .bashrc
+rvm install 2.4.3
+rvm use --default 2.4.3
+gem install rails -v 4.2.11
+```
+
+#### 2. Clone TIOJ and its judge program
+
+```
+git clone https://github.com/adrien1018/tioj
+git clone https://github.com/adrien1018/miku
+```
+
+#### 3. Install gems
+
+```
+bundle install
+```
+
+#### 4. Install web server
+
+```
+gem install passenger
+rvmsudo passenger-install-nginx-module
+```
+
+The first command may give some "error loading ..." messages, but they can be ignored if the installation displays "1 gems installed" at the end.
+When prompted for selecting the language, select Ruby. Use all recommended settings.
+
+#### 5. Configure Nginx
+
+```
+sudo vim /opt/nginx/conf/nginx.conf
+```
+You need to add some settings to the Nginx configuration:
+```
+http {
+  # ... some settings ...
+  passenger_app_env production;
+
+  # The Passenger version and the username may be different from this example.
+  # You need to use the path given in the previous step.
+  passenger_root /home/tioj/.rvm/gems/ruby-2.4.3/gems/passenger-6.0.0;
+  passenger_ruby /home/tioj/.rvm/gems/ruby-2.4.3/wrappers/ruby;
+
+  server {
+    # ... some settings ...
+    passenger_enabled on;
+    root ${TIOJ_PATH}/public; # Replace ${TIOJ_PATH} with the path to the cloned 'tioj' repository
+  }
+}
+```
+
+#### 6. Edit database settings
+
+Add the following to `tioj/config/database.yml` and change `${PASSWORD}` to the password of the MySQL root account:
+
+```
+development:
+ adapter: mysql2
+ database: tioj_dev
+ host: localhost
+ username: root
+ password: ${PASSWORD}
+ encoding: utf8
+test:
+ adapter: mysql2
+ database: tioj_test
+ host: localhost
+ username: root
+ password: ${PASSWORD}
+ encoding: utf8
+production:
+ adapter: mysql2
+ database: tioj_production
+ host: localhost
+ username: root
+ password: ${PASSWORD}
+ encoding: utf8
+ socket: /var/run/mysqld/mysqld.sock # You may need to check MySQL settings to get the socket path
+```
+
+#### 7. Generate keys
+
+There are two keys need to be generated. The first is the Rails secret token, and the second is the key to update judge results. The following shell script can do this:
+
+```
+URL= # The URL of webpage (e.g. 'http://127.0.0.1' or 'https://some.website.com'), without the terminating '/'
+TIOJ_PATH= # The path to the cloned 'tioj' repository
+JUDGE_PATH= # The path to the cloned 'miku' repository
+
+cd $TIOJ_PATH
+TOKEN=$(rake secret)
+KEY=$(rake secret)
+cat <<EOF >config/initializers/secret_token.rb
+Tioj::Application.config.secret_token = "$TOKEN"
+EOF
+cat <<EOF >config/initializers/fetch_key.rb
+Tioj::Application.config.fetch_key = "$KEY"
+EOF
+cd $JUDGE_PATH
+cat <<EOF >app/tioj_url.py
+tioj_url = "$URL"
+tioj_key = "$KEY"
+EOF
+```
+
+#### 8. Create database & assets & announcements
+
+```
+RAILS_ENV=production rake db:create
+RAILS_ENV=production rake db:migrate
+RAILS_ENV=production rake db:seed
+RAILS_ENV=production rake assets:precompile
+mkdir public/announcement
+echo -n '{"name":"","message":""}' > public/announcement/anno
+```
+
+#### 9. Compile judge server
+
+```
+# Inside `miku` repository
+make # -j8 for parallel compilation
+```
+
+### Done!
+
+Now start the web server and the judge server:
+```
+sudo /opt/nginx/sbin/nginx
+sudo ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
+```
+
+You can add the commands to systemd for the convenience of starting / stopping those servers.
