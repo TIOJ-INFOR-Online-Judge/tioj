@@ -135,7 +135,7 @@ $.tablesorter.addParser({
     type: 'numeric'
 })
 $(document).ready(function() 
-    { 
+    {
         $.tablesorter.customPagerControls({
           table          : $('.table'),
           pager          : $('.pager'),
@@ -162,10 +162,11 @@ $(document).ready(function()
             theme: 'meow' // non-existent theme
         }).tablesorterPager({
             container: $('.pager'),
+            savePages: false,
             size: 50
         });
-    } 
-); 
+    }
+);
 $("table").bind("sortEnd",function() {
     $('tbody > tr').removeClass();
     $('tbody > tr:nth-of-type(1)').addClass('warning');
