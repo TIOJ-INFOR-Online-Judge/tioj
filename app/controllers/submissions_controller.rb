@@ -59,7 +59,7 @@ class SubmissionsController < ApplicationController
     @contest_id = params[:contest_id]
     set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name
   end
-  
+
   def create
     cd_time = @contest ? @contest.cd_time : 15
     if not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
@@ -99,6 +99,7 @@ class SubmissionsController < ApplicationController
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
     @submission.problem_id = params[:problem_id]
+    @submission.code = @submission.code.encode(@submission.code.encoding, universal_newline: true)
     if params[:contest_id]
       if @contest.problem_ids.include?(@submission.problem_id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time
         @submission.contest_id = @contest.id
