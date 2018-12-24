@@ -1,6 +1,5 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_admin!, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_action :check_contest, :set_posts
 
   # GET /posts
@@ -26,6 +25,7 @@ class PostsController < ApplicationController
   # GET /posts/1/edit
   def edit
     @post = @posts.find(params[:id])
+    check_user!
     set_page_title "Edit post - " + @post.id.to_s
   end
 
@@ -33,6 +33,7 @@ class PostsController < ApplicationController
   # POST /posts.json
   def create
     @post = @posts.build(post_params)
+    @post.user_id = current_user.id
 
     respond_to do |format|
       if @post.save
@@ -49,6 +50,7 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1.json
   def update
     @post = @posts.find(params[:id])
+    check_user!
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to posts_path, notice: 'Post was successfully updated.' }
@@ -64,6 +66,7 @@ class PostsController < ApplicationController
   # DELETE /posts/1.json
   def destroy
     @post = @posts.find(params[:id])
+    check_user!
     @post.destroy
     respond_to do |format|
       format.json { head :no_content }
@@ -85,6 +88,14 @@ class PostsController < ApplicationController
   def set_posts 
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]
     @posts = @problem ? @problem.posts : Post.all
+  end
+
+  def check_user!
+    if not current_user.admin? and current_user.id != @post.user_id
+      flash[:alert] = 'Insufficient User Permissions.'
+      redirect_to action:'index'
+      return
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -1,6 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_admin!, only: [:edit, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   before_action :find_post
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
@@ -24,12 +23,14 @@ class CommentsController < ApplicationController
 
   # GET /comments/1/edit
   def edit
+    check_user!
   end
 
   # POST /comments
   # POST /comments.json
   def create
     @comment = @post.comments.build(comment_params)
+    @comment.user_id = current_user.id
 
     respond_to do |format|
       if @comment.save
@@ -45,6 +46,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update
+    check_user!
     respond_to do |format|
       if @comment.update(comment_params)
         format.html { redirect_to posts_path, notice: 'Comment was successfully updated.' }
@@ -59,6 +61,7 @@ class CommentsController < ApplicationController
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
+    check_user!
     @comment.destroy
     respond_to do |format|
       format.html { redirect_to posts_path }
@@ -69,14 +72,21 @@ class CommentsController < ApplicationController
   private
   def check_contest
     unless user_signed_in? and current_user.admin?
-      Contest.all.each do |f|
-        if Time.now >= f.start_time and Time.now <= f.end_time
-          redirect_to root_path, :alert => "No discussion during contest."
-        end
+      if Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
+        redirect_to root_path, :alert => "No discussion during contest."
+        return
       end
     end
   end
-  
+
+  def check_user!
+    if not current_user.admin? and current_user.id != @comment.user_id
+      flash[:alert] = 'Insufficient User Permissions.'
+      redirect_to action:'index'
+      return
+    end
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])

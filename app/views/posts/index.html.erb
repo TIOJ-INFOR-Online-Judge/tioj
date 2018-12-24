@@ -28,7 +28,7 @@
     <div class="post_content">
       <%= markdown_no_html(post.content) %>
     </div>
-    <% if user_signed_in? and current_user.admin? %>
+    <% if user_signed_in? and (current_user.admin? or current_user.id == post.user_id) %>
       <%= link_to "Edit Post", edit_post_path(post), :class=>'btn btn-primary btn-xs'%>
       <%= link_to "Delete Post", post, method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
     <% end %>
@@ -46,7 +46,7 @@
         <div class="comment_content" >
           <%= markdown_no_html(comment.content) %>
         </div>
-        <% if user_signed_in? and current_user.admin? %>
+        <% if user_signed_in? and (current_user.admin? or current_user.id == comment.user_id) %>
           <%= link_to "Edit", edit_post_comment_path(post, comment), :class=>'btn btn-primary btn-xs' %>
           <%= link_to "Delete", post_comment_path(post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
         <% end %>
