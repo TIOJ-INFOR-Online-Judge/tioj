@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180429022042) do
+ActiveRecord::Schema.define(version: 20181224022952) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -92,13 +92,15 @@ ActiveRecord::Schema.define(version: 20180429022042) do
   add_index "contest_problem_joints", ["contest_id", "problem_id"], name: "contest_task_ix", unique: true, using: :btree
 
   create_table "contests", force: :cascade do |t|
-    t.string   "title",        limit: 255
-    t.text     "description",  limit: 65535
+    t.string   "title",              limit: 255
+    t.text     "description",        limit: 65535
     t.datetime "start_time"
     t.datetime "end_time"
-    t.integer  "contest_type", limit: 4
+    t.integer  "contest_type",       limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cd_time",            limit: 4,     default: 15,   null: false
+    t.boolean  "disable_discussion",               default: true, null: false
   end
 
   add_index "contests", ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time", using: :btree

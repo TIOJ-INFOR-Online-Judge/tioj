@@ -36,10 +36,22 @@
        <%= f.label :start_time %>
        <%= f.datetime_local_field :start_time, :class => 'form-control flat', :type => 'datetime-local' %>
    </div>
-   
+
    <div class="form-group">
        <%= f.label :end_time %>
        <%= f.datetime_local_field :end_time, :class => 'form-control flat', :type => 'datetime-local' %>
+   </div>
+
+   <div class="form-group">
+       <%= f.label :cd_time, 'Submission CD time' %>
+       <%= f.number_field :cd_time, :min => 0, :max => 3600, :class => 'form-control flat', :required => true, :value => 15 %>
+   </div>
+
+   <div class="form-group">
+     <label class="checkbox" for="disable_discussion">
+       <%= f.check_box :disable_discussion, :'data-toggle' => "checkbox", :value => 1 %>
+       Disable discussion during the contest
+     </label>
    </div>
 
    <div class="alert alert-success alert-dismissible" role="alert">

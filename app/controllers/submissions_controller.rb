@@ -61,18 +61,19 @@ class SubmissionsController < ApplicationController
   end
   
   def create
-    if not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < 15
-      redirect_to submissions_path, alert: 'CD time 15 seconds.'
+    cd_time = @contest ? @contest.cd_time : 15
+    if not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
+      redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
       return
     end
     User.transaction do
       user = User.lock("LOCK IN SHARE MODE").find(current_user.id)
       if not user.update(:last_submit_time => Time.now)
-        redirect_to submissions_path, alert: 'CD time 15 seconds.'
+        redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
         return
       end
     end
-    
+
     if params[:problem_id].blank?
       redirect_to action:'index'
       return
@@ -93,7 +94,7 @@ class SubmissionsController < ApplicationController
         end
       end
     end
-    
+
     #@submission = @submissions.build(submission_params)
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id

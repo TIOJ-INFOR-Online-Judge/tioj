@@ -74,7 +74,7 @@ class PostsController < ApplicationController
   private
   def check_contest
     unless user_signed_in? and current_user.admin?
-      if Contest.where("start_time <= ? AND ? <= end_time", Time.now, Time.now).exists?
+      if Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
         redirect_to root_path, :alert => "No discussion during contest."
         return
       end

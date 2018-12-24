@@ -171,7 +171,9 @@ class ContestsController < ApplicationController
       :start_time,
       :end_time,
       :contest_type,
-      contest_problem_joints_attributes: 
+      :cd_time,
+      :disable_discussion,
+      contest_problem_joints_attributes:
       [
         :id,
         :problem_id,
