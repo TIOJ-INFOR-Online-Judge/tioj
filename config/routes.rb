@@ -20,6 +20,9 @@ Tioj::Application.routes.draw do
   resources :contests do
     resources :submissions
     resources :problems
+    resources :posts do
+      resources :comments
+    end
   end
   resources :contest_problem_joints
   

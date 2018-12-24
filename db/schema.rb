@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181224022952) do
+ActiveRecord::Schema.define(version: 20181224043728) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -125,14 +125,17 @@ ActiveRecord::Schema.define(version: 20181224022952) do
   add_index "limits", ["testdatum_id"], name: "index_limits_on_testdatum_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
-    t.string   "title",      limit: 255
-    t.text     "content",    limit: 65535
-    t.integer  "user_id",    limit: 4
-    t.integer  "problem_id", limit: 4
+    t.string   "title",          limit: 255
+    t.text     "content",        limit: 65535
+    t.integer  "user_id",        limit: 4
+    t.integer  "problem_id",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "contest_id",     limit: 4
+    t.boolean  "global_visible",               default: true, null: false
   end
 
+  add_index "posts", ["contest_id"], name: "index_posts_on_contest_id", using: :btree
   add_index "posts", ["updated_at"], name: "index_posts_on_updated_at", using: :btree
   add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
@@ -255,4 +258,5 @@ ActiveRecord::Schema.define(version: 20181224022952) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
+  add_foreign_key "posts", "contests"
 end

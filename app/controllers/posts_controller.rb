@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_action :check_contest, :set_posts
+  before_action :check_user!, only: [:edit, :update, :destroy]
+  layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   # GET /posts
   # GET /posts.json
@@ -24,8 +26,6 @@ class PostsController < ApplicationController
 
   # GET /posts/1/edit
   def edit
-    @post = @posts.find(params[:id])
-    check_user!
     set_page_title "Edit post - " + @post.id.to_s
   end
 
@@ -34,10 +34,16 @@ class PostsController < ApplicationController
   def create
     @post = @posts.build(post_params)
     @post.user_id = current_user.id
+    if params[:contest_id]
+      @post.contest_id = @contest.id
+    end
+    if @contest and not current_user.admin?
+      @post.global_visible = false
+    end
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to posts_path, notice: 'Post was successfully created.' }
+        format.html { redirect_to @page_path, notice: 'Post was successfully created.' }
         format.json { render action: 'show', status: :created, location: @post }
       else
         format.html { render action: 'new' }
@@ -49,11 +55,9 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1
   # PATCH/PUT /posts/1.json
   def update
-    @post = @posts.find(params[:id])
-    check_user!
     respond_to do |format|
       if @post.update(post_params)
-        format.html { redirect_to posts_path, notice: 'Post was successfully updated.' }
+        format.html { redirect_to @page_path, notice: 'Post was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
@@ -65,12 +69,10 @@ class PostsController < ApplicationController
   # DELETE /posts/1
   # DELETE /posts/1.json
   def destroy
-    @post = @posts.find(params[:id])
-    check_user!
     @post.destroy
     respond_to do |format|
       format.json { head :no_content }
-      format.html { redirect_to posts_url }
+      format.html { redirect_to @page_url }
     end
   end
 
@@ -85,13 +87,25 @@ class PostsController < ApplicationController
   end
   
   # Use callbacks to share common setup or constraints between actions.
-  def set_posts 
+  def set_posts
+    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]
-    @posts = @problem ? @problem.posts : Post.all
+    if @contest
+      @posts = Post.where('contest_id = ?', params[:contest_id])
+    else
+      @posts = Post.where('contest_id is NULL')
+    end
+    unless current_user.admin?
+      @posts = @posts.where('user_id = ? OR global_visible', current_user.id)
+    end
+    @posts = @problem ? @posts.where('problem_id = ?', params[:problem_id]) : @posts
+    @page_path = @contest ? contest_posts_path(@contest) : posts_path
+    @page_url = @contest ? contest_posts_url(@contest) : posts_url
   end
 
   def check_user!
-    if not current_user.admin? and current_user.id != @post.user_id
+    @post = @posts.find(params[:id])
+    if not current_user.admin? and (current_user.id != @post.user_id or @contest)
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action:'index'
       return
@@ -101,16 +115,18 @@ class PostsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def post_params
     params.require(:post).permit(
-      :title, 
-      :content, 
-      :user_id, 
+      :title,
+      :content,
+      :user_id,
       :problem_id,
+      :global_visible,
       :page,
       comments_attributes: [
         :id,
         :title,
         :content,
-        :post_id
+        :post_id,
+        :contest_id
       ]
     )
   end

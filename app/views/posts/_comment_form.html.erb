@@ -1,5 +1,9 @@
 <% comment = post.comments.build %>
-<%= form_for [post, comment] do |f| %>
+<% form_target = [post, comment] %>
+<% if contest %>
+  <% form_target = [contest] + form_target %>
+<% end %>
+<%= form_for form_target do |f| %>
     <div class="field">
     <%= f.label :title, 'Title: ' %>
     <%= f.text_field :title %>

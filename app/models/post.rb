@@ -13,10 +13,17 @@
 
 class Post < ActiveRecord::Base
   belongs_to :problem
+  belongs_to :contest
   has_many :comments, dependent: :destroy
   
   validates_length_of :title, :in => 0..30
   validates_length_of :content, :in => 0..3000
+
+  def problem_or_contest?
+    if not problem.nil? and not contest.nil?
+      errors.add(:base, 'Posts cannot belong to both problems and contests')
+    end
+  end
   
   accepts_nested_attributes_for :comments
 end

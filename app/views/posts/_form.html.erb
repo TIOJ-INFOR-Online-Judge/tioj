@@ -1,4 +1,10 @@
-<%= form_for @problem ? [@problem, @post] : @post  do |f| %>
+<% form_target = @post %>
+<% if @contest %>
+  <% form_target = @problem ? [@contest, @problem, @post] : [@contest, @post] %>
+<% elsif @problem %>
+  <% form_target = [@problem, @post] %>
+<% end %>
+<%= form_for form_target do |f| %>
       <% if @post.errors.any? %>
         <div id="error_explanation">
     <h2><%= pluralize(@post.errors.count, "error") %> prohibited this problem from being saved:</h2>
@@ -20,6 +26,14 @@
         <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>. <br />
         <%= f.text_area :content, :class=> 'form-control', :placeholder=>'Content'%>
     </div>
+    <% if not @contest or current_user.admin? %>
+      <div class="form-group">
+        <label class="checkbox" for="disable_discussion">
+          <%= f.check_box :global_visible, :'data-toggle' => "checkbox", :value => (@contest or current_user.admin?) ? 0 : 1 %>
+          Visible to anyone
+        </label>
+      </div>
+    <% end %>
     <div class="form-group">
         <%= f.submit :class=>"btn btn-primary "%>
     </div>

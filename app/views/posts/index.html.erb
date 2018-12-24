@@ -6,12 +6,20 @@
 
 <div class="actions">
   <% if user_signed_in? %>
-  <% if @problem != nil %>
-    <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-default" %>
-<% else %>
-    <%= link_to "New Post", new_post_path, :class => "btn btn-default"%>
-<% end %>
-<% end %>
+    <% if @contest != nil %>
+      <% if @problem != nil %>
+        <%= link_to "New Post", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
+      <% else %>
+        <%= link_to "New Post", new_contest_post_path(@contest), :class => "btn btn-default"%>
+      <% end %>
+    <% else %>
+      <% if @problem != nil %>
+        <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-default" %>
+      <% else %>
+        <%= link_to "New Post", new_post_path, :class => "btn btn-default"%>
+      <% end %>
+    <% end %>
+  <% end %>
 </div>
 
 <%= paginate @posts %>
@@ -28,9 +36,14 @@
     <div class="post_content">
       <%= markdown_no_html(post.content) %>
     </div>
-    <% if user_signed_in? and (current_user.admin? or current_user.id == post.user_id) %>
-      <%= link_to "Edit Post", edit_post_path(post), :class=>'btn btn-primary btn-xs'%>
-      <%= link_to "Delete Post", post, method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+    <% if user_signed_in? and (current_user.admin? or (current_user.id == post.user_id and not @contest)) %>
+      <% if @contest %>
+        <%= link_to "Edit Post", edit_contest_post_path(@contest, post), :class=>'btn btn-primary btn-xs'%>
+        <%= link_to "Delete Post", contest_post_path(@contest, post), method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+      <% else %>
+        <%= link_to "Edit Post", edit_post_path(post), :class=>'btn btn-primary btn-xs'%>
+        <%= link_to "Delete Post", post, method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+      <% end %>
     <% end %>
     <% if post.comments.present? %>
       <div class="comments">
@@ -46,20 +59,25 @@
         <div class="comment_content" >
           <%= markdown_no_html(comment.content) %>
         </div>
-        <% if user_signed_in? and (current_user.admin? or current_user.id == comment.user_id) %>
-          <%= link_to "Edit", edit_post_comment_path(post, comment), :class=>'btn btn-primary btn-xs' %>
-          <%= link_to "Delete", post_comment_path(post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+        <% if user_signed_in? and (current_user.admin? or (current_user.id == comment.user_id and not @contest)) %>
+          <% if @contest %>
+            <%= link_to "Edit", edit_contest_post_comment_path(@contest, post, comment), :class=>'btn btn-primary btn-xs' %>
+            <%= link_to "Delete", contest_post_comment_path(@contest, post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+          <% else %>
+            <%= link_to "Edit", edit_post_comment_path(post, comment), :class=>'btn btn-primary btn-xs' %>
+            <%= link_to "Delete", post_comment_path(post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+          <% end %>
         <% end %>
       </div> <!--comment -->
     <% end %><!-- comments.each -->
     </div> <!-- comments -->
   <% end %> <!-- if post.comments -->
-  <% if user_signed_in? %>
+  <% if user_signed_in? and (current_user.admin? or not @contest) %>
     <div class="new_comment" style="display:inline">
       <button class="new_comment btn btn-info btn-xs">New Comment</button>
       <br /> <br />
       <div class="new_comment_form">
-        <%= render partial: 'comment_form', :locals => {:post => post}  %>
+        <%= render partial: 'comment_form', :locals => {:post => post, :contest => @contest}  %>
       </div> <!-- new_comment_form -->
     </div> <!-- new_comment -->
   <% end %> 

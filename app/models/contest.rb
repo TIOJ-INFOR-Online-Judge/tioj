@@ -16,6 +16,7 @@ class Contest < ActiveRecord::Base
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints
   has_many :submissions
+  has_many :posts
 
   validates :start_time, :presence => true
   validates :end_time, :presence => true
