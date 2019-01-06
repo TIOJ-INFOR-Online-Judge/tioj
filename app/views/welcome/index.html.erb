@@ -28,7 +28,7 @@
             <tr>
               <td><%= f.title %></td>
               <% if user_signed_in? %>
-                <td><%= link_to 'Particapate', f, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
+                <td><%= link_to 'Participate', f, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
               <% end %>
               <% if Time.now > f.end_time %>
                 <td>Ended</td>

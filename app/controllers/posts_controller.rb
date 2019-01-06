@@ -95,8 +95,12 @@ class PostsController < ApplicationController
     else
       @posts = Post.where('contest_id is NULL')
     end
-    unless current_user.admin?
-      @posts = @posts.where('user_id = ? OR global_visible', current_user.id)
+    if user_signed_in?
+      unless current_user.admin?
+        @posts = @posts.where('user_id = ? OR global_visible', current_user.id)
+      end
+    else
+      @posts = @posts.where('global_visible')
     end
     @posts = @problem ? @posts.where('problem_id = ?', params[:problem_id]) : @posts
     @page_path = @contest ? contest_posts_path(@contest) : posts_path
@@ -105,7 +109,7 @@ class PostsController < ApplicationController
 
   def check_user!
     @post = @posts.find(params[:id])
-    if not current_user.admin? and (current_user.id != @post.user_id or @contest)
+    if not user_signed_in? or (not current_user.admin? and (current_user.id != @post.user_id or @contest))
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action:'index'
       return
