@@ -160,9 +160,10 @@ class SubmissionsController < ApplicationController
         end
       end
     else
-      #unless user_signed_in? and current_user.admin?
-        @submissions = @submissions.where("contest_id is NULL")
-      #end
+      @submissions = @submissions.where("contest_id is NULL")
+      unless user_signed_in? and current_user.admin?
+       @submissions = @submissions.joins(:problem).where("problems.visible_state = 0")
+      end
     end
     @submissions = @submissions.where("problem_id = ?", params[:filter_problem]) if not params[:filter_problem].blank?
     @submissions = @submissions.joins("INNER JOIN users ON submissions.user_id = users.id").where("users.username LIKE ?", params[:filter_username]) if not params[:filter_username].blank?
