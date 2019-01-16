@@ -21,7 +21,7 @@ sudo apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
 sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
 sudo apt update
-sudo apt install g++-8 python python3 ghc rvm \
+sudo apt install g++-8 python python3 ghc rvm imagemagick \
   mysql-server libmysqlclient-dev libcurl4-openssl-dev
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 \
   --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
