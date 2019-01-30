@@ -49,6 +49,13 @@
     </div>
   <% end %>
   <%= f.link_to_add "Add a attachment", :attachments, :class => 'btn btn-warning' %>
+
+  <div class="form-group">
+    <label class="checkbox" for="public">
+      <%= f.check_box :public, :'data-toggle' => "checkbox" %>
+      Public to anyone
+    </label>
+  </div>
   
   <%= hidden_field_tag :era, params[:era] %>
   

@@ -3,10 +3,18 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
   
   def index
-    @articles = Article.where("category = 0 AND pinned = true AND era = ?", get_era).order("id DESC")
-    @articles += Article.where("category = 0 AND pinned != true AND era = ?", get_era).order("id DESC")
-    @courses = Article.where("category = 1 AND pinned = true AND era = ?", get_era).order("id DESC")
-    @courses += Article.where("category = 1 AND pinned != true AND era = ?", get_era).order("id DESC")
+    if user_signed_in?
+      @articles = Article.where("category = 0 AND pinned = true AND era = ?", get_era).order("id DESC")
+      @articles += Article.where("category = 0 AND pinned != true AND era = ?", get_era).order("id DESC")
+      @courses = Article.where("category = 1 AND pinned = true AND era = ?", get_era).order("id DESC")
+      @courses += Article.where("category = 1 AND pinned != true AND era = ?", get_era).order("id DESC")
+    else
+      @articles = Article.where("category = 0 AND pinned = true AND era = ? AND public = true", get_era).order("id DESC")
+      @articles += Article.where("category = 0 AND pinned != true AND era = ? AND public = true", get_era).order("id DESC")
+      @courses = Article.where("category = 1 AND pinned = true AND era = ? AND public = true", get_era).order("id DESC")
+      @courses += Article.where("category = 1 AND pinned != true AND era = ? AND public = true", get_era).order("id DESC")
+    end
+      
     @era = get_era.to_s
     set_page_title "Bulletin - " + @era
   end
@@ -19,6 +27,7 @@ class ArticlesController < ApplicationController
     @article = Article.new(article_params)
     @article.author_id = current_user.id
     @article.era = get_era
+
     respond_to do |format|
       if @article.save
         format.html { redirect_to @article, notice: 'Article was successfully created.' }
@@ -56,9 +65,9 @@ class ArticlesController < ApplicationController
 private
 
   def get_era
-    if params[:era].blank?
+    if params[:era] == nil
       t = Time.now
-      if t.month < 7 
+      if t.month < 7
         return t.year - 1
       else
         return t.year
@@ -67,9 +76,12 @@ private
       return params[:era].to_i
     end
   end
-  
+
   def set_article
     @article = Article.find(params[:id])
+    if not @article.public and not user_signed_in?
+      redirect_to root_path, alert: 'Please login to view this article.'
+    end
   end
   
   def article_params
@@ -79,6 +91,7 @@ private
       :content,
       :pinned,
       :category,
+      :public,
       attachments_attributes:
       [
         :id,

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181224152758) do
+ActiveRecord::Schema.define(version: 20190129040504) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20181224152758) do
     t.integer  "era",        limit: 4
     t.boolean  "pinned"
     t.integer  "category",   limit: 4
+    t.boolean  "public"
   end
 
   add_index "articles", ["category", "pinned", "era"], name: "index_articles_on_category_and_pinned_and_era", using: :btree

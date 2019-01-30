@@ -1,7 +1,12 @@
 class WelcomeController < ApplicationController
   def index
-    @bulletins = Article.order("id DESC").where(pinned: 1).limit(5)
-    @bulletins = @bulletins + Article.order("id DESC").where(pinned: 0).limit(5 - @bulletins.size)
+    if user_signed_in?
+      @bulletins = Article.order("id DESC").where(pinned: 1).limit(5)
+      @bulletins += Article.order("id DESC").where(pinned: 0).limit(5 - @bulletins.size)
+    else
+      @bulletins = Article.order("id DESC").where("pinned = true and public = true").limit(5)
+      @bulletins += Article.order("id DESC").where("pinned = false and public = true").limit(5 - @bulletins.size)
+    end
     @contests = Contest.order("id DESC").limit(3)
     @users = get_sorted_user.take(10)
   end

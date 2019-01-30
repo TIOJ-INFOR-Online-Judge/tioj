@@ -11,6 +11,7 @@
 #  era        :integer
 #  pinned     :boolean
 #  category   :integer
+#  public     :boolean
 #
 
 class Article < ActiveRecord::Base
