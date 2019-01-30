@@ -41,7 +41,7 @@
       <% else %>
         <tr>
       <% end %>
-        <td><%= index+1 %></td>
+        <td><%= s[-1] %></td>
         <td><%= link_to image_tag(User.find(s[0]).avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(s[0]) %></td>
         <td><%= link_to User.find(s[0]).username, user_path(s[0]) %></td>
         <td><%= User.find(s[0]).nickname %></td>

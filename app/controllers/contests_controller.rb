@@ -36,7 +36,19 @@ class ContestsController < ApplicationController
     else
       c_submissions = @contest.submissions
     end
-    
+
+    def Rank(a, &func)
+      run = id = 0
+      prv = nil
+      a.map do |n|
+        run += 1
+        next id if prv and func[n] == func[prv]
+        prv = n.clone
+        id += run
+        run = 0
+        id
+      end
+    end
     @submissions = []
     @participants = []
     @tasks.each_with_index do |task, index|
@@ -72,6 +84,8 @@ class ContestsController < ApplicationController
         @scores << [u, total_attm, total_solv, t, t.map{|a| a[1] == -1 ? 0 : a[1]}.sum + penalty, last_ac]
       end
       @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
+      @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
+      logger.fatal @scores
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     else
@@ -87,6 +101,7 @@ class ContestsController < ApplicationController
         @scores << [u, t, t.sum]
       end
       @scores = @scores.sort_by{|a| -a[2]}
+      @scores = @scores.zip(Rank(@scores){|a| a[2]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     end
