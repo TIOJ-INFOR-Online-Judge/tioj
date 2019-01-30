@@ -58,7 +58,11 @@ class ContestsController < ApplicationController
     first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by{|a| a.id}}.map{|a| a ? a.id : -1}
     @scores = []
     if @contest.contest_type == 2
-      #penalty
+      unless user_signed_in? and current_user.admin?
+        freeze_start = @contest.end_time - @contest.freeze_time * 60
+      else
+        freeze_start = @contest.end_time
+      end
       @participants.each do |u|
         t = []
         total_attm = 0
@@ -66,18 +70,19 @@ class ContestsController < ApplicationController
         last_ac = 0
         penalty = 0
         (0..(@tasks.size-1)).each do |index|
-          succ = @submissions[index].select{|a| a.user_id == u and a.result == 'AC'}.min_by{|a| a.id}
+          succ = @submissions[index].select{|a| a.user_id == u and a.result == 'AC' and a.created_at < freeze_start}.min_by{|a| a.id}
           if succ
-            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating'])}.size
+            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
             tm = (succ.created_at - @contest.start_time).to_i / 60
             last_ac = [last_ac, tm].max
-            t << [attm + 1, tm, succ.id == first_solved[index]]
+            t << [attm + 1, tm, succ.id == first_solved[index], 0]
             total_solv += 1
             total_attm += attm + 1
             penalty += attm * 20
           else
-            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'queued', 'Validating'])}.size
-            t << [attm, -1, false]
+            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            pend = @submissions[index].select{|a| a.user_id == u and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            t << [attm, -1, false, pend]
             total_attm += attm
           end
         end
@@ -88,6 +93,9 @@ class ContestsController < ApplicationController
       logger.fatal @scores
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
+      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
+        flash.now[:notice] = "Scoreboard is now freezed."
+      end
     else
       @participants.each do |u|
         t = []
@@ -188,6 +196,7 @@ class ContestsController < ApplicationController
       :contest_type,
       :cd_time,
       :disable_discussion,
+      :freeze_time,
       contest_problem_joints_attributes:
       [
         :id,

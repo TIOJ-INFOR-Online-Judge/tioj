@@ -48,6 +48,11 @@
    </div>
 
    <div class="form-group">
+     <%= f.label :freeze_time, 'Scoreboard freezing period (in minutes, 0 to disable freezing)' %>
+     <%= f.number_field :freeze_time, :min => 0, :class => 'form-control flat', :required => true %>
+   </div>
+
+   <div class="form-group">
      <label class="checkbox" for="disable_discussion">
        <%= f.check_box :disable_discussion, :'data-toggle' => "checkbox", :value => @contest.disable_discussion %>
        Disable discussion during the contest
