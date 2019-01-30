@@ -68,7 +68,7 @@ class ContestsController < ApplicationController
         (0..(@tasks.size-1)).each do |index|
           succ = @submissions[index].select{|a| a.user_id == u and a.result == 'AC'}.min_by{|a| a.id}
           if succ
-            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER'])}.size
+            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating'])}.size
             tm = (succ.created_at - @contest.start_time).to_i / 60
             last_ac = [last_ac, tm].max
             t << [attm + 1, tm, succ.id == first_solved[index]]
@@ -76,7 +76,7 @@ class ContestsController < ApplicationController
             total_attm += attm + 1
             penalty += attm * 20
           else
-            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'Validating'])}.size
+            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'queued', 'Validating'])}.size
             t << [attm, -1, false]
             total_attm += attm
           end
