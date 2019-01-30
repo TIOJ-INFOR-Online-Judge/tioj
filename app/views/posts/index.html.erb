@@ -1,16 +1,24 @@
 <% if @problem %> 
   <h4 class="page-header">Discuss <small>Problem #<%= @problem.id %></small></h4>
 <% else %>
-  <h4 class="page-header">Discuss</h4>
+  <h4 class="page-header"><%= @title %></h4>
 <% end %>
 
 <div class="actions">
   <% if user_signed_in? %>
     <% if @contest != nil %>
-      <% if @problem != nil %>
-        <%= link_to "New Post", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
+      <% if current_user.admin? %>
+        <% if @problem != nil %>
+          <%= link_to "New Announcement", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
+        <% else %>
+          <%= link_to "New Announcement", new_contest_post_path(@contest), :class => "btn btn-default"%>
+        <% end %>
       <% else %>
-        <%= link_to "New Post", new_contest_post_path(@contest), :class => "btn btn-default"%>
+        <% if @problem != nil %>
+          <%= link_to "New Question", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
+        <% else %>
+          <%= link_to "New Question", new_contest_post_path(@contest), :class => "btn btn-default"%>
+        <% end %>
       <% end %>
     <% else %>
       <% if @problem != nil %>
@@ -25,6 +33,7 @@
 <%= paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
+    <% poster = (User.exists?(:id => post.user_id) ? User.find(post.user_id) : nil) %>
     <div class="post well">
     <div class="post_title">
       <h3 class="post_title"><%= post.title %></h3>
@@ -35,6 +44,13 @@
     </br >
     <div class="post_content">
       <%= markdown_no_html(post.content) %>
+      <% if !(user_signed_in? and current_user.admin?) %>
+        Created At:  <%= post.created_at.to_s(:clean) %>
+      <% elsif poster == nil %>
+        deleted account - Created At:  <%= post.created_at.to_s(:clean) %>
+      <% else %>
+        <%= link_to poster.username, user_path(poster) %> - Created At:  <%= post.created_at.to_s(:clean) %>
+      <% end %>
     </div>
     <% if user_signed_in? and (current_user.admin? or (current_user.id == post.user_id and not @contest)) %>
       <% if @contest %>
@@ -52,12 +68,20 @@
       <% count = 0;%>
       <% comments.each do |comment| %>
         <% count += 1 %>
+      <% commenter = (User.exists?(:id => comment.user_id) ? User.find(comment.user_id) : nil) %>
       <div class="comment well well-lg">
         <h4 class="comment_title">
           #<%=count %> <%= comment.title %>
       </h4>
         <div class="comment_content" >
           <%= markdown_no_html(comment.content) %>
+          <% if !(user_signed_in? and current_user.admin?) %>
+            Created At:  <%= comment.created_at.to_s(:clean) %>
+          <% elsif commenter == nil %>
+            deleted account - Created At:  <%= comment.created_at.to_s(:clean) %>
+          <% else %>
+            <%= link_to commenter.username, user_path(commenter) %> - Created At:  <%= comment.created_at.to_s(:clean) %>
+          <% end %>
         </div>
         <% if user_signed_in? and (current_user.admin? or (current_user.id == comment.user_id and not @contest)) %>
           <% if @contest %>

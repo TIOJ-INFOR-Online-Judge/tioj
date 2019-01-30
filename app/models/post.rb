@@ -2,13 +2,15 @@
 #
 # Table name: posts
 #
-#  id         :integer          not null, primary key
-#  title      :string(255)
-#  content    :text(65535)
-#  user_id    :integer
-#  problem_id :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id             :integer          not null, primary key
+#  title          :string(255)
+#  content        :text(65535)
+#  user_id        :integer
+#  problem_id     :integer
+#  created_at     :datetime
+#  updated_at     :datetime
+#  contest_id     :integer          limit: 4 
+#  global_visible :boolean          default: true, null: false
 #
 
 class Post < ActiveRecord::Base

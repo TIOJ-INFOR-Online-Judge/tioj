@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :check_contest, :set_posts
+  before_action :set_posts, :check_contest
   before_action :check_user!, only: [:edit, :update, :destroy]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
@@ -8,7 +8,13 @@ class PostsController < ApplicationController
   # GET /posts.json
   def index
     @posts = @posts.order("updated_at DESC").page(params[:page])
-    set_page_title "Discuss"
+    if @contest
+        @title = "Q & A"
+        set_page_title "Q & A"
+    else
+        @title = "Discuss"
+        set_page_title = "Discuss"
+    end
   end
 
   # GET /posts/1
@@ -79,7 +85,7 @@ class PostsController < ApplicationController
   private
   def check_contest
     unless user_signed_in? and current_user.admin?
-      if Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
+      if @contest == nil and Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
         redirect_to root_path, :alert => "No discussion during contest."
         return
       end
