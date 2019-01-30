@@ -45,7 +45,7 @@ MathJax.Hub.Config({
         <ul class="nav navbar-nav navbar-left">           
           <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
           <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
-          <li><%= link_to "Questions", contest_posts_path(@contest) %></li>
+          <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
           <li><%= link_to "Dashboard", {:controller => :contests, :action => :dashboard, :id => @contest.id} %></li>
           <% if current_user %>
             <li><%= link_to(current_user.username, user_path(current_user)) %></li>
