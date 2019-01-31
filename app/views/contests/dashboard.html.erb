@@ -10,7 +10,10 @@
     <%= link_to 'Submissions', contest_submissions_path(@contest), :class => 'btn btn-info btn-xs btn-block' %>
   </div>
   <div class="col-md-1">
-    <%= link_to 'Refresh', {:controller => :contests, :action => :dashboard_update, :id => @contest.id}, :remote => true, :class => 'btn btn-info btn-xs btn-block' %>
+    <input id="refresh_interval" class="form-control input-sm flat" type="integer" placeholder="Refresh interval" value=10 min="1" onload="set_refresh">
+  </div>
+  <div class="col-md-1">
+    <%= link_to 'Refresh', {:controller => :contests, :action => :dashboard_update, :id => @contest.id}, :remote => true, :class => 'btn btn-info btn-xs btn-block', :id => 'refresh' %>
   </div>
 </div>
 
@@ -47,3 +50,4 @@
   </div>
 </div>
 
+<script> contest_dashboard_main() </script>
