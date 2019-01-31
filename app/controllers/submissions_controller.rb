@@ -22,12 +22,13 @@ class SubmissionsController < ApplicationController
   end
 
   def show
-    unless (user_signed_in? and current_user.admin?) or (user_signed_in? and current_user.id == @submission.user_id)
-      if @submission.contest && Time.now >= @submission.contest.start_time && Time.now <= @submission.contest.end_time
-        if (not user_signed_in?) or (user_signed_in? and current_user.id != @submission.contest.user_id)
-          redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
-          return
-        end
+    unless (user_signed_in? and current_user.admin?) or (user_signed_in? and current_user.id == @submission.user_id) or not @submission.contest
+      if Time.now >= @submission.contest.start_time && Time.now <= @submission.contest.end_time
+        redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
+        return
+      elsif @submission.created_at >= @contest.end_time - @contest.freeze_time * 60
+        redirect_to contest_path(@submission.contest), :notice => 'Submission is censored before unfreeze.'
+        return
       end
     end
     @_result = @submission._result.to_s.split("/")
