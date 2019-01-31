@@ -95,7 +95,7 @@ class ContestsController < ApplicationController
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
       if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
-        flash.now[:notice] = "Scoreboard is now freezed."
+        flash.now[:notice] = "Scoreboard is now frozen."
       end
     else
       @participants.each do |u|
