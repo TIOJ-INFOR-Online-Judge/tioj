@@ -91,7 +91,6 @@ class ContestsController < ApplicationController
       end
       @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
-      logger.fatal @scores
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
       if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
