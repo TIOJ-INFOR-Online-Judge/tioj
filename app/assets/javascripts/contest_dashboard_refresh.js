@@ -6,24 +6,26 @@ let INPUT = document.getElementById('refresh_interval')
 let REFRESH = document.getElementById('refresh')
 
 let interval = 10
-let interval_id
+let pid
 
-function reset_interval(interval) {
-  if (interval_id) clearInterval(interval_id)
-  interval_id = setInterval(() => {
+function reset_timing(interval) {
+  if (pid) clearTimeout(pid)
+  pid = setTimeout(() => {
     REFRESH.click()
   }, interval * 1000)
 }
 
 function update_interval() {
-  interval = INPUT.value
+  let t = parseInt(INPUT.value)
+  if (!(t >= 2)) return
+  interval = t
 }
 
 REFRESH.onclick = function() {
-  update_interval();
-  reset_interval(interval);
+  update_interval()
+  reset_timing(interval)
 }
 
-reset_interval(interval)
+reset_timing(interval)
 
 }
