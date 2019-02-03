@@ -43,9 +43,13 @@
     <%= f.number_field :gradyear, :class => "form-control flat" %>
   </div>
   
+  <% if Rails.env.production? %>
+    <p> Sorry, registration is not allowed. </p>
+  <% else %>
   <div>
     <%= f.submit "Sign up", :class => 'btn btn-info btn-lg' %>
   </div>
+  <% end %>
 <% end %>
 
 
