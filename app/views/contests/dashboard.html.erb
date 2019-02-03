@@ -29,6 +29,9 @@
       <th></th>
       <th>Username</th>
       <th>Nickname</th>
+      <% if user_signed_in? and current_user.admin? %>
+      <th>Name</th>
+      <% end %>
       <% @tasks.each_with_index do |task, index| %>
         <th><%= link_to ('p' + (65+index).chr), contest_problem_path(@contest, task) %></th>
       <% end %>
