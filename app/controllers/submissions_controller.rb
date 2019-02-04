@@ -63,7 +63,7 @@ class SubmissionsController < ApplicationController
 
   def create
     cd_time = @contest ? @contest.cd_time : 15
-    if not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
+    if not current_user.admin? and not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
       redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
       return
     end
