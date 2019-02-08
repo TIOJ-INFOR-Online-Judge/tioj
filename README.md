@@ -16,46 +16,46 @@ It is recommended to deploy TIOJ on Ubuntu 16.04 LTS or 18.04 LTS. The following
 You need to follow the instructions on the screen when installing / setting up those packages.
 
 ```
-# sudo add-apt-repository ppa:ubuntu-toolchain-r/test # If Ubuntu 16.04 LTS is used
-sudo apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
-wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
-sudo dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
-sudo apt update
-sudo apt install g++-8 python python3 ghc rvm imagemagick \
+# add-apt-repository ppa:ubuntu-toolchain-r/test # If Ubuntu 16.04 LTS is used
+# apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
+$ wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
+# dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
+# apt update
+# apt install g++-8 python python3 ghc rvm imagemagick \
   mysql-server libmysqlclient-dev libcurl4-openssl-dev
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 \
+# update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 \
   --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
   --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 \
   --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 \
   --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8 # Use GCC 8 as default
-sudo mysql_secure_installation # Setup MySQL
-sudo usermod -a -G rvm $USER
-echo 'source /etc/profile.d/rvm.sh' >> .bashrc
-echo 'PATH=$HOME/.rvm/gems/ruby-2.4.3/bin:$PATH' >> .bashrc
-source .bashrc
-rvm install 2.4.3
-rvm use --default 2.4.3
-gem install rails -v 4.2.11
+# mysql_secure_installation # Setup MySQL
+# usermod -a -G rvm $USER
+$ echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
+$ echo 'PATH=$HOME/.rvm/gems/ruby-2.4.3/bin:$PATH' >> ~/.bashrc
+$ source ~/.bashrc
+$ rvm install 2.4.3
+$ rvm use --default 2.4.3
+$ gem install rails -v 4.2.11
 ```
 
 #### 2. Clone TIOJ and its judge program
 
 ```
-git clone https://github.com/adrien1018/tioj
-git clone https://github.com/adrien1018/miku
+$ git clone https://github.com/adrien1018/tioj
+$ git clone https://github.com/adrien1018/miku
 ```
 
 #### 3. Install gems
 
 ```
-bundle install
+$ bundle install
 ```
 
 #### 4. Install web server
 
 ```
-gem install passenger
-rvmsudo passenger-install-nginx-module
+$ gem install passenger
+$ rvmsudo passenger-install-nginx-module
 ```
 
 The first command may give some "error loading ..." messages, but they can be ignored if the installation displays "1 gems installed" at the end.
@@ -64,7 +64,7 @@ When prompted for selecting the language, select Ruby. Use all recommended setti
 #### 5. Configure Nginx
 
 ```
-sudo vim /opt/nginx/conf/nginx.conf
+# vim /opt/nginx/conf/nginx.conf
 ```
 You need to add some settings to the Nginx configuration:
 ```
@@ -161,8 +161,8 @@ make # -j8 for parallel compilation
 
 Now start the web server and the judge server:
 ```
-sudo /opt/nginx/sbin/nginx
-sudo ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
+# /opt/nginx/sbin/nginx
+# ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
 ```
 
 You can add the commands to systemd for the convenience of starting / stopping those servers.
