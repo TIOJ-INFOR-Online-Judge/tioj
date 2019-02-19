@@ -28,10 +28,10 @@
     </div>
     <% if not @contest or current_user.admin? %>
       <div class="form-group">
-        <label class="checkbox" for="disable_discussion">
-          <%= f.check_box :global_visible, :'data-toggle' => "checkbox", :value => (@contest or current_user.admin?) ? 0 : 1 %>
+        <%= f.label :global_visible do %>
+          <%= f.check_box :global_visible, :value => (@contest or current_user.admin?) ? 0 : 1 %>
           Visible to anyone
-        </label>
+        <% end %>
       </div>
     <% end %>
     <div class="form-group">

@@ -53,10 +53,10 @@
    </div>
 
    <div class="form-group">
-     <label class="checkbox" for="disable_discussion">
-       <%= f.check_box :disable_discussion, :'data-toggle' => "checkbox", :value => @contest.disable_discussion %>
+     <%= f.label :disable_discussion do %>
+       <%= f.check_box :disable_discussion %>
        Disable discussion during the contest
-     </label>
+     <% end %>
    </div>
 
    <div class="alert alert-success alert-dismissible" role="alert">
