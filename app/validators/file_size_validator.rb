@@ -10,7 +10,7 @@ class FileSizeValidator < ActiveModel::EachValidator
 
   def initialize(options)
     if range = (options.delete(:in) || options.delete(:within))
-      raise ArgumentError, ":in and :within must be a Range" unless range.is_a?(Range)
+      raise ArgumentError, ":in and :within must be a range" unless range.is_a?(Range)
       options[:minimum], options[:maximum] = range.begin, range.end
       options[:maximum] -= 1 if range.exclude_end?
     end
@@ -29,7 +29,7 @@ class FileSizeValidator < ActiveModel::EachValidator
       value = options[key]
 
       unless value.is_a?(Integer) && value >= 0
-        raise ArgumentError, ":#{key} must be a nonnegative Integer"
+        raise ArgumentError, ":#{key} must be a nonnegative integer"
       end
     end
   end

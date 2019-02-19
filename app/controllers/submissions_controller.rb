@@ -160,7 +160,7 @@ class SubmissionsController < ApplicationController
           if user_signed_in?
             @submissions = @submissions.where("user_id = ?", current_user.id)
           else
-            @submissions = @submissions.where("id = 0") #just make it a empty set whatsoever
+            @submissions = @submissions.where("id = 0") #just make it an empty set whatsoever
             return
           end
         end
