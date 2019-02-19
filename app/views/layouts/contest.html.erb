@@ -30,7 +30,7 @@ MathJax.Hub.Config({
 
 <body>
 <div style="background-color:#32CD32">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">    
+  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">
     <div class="container-fluid">
       <div class="navbar-header">
         <%= link_to image_tag("banner_0_green.png", :alt => ('TIOJ #contest %s' % @contest.title), :style => "padding-left: 15px;"), contest_path(@contest), :class => "nav-brand" %>
@@ -42,7 +42,7 @@ MathJax.Hub.Config({
         </button>
       </div>
       <div class="collapse navbar-collapse" id="navbar-collapse-01">
-        <ul class="nav navbar-nav navbar-left">           
+        <ul class="nav navbar-nav navbar-left">
           <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
           <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
           <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
@@ -70,7 +70,7 @@ MathJax.Hub.Config({
     </div>
   </nav><!-- /navbar -->
 </div>
-  
+
 <div class="container-fluid" id="page-content">
   <!--alert and notice-->
   <% if notice %>
@@ -92,7 +92,7 @@ MathJax.Hub.Config({
     </div>
   <% end %>
   <%= yield %>
-  
+
 </div>
 
 </body>

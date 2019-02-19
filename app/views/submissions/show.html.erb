@@ -73,7 +73,7 @@
     </div>
   </div>
   </div>
-  
+
   <table class="table">
     <thead>
       <tr>
@@ -127,7 +127,7 @@
       </div>
       <div class="panel-body">
         <% if @submission.message.present? %>
-          <pre class="pre-scrollable"><code class=""><%= @submission.message %></code></pre>   
+          <pre class="pre-scrollable"><code class=""><%= @submission.message %></code></pre>
         <% else %>
           Sorry, no compilation error message available.
         <% end %>
@@ -141,6 +141,6 @@
 
 <% end %>
 
-<%= javascript_include_tag 	"/codehighlighter/prism.js" %>
-<%= stylesheet_link_tag 	"/codehighlighter/prism.css" %>
+<%= javascript_include_tag         "/codehighlighter/prism.js" %>
+<%= stylesheet_link_tag         "/codehighlighter/prism.css" %>
 

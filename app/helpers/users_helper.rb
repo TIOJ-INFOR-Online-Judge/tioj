@@ -25,7 +25,7 @@ module UsersHelper
       return true
     end
   end
-  
+
   def user_problem_tried(user, problem)
     return Submission.exists?(["contest_id is NULL AND user_id = ? AND problem_id = ?", user.id, problem.id])
     if Submission.where("contest_id is NULL AND user_id = ? AND problem_id = ?", user.id, problem.id).count == 0

@@ -17,19 +17,19 @@ class TestdataUploader < CarrierWave::Uploader::Base
     #"uploads/td/#{model.problem.id}"
     "#{Rails.root}/td/#{model.problem_id}"
   end
-  
+
   def cache_dir
     "#{Rails.root}/td/cache"
   end
-  
+
   def move_to_cache
     true
   end
-  
+
   def move_to_store
     true
   end
-  
+
   def filename
     original_filename.to_s + "-#{secure_token}" if original_filename.present?
   end

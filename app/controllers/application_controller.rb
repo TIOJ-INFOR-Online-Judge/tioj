@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_verdict_hash
   before_filter :configure_permitted_parameters, if: :devise_controller?
   before_filter :set_anno
-  
+
   def set_verdict_hash
     @verdict = {"AC" => "Accepted",
                 "WA" => "Wrong Answer",
@@ -55,13 +55,13 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     session[:previous_url] || root_path
   end
-  
+
 protected
   def authenticate_admin!
     authenticate_user!
     if not current_user.admin?
       flash[:alert] = 'Insufficient User Permissions.'
-      redirect_to action:'index' 
+      redirect_to action:'index'
       return
     end
   end
@@ -77,7 +77,7 @@ protected
       u.permit(:school, :gradyear, :name, :avatar, :avatar_cache, :motto, :email, :nickname, :password, :password_confirmation, :current_password)
     end
   end
-  
+
   def set_contest_layout
     if @contest.blank?
       "application"
@@ -85,12 +85,12 @@ protected
       "contest"
     end
   end
-  
+
   def set_anno
     require "json"
     @anno = JSON.parse(File.read("public/announcement/anno"))
   end
-  
+
   def get_sorted_user
     User.select("users.*, count(distinct case when s.result='AC' then s.problem_id end) ac, ifnull(sum(s.result='AC'), 0) acsub,  count(s.id) sub, sum(s.result='AC') / count(s.id) acratio").joins("left join submissions s on s.user_id = users.id and s.contest_id is NULL").group("users.id").order('ac desc, acratio desc, sub desc, users.id').to_a
   end

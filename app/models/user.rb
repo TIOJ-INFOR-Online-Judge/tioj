@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
     :file_size => {
       :maximum => 5.megabytes.to_i
     }
-  
+
   attr_accessor :login
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -52,18 +52,18 @@ class User < ActiveRecord::Base
   end
   validates_presence_of :username, :nickname
   validates :username,
-    :uniqueness => {:case_sensitive => false}, 
+    :uniqueness => {:case_sensitive => false},
     :username_convention => true
-  
+
   validates :school, :presence => true, :length => {:minimum => 1}
   validates :gradyear, :presence => true, :inclusion => 1..1000
   validates :name, :presence => true, :length => {:in => 1..12}
-  
+
   validates_uniqueness_of :nickname
   validates_length_of :nickname, :in => 1..12
   validates_length_of :username, :in => 3..20
   validates_length_of :motto, :maximum => 75
-  
+
   def ac_count
     submits = self.submissions.select do |s|
       s.result == "AC" && s.contest_id == nil
@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
     end
     submits.count
   end
-  
+
   def in_vain_count
     submits = self.submissions.select do |s|
       s.contest_id == nil
@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
     end
     submits.count - self.ac_count
   end
-  
+
   def ac_ratio
     all = self.submissions.select do |s|
       s.contest_id == nil
@@ -99,7 +99,7 @@ class User < ActiveRecord::Base
     end
     ratio
   end
-  
+
   def uniq_submits_by_res(res="AC")
     submits = self.submissions.select do |s|
       s.result == res && s.contest_id == nil
@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
       s.problem_id
     end
   end
-  
+
   def prob_by_res(res="AC")
     submits = self.uniq_submits_by_res(res)
     submits = submits.collect do |s|

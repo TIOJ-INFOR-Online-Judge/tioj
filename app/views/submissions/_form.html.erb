@@ -9,24 +9,24 @@
       </ul>
     </div>
   <% end %>
-  
+
   <div class="form-group">
     <%= render 'compiler_chooser', :f => f %>
   </div>
-  
+
   <div class="form-group">
     <%= f.label :code %>
     <%= f.text_area :code, :class => 'form-control flat', :rows => "15", :id => "code-input", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;' %>
   </div>
-  
+
   <% if @contest_id %>
     <div class="field">
       <%= hidden_field_tag :contest_id, @contest_id %>
     </div>
   <% end %>
-  
+
   <hr>
-  
+
   <div class="actions">
     <%= f.submit :class => 'btn btn-success btn-lg' %>
   </div>

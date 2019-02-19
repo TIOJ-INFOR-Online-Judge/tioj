@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     tried.each do |t|
       @tried[t.problem_id] = (t.result == "AC" ? 1 : 2)
     end
-    
+
     set_page_title @user.username
   end
 end

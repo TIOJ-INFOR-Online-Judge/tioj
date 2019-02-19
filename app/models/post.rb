@@ -9,7 +9,7 @@
 #  problem_id     :integer
 #  created_at     :datetime
 #  updated_at     :datetime
-#  contest_id     :integer          limit: 4 
+#  contest_id     :integer          limit: 4
 #  global_visible :boolean          default: true, null: false
 #
 
@@ -17,7 +17,7 @@ class Post < ActiveRecord::Base
   belongs_to :problem
   belongs_to :contest
   has_many :comments, dependent: :destroy
-  
+
   validates_length_of :title, :in => 0..30
   validates_length_of :content, :in => 0..3000
 
@@ -26,6 +26,6 @@ class Post < ActiveRecord::Base
       errors.add(:base, 'Posts cannot belong to both problems and contests')
     end
   end
-  
+
   accepts_nested_attributes_for :comments
 end

@@ -64,16 +64,16 @@ class TestdataController < ApplicationController
   def set_problem
     @problem = Problem.find(params[:problem_id])
   end
-  
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def testdatum_params
-    params.require(:testdatum).permit(:problem_id, :test_input, :test_output, 
-      limit_attributes: 
+    params.require(:testdatum).permit(:problem_id, :test_input, :test_output,
+      limit_attributes:
         [
-          :id, 
-          :time, 
-          :memory, 
-          :output, 
+          :id,
+          :time,
+          :memory,
+          :output,
           :problem_id,
           :testdatum_id
      ])

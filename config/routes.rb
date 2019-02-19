@@ -7,16 +7,16 @@ Tioj::Application.routes.draw do
   resources :problems do
     resources :testdata
     resources :submissions
-    resources :posts 
+    resources :posts
   end
 
   resources :judge_servers
   resources :submissions
   resources :users
-  resources :posts do 
+  resources :posts do
     resources :comments
   end
-  
+
   resources :contests do
     resources :submissions
     resources :problems
@@ -25,18 +25,18 @@ Tioj::Application.routes.draw do
     end
   end
   resources :contest_problem_joints
-  
+
   resources :articles
-  
+
   get 'problems/tag/:tag' => 'problems#index', as: :problems_tag
   get 'problems/:id/ranklist' => 'problems#ranklist', as: :problem_ranklist
-  
+
   get 'contests/:id/set_contest_task/:alter_to' => 'contests#set_contest_task', as: :set_contest_task
   get 'contests/:id/dashboard' => 'contests#dashboard'
   get 'contests/:id/dashboard_update' => 'contests#dashboard_update'
   get 'submissions/:id/rejudge' => 'submissions#rejudge'
   get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
-  
+
   get 'fetch/sjcode' => 'fetch#sjcode'
   get 'fetch/code' => 'fetch#code'
   get 'fetch/interlib' => 'fetch#interlib'
@@ -47,9 +47,9 @@ Tioj::Application.routes.draw do
   post 'fetch/write_message' => 'fetch#write_message'
   get 'fetch/testdata_limit' => 'fetch#testdata_limit'
   get 'fetch/testdata_meta' => 'fetch#testdata_meta'
-  
+
   mathjax 'mathjax'
-  
+
   get 'edit_announcement' => 'welcome#edit_announcement', as: :edit_announcement
   post 'alter_announcement' => 'welcome#alter_announcement', as: :alter_announcement
   get 'about' => 'about#index', as: :about

@@ -6,7 +6,7 @@ ActiveAdmin.register User do
       scoped_collection.friendly.find(params[:id])
     end
   end
-  
+
   preserve_default_filters!
   remove_filter :submissions
   remove_filter :encrypted_password

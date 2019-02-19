@@ -20,8 +20,8 @@ class JudgeServersController < ApplicationController
       else
         format.html { render action: 'new' }
         format.json { render json: @judge_server.errors, status: :unprocessable_entity }
-      end 
-    end 
+      end
+    end
   end
 
   def show
@@ -47,7 +47,7 @@ class JudgeServersController < ApplicationController
     respond_to do |format|
       format.json { head :no_content }
       format.html {redirect_to judge_servers_url}
-    end 
+    end
 
   end
 
@@ -60,5 +60,5 @@ class JudgeServersController < ApplicationController
   def judge_server_params
     params.require(:judge_server).permit(:id, :name, :key, :ip)
   end
-  
+
 end

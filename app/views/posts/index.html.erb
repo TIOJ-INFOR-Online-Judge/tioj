@@ -1,4 +1,4 @@
-<% if @problem %> 
+<% if @problem %>
   <h4 class="page-header">Discuss <small>Problem #<%= @problem.id %></small></h4>
 <% else %>
   <h4 class="page-header"><%= @title %></h4>
@@ -104,7 +104,7 @@
         <%= render partial: 'comment_form', :locals => {:post => post, :contest => @contest}  %>
       </div> <!-- new_comment_form -->
     </div> <!-- new_comment -->
-  <% end %> 
+  <% end %>
   </div> <!-- post -->
   <br />
 <% end %>

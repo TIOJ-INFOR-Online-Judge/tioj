@@ -61,7 +61,7 @@
         </thead>
         <tbody>
           <% @users.each_with_index do |f, idx| %>
-	      <tr>
+              <tr>
               <td><%= idx + 1 %></td>
               <td><%= link_to image_tag(f.avatar.mini_thumb.to_s, :class => "img-rounded"), {:controller => 'users', :action => :show, :id => f.id} %></td>
               <td><%= link_to f.username, user_path(f) %></td>

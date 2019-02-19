@@ -1,7 +1,7 @@
 ActiveAdmin.register Problem do
-  permit_params :name, :description, :source, :input, :output, :example_input, :example_output, :hint, :visible_state, 
+  permit_params :name, :description, :source, :input, :output, :example_input, :example_output, :hint, :visible_state,
       :problem_type, :sjcode, :interlib
-  
+
   preserve_default_filters!
   remove_filter :contest_problem_joints
   remove_filter :submissions
@@ -14,7 +14,7 @@ ActiveAdmin.register Problem do
   filter :id
   filter :visible_state
   filter :problem_type
-  
+
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
@@ -27,5 +27,5 @@ ActiveAdmin.register Problem do
   #  permitted << :other if resource.something?
   #  permitted
   # end
-  
+
 end

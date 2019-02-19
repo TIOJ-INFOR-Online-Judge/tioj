@@ -1,6 +1,6 @@
 ActiveAdmin.register JudgeServer do
 
-  
+
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
@@ -13,5 +13,5 @@ ActiveAdmin.register JudgeServer do
   #  permitted << :other if resource.something?
   #  permitted
   # end
-  
+
 end

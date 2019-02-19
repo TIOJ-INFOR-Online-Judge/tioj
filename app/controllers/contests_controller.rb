@@ -19,7 +19,7 @@ class ContestsController < ApplicationController
     end
     @tasks.map{|a| a.update(:visible_state => params[:alter_to].to_i)}
   end
-  
+
   def calculate_ranking
     if Time.now < @contest.start_time
       authenticate_admin!
@@ -188,7 +188,7 @@ class ContestsController < ApplicationController
   def set_contest
     @contest = Contest.find(params[:id])
   end
-  
+
   def set_tasks
     @tasks = @contest.contest_problem_joints.order("id ASC").map{|e| e.problem}
   end

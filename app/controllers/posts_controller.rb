@@ -91,7 +91,7 @@ class PostsController < ApplicationController
       end
     end
   end
-  
+
   # Use callbacks to share common setup or constraints between actions.
   def set_posts
     @contest = Contest.find(params[:contest_id]) if params[:contest_id]

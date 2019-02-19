@@ -1,20 +1,20 @@
 
 .page-header small{
-	color: #30617C;
+  color: #30617C;
 }
 body{
-	background-color: #E6EBF0;
+  background-color: #E6EBF0;
 }
 h1 h2 h3 h4 h5 h6{
-	color: #948C75;
+  color: #948C75;
 }
 .btn-primary{
-	background-color: #1abc9c;
-	color: #FFFFFF;
+  background-color: #1abc9c;
+  color: #FFFFFF;
 }
 .btn-primary:hover{
-	background-color: #5ed0b9;
+  background-color: #5ed0b9;
 }
 .a{
-	background-color: #99B2B7;
+  background-color: #99B2B7;
 }

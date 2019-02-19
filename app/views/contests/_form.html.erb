@@ -14,17 +14,17 @@
    <div class="form-group">
        <%= render 'contest_type_chooser', :f => f %>
    </div>
-   
+
    <div class="form-group">
        <%= f.label :title %>
        <%= f.text_field :title, :class => 'form-control flat' %>
    </div>
-   
+
    <div class="form-group">
        <%= f.label :description %>
        <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
    </div>
-   
+
    <div class="alert alert-success alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert">
       <span aria-hidden="true">&times;</span>
@@ -66,7 +66,7 @@
      </button>
      <strong>Oh Geez! </strong> <%= "Make sure tasks are set to `visible during contest`." %>
    </div>
-   
+
    <%= f.fields_for :contest_problem_joints do |t| %>
      <div class="form-group">
        <div class="row">
@@ -79,14 +79,14 @@
          <div class="col-md-3">
           <%= t.link_to_remove "Remove this task", :class => "btn btn-danger" %>
          </div>
-       
+
        </div>
      </div>
    <% end %>
    <%= f.link_to_add "Add a task", :contest_problem_joints, :class => "btn btn-warning" %>
-   
+
    <hr>
-   
+
    <div class="actions">
        <%= f.submit :class => "btn btn-success btn-lg"%>
    </div>

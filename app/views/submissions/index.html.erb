@@ -1,5 +1,5 @@
 <h4 class="page-header">
-  Submissions 
+  Submissions
   <% if @problem %>
     <small>Problem #<%= @problem.id%></small>
   <% end %>
@@ -82,7 +82,7 @@ $("button:not([type='submit'])").attr("type", "button");
     <% @submissions.each do |submission| %>
       <tr>
       <% if censored(submission) %>
-	<td></td>
+        <td></td>
         <td></td>
         <td><code>censored</code></td>
         <td></td>
@@ -125,7 +125,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= submission.score %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
         <% if user_signed_in? && current_user.admin == true %>
-	  <td>
+          <td>
             <%= link_to 'Rejudge', {:controller => :submissions, :action => :rejudge, :id => submission.id} , :class => 'btn btn-xs btn-primary' %>
           </td>
         <% end %>

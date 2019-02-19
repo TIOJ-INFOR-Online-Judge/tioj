@@ -48,7 +48,7 @@
     <br>
     <%= link_to('Edit My Account', edit_registration_path(:user), :class => 'btn btn-info btn-xs') %>
   </div>
-  
+
   <div class="col-md-8">
     <table class="table table-condensed">
       <thead>
@@ -63,7 +63,7 @@
           <% if idx%10 == 0 %>
             <tr>
           <% end %>
-          
+
           <td>
             <% case @tried[prob.id] %>
               <% when 1 %>
@@ -74,7 +74,7 @@
                  <%= link_to prob.id.to_s, problem_submissions_path(prob, :filter_user_id => @user.id), :class => "text-muted" %>
             <% end %>
           </td>
-          
+
           <% if idx%10 == 9 %>
             </tr>
           <% end %>

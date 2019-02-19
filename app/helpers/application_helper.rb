@@ -2,7 +2,7 @@ require 'redcarpet'
 module ApplicationHelper
   def markdown(text)
     if text == nil
-      return 
+      return
     end
     renderer = Redcarpet::Render::HTML.new(hard_wrap: true, escape_html: false)
     options = {
@@ -15,10 +15,10 @@ module ApplicationHelper
     }
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end
-  
+
   def markdown_no_html(text)
     if text == nil
-      return 
+      return
     end
     renderer = Redcarpet::Render::HTML.new(hard_wrap: true, escape_html: true)
     options = {
@@ -31,22 +31,22 @@ module ApplicationHelper
     }
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end
-  
+
   def destroy_glyph
     return raw '<span class="glyphicon glyphicon-trash"></span>'
   end
-  
+
   def edit_glyph
     return raw '<span class="fui-new"></span>'
   end
-  
+
   def pin_glyph
     return raw '<span class="glyphicon glyphicon-pushpin"></span>'
   end
-  
+
   def rejudge_glyph
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
-  
-  
+
+
 end

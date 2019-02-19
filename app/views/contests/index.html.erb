@@ -17,7 +17,7 @@
       <th>End Time</th>
       <th>Contest Type</th>
       <% if user_signed_in? && current_user.admin == true %>
-	<th></th>
+        <th></th>
       <% end %>
     </tr>
   </thead>
@@ -32,25 +32,25 @@
           <td></td>
         <% end %>
         <% if Time.now > contest.end_time %>
-	  <td>Ended</td>
+          <td>Ended</td>
         <% elsif Time.now > contest.start_time %>
-	  <td>Ready</td>
-	<% else %>
-	  <td>Not yet</td>
+          <td>Ready</td>
+        <% else %>
+          <td>Not yet</td>
         <% end %>
         <td><%= contest.start_time.to_s(:clean) %></td>
         <td><%= contest.end_time.to_s(:clean) %></td>
         <% if contest.contest_type == 0 %>
-	  <td>gcj style</td>
-	<% elsif contest.contest_type == 1 %>
-	  <td>ioi style</td>
-	<% elsif contest.contest_type == 2 %>
-	  <td>acm style</td>
-	<% else %>
-	  <td>wtf</td>
-	<% end %>
+          <td>gcj style</td>
+        <% elsif contest.contest_type == 1 %>
+          <td>ioi style</td>
+        <% elsif contest.contest_type == 2 %>
+          <td>acm style</td>
+        <% else %>
+          <td>wtf</td>
+        <% end %>
         <% if user_signed_in? && current_user.admin == true %>
-	  <td>
+          <td>
             <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
             <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-xs' %>
           </td>

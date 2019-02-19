@@ -9,6 +9,6 @@ jQuery ->
         $('#unfold').hide()
         $('#lmenu').show()
     $('#fold').click ->
-        $('#lmenu').hide() 
+        $('#lmenu').hide()
         $('#unfold').show()
 

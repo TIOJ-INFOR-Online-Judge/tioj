@@ -53,7 +53,7 @@ module ProblemsHelper
     all_page = link_to all, problem_submissions_path(problem.id)
     return raw ( ratio + " (" + ac_page + "/" + all_page + ")" )
   end
-  
+
   def user_problem_status(user, problem)
     if user_problem_ac(user, problem)
       raw '<span class="text-success glyphicon glyphicon-ok"></span>'
@@ -73,5 +73,5 @@ module ProblemsHelper
       raw '<span class="text-muted glyphicon glyphicon-minus"></span>'
     end
   end
-  
+
 end
