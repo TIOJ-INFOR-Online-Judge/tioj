@@ -34,7 +34,7 @@ function reset_timing(interval) {
 function update_interval() {
   let t = parseInt(INPUT.value)
   debug(`update_interval with t = ${t}`)
-  if (!(t >= 2)) return
+  if (!(t >= 5)) return
   interval = t
 }
 
