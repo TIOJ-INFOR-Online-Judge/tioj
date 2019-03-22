@@ -66,12 +66,7 @@ private
 
   def get_era
     if params[:era] == nil
-      t = Time.now
-      if t.month < 7
-        return t.year - 1
-      else
-        return t.year
-      end
+      return Time.now.year
     else
       return params[:era].to_i
     end
