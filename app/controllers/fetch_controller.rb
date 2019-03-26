@@ -135,7 +135,7 @@ class FetchController < ApplicationController
       @result += "\n"
       @result += @submission.user_id.to_s
       @result += "\n"
-      @result += @submission.compiler.to_s
+      @result += compiler_name(@submission.compiler).to_s
       @result += "\n"
     else
       @result = "-1\n"

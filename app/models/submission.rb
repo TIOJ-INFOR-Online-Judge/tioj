@@ -4,7 +4,7 @@
 #
 #  id           :integer          not null, primary key
 #  code         :text(16777215)
-#  compiler     :string(255)      default("")
+#  compiler     :integer          default(0)
 #  result       :string(255)      default("queued")
 #  score        :integer          default(0)
 #  created_at   :datetime
@@ -25,8 +25,8 @@ class Submission < ActiveRecord::Base
 
   validates_length_of :code, :in => 0..5000000
   validates_length_of :message, :in => 0..65000, :allow_nil => true
-  validates_inclusion_of :compiler, :in => %w(c++17 c++14 c++11 c++98 c11 c99 c90 haskell python2 python3)
-  validates_inclusion_of :compiler, :in => %w(c++17 c++14 c++11 c++98 c11 c99 c90),
+  validates_inclusion_of :compiler, :in => 0..9
+  validates_inclusion_of :compiler, :in => 0..6,
     :message => "only c/c++ are allowed during contest",
     :if => :contest?
 

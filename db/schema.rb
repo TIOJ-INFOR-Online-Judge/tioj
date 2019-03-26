@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190322063652) do
+ActiveRecord::Schema.define(version: 20190326043022) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -163,7 +163,6 @@ ActiveRecord::Schema.define(version: 20190322063652) do
 
   create_table "submissions", force: :cascade do |t|
     t.text     "code",         limit: 16777215
-    t.string   "compiler",     limit: 255,      default: ""
     t.string   "result",       limit: 255,      default: "queued"
     t.integer  "score",        limit: 4,        default: 0
     t.datetime "created_at"
@@ -175,9 +174,9 @@ ActiveRecord::Schema.define(version: 20190322063652) do
     t.integer  "total_time",   limit: 4
     t.integer  "total_memory", limit: 4
     t.text     "message",      limit: 65535
+    t.integer  "compiler",     limit: 4,                           null: false
   end
 
-  add_index "submissions", ["compiler"], name: "index_submissions_on_compiler", using: :btree
   add_index "submissions", ["contest_id"], name: "index_submissions_on_contest_id", using: :btree
   add_index "submissions", ["problem_id"], name: "index_submissions_on_problem_id", using: :btree
   add_index "submissions", ["result"], name: "index_submissions_on_result", using: :btree

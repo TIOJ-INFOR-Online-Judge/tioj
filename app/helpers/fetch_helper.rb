@@ -1,2 +1,3 @@
+include SubmissionsHelper
 module FetchHelper
 end
