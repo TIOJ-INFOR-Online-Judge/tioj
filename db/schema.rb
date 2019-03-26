@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190326043022) do
+ActiveRecord::Schema.define(version: 20190326132640) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -82,6 +82,14 @@ ActiveRecord::Schema.define(version: 20190326043022) do
 
   add_index "comments", ["post_id"], name: "index_comments_on_post_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "compilers", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.string   "description", limit: 255
+    t.string   "format_type", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
 
   create_table "contest_problem_joints", force: :cascade do |t|
     t.integer  "contest_id", limit: 4
@@ -174,9 +182,10 @@ ActiveRecord::Schema.define(version: 20190326043022) do
     t.integer  "total_time",   limit: 4
     t.integer  "total_memory", limit: 4
     t.text     "message",      limit: 65535
-    t.integer  "compiler",     limit: 4,                           null: false
+    t.integer  "compiler_id",  limit: 4,                           null: false
   end
 
+  add_index "submissions", ["compiler_id"], name: "fk_rails_55e5b9f361", using: :btree
   add_index "submissions", ["contest_id"], name: "index_submissions_on_contest_id", using: :btree
   add_index "submissions", ["problem_id"], name: "index_submissions_on_problem_id", using: :btree
   add_index "submissions", ["result"], name: "index_submissions_on_result", using: :btree
@@ -260,4 +269,5 @@ ActiveRecord::Schema.define(version: 20190326043022) do
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   add_foreign_key "posts", "contests"
+  add_foreign_key "submissions", "compilers"
 end

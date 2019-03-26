@@ -107,7 +107,7 @@ th {
         <td><%= link_to now_user.nickname, user_path(submission.user_id) %></td>
         <td><%= submission.total_time %></td>
         <td><%= submission.total_memory %></td>
-        <td><%= compiler_name(submission.compiler) %></td>
+        <td><%= compiler_id_name(submission.compiler.id) %></td>
         <td><%= number_to_human_size(submission.code.to_s.size) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
       </tr>
