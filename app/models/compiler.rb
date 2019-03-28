@@ -10,4 +10,6 @@
 
 class Compiler < ActiveRecord::Base
   has_many :submissions
+  has_many :ban_compilers, :dependent => :destroy
+  has_many :contests, :through => :ban_compilers
 end

@@ -59,7 +59,7 @@ class FetchController < ApplicationController
     @_message = params[:message]
     @submission = Submission.find(params[:sid])
     @submission.update(:message => @_message)
-    logger.info @_message
+    #logger.info @_message
     render :nothing => true
   end
 

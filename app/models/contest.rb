@@ -20,10 +20,13 @@ class Contest < ActiveRecord::Base
   has_many :problems, :through => :contest_problem_joints
   has_many :submissions
   has_many :posts
+  has_many :ban_compilers, :dependent => :destroy
+  has_many :compilers, :through => :ban_compilers
 
   validates :start_time, :presence => true
   validates :end_time, :presence => true
   validates_numericality_of :freeze_time, :greater_than_or_equal_to => 0
 
   accepts_nested_attributes_for :contest_problem_joints, :reject_if => lambda { |a| a[:problem_id].blank? }, :allow_destroy => true
+  accepts_nested_attributes_for :ban_compilers, :allow_destroy => true
 end

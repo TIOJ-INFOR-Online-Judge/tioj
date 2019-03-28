@@ -152,6 +152,7 @@ class ContestsController < ApplicationController
   end
 
   def create
+    params[:contest][:compiler_ids] ||= []
     @contest = Contest.new(contest_params)
     respond_to do |format|
       if @contest.save
@@ -165,6 +166,7 @@ class ContestsController < ApplicationController
   end
 
   def update
+    params[:contest][:compiler_ids] ||= []
     respond_to do |format|
       if @contest.update(contest_params)
         format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
@@ -205,8 +207,8 @@ class ContestsController < ApplicationController
       :cd_time,
       :disable_discussion,
       :freeze_time,
-      contest_problem_joints_attributes:
-      [
+      compiler_ids: [],
+      contest_problem_joints_attributes: [
         :id,
         :problem_id,
         :_destroy

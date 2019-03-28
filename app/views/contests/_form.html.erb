@@ -59,6 +59,17 @@
      <% end %>
    </div>
 
+  <div class="form-group">
+    <%= f.label :compilers do %>
+      Banned compilers
+      <br>
+      <% Compiler.all.each do |c| %>
+        <%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c) %>
+        <%= c.name %>
+      <% end %>
+    <% end %>
+  </div>
+
    <div class="alert alert-success alert-dismissible" role="alert">
      <button type="button" class="close" data-dismiss="alert">
        <span aria-hidden="true">&times;</span>
