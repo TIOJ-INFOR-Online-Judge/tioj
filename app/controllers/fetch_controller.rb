@@ -36,7 +36,8 @@ class FetchController < ApplicationController
     @result = ""
     @problem.testdata.order(position: :asc).each do |t|
       @result += t.limit.time.to_s + " "
-      @result += t.limit.memory.to_s + "\n"
+      @result += t.limit.memory.to_s + " "
+      @result += t.limit.output.to_s + "\n"
     end
     render text: @result
   end
