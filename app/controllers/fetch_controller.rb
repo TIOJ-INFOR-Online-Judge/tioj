@@ -11,13 +11,13 @@ class FetchController < ApplicationController
 
   def sjcode
     @problem = Problem.find(params[:pid])
-    @sjcode = @problem.sjcode.to_s + "\n"
+    @sjcode = @problem.sjcode.to_s
     render text: @sjcode
   end
 
   def code
     @submission = Submission.find(params[:sid])
-    @code = @submission.code.to_s + "\n"
+    @code = @submission.code.to_s
     render text: @code
   end
 

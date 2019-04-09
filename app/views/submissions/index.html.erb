@@ -113,7 +113,7 @@ $("button:not([type='submit'])").attr("type", "button");
             <td><%= submission.result %></td>
         <% end %>
         <td><%= compiler_id_name(submission.compiler.id) %></td>
-        <td><%= number_to_human_size(submission.code.to_s.size) %></td>
+        <td><%= number_to_human_size(submission.code.bytesize) %></td>
         <td><%= submission.score %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
         <% if user_signed_in? && current_user.admin == true %>

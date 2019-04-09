@@ -100,12 +100,12 @@ class SubmissionsController < ApplicationController
         end
       end
     end
+    params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
 
     #@submission = @submissions.build(submission_params)
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
     @submission.problem_id = params[:problem_id]
-    @submission.code = @submission.code.encode(@submission.code.encoding, universal_newline: true)
     if params[:contest_id]
       if @contest.problem_ids.include?(@submission.problem_id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time
         @submission.contest_id = @contest.id
@@ -128,6 +128,7 @@ class SubmissionsController < ApplicationController
 
   def update
     respond_to do |format|
+      params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
       if @submission.update(submission_params)
         format.html { redirect_to @submission, notice: 'Submission was successfully updated.' }
         format.json { head :no_content }
