@@ -155,7 +155,10 @@ class ContestsController < ApplicationController
     params[:contest][:compiler_ids] ||= []
     @contest = Contest.new(contest_params)
     respond_to do |format|
-      if @contest.save
+      if !check_tasks?
+        format.html { render action: 'new' }
+        format.json { render json: @contest.errors, status: :unprocessable_entity }
+      elsif @contest.save
         format.html { redirect_to @contest, notice: 'Contest was successfully created.' }
         format.json { render action: 'show', status: :created, location: @contest }
       else
@@ -168,7 +171,10 @@ class ContestsController < ApplicationController
   def update
     params[:contest][:compiler_ids] ||= []
     respond_to do |format|
-      if @contest.update(contest_params)
+      if !check_tasks?
+        format.html { render action: 'new' }
+        format.json { render json: @contest.errors, status: :unprocessable_entity }
+      elsif @contest.update(contest_params)
         format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
         format.json { head :no_content }
       else
@@ -193,6 +199,18 @@ class ContestsController < ApplicationController
 
   def set_tasks
     @tasks = @contest.contest_problem_joints.order("id ASC").map{|e| e.problem}
+  end
+
+  def check_tasks?
+    def l_check(val)
+      unless Problem.exists?(val['problem_id'].to_i)
+        @contest.errors.add(:problems, val['problem_id'] + ' does not exist')
+        return true
+      end
+      return false
+    end
+    ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
+    return !ret.any?
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

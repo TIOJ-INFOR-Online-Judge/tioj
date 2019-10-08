@@ -3,7 +3,8 @@ class SubmissionsController < ApplicationController
   before_action :authenticate_admin!, except: [:index, :show, :create, :new]
   before_action :set_submissions
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
-  before_action :set_compiler, only: [:new, :create, :edit]
+  before_action :set_compiler, only: [:new, :create, :edit, :update]
+  before_action :check_compiler, only: [:create, :update]
   before_filter :set_contest, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new]
 
@@ -63,10 +64,6 @@ class SubmissionsController < ApplicationController
   end
 
   def create
-    unless @compiler.exists?(submission_params[:compiler_id].to_i)
-      redirect_to submissions_path, alert: 'Invalid compiler.'
-      return
-    end
     cd_time = @contest ? @contest.cd_time : 15
     if not current_user.admin? and not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
       redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
@@ -194,6 +191,13 @@ class SubmissionsController < ApplicationController
 
   def set_compiler
     @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+  end
+
+  def check_compiler
+    unless @compiler.exists?(submission_params[:compiler_id].to_i)
+      redirect_to submissions_path, alert: 'Invalid compiler.'
+      return
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
