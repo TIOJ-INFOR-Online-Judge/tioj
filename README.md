@@ -4,7 +4,7 @@
 ### Remember to change secret token in production!!!
 
 ## Current Development Environment
-Ruby: 2.4.3
+Ruby: 2.6.5
 Rails: 4.2.11
 
 ## Installation guide
@@ -16,25 +16,26 @@ It is recommended to deploy TIOJ on Ubuntu 16.04 LTS or 18.04 LTS. The following
 You need to follow the instructions on the screen when installing / setting up those packages.
 
 ```
-# add-apt-repository ppa:ubuntu-toolchain-r/test # If Ubuntu 16.04 LTS is used
+# add-apt-repository ppa:ubuntu-toolchain-r/test        # If Ubuntu 16.04 LTS is used
+# add-apt-repository ppa:carsten-uppenbrink-net/openssl # If Ubuntu 16.04 LTS is used
 # apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
 $ wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
 # dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
 # apt update
-# apt install g++-8 python python3 ghc rvm imagemagick \
-  mysql-server libmysqlclient-dev libcurl4-openssl-dev
-# update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 60 \
-  --slave /usr/bin/g++ g++ /usr/bin/g++-8 \
-  --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 \
-  --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 \
-  --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8 # Use GCC 8 as default
+# apt install g++-9 python python3 ghc rvm imagemagick \
+  mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl
+# update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
+  --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
+  --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
+  --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
+  --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 # Use GCC 9 as default
 # mysql_secure_installation # Setup MySQL
 # usermod -a -G rvm $USER
 $ echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
-$ echo 'PATH=$HOME/.rvm/gems/ruby-2.4.3/bin:$PATH' >> ~/.bashrc
+$ echo 'PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH' >> ~/.bashrc
 $ source ~/.bashrc
-$ rvm install 2.4.3
-$ rvm use --default 2.4.3
+$ rvm install 2.6.5
+$ rvm use --default 2.6.5
 $ gem install rails -v 4.2.11
 ```
 
@@ -54,11 +55,9 @@ $ bundle install
 #### 4. Install web server
 
 ```
-$ gem install passenger
 $ rvmsudo passenger-install-nginx-module
 ```
 
-The first command may give some "error loading ..." messages, but they can be ignored if the installation displays "1 gems installed" at the end.
 When prompted for selecting the language, select Ruby. Use all recommended settings.
 
 #### 5. Configure Nginx
@@ -74,8 +73,8 @@ http {
 
   # The Passenger version and the username may be different from this example.
   # You need to use the path given in the previous step.
-  passenger_root /home/tioj/.rvm/gems/ruby-2.4.3/gems/passenger-6.0.0;
-  passenger_ruby /home/tioj/.rvm/gems/ruby-2.4.3/wrappers/ruby;
+  passenger_root /home/tioj/.rvm/gems/ruby-2.6.5/gems/passenger-6.0.4;
+  passenger_ruby /home/tioj/.rvm/gems/ruby-2.6.5/wrappers/ruby;
 
   server {
     # ... some settings ...

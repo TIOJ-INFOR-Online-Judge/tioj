@@ -59,8 +59,8 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (5.0.0)
       activerecord (>= 4.2.8)
-    acts_as_list (0.9.19)
-      activerecord (>= 3.0)
+    acts_as_list (1.0.0)
+      activerecord (>= 4.2)
     annotate (3.0.2)
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 13.0)
@@ -198,6 +198,9 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
     orm_adapter (0.5.0)
+    passenger (6.0.4)
+      rack
+      rake (>= 0.8.1)
     rack (1.6.11)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -316,6 +319,7 @@ DEPENDENCIES
   nokogiri
   omniauth
   omniauth-facebook
+  passenger (>= 5.0.25)
   rails (~> 4.2)
   rdoc (~> 4.0)
   redcarpet
@@ -328,4 +332,4 @@ DEPENDENCIES
   uglifier
 
 BUNDLED WITH
-   1.16.4
+   1.17.3

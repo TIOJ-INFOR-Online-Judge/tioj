@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem "passenger", ">= 5.0.25", require: "phusion_passenger/rack_handler"
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2'
 gem 'rdoc', '~> 4.0'
