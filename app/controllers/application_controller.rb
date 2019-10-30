@@ -95,4 +95,18 @@ protected
     User.select("users.*, count(distinct case when s.result='AC' then s.problem_id end) ac, ifnull(sum(s.result='AC'), 0) acsub,  count(s.id) sub, sum(s.result='AC') / count(s.id) acratio").joins("left join submissions s on s.user_id = users.id and s.contest_id is NULL").group("users.id").order('ac desc, acratio desc, sub desc, users.id').to_a
   end
 
+  def td_list_to_arr(str, sz)
+    str.split(',').map{|x|
+      t = x.split('-')
+      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
+    }.flatten.sort.uniq
+  end
+
+  def reduce_td_list(str, sz)
+    td_list_to_arr(str, sz).chunk_while{|x, y|
+      x + 1 == y
+    }.map{|x|
+      x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
+    }.join(',')
+  end
 end

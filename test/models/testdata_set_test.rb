@@ -6,7 +6,7 @@
 #  problem_id :integer
 #  from       :integer
 #  to         :integer
-#  score      :integer
+#  score      :decimal(18, 6)
 #  created_at :datetime
 #  updated_at :datetime
 #

@@ -130,7 +130,7 @@
       <div class="panel-heading">
         <h1 class="panel-title">Sample Input</h1>
       </div>
-      <div class="panel-body" id="code-input">
+      <div class="panel-body" style="font-size:15px;line-height:18px;" id="code-input">
         <%= raw @problem.example_input.gsub(/\n/, '<br/>') %>
       </div>
     </div>
@@ -140,7 +140,7 @@
       <div class="panel-heading">
         <h1 class="panel-title">Sample Output</h1>
       </div>
-      <div class="panel-body" id="code-input">
+      <div class="panel-body" style="font-size:15px;line-height:18px;" id="code-input">
         <%= raw @problem.example_output.gsub(/\n/, '<br/>') %>
       </div>
     </div>
@@ -174,10 +174,29 @@
   <div class="panel-heading">
     <h1 class="panel-title">Subtasks</h1>
   </div>
-  <div class="panel-body">
-    <% @problem.testdata_sets.each do |s| %>
-      For Testdata: <%= s.from %> ~ <%= s.to %>, Score: <%= sprintf("%g", s.score) %><br>
+  <table class="table table-hover table-striped table-condensed">
+    <thead>
+      <tr>
+        <th width="5%">No.</th>
+        <th width="20%">Testdata Range</th>
+        <th width="60%">Constraints</th>
+        <th width="15%">Score</th>
+      </tr>
+    </thead>
+    <% @problem.testdata_sets.each_with_index do |s, i| %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
+        <td><%= markdown(s.constraints) %></td>
+        <td><%= sprintf("%g", s.score) %></td>
+      </tr>
     <% end %>
+  </table>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title">Testdata and Limits</h1>
   </div>
   <table class="table table-hover table-striped table-condensed">
     <thead>

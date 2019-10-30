@@ -2,6 +2,7 @@ class ProblemsController < ApplicationController
   before_filter :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_filter :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_filter :set_contest, only: [:show]
+  before_filter :reduce_list, only: [:create, :update]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
@@ -100,6 +101,14 @@ class ProblemsController < ApplicationController
     def set_contest
       @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
     end
+
+    def reduce_list
+      problem_params[:testdata_sets_attributes].each do |x, y|
+        params[:problem][:testdata_sets_attributes][x][:td_list] = \
+            reduce_td_list(y[:td_list], @problem.testdata.count)
+      end
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def problem_params
       params.require(:problem).permit(
@@ -123,8 +132,8 @@ class ProblemsController < ApplicationController
         testdata_sets_attributes:
         [
           :id,
-          :from,
-          :to,
+          :td_list,
+          :constraints,
           :score,
           :_destroy
         ]

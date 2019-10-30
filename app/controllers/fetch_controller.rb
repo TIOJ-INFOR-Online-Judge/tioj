@@ -72,8 +72,10 @@ class FetchController < ApplicationController
     }
     SubmissionTask.import(@_result, on_duplicate_key_update: [:result, :time, :memory, :score])
     @problem = @submission.problem
+    num_tasks = @problem.testdata.count
     @score = @problem.testdata_sets.map{|s|
-      @_result[s.from .. s.to].map{|x| x[:score]}.min * s.score
+      lst = td_list_to_arr(s.td_list, num_tasks)
+      lst.size > 0 ? @_result.values_at(*lst).map{|x| x[:score]}.min * s.score : 100 * s.score
     }.sum / 100
     @score = [@score, BigDecimal('1e+12') - 1].min
     @submission.update(:score => @score)

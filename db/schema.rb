@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191030050318) do
+ActiveRecord::Schema.define(version: 20191030140047) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -252,12 +252,12 @@ ActiveRecord::Schema.define(version: 20191030050318) do
   end
 
   create_table "testdata_sets", force: :cascade do |t|
-    t.integer  "problem_id", limit: 4
-    t.integer  "from",       limit: 4
-    t.integer  "to",         limit: 4
-    t.decimal  "score",                precision: 18, scale: 6
+    t.integer  "problem_id",  limit: 4
+    t.decimal  "score",                     precision: 18, scale: 6
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "td_list",     limit: 255,                            null: false
+    t.text     "constraints", limit: 65535
   end
 
   add_index "testdata_sets", ["problem_id"], name: "index_testdata_sets_on_problem_id", using: :btree

@@ -104,21 +104,21 @@
     </div>
   <% end %>
 
-  <%= f.label nil, "Testdata Sets (testdata no. starts from 0)" %><br>
+  <%= f.label nil, raw("Testdata Sets (testdata no. starts from 0, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13</code>)") %><br>
   <%= f.fields_for :testdata_sets do |t| %>
     <div class="form-group">
       <div class="row">
-        <div class="col-md-1">
-          <%= t.label :from, "From:" %>
-          </div>
-        <div class="col-md-1">
-          <%= t.number_field :from, :min => 0, :max => @problem.testdata.size - 1, :class => 'form-control flat', :required => true %>
+        <div class="col-md-2">
+          <%= t.label :td_list, "Testdata list:" %>
+        </div>
+        <div class="col-md-2">
+          <%= t.text_field :td_list, :pattern => '\d+(-\d+)?(,\d+(-\d+)?)*', :class => 'form-control flat', :required => true %>
         </div>
         <div class="col-md-1">
-          <%= t.label :to, "To:" %>
+          <%= t.label :td_list, "Constraints:" %>
         </div>
-        <div class="col-md-1">
-          <%= t.number_field :to, :min => 0, :max => @problem.testdata.size - 1, :class => 'form-control flat', :required => true %>
+        <div class="col-md-3">
+          <%= t.text_field :constraints, :class => 'form-control flat' %>
         </div>
         <div class="col-md-1">
           <%= t.label :score, "Score:" %>
