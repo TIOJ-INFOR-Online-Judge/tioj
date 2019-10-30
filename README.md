@@ -142,9 +142,7 @@ EOF
 #### 8. Create database & assets & announcements
 
 ```
-RAILS_ENV=production rake db:create
-RAILS_ENV=production rake db:migrate
-RAILS_ENV=production rake db:seed
+RAILS_ENV=production rake db:create db:schema:load db:seed
 RAILS_ENV=production rake assets:precompile
 mkdir public/announcement
 echo -n '{"name":"","message":""}' > public/announcement/anno

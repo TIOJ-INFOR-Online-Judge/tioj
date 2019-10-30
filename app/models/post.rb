@@ -9,8 +9,8 @@
 #  problem_id     :integer
 #  created_at     :datetime
 #  updated_at     :datetime
-#  contest_id     :integer          limit: 4
-#  global_visible :boolean          default: true, null: false
+#  contest_id     :integer
+#  global_visible :boolean          default(TRUE), not null
 #
 
 class Post < ActiveRecord::Base

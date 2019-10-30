@@ -22,8 +22,11 @@ module CompilerHelper
         Compiler.update(i + 1, {:name => x[2], :description => x[1], :format_type => x[0]})
       end
     else
-      COMPILER_LIST[0..orig_count-1].each_with_index do |x, i|
-        Compiler.update(i + 1, {:name => x[2], :description => x[1], :format_type => x[0]})
+      # 0..-1 results in the full array...
+      unless orig_count == 0
+        COMPILER_LIST[0..orig_count-1].each_with_index do |x, i|
+          Compiler.update(i + 1, {:name => x[2], :description => x[1], :format_type => x[0]})
+        end
       end
       ActiveRecord::Base.connection.execute('ALTER TABLE compilers AUTO_INCREMENT=0;')
       COMPILER_LIST[orig_count..COMPILER_LIST.size-1].each_with_index do |x, i|

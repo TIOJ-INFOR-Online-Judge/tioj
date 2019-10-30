@@ -11,6 +11,7 @@
 #  era        :integer
 #  pinned     :boolean
 #  category   :integer
+#  public     :boolean
 #
 
 require 'test_helper'

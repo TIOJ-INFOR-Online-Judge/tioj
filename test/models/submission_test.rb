@@ -4,7 +4,6 @@
 #
 #  id           :integer          not null, primary key
 #  code         :text(16777215)
-#  compiler     :string(255)      default("")
 #  result       :string(255)      default("queued")
 #  score        :integer          default(0)
 #  created_at   :datetime
@@ -16,6 +15,7 @@
 #  total_time   :integer
 #  total_memory :integer
 #  message      :text(65535)
+#  compiler_id  :integer          not null
 #
 
 require 'test_helper'

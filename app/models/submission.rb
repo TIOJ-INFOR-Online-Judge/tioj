@@ -15,7 +15,7 @@
 #  total_time   :integer
 #  total_memory :integer
 #  message      :text(65535)
-#  compiler_id  :integer          default(0)
+#  compiler_id  :integer          not null
 #
 
 class Submission < ActiveRecord::Base
