@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190329141302) do
+ActiveRecord::Schema.define(version: 20191030050318) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -179,20 +179,33 @@ ActiveRecord::Schema.define(version: 20190329141302) do
 
   add_index "problems", ["name"], name: "index_problems_on_name", using: :btree
 
+  create_table "submission_tasks", force: :cascade do |t|
+    t.integer  "submission_id", limit: 4
+    t.integer  "position",      limit: 4
+    t.string   "result",        limit: 255
+    t.integer  "time",          limit: 4
+    t.integer  "memory",        limit: 4
+    t.decimal  "score",                     precision: 18, scale: 6
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+  end
+
+  add_index "submission_tasks", ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true, using: :btree
+  add_index "submission_tasks", ["submission_id"], name: "index_submission_tasks_on_submission_id", using: :btree
+
   create_table "submissions", force: :cascade do |t|
     t.text     "code",         limit: 16777215
-    t.string   "result",       limit: 255,      default: "queued"
-    t.integer  "score",        limit: 4,        default: 0
+    t.string   "result",       limit: 255,                               default: "queued"
+    t.decimal  "score",                         precision: 18, scale: 6, default: 0.0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "problem_id",   limit: 4,        default: 0
-    t.integer  "user_id",      limit: 4,        default: 0
+    t.integer  "problem_id",   limit: 4,                                 default: 0
+    t.integer  "user_id",      limit: 4,                                 default: 0
     t.integer  "contest_id",   limit: 4
-    t.text     "_result",      limit: 65535
     t.integer  "total_time",   limit: 4
     t.integer  "total_memory", limit: 4
     t.text     "message",      limit: 65535
-    t.integer  "compiler_id",  limit: 4,                           null: false
+    t.integer  "compiler_id",  limit: 4,                                                    null: false
   end
 
   add_index "submissions", ["compiler_id"], name: "fk_rails_55e5b9f361", using: :btree
@@ -242,7 +255,7 @@ ActiveRecord::Schema.define(version: 20190329141302) do
     t.integer  "problem_id", limit: 4
     t.integer  "from",       limit: 4
     t.integer  "to",         limit: 4
-    t.integer  "score",      limit: 4
+    t.decimal  "score",                precision: 18, scale: 6
     t.datetime "created_at"
     t.datetime "updated_at"
   end

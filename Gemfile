@@ -93,5 +93,8 @@ gem 'acts_as_list'
 # Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
 gem 'jquery-tablesorter'
 
+# Activerecord-import for bulk insert
+gem 'activerecord-import'
+
 # Bullet for debugging
 gem 'bullet', group: 'development'

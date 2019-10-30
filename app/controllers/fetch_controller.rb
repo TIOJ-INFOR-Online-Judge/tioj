@@ -45,7 +45,6 @@ class FetchController < ApplicationController
   def write_result
     @_result = params[:result]
     @submission = Submission.find(params[:sid])
-    @submission.update(:_result => @_result)
     if @_result == "CE"
       @submission.update(:result => "CE", :score => 0)
     elsif @_result == "ER"
@@ -66,40 +65,26 @@ class FetchController < ApplicationController
 
   def update_verdict
     #score
-    @_result = @_result.split("/")
-    @score = 0
+    @_result = @_result.split("/").each_slice(3).map.with_index { |res, id|
+      {:submission_id => @submission.id, :position => id, :result => res[0],
+       :time => res[1].to_i, :memory => res[2].to_i,
+       :score => res[0] == 'AC' ? 100 : 0}
+    }
+    SubmissionTask.import(@_result, on_duplicate_key_update: [:result, :time, :memory, :score])
     @problem = @submission.problem
-    @problem.testdata_sets.each do |s|
-      @correct = true
-      Range.new(s.from, s.to).each do |i|
-        if @_result[i*3] != "AC"
-          @correct = false
-        end
-      end
-      if @correct == true
-        @score += s.score
-      end
-    end
+    @score = @problem.testdata_sets.map{|s|
+      @_result[s.from .. s.to].map{|x| x[:score]}.min * s.score
+    }.sum / 100
+    logger.fatal @score.class
     @submission.update(:score => @score)
 
     #verdict
     if params[:status] == "OK"
-      @tdcount = @problem.testdata.count
-      @result = 0
-      ttime = 0
-      tmem = 0
-      (0..(@tdcount-1)).each do |i|
-        if @v2i[@_result[i*3]]
-          @result = @result > @v2i[@_result[i*3]] ? @result : @v2i[@_result[i*3]]
-        else
-          @result = 9
-        end
-        ttime += @_result[i*3+1].to_i
-        tmem = @_result[i*3+2].to_i > tmem ? @_result[i*3+2].to_i : tmem
-      end
+      ttime = @_result.map{|i| i[:time]}.sum
+      tmem = @_result.map{|i| i[:memory]}.max
+      @result = @_result.map{|i| @v2i[i[:result]] ? @v2i[i[:result]] : 9}.max
       @submission.update(:result => @i2v[@result], :total_time => ttime, :total_memory => tmem)
     end
-
   end
 
   def testdata

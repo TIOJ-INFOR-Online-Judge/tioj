@@ -9,12 +9,15 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new]
 
   def rejudge_problem
-    Submission.where("problem_id = ?", params[:problem_id]).update_all(:result => "queued", :score => 0, :_result => "", :total_time => nil, :total_memory => nil)
+    subs = Submission.where(problem_id: params[:problem_id])
+    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil)
+    SubmissionTask.where(submission_id: subs.map{|x| x.id}).delete_all
     redirect_to :back
   end
 
   def rejudge
-    @submission.update(:result => "queued", :score => 0, :_result => "", :total_time => nil, :total_memory => nil)
+    @submission.submission_tasks.destroy_all
+    @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil)
     redirect_to :back
   end
 
@@ -33,7 +36,9 @@ class SubmissionsController < ApplicationController
         return
       end
     end
-    @_result = @submission._result.to_s.split("/")
+    @_result = @submission.submission_tasks.to_a.map { |task|
+      [task.position, [task.result, task.time, task.memory, task.score]]
+    }.to_h
     set_page_title "Submission - " + @submission.id.to_s
   end
 

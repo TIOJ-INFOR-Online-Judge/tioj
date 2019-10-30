@@ -73,31 +73,40 @@
       <%= @verdict[@submission.result] %>
     </div>
     <div class="col-md-2">
-      <%= @submission.score %>
+      <%= sprintf("%g", @submission.score) %>
     </div>
   </div>
   </div>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Testdata no.</th>
-        <th>Time (ms)</th>
-        <th>Memory (KiB)</th>
-        <th>Verdict</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
+  <% unless @submission.result == 'CE' or @submission.result == 'ER' %>
+    <table class="table">
+      <thead>
         <tr>
-          <td><%= i %></td>
-          <td><%= @_result[i*3+1].to_i %></td>
-          <td><%= @_result[i*3+2].to_i %></td>
-          <td><%= @verdict[@_result[i*3]] %></td>
+          <th>Testdata no.</th>
+          <th>Time (ms)</th>
+          <th>Memory (KiB)</th>
+          <th>Verdict</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
+          <% task = @_result[i] %>
+          <% if task then %>
+            <tr>
+              <td><%= i %></td>
+              <td><%= task[1] %></td>
+              <td><%= task[2] %></td>
+              <td><%= @verdict[task[0]] %></td>
+            </tr>
+          <% else %>
+            <tr>
+              <td><%= i %></td>
+              <td></td> <td></td> <td></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
 </div>
 
 <div class="well well-sm">

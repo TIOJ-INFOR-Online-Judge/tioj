@@ -1,0 +1,32 @@
+# == Schema Information
+#
+# Table name: submission_tasks
+#
+#  id            :integer          not null, primary key
+#  submission_id :integer
+#  position      :integer
+#  result        :string(255)
+#  time          :integer
+#  memory        :integer
+#  score         :decimal(18, 6)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  submission_id: 1
+  position: 1
+  result: MyString
+  time: 1
+  memory: 1
+  score: 9.99
+
+two:
+  submission_id: 1
+  position: 1
+  result: MyString
+  time: 1
+  memory: 1
+  score: 9.99

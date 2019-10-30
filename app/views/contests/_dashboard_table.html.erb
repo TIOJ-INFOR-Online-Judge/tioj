@@ -39,9 +39,9 @@
       <td><%= s[4] %></td>
     <% else %>
       <% s[1].each do |t|%>
-        <td><%= t %></td>
+        <td><%= sprintf("%g", t) %></td>
       <% end %>
-      <td><%= s[2] %></td>
+      <td><%= sprintf("%g", s[2]) %></td>
     <% end %>
   </tr>
 <% end %>
