@@ -75,7 +75,7 @@ class FetchController < ApplicationController
     @score = @problem.testdata_sets.map{|s|
       @_result[s.from .. s.to].map{|x| x[:score]}.min * s.score
     }.sum / 100
-    logger.fatal @score.class
+    @score = [@score, BigDecimal('1e+12') - 1].min
     @submission.update(:score => @score)
 
     #verdict

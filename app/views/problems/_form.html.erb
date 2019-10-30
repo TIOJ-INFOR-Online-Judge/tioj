@@ -124,7 +124,7 @@
           <%= t.label :score, "Score:" %>
         </div>
         <div class="col-md-1">
-          <%= t.number_field :score, :in => 0..100, :class => 'form-control flat', :required => true %>
+          <%= t.number_field :score, :in => 0..100000, :step => :any, :class => 'form-control flat', :required => true %>
         </div>
         <div class="col-md-1">
           <%= t.link_to_remove "Remove this range", :class => 'btn btn-danger' %>

@@ -176,7 +176,7 @@
   </div>
   <div class="panel-body">
     <% @problem.testdata_sets.each do |s| %>
-      For Testdata: <%= s.from %> ~ <%= s.to %>, Score: <%= s.score %><br>
+      For Testdata: <%= s.from %> ~ <%= s.to %>, Score: <%= sprintf("%g", s.score) %><br>
     <% end %>
   </div>
   <table class="table table-hover table-striped table-condensed">
