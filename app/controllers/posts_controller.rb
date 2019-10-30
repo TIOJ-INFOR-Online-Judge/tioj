@@ -7,7 +7,7 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = @posts.order("updated_at DESC").page(params[:page])
+    @posts = @posts.order("updated_at DESC").page(params[:page]).includes(:comments)
     if @contest
         @title = "Q & A"
         set_page_title "Q & A"

@@ -4,7 +4,7 @@ class TestdataController < ApplicationController
   before_action :set_testdatum, only: [:edit, :update, :destroy]
 
   def index
-    @testdata = @problem.testdata.order(position: :asc)
+    @testdata = @problem.testdata.order(position: :asc).includes(:limit)
   end
 
   def new

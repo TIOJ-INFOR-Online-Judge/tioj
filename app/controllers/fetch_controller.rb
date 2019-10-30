@@ -34,7 +34,7 @@ class FetchController < ApplicationController
   def testdata_limit
     @problem = Problem.find(params[:pid])
     @result = ""
-    @problem.testdata.order(position: :asc).each do |t|
+    @problem.testdata.order(position: :asc).includes(:limit).each do |t|
       @result += t.limit.time.to_s + " "
       @result += t.limit.memory.to_s + " "
       @result += t.limit.output.to_s + "\n"

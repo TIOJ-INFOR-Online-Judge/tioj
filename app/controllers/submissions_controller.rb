@@ -22,7 +22,7 @@ class SubmissionsController < ApplicationController
   end
 
   def index
-    @submissions = @submissions.order("id DESC").page(params[:page])
+    @submissions = @submissions.order("id DESC").page(params[:page]).includes(:problem, :user, :compiler)
     set_page_title "Submissions"
   end
 
