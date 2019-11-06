@@ -7,10 +7,11 @@ class SubmissionsController < ApplicationController
   before_action :check_compiler, only: [:create, :update]
   before_filter :set_contest, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new]
+  helper_method :td_list_to_arr
 
   def rejudge_problem
     subs = Submission.where(problem_id: params[:problem_id])
-    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil)
+    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     SubmissionTask.where(submission_id: subs.map{|x| x.id}).delete_all
     redirect_to :back
   end
@@ -39,6 +40,8 @@ class SubmissionsController < ApplicationController
     @_result = @submission.submission_tasks.to_a.map { |task|
       [task.position, [task.result, task.time, task.memory, task.score]]
     }.to_h
+    @tdlist = @submission.problem.testdata_sets
+    @invtdlist = inverse_td_list(@submission.problem)
     set_page_title "Submission - " + @submission.id.to_s
   end
 

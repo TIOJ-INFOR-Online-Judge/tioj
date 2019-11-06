@@ -77,37 +77,111 @@
     </div>
   </div>
   </div>
-  <% unless @submission.result == 'CE' or @submission.result == 'ER' %>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Testdata no.</th>
-          <th>Time (ms)</th>
-          <th>Memory (KiB)</th>
-          <th>Verdict</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
-          <% task = @_result[i] %>
-          <% if task then %>
+</div>
+
+<% unless @submission.result == 'CE' or @submission.result == 'ER' %>
+  <div class="panel panel-default">
+    <div class="panel-heading" data-toggle="collapse" href="#collapseSubtask">
+      <h1 class="panel-title">
+        Subtask Results
+        <span class="indicator glyphicon glyphicon-chevron-down pull-right"></i>
+      </h1>
+    </div>
+    <div class="collapse in" id="collapseSubtask">
+      <table class="table table-condensed table-align-middle">
+        <% problem = @submission.problem %>
+        <% num_tasks = problem.testdata.count %>
+        <% testsets = problem.testdata_sets.order(id: :asc) %>
+        <% show_cons = testsets.map{|s| s.constraints}.all?{|x| x && x.size > 0} %>
+        <% result = @submission.submission_tasks.order(position: :asc).pluck(:score) %>
+        <thead>
+          <tr>
+            <th width="20%">Subtask no.</th>
+            <% if show_cons %>
+              <th width="20%">Testdata Range</th>
+              <th width="60%">Constraints</th>
+            <% else %>
+              <th width="80%">Testdata Range</th>
+            <% end %>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% testsets.order(id: :asc).each_with_index do |s, i| %>
             <tr>
-              <td><%= i %></td>
-              <td><%= task[1] %></td>
-              <td><%= task[2] %></td>
-              <td><%= @verdict[task[0]] %></td>
-            </tr>
-          <% else %>
-            <tr>
-              <td><%= i %></td>
-              <td></td> <td></td> <td></td>
+              <td><%= i + 1 %></td>
+              <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
+              <% if show_cons %>
+                <td><%= markdown_no_p(s.constraints) %></td>
+              <% end %>
+              <% lst = td_list_to_arr(s.td_list, num_tasks) %>
+              <% score = lst.size > 0 ? result.values_at(*lst).min * s.score / 100 : s.score %>
+              <td style="padding-top:2px;padding-bottom:2px">
+                <span class="subtask-display" style="background-color:<%= color_map(score / s.score) %>;">
+                  <%= '%g / %g' % [score, s.score] %>
+                </span>
+              </td>
             </tr>
           <% end %>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
-</div>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
+      <h1 class="panel-title">
+        Testdata Results
+        <span class="indicator glyphicon glyphicon-chevron-down pull-right"></i>
+      </h1>
+    </div>
+    <div class="collapse in" id="collapseTestdata">
+      <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th>Testdata no.</th>
+            <th>Subtasks</th>
+            <th>Time (ms)</th>
+            <th>Memory (KiB)</th>
+            <th>Verdict</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
+            <% task = @_result[i] %>
+            <% if task then %>
+              <% if styleclass_map[task[0]] %>
+                <tr class="<%= styleclass_map[task[0]] %>">
+              <% else %>
+                <tr>
+                <% end %>
+                <td><%= i %></td>
+                <td>
+                  <% if @invtdlist[i] %>
+                    <% @invtdlist[i].each do |x| %>
+                      <span class="subtask-icon"><%= x %></span>
+                    <% end %>
+                  <% end %>
+                </td>
+                <td><%= task[1] %></td>
+                <td><%= task[2] %></td>
+                <td><%= @verdict[task[0]] %></td>
+                <td><%= sprintf("%g", task[3]) %></td>
+              </tr>
+            <% else %>
+              <tr>
+                <td><%= i %></td>
+                <td></td> <td></td> <td></td> <td></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
 
 <div class="well well-sm">
   <div class="row">
@@ -133,7 +207,7 @@
 </div>
 
 <% if user_signed_in? and ( current_user.admin? or current_user.id == @submission.user_id ) %>
-  <% if @submission.result == "CE" %>
+  <% if @submission.result == "CE" or @submission.message.present? %>
     <div class="panel panel-default">
       <div class="panel-heading">
          <h1 class="panel-title">Compilation Error Message</h1>

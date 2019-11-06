@@ -16,6 +16,11 @@ module ApplicationHelper
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end
 
+  def markdown_no_p(text)
+    ret = markdown(text)
+    ActiveSupport::SafeBuffer.new(Regexp.new('^<p>(.*)<\/p>$').match(ret)[1]) rescue ret
+  end
+
   def markdown_no_html(text)
     if text == nil
       return
@@ -47,6 +52,4 @@ module ApplicationHelper
   def rejudge_glyph
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
-
-
 end

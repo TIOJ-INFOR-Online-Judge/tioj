@@ -1,3 +1,33 @@
 // Place all the styles related to the problems controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.subtask-icon {
+  background-color: #808080;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 13px;
+  height: 18px;
+  min-width: 18px;
+  display: inline-block;
+  text-align: center;
+  bottom: 2px;
+  position: relative;
+}
+.subtask-display {
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 18px;
+  height: 30px;
+  line-height: 30px;
+  min-width: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;
+  text-align: center;
+}
+.collapse > table, .collapsing > table {
+  margin-bottom: 0px;
+}
+.table-align-middle > tbody > tr > td {
+  vertical-align: middle;
+}

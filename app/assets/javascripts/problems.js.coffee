@@ -3,6 +3,12 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 # Bottom menu in Problems#Show
+toggleChevron = (e) ->
+    $(e.target)
+        .prev('.panel-heading')
+        .find("i.indicator")
+        .toggleClass('glyphicon-chevron-down glyphicon-chevron-up')
+
 jQuery ->
     $('#lmenu').hide()
     $('#unfold').click ->
@@ -11,4 +17,5 @@ jQuery ->
     $('#fold').click ->
         $('#lmenu').hide()
         $('#unfold').show()
-
+    $('#collapseLimit').on('hidden.bs.collapse', toggleChevron)
+    $('#collapseLimit').on('shown.bs.collapse', toggleChevron)

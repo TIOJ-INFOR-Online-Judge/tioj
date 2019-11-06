@@ -109,4 +109,10 @@ protected
       x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
     }.join(',')
   end
+
+  def inverse_td_list(prob)
+    sz = prob.testdata.count
+    prob.testdata_sets.map.with_index{|x, i| td_list_to_arr(x.td_list, sz).map{|y| [y, i]}}
+        .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
+  end
 end

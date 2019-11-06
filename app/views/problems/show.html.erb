@@ -175,19 +175,24 @@
     <h1 class="panel-title">Subtasks</h1>
   </div>
   <table class="table table-hover table-striped table-condensed">
+    <% show_cons = @problem.testdata_sets.map{|s| s.constraints}.all?{|x| x && x.size > 0} %>
     <thead>
       <tr>
         <th width="5%">No.</th>
         <th width="20%">Testdata Range</th>
-        <th width="60%">Constraints</th>
+        <% if show_cons %>
+          <th width="60%">Constraints</th>
+        <% end %>
         <th width="15%">Score</th>
       </tr>
     </thead>
-    <% @problem.testdata_sets.each_with_index do |s, i| %>
+    <% @problem.testdata_sets.order(id: :asc).each_with_index do |s, i| %>
       <tr>
         <td><%= i + 1 %></td>
         <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
-        <td><%= markdown(s.constraints) %></td>
+        <% if show_cons %>
+          <td><%= markdown_no_p(s.constraints) %></td>
+        <% end %>
         <td><%= sprintf("%g", s.score) %></td>
       </tr>
     <% end %>
@@ -195,9 +200,13 @@
 </div>
 
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Testdata and Limits</h1>
+  <div class="panel-heading" data-toggle="collapse" href="#collapseLimit">
+    <h1 class="panel-title">
+      Testdata and Limits
+      <span class="indicator glyphicon glyphicon-chevron-down pull-right"></i>
+    </h1>
   </div>
+  <div class="collapse in" id="collapseLimit">
   <table class="table table-hover table-striped table-condensed">
     <thead>
       <tr>
@@ -205,6 +214,7 @@
         <th>Time Limit (ms)</th>
         <th>Memory Limit (KiB)</th>
         <th>Output Limit (KiB)</th>
+        <th>Subtasks</th>
       </tr>
     </thead>
     <tbody>
@@ -214,10 +224,18 @@
           <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
           <td><%= testdatum.limit.memory.blank? ? "Nil" : testdatum.limit.memory %></td>
           <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
+          <td>
+            <% if @tdlist[index] %>
+              <% @tdlist[index].each do |x| %>
+                <span class="subtask-icon"><%= x %></span>
+              <% end %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
   </table>
+  </div>
 </div>
 
 <div class="row">

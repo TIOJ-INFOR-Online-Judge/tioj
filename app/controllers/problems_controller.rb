@@ -43,6 +43,7 @@ class ProblemsController < ApplicationController
         return
       end
     end
+    @tdlist = inverse_td_list(@problem)
     #@contest_id = params[:contest_id]
     set_page_title @problem.id.to_s + " - " + @problem.name
   end
