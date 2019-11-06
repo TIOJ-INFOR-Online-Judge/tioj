@@ -33,7 +33,7 @@
 <%= paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
-    <% poster = (User.exists?(:id => post.user_id) ? User.find(post.user_id) : nil) %>
+    <% poster = post.user %>
     <div class="post well">
     <div class="post_title">
       <h3 class="post_title"><%= post.title %></h3>
@@ -68,7 +68,7 @@
       <% count = 0;%>
       <% comments.each do |comment| %>
         <% count += 1 %>
-      <% commenter = (User.exists?(:id => comment.user_id) ? User.find(comment.user_id) : nil) %>
+      <% commenter = comment.user %>
       <div class="comment well well-lg">
         <h4 class="comment_title">
           #<%=count %> <%= comment.title %>

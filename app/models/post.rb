@@ -14,6 +14,7 @@
 #
 
 class Post < ActiveRecord::Base
+  belongs_to :user
   belongs_to :problem
   belongs_to :contest
   has_many :comments, dependent: :destroy

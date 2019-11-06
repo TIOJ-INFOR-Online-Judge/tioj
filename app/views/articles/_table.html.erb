@@ -14,7 +14,7 @@
           <%= pin_glyph if a.pinned? %> <%= link_to a.title, article_path(a) %>
         </td>
         <td><%= a.created_at.to_s(:clean) %></td>
-        <td><%= link_to User.find(a.author_id).nickname, user_path(a.author_id) %></td>
+        <td><%= link_to a.user.nickname, user_path(a.user_id) %></td>
         <% if user_signed_in? && current_user.admin == true %>
           <td>
             <%= link_to edit_glyph, edit_article_path(a) %>

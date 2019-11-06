@@ -29,6 +29,9 @@
 require 'file_size_validator'
 class User < ActiveRecord::Base
   has_many :submissions, :dependent => :destroy
+  has_many :posts, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
+  has_many :articles, :dependent => :destroy
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,

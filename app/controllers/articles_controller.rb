@@ -3,18 +3,14 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
 
   def index
-    if user_signed_in?
-      @articles = Article.where("category = 0 AND pinned = true AND era = ?", get_era).order("id DESC")
-      @articles += Article.where("category = 0 AND pinned != true AND era = ?", get_era).order("id DESC")
-      @courses = Article.where("category = 1 AND pinned = true AND era = ?", get_era).order("id DESC")
-      @courses += Article.where("category = 1 AND pinned != true AND era = ?", get_era).order("id DESC")
-    else
-      @articles = Article.where("category = 0 AND pinned = true AND era = ? AND public = true", get_era).order("id DESC")
-      @articles += Article.where("category = 0 AND pinned != true AND era = ? AND public = true", get_era).order("id DESC")
-      @courses = Article.where("category = 1 AND pinned = true AND era = ? AND public = true", get_era).order("id DESC")
-      @courses += Article.where("category = 1 AND pinned != true AND era = ? AND public = true", get_era).order("id DESC")
+    @articles = Article.where(era: get_era, category: 0).order(pinned: :desc, id: :desc)
+    @courses = Article.where(era: get_era, category: 1).order(pinned: :desc, id: :desc)
+    unless user_signed_in?
+      @articles = @articles.where(public: true)
+      @courses = @courses.where(public: true)
     end
-
+    @articles = @articles.includes(:user)
+    @courses = @courses.includes(:user)
     @era = get_era.to_s
     set_page_title "Bulletin - " + @era
   end
@@ -25,7 +21,7 @@ class ArticlesController < ApplicationController
 
   def create
     @article = Article.new(article_params)
-    @article.author_id = current_user.id
+    @article.user_id = current_user.id
     @article.era = get_era
 
     respond_to do |format|
@@ -47,7 +43,7 @@ class ArticlesController < ApplicationController
   end
 
   def update
-    @article.author_id = current_user.id
+    @article.user_id= current_user.id
     respond_to do |format|
       if @article.update(article_params)
         format.html { redirect_to @article, notice: 'Article was successfully updated.' }
