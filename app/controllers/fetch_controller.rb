@@ -69,7 +69,7 @@ class FetchController < ApplicationController
       {:submission_id => @submission.id, :position => id, :result => res[0],
        :time => res[1].to_i, :memory => res[2].to_i,
        :score => res[0] == 'AC' ? 100 : 0}
-    }
+    }.select{|x| x[:result] != ''}
     SubmissionTask.import(@_result, on_duplicate_key_update: [:result, :time, :memory, :score])
     @problem = @submission.problem
     num_tasks = @problem.testdata.count

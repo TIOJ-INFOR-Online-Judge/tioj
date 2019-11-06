@@ -103,7 +103,7 @@
             <% else %>
               <th width="80%">Testdata Range</th>
             <% end %>
-            <th>Score</th>
+            <th style="min-width:110px;">Score</th>
           </tr>
         </thead>
         <tbody>
@@ -115,12 +115,17 @@
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% score = lst.size > 0 ? result.values_at(*lst).min * s.score / 100 : s.score %>
-              <td style="padding-top:2px;padding-bottom:2px">
-                <span class="subtask-display" style="background-color:<%= color_map(score / s.score) %>;">
-                  <%= '%g / %g' % [score, s.score] %>
-                </span>
-              </td>
+              <% lst = result.values_at(*lst) %>
+              <% if lst.nil? or lst.any?{|x| x.nil?} %>
+                <td></td>
+              <% else %>
+                <% score = lst.size > 0 ? lst.min * s.score / 100 : s.score %>
+                <td style="padding-top:2px;padding-bottom:2px">
+                  <span class="subtask-display" style="background-color:<%= color_map(score / s.score) %>;">
+                    <%= '%g / %g' % [score, s.score] %>
+                  </span>
+                </td>
+              <% end %>
             </tr>
           <% end %>
         </tbody>
@@ -156,7 +161,7 @@
                 <tr class="<%= styleclass_map[task[0]] %>">
               <% else %>
                 <tr>
-                <% end %>
+              <% end %>
                 <td><%= i %></td>
                 <td>
                   <% if @invtdlist[i] %>
@@ -173,7 +178,7 @@
             <% else %>
               <tr>
                 <td><%= i %></td>
-                <td></td> <td></td> <td></td> <td></td>
+                <td></td> <td></td> <td></td> <td></td> <td></td>
               </tr>
             <% end %>
           <% end %>
