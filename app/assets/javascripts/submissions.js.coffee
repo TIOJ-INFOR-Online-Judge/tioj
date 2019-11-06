@@ -5,7 +5,7 @@
 toggleChevron = (e) ->
     $(e.target)
         .prev('.panel-heading')
-        .find("i.indicator")
+        .find('i.indicator')
         .toggleClass('glyphicon-chevron-down glyphicon-chevron-up')
 
 jQuery ->
