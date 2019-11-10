@@ -77,7 +77,7 @@ class FetchController < ApplicationController
       lst = td_list_to_arr(s.td_list, num_tasks)
       lst.size > 0 ? @_result.values_at(*lst).map{|x| x[:score]}.min * s.score : 100 * s.score
     }.sum / 100
-    @score = [@score, BigDecimal('1e+12') - 1].min
+    @score = [@score, BigDecimal('1e+12') - 1].min.round(6)
     @submission.update(:score => @score)
 
     #verdict

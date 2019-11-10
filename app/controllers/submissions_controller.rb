@@ -18,7 +18,7 @@ class SubmissionsController < ApplicationController
 
   def rejudge
     @submission.submission_tasks.destroy_all
-    @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil)
+    @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     redirect_to :back
   end
 

@@ -92,14 +92,14 @@
         <% problem = @submission.problem %>
         <% num_tasks = problem.testdata.count %>
         <% testsets = problem.testdata_sets.order(id: :asc) %>
-        <% show_cons = testsets.map{|s| s.constraints}.all?{|x| x && x.size > 0} %>
+        <% show_cons = testsets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
         <% result = @submission.submission_tasks.order(position: :asc).pluck(:score) %>
         <thead>
           <tr>
-            <th width="20%">Subtask no.</th>
+            <th width="15%">Subtask no.</th>
             <% if show_cons %>
-              <th width="20%">Testdata Range</th>
-              <th width="60%">Constraints</th>
+              <th width="15%">Testdata Range</th>
+              <th width="65%">Constraints</th>
             <% else %>
               <th width="80%">Testdata Range</th>
             <% end %>
@@ -116,14 +116,21 @@
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
               <% lst = result.values_at(*lst) %>
-              <% if lst.nil? or lst.any?{|x| x.nil?} %>
+              <% if lst.nil? or lst.all?{|x| x.nil?} %>
                 <td></td>
               <% else %>
-                <% score = lst.size > 0 ? lst.min * s.score / 100 : s.score %>
                 <td style="padding-top:2px;padding-bottom:2px">
-                  <span class="subtask-display" style="background-color:<%= color_map(score / s.score) %>;">
-                    <%= '%g / %g' % [score, s.score] %>
-                  </span>
+                  <% if lst.any?{|x| x.nil?} %>
+                    <span class="subtask-display" style="background-color:#808080;">
+                      <%= '? / %g' % s.score %>
+                    </span>
+                  <% else %>
+                    <% p = lst.size > 0 ? lst.min / 100 : 1 %>
+                    <% score = (p * s.score).round(6) %>
+                    <span class="subtask-display" style="background-color:<%= color_map(p) %>;">
+                      <%= '%g / %g' % [score, s.score] %>
+                    </span>
+                  <% end %>
                 </td>
               <% end %>
             </tr>
@@ -166,7 +173,7 @@
                 <td>
                   <% if @invtdlist[i] %>
                     <% @invtdlist[i].each do |x| %>
-                      <span class="subtask-icon"><%= x %></span>
+                      <span class="subtask-icon"><%= x + 1 %></span>
                     <% end %>
                   <% end %>
                 </td>

@@ -175,7 +175,7 @@
     <h1 class="panel-title">Subtasks</h1>
   </div>
   <table class="table table-hover table-striped table-condensed">
-    <% show_cons = @problem.testdata_sets.map{|s| s.constraints}.all?{|x| x && x.size > 0} %>
+    <% show_cons = @problem.testdata_sets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
     <thead>
       <tr>
         <th width="5%">No.</th>
@@ -227,7 +227,7 @@
           <td>
             <% if @tdlist[index] %>
               <% @tdlist[index].each do |x| %>
-                <span class="subtask-icon"><%= x %></span>
+                <span class="subtask-icon"><%= x + 1 %></span>
               <% end %>
             <% end %>
           </td>
