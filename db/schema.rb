@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191101085309) do
+ActiveRecord::Schema.define(version: 20191114170414) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -205,7 +205,7 @@ ActiveRecord::Schema.define(version: 20191101085309) do
     t.integer  "total_time",   limit: 4
     t.integer  "total_memory", limit: 4
     t.text     "message",      limit: 65535
-    t.integer  "compiler_id",  limit: 4,                                                    null: false
+    t.integer  "compiler_id",  limit: 4,                                 default: 1,        null: false
   end
 
   add_index "submissions", ["compiler_id"], name: "fk_rails_55e5b9f361", using: :btree

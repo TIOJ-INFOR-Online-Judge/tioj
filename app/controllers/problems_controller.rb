@@ -72,7 +72,14 @@ class ProblemsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @problem.update(problem_params)
+      @problem.attributes = problem_params
+      pre_ids = @problem.testdata_sets.collect(&:id)
+      changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
+      if @problem.save
+        changed ||= pre_ids.sort != @problem.testdata_sets.collect(&:id).sort
+        if changed
+          recalc_score
+        end
         format.html { redirect_to @problem, notice: 'Problem was successfully updated.' }
         format.json { head :no_content }
       else
@@ -108,6 +115,28 @@ class ProblemsController < ApplicationController
         params[:problem][:testdata_sets_attributes][x][:td_list] = \
             reduce_td_list(y[:td_list], @problem.testdata.count)
       end
+    end
+
+    def recalc_score
+      logger.fatal 'meow'
+      num_tasks = @problem.testdata.count
+      td_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+      @problem.submissions.select(:id).each_slice(256) do |s|
+        ids = s.map(&:id).to_a
+        arr = SubmissionTask.where(:submission_id => ids).
+            select(:submission_id, :position, :score).group_by(&:submission_id).map{|x, y|
+          sub_mp = y.map{|t| [t.position, t.score]}.to_h
+          score = td_map.map{|td, score|
+            td.size > 0 ? sub_mp.values_at(*td).map{|x| x ? x : 0}.min * score : 100 * score
+          }.sum / 100
+          score = [score, BigDecimal('1e+12') - 1].min.round(6)
+          '(%d, %s)' % [x, score.to_s]
+        }.join(',')
+        ActiveRecord::Base.connection.execute(
+            'INSERT INTO submissions (id, score) VALUES ' + arr +
+            ' ON DUPLICATE KEY UPDATE score = VALUES(score);')
+      end
+      logger.fatal 'meow'
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
