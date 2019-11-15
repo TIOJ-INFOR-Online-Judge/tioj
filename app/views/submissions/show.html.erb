@@ -73,7 +73,7 @@
       <%= @verdict[@submission.result] %>
     </div>
     <div class="col-md-2">
-      <%= sprintf("%g", @submission.score) %>
+      <%= score_str(@submission.score) %>
     </div>
   </div>
   </div>
@@ -122,13 +122,13 @@
                 <td style="padding-top:2px;padding-bottom:2px">
                   <% if lst.any?{|x| x.nil?} %>
                     <span class="subtask-display" style="background-color:#808080;">
-                      <%= '? / %g' % s.score %>
+                      <%= '? / %s' % score_str(s.score) %>
                     </span>
                   <% else %>
                     <% p = lst.size > 0 ? lst.min / 100 : 1 %>
                     <% score = (p * s.score).round(6) %>
                     <span class="subtask-display" style="background-color:<%= color_map(p) %>;">
-                      <%= '%g / %g' % [score, s.score] %>
+                      <%= '%s / %s' % [score_str(score), score_str(s.score)] %>
                     </span>
                   <% end %>
                 </td>
@@ -180,7 +180,7 @@
                 <td><%= task[1] %></td>
                 <td><%= task[2] %></td>
                 <td><%= @verdict[task[0]] %></td>
-                <td><%= sprintf("%g", task[3]) %></td>
+                <td><%= score_str(task[3]) %></td>
               </tr>
             <% else %>
               <tr>

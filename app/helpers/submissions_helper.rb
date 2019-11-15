@@ -30,4 +30,8 @@ module SubmissionsHelper
     scale = scale < 0.5 ? 0.5 - 2 * (0.5 - scale) ** 2 : 0.5 + 2 * (scale - 0.5) ** 2
     hsv_to_rgb(scale * 120, 100, 85 - 40 * scale)
   end
+
+  def score_str(x)
+    number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
+  end
 end

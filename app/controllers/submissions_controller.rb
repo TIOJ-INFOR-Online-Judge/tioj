@@ -23,7 +23,10 @@ class SubmissionsController < ApplicationController
   end
 
   def index
-    @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:contest, :problem, :user, :compiler)
+    @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
+    unless user_signed_in? and current_user.admin?
+      @submissions = @submissions.preload(:contest)
+    end
     set_page_title "Submissions"
   end
 
