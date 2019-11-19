@@ -66,9 +66,13 @@
     <h1 class="panel-title">Tasks</h1>
   </div>
   <div class="panel-body">
-    <% @tasks.each_with_index do |task, index| %>
-      <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + Problem.find(task.id).name), contest_problem_path(@contest, task.id) %>
-      <br>
+    <% if is_started? %>
+      <% @tasks.each_with_index do |task, index| %>
+        <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
+        <br>
+      <% end %>
+    <% else %>
+      <%= 'Contest has not yet started.' %>
     <% end %>
   </div>
 </div>

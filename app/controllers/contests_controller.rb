@@ -52,13 +52,11 @@ class ContestsController < ApplicationController
         id
       end
     end
-    @submissions = []
-    @participants = []
-    @tasks.each_with_index do |task, index|
-      @submissions << c_submissions.where("problem_id = ?", task.id)
-      @participants = @participants | @submissions[index].map{|e| e.user_id}
-    end
-    first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by{|a| a.id}}.map{|a| a ? a.id : -1}
+    @contest_submissions = @contest.submissions.select([:id, :problem_id, :user_id, :result, :score]).to_a
+    @submissions = @contest_submissions.group_by(&:problem_id)
+    @participants = User.find(@contest_submissions.map(&:user_id).uniq)
+    @submissions = @tasks.map{|x| @submissions[x.id] or []}
+    first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
     @scores = []
     if @contest.contest_type == 2
       unless user_signed_in? and current_user.admin?
@@ -72,19 +70,19 @@ class ContestsController < ApplicationController
         total_solv = 0
         last_ac = 0
         penalty = 0
-        (0..(@tasks.size-1)).each do |index|
-          succ = @submissions[index].select{|a| a.user_id == u and a.result == 'AC' and a.created_at < freeze_start}.min_by{|a| a.id}
+        @submissions.zip(first_solved).each do |sub, firstsolve|
+          succ = sub.select{|a| a.user_id == u.id and a.result == 'AC' and a.created_at < freeze_start}.min_by{|a| a.id}
           if succ
-            attm = @submissions[index].select{|a| a.user_id == u and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            attm = sub.select{|a| a.user_id == u.id and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
             tm = (succ.created_at - @contest.start_time).to_i / 60
             last_ac = [last_ac, tm].max
-            t << [attm + 1, tm, succ.id == first_solved[index], 0]
+            t << [attm + 1, tm, succ.id == firstsolve, 0]
             total_solv += 1
             total_attm += attm + 1
             penalty += attm * 20
           else
-            attm = @submissions[index].select{|a| a.user_id == u and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
-            pend = @submissions[index].select{|a| a.user_id == u and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
             t << [attm, -1, false, pend]
             total_attm += attm
           end
@@ -101,11 +99,11 @@ class ContestsController < ApplicationController
     else
       @participants.each do |u|
         t = []
-        (0..(@tasks.size-1)).each do |index|
-          if @submissions[index].select{|a| a.user_id == u}.empty?
+        @submissions.each do |sub|
+          if sub.select{|a| a.user_id == u.id}.empty?
             t << 0
           else
-            t << @submissions[index].select{|a| a.user_id == u}.max_by{|a| a.score}.score
+            t << sub.select{|a| a.user_id == u.id}.max_by{|a| a.score}.score
           end
         end
         @scores << [u, t, t.sum]
@@ -193,7 +191,7 @@ class ContestsController < ApplicationController
   end
 
   def set_tasks
-    @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
+    @tasks = @contest.problems.order("id ASC")
   end
 
   def check_tasks?
