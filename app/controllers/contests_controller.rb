@@ -1,9 +1,11 @@
 class ContestsController < ApplicationController
   before_filter :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
   before_filter :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
+  before_filter :check_started!, only: [:dashboard]
   before_filter :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_filter :calculate_ranking, only: [:dashboard, :dashboard_update]
   layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
+  helper_method :is_started?
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -131,13 +133,6 @@ class ContestsController < ApplicationController
   end
 
   def show
-    if Time.now < @contest.start_time
-      unless user_signed_in? and current_user.admin?
-        flash[:notice] = 'Contest has not yet started.'
-        redirect_to action:'index'
-        return
-      end
-    end
     set_page_title @contest.title
   end
 
@@ -211,6 +206,18 @@ class ContestsController < ApplicationController
     end
     ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
     return !ret.any?
+  end
+
+  def is_started?
+    Time.now >= @contest.start_time or (user_signed_in? and current_user.admin?)
+  end
+
+  def check_started!
+    unless is_started?
+      flash[:notice] = 'Contest has not yet started.'
+      redirect_to @contest
+      return
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

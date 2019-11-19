@@ -33,7 +33,7 @@ class SubmissionsController < ApplicationController
 
   def show
     unless (user_signed_in? and current_user.admin?) or (user_signed_in? and current_user.id == @submission.user_id) or not @submission.contest
-      if Time.now >= @submission.contest.start_time && Time.now <= @submission.contest.end_time
+      if Time.now <= @submission.contest.end_time
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
         return
       elsif @submission.created_at >= @contest.end_time - @contest.freeze_time * 60
@@ -175,7 +175,7 @@ class SubmissionsController < ApplicationController
           if user_signed_in?
             @submissions = @submissions.where(user_id: current_user.id)
           else
-            @submissions = @submissions.limit(0) #just make it an empty set whatsoeveAr
+            @submissions = @submissions.where(user_id: 0) #just make it an empty set whatsoeveAr
             return
           end
         end
