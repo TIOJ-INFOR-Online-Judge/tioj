@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :authenticate_admin!, except: [:index, :show, :create, :new]
-  before_action :set_submissions, only: [:index]
+  before_action :set_submissions
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
