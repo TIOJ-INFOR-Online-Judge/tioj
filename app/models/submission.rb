@@ -22,7 +22,7 @@ class Submission < ActiveRecord::Base
   belongs_to :user
   belongs_to :contest
   belongs_to :compiler
-  has_many :submission_tasks
+  has_many :submission_tasks, dependent: :delete_all
 
   validates_length_of :code, :in => 0..5000000
   validates_length_of :message, :in => 0..65000, :allow_nil => true

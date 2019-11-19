@@ -9,6 +9,11 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new]
   helper_method :td_list_to_arr
 
+  def delete_problem_submission
+    Submission.where(problem_id: params[:problem_id]).destroy_all
+    redirect_to :back
+  end
+
   def rejudge_problem
     subs = Submission.where(problem_id: params[:problem_id])
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)

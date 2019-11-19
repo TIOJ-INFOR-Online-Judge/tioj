@@ -25,13 +25,13 @@ class Problem < ActiveRecord::Base
 
   has_many :submissions, dependent: :destroy
 
-  has_many :contest_problem_joints
+  has_many :contest_problem_joints, dependent: :destroy
   has_many :contests, :through => :contest_problem_joints
 
   has_many :testdata, dependent: :destroy
   accepts_nested_attributes_for :testdata, :allow_destroy => true, :reject_if => :all_blank
 
-  has_many :testdata_sets, dependent: :destroy
+  has_many :testdata_sets, dependent: :delete_all
   accepts_nested_attributes_for :testdata_sets, :allow_destroy => true, :reject_if => :all_blank
 
   has_many :posts, dependent: :destroy
