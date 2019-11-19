@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :authenticate_admin!, except: [:index, :show, :create, :new]
-  before_action :set_submissions
+  before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
@@ -27,6 +27,7 @@ class SubmissionsController < ApplicationController
     unless user_signed_in? and current_user.admin?
       @submissions = @submissions.preload(:contest)
     end
+    @submissions = @submissions.select("STRAIGHT_JOIN `submissions`.*");
     set_page_title "Submissions"
   end
 
@@ -160,9 +161,9 @@ class SubmissionsController < ApplicationController
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]
     @contest = Contest.find(params[:contest_id]) if params[:contest_id]
     @submissions = Submission
-    @submissions = @submissions.where("problem_id = ?", params[:problem_id]) if params[:problem_id]
+    @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
     if params[:contest_id]
-      @submissions = @submissions.where("contest_id = ?", params[:contest_id])
+      @submissions = @submissions.where(contest_id: params[:contest_id])
       unless user_signed_in? and current_user.admin?
         if user_signed_in?
           @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.end_time - @contest.freeze_time * 60, current_user.id)
@@ -172,22 +173,22 @@ class SubmissionsController < ApplicationController
         if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
           #only self submission
           if user_signed_in?
-            @submissions = @submissions.where("user_id = ?", current_user.id)
+            @submissions = @submissions.where(user_id: current_user.id)
           else
-            @submissions = @submissions.where("id = 0") #just make it an empty set whatsoever
+            @submissions = @submissions.limit(0) #just make it an empty set whatsoeveAr
             return
           end
         end
       end
     else
-      @submissions = @submissions.where("contest_id is NULL")
+      @submissions = @submissions.where(contest_id: nil)
       unless user_signed_in? and current_user.admin?
        @submissions = @submissions.joins(:problem).where("problems.visible_state = 0")
       end
     end
-    @submissions = @submissions.where("problem_id = ?", params[:filter_problem]) if not params[:filter_problem].blank?
+    @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?
     @submissions = @submissions.joins("INNER JOIN users ON submissions.user_id = users.id").where("users.username LIKE ?", params[:filter_username]) if not params[:filter_username].blank?
-    @submissions = @submissions.where("user_id = ?", params[:filter_user_id]) if not params[:filter_user_id].blank?
+    @submissions = @submissions.where(user_id: params[:filter_user_id]) if not params[:filter_user_id].blank?
     @submissions = @submissions.where(result: params[:filter_status]) if not params[:filter_status].blank?
     @submissions = @submissions.where(compiler_id: params[:filter_compiler].map{|x| x.to_i}) if not params[:filter_compiler].blank?
   end

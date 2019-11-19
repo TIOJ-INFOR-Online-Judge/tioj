@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191114170414) do
+ActiveRecord::Schema.define(version: 20191119033032) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20191114170414) do
   end
 
   add_index "problems", ["name"], name: "index_problems_on_name", using: :btree
+  add_index "problems", ["visible_state"], name: "index_problems_on_visible_state", using: :btree
 
   create_table "submission_tasks", force: :cascade do |t|
     t.integer  "submission_id", limit: 4
