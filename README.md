@@ -22,8 +22,8 @@ You need to follow the instructions on the screen when installing / setting up t
 $ wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
 # dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
 # apt update
-# apt install g++-9 python python3 ghc rvm imagemagick \
-  mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl
+# apt install g++-9 python python3 ghc rvm imagemagick mysql-server \
+  libmysqlclient-dev libcurl4-openssl-dev openssl
 # update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
   --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
   --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
@@ -44,6 +44,8 @@ $ gem install rails -v 4.2.11
 ```
 $ git clone https://github.com/adrien1018/tioj
 $ git clone https://github.com/adrien1018/miku
+$ cd miku
+$ git submodule update --init
 ```
 
 #### 3. Install gems
@@ -141,6 +143,7 @@ EOF
 #### 8. Create database & assets & announcements
 
 ```
+# Inside `tioj` repository
 RAILS_ENV=production rake db:create db:schema:load db:seed
 RAILS_ENV=production rake assets:precompile
 mkdir public/announcement

@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/adrien1018/mathjax-rails.git
+  revision: 9410f846b1dd73ad10b6004de731b3aa092892e1
+  specs:
+    mathjax-rails (3.0.0)
+      railties (>= 3.0)
+
+GIT
   remote: https://github.com/veelenga/less-rails-bootstrap
   revision: 7c479c2fdff500dc036c15364aa085332a73c642
   ref: 7c479c2fdff500dc036c15364aa085332a73c642
@@ -154,8 +161,6 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
-    mathjax-rails (2.6.1)
-      railties (>= 3.0)
     mechanize (2.7.6)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -311,7 +316,7 @@ DEPENDENCIES
   less
   less-rails
   less-rails-bootstrap!
-  mathjax-rails
+  mathjax-rails!
   mechanize
   mini_magick
   mysql2 (~> 0.4.0)

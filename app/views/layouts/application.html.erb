@@ -6,13 +6,13 @@
 <%= stylesheet_link_tag    "application", media: "all" %>
 <%= javascript_include_tag "application" %>
 <%= csrf_meta_tags %>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-      tex2jax: {
-        inlineMath: [ ['$','$'], ['\\(','\\)'] ],
-        processEscapes: true
-      }
-    });
+<script>
+MathJax = ({
+  tex: {
+    inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+    processEscapes: true
+  }
+});
 </script>
 <%= mathjax_tag %>
 <link rel="shortcut icon" href="/images/favicon.ico">
