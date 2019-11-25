@@ -14,7 +14,7 @@ gem 'sass-rails'
 gem 'less'
 gem 'less-rails'
 gem 'less-rails-bootstrap', git: 'https://github.com/veelenga/less-rails-bootstrap', :ref => '7c479c2fdff500dc036c15364aa085332a73c642'
-gem 'sprockets'
+gem 'sprockets', '~> 3'
 # user
 gem 'devise'
 gem 'omniauth'

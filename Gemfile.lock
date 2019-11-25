@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/adrien1018/mathjax-rails.git
-  revision: 9410f846b1dd73ad10b6004de731b3aa092892e1
+  revision: b3ed43de67a157f2fcc9f22132988c76b3c3e0ea
   specs:
     mathjax-rails (3.0.0)
       railties (>= 3.0)
@@ -68,9 +68,9 @@ GEM
       activerecord (>= 4.2.8)
     acts_as_list (1.0.0)
       activerecord (>= 4.2)
-    annotate (3.0.2)
+    annotate (3.0.3)
       activerecord (>= 3.2, < 7.0)
-      rake (>= 10.4, < 13.0)
+      rake (>= 10.4, < 14.0)
     arbre (1.2.1)
       activesupport (>= 3.0.0)
     arel (6.0.4)
@@ -106,7 +106,7 @@ GEM
     execjs (2.7.0)
     faraday (0.17.0)
       multipart-post (>= 1.2, < 3)
-    ffi (1.11.1)
+    ffi (1.11.3)
     formtastic (3.1.5)
       actionpack (>= 3.2.13)
     formtastic_i18n (0.6.0)
@@ -185,7 +185,7 @@ GEM
     net-http-digest_auth (1.4.1)
     net-http-persistent (3.1.0)
       connection_pool (~> 2.2)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
     oauth2 (1.4.2)
@@ -233,7 +233,7 @@ GEM
       activesupport (= 4.2.11.1)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rake (12.3.3)
+    rake (13.0.1)
     ransack (1.8.10)
       actionpack (>= 3.0, < 5.2)
       activerecord (>= 3.0, < 5.2)
@@ -331,7 +331,7 @@ DEPENDENCIES
   sass-rails
   sdoc
   seo_helper
-  sprockets
+  sprockets (~> 3)
   therubyracer
   tzinfo-data
   uglifier
