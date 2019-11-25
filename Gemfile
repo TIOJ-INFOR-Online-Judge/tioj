@@ -100,3 +100,8 @@ gem 'activerecord-import'
 
 # Bullet for debugging
 gem 'bullet', group: 'development'
+
+# Used for testing
+gem 'capybara', group: 'test'
+gem 'puma', group: 'test'
+gem 'selenium-webdriver', group: 'test'
