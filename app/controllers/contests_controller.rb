@@ -1,9 +1,9 @@
 class ContestsController < ApplicationController
-  before_filter :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
-  before_filter :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
-  before_filter :check_started!, only: [:dashboard]
-  before_filter :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
-  before_filter :calculate_ranking, only: [:dashboard, :dashboard_update]
+  before_action :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
+  before_action :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
+  before_action :check_started!, only: [:dashboard]
+  before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
+  before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
   layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
   helper_method :is_started?
 

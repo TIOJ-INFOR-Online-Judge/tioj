@@ -2,10 +2,10 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :store_location
-  before_filter :set_verdict_hash
-  before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :set_anno
+  before_action :store_location
+  before_action :set_verdict_hash
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_anno
 
   def set_verdict_hash
     @verdict = {"AC" => "Accepted",

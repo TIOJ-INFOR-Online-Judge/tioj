@@ -27,7 +27,6 @@ Tioj::Application.configure do
   # number of complex assets.
   config.assets.debug = true
 
-  config.active_record.raise_in_transactional_callbacks = true
   config.after_initialize do
     Bullet.enable = true
     Bullet.alert = true
