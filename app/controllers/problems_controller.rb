@@ -111,6 +111,9 @@ class ProblemsController < ApplicationController
     end
 
     def reduce_list
+      unless problem_params[:testdata_sets_attributes]
+        return
+      end
       problem_params[:testdata_sets_attributes].each do |x, y|
         params[:problem][:testdata_sets_attributes][x][:td_list] = \
             reduce_td_list(y[:td_list], @problem.testdata.count)
