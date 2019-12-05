@@ -1,5 +1,6 @@
 ActiveAdmin.register Article do
   permit_params :title, :content, :era, :pinned, :category
+  includes :user
   preserve_default_filters!
   remove_filter :attachments
   filter :id
