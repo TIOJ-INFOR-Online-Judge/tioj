@@ -16,6 +16,7 @@ ActiveAdmin.register Submission do
   end
 
   preserve_default_filters!
+  remove_filter :submission_tasks
   remove_filter :problem
   remove_filter :user
   filter :problem_id
