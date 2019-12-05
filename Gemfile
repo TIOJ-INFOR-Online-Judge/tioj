@@ -7,7 +7,7 @@ gem 'rails', '~> 4.2'
 gem 'rdoc', '~> 4.0'
 
 # Use mysql2 as the database for Active Record
-gem 'mysql2', '~> 0.4.0'
+gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
