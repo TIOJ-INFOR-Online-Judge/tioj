@@ -162,7 +162,8 @@ make # -j8 for parallel compilation
 Now start the web server and the judge server:
 ```
 # /opt/nginx/sbin/nginx
-# ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
+# PATH=${JUDGE_PATH}/app:${JUDGE_PATH}/bin:$PATH \
+  ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
 ```
 
 You can add the commands to systemd for the convenience of starting / stopping those servers.
