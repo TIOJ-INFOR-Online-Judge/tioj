@@ -59,13 +59,22 @@
      <% end %>
    </div>
 
+   <div class="form-group">
+     <%= f.label :show_detail_result do %>
+       <%= f.check_box :show_detail_result %>
+       Show detail result of each testdata
+     <% end %>
+   </div>
+
   <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
       <br>
       <% Compiler.all.each do |c| %>
-        <%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c) %>
-        <%= c.name %>
+	    	<span class="button-checkbox">
+		  		<%= button_tag c.name, type: "button", class: "btn", "data-color": "danger" %>
+		  		<%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c), hidden: true %> 
+				</span>
       <% end %>
     <% end %>
   </div>
@@ -102,3 +111,5 @@
        <%= f.submit :class => "btn btn-success btn-lg"%>
    </div>
 <% end %>
+
+<script> contest_form_style_main() </script>

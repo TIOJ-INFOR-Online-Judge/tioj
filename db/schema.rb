@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191119033032) do
+ActiveRecord::Schema.define(version: 20200118041340) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 20191119033032) do
     t.integer  "cd_time",            limit: 4,     default: 15,   null: false
     t.boolean  "disable_discussion",               default: true, null: false
     t.integer  "freeze_time",        limit: 4,                    null: false
+    t.boolean  "show_detail_result",               default: true, null: false
   end
 
   add_index "contests", ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time", using: :btree
