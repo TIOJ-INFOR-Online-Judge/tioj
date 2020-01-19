@@ -230,6 +230,7 @@ class ContestsController < ApplicationController
       :cd_time,
       :disable_discussion,
       :freeze_time,
+	  :show_detail_result,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,
