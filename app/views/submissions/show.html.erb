@@ -140,59 +140,74 @@
     </div>
   </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
-      <h1 class="panel-title">
-        Testdata Results
-        <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
-      </h1>
-    </div>
-    <div class="collapse in" id="collapseTestdata">
-      <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>Testdata no.</th>
-            <th>Subtasks</th>
-            <th>Time (ms)</th>
-            <th>Memory (KiB)</th>
-            <th>Verdict</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
-            <% task = @_result[i] %>
-            <% if task then %>
-              <% if styleclass_map[task[0]] %>
-                <tr class="<%= styleclass_map[task[0]] %>">
+  <% if @contest.show_detail_result? or Time.now > @contest.end_time or (user_signed_in? and current_user.admin?) %>
+    <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
+        <h1 class="panel-title">
+          Testdata Results
+          <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+        </h1>
+      </div>
+      <div class="collapse in" id="collapseTestdata">
+        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
+        <table class="table table-condensed">
+          <thead>
+            <tr>
+              <th>Testdata no.</th>
+              <th>Subtasks</th>
+              <th>Time (ms)</th>
+              <th>Memory (KiB)</th>
+              <th>Verdict</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
+              <% task = @_result[i] %>
+              <% if task then %>
+                <% if styleclass_map[task[0]] %>
+                  <tr class="<%= styleclass_map[task[0]] %>">
+                <% else %>
+                  <tr>
+                <% end %>
+                  <td><%= i %></td>
+                  <td>
+                    <% if @invtdlist[i] %>
+                      <% @invtdlist[i].each do |x| %>
+                        <span class="subtask-icon"><%= x + 1 %></span>
+                      <% end %>
+                    <% end %>
+                  </td>
+                  <td><%= task[1] %></td>
+                  <td><%= task[2] %></td>
+                  <td><%= @verdict[task[0]] %></td>
+                  <td><%= score_str(task[3]) %></td>
+                </tr>
               <% else %>
                 <tr>
+                  <td><%= i %></td>
+                  <td></td> <td></td> <td></td> <td></td> <td></td>
+                </tr>
               <% end %>
-                <td><%= i %></td>
-                <td>
-                  <% if @invtdlist[i] %>
-                    <% @invtdlist[i].each do |x| %>
-                      <span class="subtask-icon"><%= x + 1 %></span>
-                    <% end %>
-                  <% end %>
-                </td>
-                <td><%= task[1] %></td>
-                <td><%= task[2] %></td>
-                <td><%= @verdict[task[0]] %></td>
-                <td><%= score_str(task[3]) %></td>
-              </tr>
-            <% else %>
-              <tr>
-                <td><%= i %></td>
-                <td></td> <td></td> <td></td> <td></td> <td></td>
-              </tr>
             <% end %>
-          <% end %>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <div class="panel panel-default">
+      <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
+        <h1 class="panel-title">
+          Testdata Results
+          <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+        </h1>
+      </div>
+      <div class="collapse in" id="collapseTestdata">
+        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
+		&nbsp; Individual testdata result is hidden during contest.
+	  </div>
+	</div>
+  <% end %>
 <% end %>
 
 <div class="well well-sm">
