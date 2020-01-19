@@ -140,7 +140,7 @@
     </div>
   </div>
 
-  <% if @contest.show_detail_result? or Time.now > @contest.end_time or (user_signed_in? and current_user.admin?) %>
+  <% if @contest.blank? or @contest.show_detail_result? or Time.now > @contest.end_time or (user_signed_in? and current_user.admin?) %>
     <div class="panel panel-default">
       <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
         <h1 class="panel-title">
