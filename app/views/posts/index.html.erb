@@ -39,11 +39,12 @@
       <h3 class="post_title"><%= post.title %></h3>
       <% if post.problem_id != nil %>
         <small class="title_problem_id"> Problem #<%= post.problem_id %></small>
-    <% end %>
+			<% end %>
     </div>
     </br >
     <div class="post_content">
       <%= markdown_no_html(post.content) %>
+
       <% if !(user_signed_in? and current_user.admin?) %>
         Created At:  <%= post.created_at.to_s(:clean) %>
       <% elsif poster == nil %>
@@ -51,6 +52,12 @@
       <% else %>
         <%= link_to poster.username, user_path(poster) %> - Created At:  <%= post.created_at.to_s(:clean) %>
       <% end %>
+			&nbsp;
+			<% if post.global_visible %>
+				(public post)
+			<% else %>
+				(private post)
+			<% end %>
     </div>
     <% if user_signed_in? and (current_user.admin? or (current_user.id == post.user_id and not @contest)) %>
       <% if @contest %>
