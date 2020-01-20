@@ -1,4 +1,4 @@
 
 $('#dashboard_table_body').html(' <%= escape_javascript(render partial: "dashboard_table", locals: {} ) %> ')
-MathJax.Queue(["Typeset",MathJax.Hub])
 $('#last-update-div').text('Last Update: <%= Time.now.to_s(:clean) %>')
+MathJax.typeset()
