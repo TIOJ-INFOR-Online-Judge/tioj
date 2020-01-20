@@ -136,7 +136,7 @@ class ContestsController < ApplicationController
 
   def new
     @contest = Contest.new
-    3.times { @contest.contest_problem_joints.build }
+    1.times { @contest.contest_problem_joints.build }
     set_page_title "New contest"
   end
 

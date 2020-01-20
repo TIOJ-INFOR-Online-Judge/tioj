@@ -1,4 +1,5 @@
 ActiveAdmin.register Testdatum do
+  includes :problem
 
   preserve_default_filters!
   remove_filter :problem

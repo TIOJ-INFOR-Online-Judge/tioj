@@ -1,5 +1,6 @@
 ActiveAdmin.register Submission do
   permit_params :id, :problem_id, :user_id, :contest_id, :compiler, :result, :score, :_result, :code, :total_time, :total_memory
+  includes :compiler
   index do
     selectable_column
     column :id do |t|
@@ -15,6 +16,7 @@ ActiveAdmin.register Submission do
   end
 
   preserve_default_filters!
+  remove_filter :submission_tasks
   remove_filter :problem
   remove_filter :user
   filter :problem_id

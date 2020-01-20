@@ -162,7 +162,15 @@ make # -j8 for parallel compilation
 Now start the web server and the judge server:
 ```
 # /opt/nginx/sbin/nginx
-# ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
+# PATH=${JUDGE_PATH}/app:${JUDGE_PATH}/bin:$PATH \
+  ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
 ```
 
 You can add the commands to systemd for the convenience of starting / stopping those servers.
+
+
+## Judge Management
+
+TIOJ has an admin control panel located at `/admin` (powered by [Active Admin](https://activeadmin.info/)), which has an independent authentication system. The default admin username and password are both `admin` (set in `db/seeds.rb` and created when running `rake db:seed`).
+
+Though one can add/edit some settings through the control panel, it is not the recommended way to manage the judge (and it might lead to some errors). Instead, one should create an ordinary account, enter the `Users` tab in the control panel to set the account as an admin account, and use it to do all ordinary management such as problem setting, testdata uploading, and article creation.

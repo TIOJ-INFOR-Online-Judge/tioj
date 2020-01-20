@@ -104,7 +104,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     execjs (2.7.0)
-    faraday (0.17.0)
+    faraday (0.17.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.11.3)
     formtastic (3.1.5)
@@ -156,7 +156,7 @@ GEM
       less (~> 2.6.0)
       sprockets (>= 2)
     libv8 (3.16.14.19)
-    loofah (2.3.1)
+    loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -180,12 +180,12 @@ GEM
     multi_json (1.14.1)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    mysql2 (0.4.10)
+    mysql2 (0.5.3)
     nested_form (0.3.2)
     net-http-digest_auth (1.4.1)
     net-http-persistent (3.1.0)
       connection_pool (~> 2.2)
-    nokogiri (1.10.5)
+    nokogiri (1.10.7)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
     oauth2 (1.4.2)
@@ -319,7 +319,7 @@ DEPENDENCIES
   mathjax-rails!
   mechanize
   mini_magick
-  mysql2 (~> 0.4.0)
+  mysql2
   nested_form
   nokogiri
   omniauth
