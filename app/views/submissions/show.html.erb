@@ -248,7 +248,9 @@
       </div>
     </div>
   <% end %>
-  <pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>"><%= @submission.code %></code></pre>
+	<pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code %></code></pre> 
+	<!-- <button type="button" id="copy_btn" class="btn btn-info btn-xs" style="float:right"> copy code </button> -->
+	<!-- <script> init_code_copy_script() </script> -->
 <% end %>
 
 <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs' %>

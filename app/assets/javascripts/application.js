@@ -27,6 +27,7 @@
 // require turbolinks
 //= require bootstrap-select
 //= require bootstrap-switch
+//= require bootstrap-notify.min
 //= require jquery_nested_form
 //= require jquery-tablesorter
 //= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
