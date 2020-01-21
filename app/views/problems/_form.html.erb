@@ -66,13 +66,13 @@
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :example_input, "Sample Input" %>
-        <%= f.text_area :example_input, :class => 'form-control flat', :rows => '7', :id => "code-input" %>
+        <%= f.text_area :example_input, :class => 'form-control flat code-input', :rows => '7' %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :example_output, "Sample Output" %>
-        <%= f.text_area :example_output, :class => 'form-control flat', :rows => '7', :id => "code-input" %>
+        <%= f.text_area :example_output, :class => 'form-control flat code-input', :rows => '7' %>
       </div>
     </div>
   </div>
@@ -95,12 +95,12 @@
   <% if @problem.problem_type == 1 %>
     <div class="form-group">
       <%= f.label :sjcode, raw("Special Judge Code (output 0 for AC, otherwise WA)<br><code>argv[1]: path to testee output</code>  <code>argv[2]: path to testdata input</code>  <code>argv[3]: path to testdata output</code>  <code>argv[4]: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</code>  <code>argv[5]: path to source code</code>") %>
-      <%= f.text_area :sjcode, :class => 'form-control flat', :rows => '7', :id => "code-input" %>
+      <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
   <% elsif @problem.problem_type == 2 %>
     <div class="form-group">
       <%= f.label :interlib, raw('Interactive Library ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
-      <%= f.text_area :interlib, :class => 'form-control flat', :rows => '7', :id => "code-input" %>
+      <%= f.text_area :interlib, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
   <% end %>
 
@@ -141,6 +141,6 @@
 
 <script>
     $(document).on('nested:fieldRemoved',function(event){
-        event.field.find("input[type=number]").removeAttr("min max required");
+        event.field.find("input").removeAttr("min max required");
     });
 </script>

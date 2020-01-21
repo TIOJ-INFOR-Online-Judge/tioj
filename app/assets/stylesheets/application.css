@@ -15,4 +15,5 @@
  *= require custom_styles
  *= require jquery-tablesorter/theme.default
  *= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
+ *= require animate
  */

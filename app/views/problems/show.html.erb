@@ -127,21 +127,23 @@
 
 <div class="row">
   <div class="col-md-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default copy-group problem-copy-group">
       <div class="panel-heading">
-        <h1 class="panel-title">Sample Input</h1>
+        <h1 class="panel-title pull-left">Sample Input</h1>
+				<button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
       </div>
-      <div class="panel-body" style="font-size:15px;line-height:18px;" id="code-input">
+      <div class="panel-body code-input" style="font-size:15px;line-height:18px;">
         <%= raw @problem.example_input.gsub(/\n/, '<br/>') %>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default copy-group problem-copy-group">
       <div class="panel-heading">
-        <h1 class="panel-title">Sample Output</h1>
+        <h1 class="panel-title pull-left">Sample Output</h1>
+				<button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
       </div>
-      <div class="panel-body" style="font-size:15px;line-height:18px;" id="code-input">
+      <div class="panel-body code-input" style="font-size:15px;line-height:18px;">
         <%= raw @problem.example_output.gsub(/\n/, '<br/>') %>
       </div>
     </div>
