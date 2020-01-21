@@ -1,24 +1,31 @@
-/* Unused code 
-function init_code_copy_script() {
+(() => {
 	document.addEventListener("DOMContentLoaded", function () {
 
-		let code = document.getElementById("submission_code")
-		let btn = document.getElementById("copy_btn")
+		let divs = document.querySelectorAll(".copy-group")
 
-		btn.addEventListener('click', (e) => {
-			let range = document.createRange()
-			range.selectNode(code)
-			window.getSelection().addRange(range)
-			try {
-				if (document.execCommand('copy')) 
-					generate_success_notify()
-				else 
-					generate_failed_notify()
-			} catch (err) {
-				generate_error_notify(err)
-			}
-			window.getSelection().removeAllRanges()
-		})
+		for (let i in divs)
+			initialize(divs[i])
+
+		function initialize(div) {
+			let btn = div.getElementsByClassName("copy-group-btn")[0]
+			let code = div.getElementsByClassName("copy-group-code")[0]
+
+
+			btn.addEventListener('click', (e) => {
+				let range = document.createRange()
+				range.selectNode(code)
+				window.getSelection().addRange(range)
+				try {
+					if (document.execCommand('copy')) 
+						generate_success_notify()
+					else 
+						generate_failed_notify()
+				} catch (err) {
+					generate_error_notify(err)
+				}
+				window.getSelection().removeAllRanges()
+			})
+		}
 
 		function generate_success_notify() {
 			$.notify({
@@ -27,7 +34,7 @@ function init_code_copy_script() {
 			}, {
 				type: 'success',
 				animate: {
-					enter: 'animated fadeInLeft',
+					enter: 'animated fadeInLeft animate_speed_0_4s',
 					exit: 'animated fadeOutRight'
 				},
 				placement: {
@@ -84,5 +91,4 @@ function init_code_copy_script() {
 		}
 
 	});
-}
-*/
+})()
