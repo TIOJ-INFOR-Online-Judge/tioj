@@ -202,6 +202,9 @@ class ContestsController < ApplicationController
       end
       return false
     end
+	if contest_params[:contest_problem_joints_attributes].nil?
+      return true
+	end
     ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
     return !ret.any?
   end
