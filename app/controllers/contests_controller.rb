@@ -52,7 +52,7 @@ class ContestsController < ApplicationController
         id
       end
     end
-    @contest_submissions = @contest.submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
+    @contest_submissions = c_submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
     @submissions = @contest_submissions.group_by(&:problem_id)
     @participants = User.find(@contest_submissions.map(&:user_id).uniq)
     @submissions = @tasks.map{|x| @submissions[x.id] or []}
