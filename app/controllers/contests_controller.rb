@@ -191,7 +191,7 @@ class ContestsController < ApplicationController
   end
 
   def set_tasks
-    @tasks = @contest.problems.order("id ASC")
+    @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
   end
 
   def check_tasks?
