@@ -106,9 +106,14 @@ class FetchController < ApplicationController
   end
 
   def submission
-    @submission = Submission.where("`result` = 'queued' AND `contest_id` IS NOT NULL").order('id').first
-    if not @submission
-      @submission = Submission.where("`result` = 'queued'").order('id').first
+    Submission.transaction do
+      @submission = Submission.lock.where("`result` = 'queued' AND `contest_id` IS NOT NULL").order('id').first
+      if not @submission
+        @submission = Submission.lock.where("`result` = 'queued'").order('id').first
+      end
+      if @submission
+        @submission.update(:result => "Validating")
+      end
     end
     #@submission = Submission.where("`result` = 'queued' AND `contest_id` IS NULL").order('id desc').first
     #if not @submission

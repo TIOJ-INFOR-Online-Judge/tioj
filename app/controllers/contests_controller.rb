@@ -52,7 +52,7 @@ class ContestsController < ApplicationController
         id
       end
     end
-    @contest_submissions = @contest.submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
+    @contest_submissions = c_submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
     @submissions = @contest_submissions.group_by(&:problem_id)
     @participants = User.find(@contest_submissions.map(&:user_id).uniq)
     @submissions = @tasks.map{|x| @submissions[x.id] or []}
@@ -191,7 +191,7 @@ class ContestsController < ApplicationController
   end
 
   def set_tasks
-    @tasks = @contest.problems.order("id ASC")
+    @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
   end
 
   def check_tasks?
@@ -202,6 +202,9 @@ class ContestsController < ApplicationController
       end
       return false
     end
+	if contest_params[:contest_problem_joints_attributes].nil?
+      return true
+	end
     ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
     return !ret.any?
   end
