@@ -1,5 +1,5 @@
 
-function contest_form_style_main() {
+function button_checkbox_init() {
 
 $('.button-checkbox').each(function () {
 

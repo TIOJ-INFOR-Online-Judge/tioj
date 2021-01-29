@@ -138,7 +138,7 @@
     <span class="flex-container-bottom-align">
       <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
       &nbsp;
-      <span class="fancy-form-group">
+      <span class="fancy-checkbox">
         <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
         <div class="btn-group">
           <label for="disable-fool-proof" class="btn btn-xs btn-default">
@@ -155,36 +155,14 @@
 <% end %>
 
 <style>
-
 .flex-container-bottom-align {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-end;
 }
-
-.fancy-form-group input[type="checkbox"] {
-  display: none;
-}
-.fancy-form-group input[type="checkbox"] + .btn-group > label span {
-  height: 10px;
-  width: 10px;
-}
-.fancy-form-group input[type="checkbox"] + .btn-group > label span:first-child { 
-  display: none;
-}
-.fancy-form-group input[type="checkbox"] + .btn-group > label span:last-child {
-  display: inline-block;
-}
-.fancy-form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
-  display: inline-block;
-}
-.fancy-form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
-  display: none;
-}
 </style>
 
-<script> contest_form_style_main() </script>
 <script>
   $(document).on('nested:fieldRemoved',function(event){
     event.field.find("input").removeAttr("min max required");
