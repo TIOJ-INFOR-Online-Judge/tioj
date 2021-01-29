@@ -137,19 +137,21 @@
   <div class="actions">
     <span class="flex-container-bottom-align">
       <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
-      &nbsp;
-      <span class="fancy-checkbox">
-        <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
-        <div class="btn-group">
-          <label for="disable-fool-proof" class="btn btn-xs btn-default">
-            <span class="glyphicon glyphicon-ok"></span>
-            <span></span>
-          </label>
-          <label for="disable-fool-proof" class="btn btn-xs btn-default">
-            Disable fool-proof of repeat submit
-          </label>
-        </div>
-      </span>
+      <% if @isNewProblem == true %>
+        &nbsp;
+        <span class="fancy-checkbox">
+          <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
+          <div class="btn-group">
+            <label for="disable-fool-proof" class="btn btn-xs btn-default">
+              <span class="glyphicon glyphicon-ok"></span>
+              <span></span>
+            </label>
+            <label for="disable-fool-proof" class="btn btn-xs btn-default">
+              Disable fool-proof of repeat submit
+            </label>
+          </div>
+        </span>
+      <% end %>
     </span>
   </div>
 <% end %>
@@ -167,18 +169,22 @@
   $(document).on('nested:fieldRemoved',function(event){
     event.field.find("input").removeAttr("min max required");
   });
-
-  const btn = document.getElementById('submit-btn')
-  window.addEventListener('load', function () {
-    btn.disabled = false
-  });
-
-  const form = document.getElementById('problem-form')
-  form.addEventListener('submit', function () {
-    const switc = document.getElementById('disable-fool-proof')
-    if (!switc.checked) {
-      btn.disabled = true
-      setTimeout(() => btn.disabled = false, 10000)
-    }
-  })
 </script>
+
+<% if @isNewProblem == true %>
+  <script>
+    const btn = document.getElementById('submit-btn')
+    window.addEventListener('load', function () {
+      btn.disabled = false
+    });
+
+    const form = document.getElementById('problem-form')
+    form.addEventListener('submit', function () {
+      const switc = document.getElementById('disable-fool-proof')
+      if (!switc.checked) {
+        btn.disabled = true
+        setTimeout(() => btn.disabled = false, 10000)
+      }
+    })
+  </script>
+<% end %>
