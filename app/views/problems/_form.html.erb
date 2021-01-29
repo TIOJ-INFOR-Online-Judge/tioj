@@ -1,4 +1,4 @@
-<%= nested_form_for @problem, :html => {:class => 'form'} do |f| %>
+<%= nested_form_for @problem, :html => {:class => 'form', :id => 'problem-form'} do |f| %>
   <% if @problem.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@problem.errors.count, "error") %> prohibited this problem from being saved:</h2>
@@ -135,12 +135,72 @@
   <%= f.link_to_add "Add a range", :testdata_sets, :class => 'btn btn-warning' %>
   <hr>
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <span class="flex-container-bottom-align">
+      <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
+      &nbsp;
+      <span class="fancy-form-group">
+        <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
+        <div class="btn-group">
+          <label for="disable-fool-proof" class="btn btn-xs btn-default">
+            <span class="glyphicon glyphicon-ok"></span>
+            <span></span>
+          </label>
+          <label for="disable-fool-proof" class="btn btn-xs btn-default">
+            Disable fool-proof of repeat submit
+          </label>
+        </div>
+      </span>
+    </span>
   </div>
 <% end %>
 
+<style>
+
+.flex-container-bottom-align {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.fancy-form-group input[type="checkbox"] {
+  display: none;
+}
+.fancy-form-group input[type="checkbox"] + .btn-group > label span {
+  height: 10px;
+  width: 10px;
+}
+.fancy-form-group input[type="checkbox"] + .btn-group > label span:first-child { 
+  display: none;
+}
+.fancy-form-group input[type="checkbox"] + .btn-group > label span:last-child {
+  display: inline-block;
+}
+.fancy-form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+  display: inline-block;
+}
+.fancy-form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+  display: none;
+}
+</style>
+
+<script> contest_form_style_main() </script>
 <script>
-    $(document).on('nested:fieldRemoved',function(event){
-        event.field.find("input").removeAttr("min max required");
-    });
+  $(document).on('nested:fieldRemoved',function(event){
+    event.field.find("input").removeAttr("min max required");
+  });
+
+  const btn = document.getElementById('submit-btn')
+  window.addEventListener('load', function () {
+    btn.disabled = false
+  });
+
+  const form = document.getElementById('problem-form')
+  form.addEventListener('submit', function () {
+    const switc = document.getElementById('disable-fool-proof')
+    if (!switc.checked) {
+      btn.disabled = true
+      setTimeout(() => btn.disabled = false, 10000)
+    }
+  })
 </script>
