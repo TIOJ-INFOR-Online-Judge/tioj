@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210129135356) do
+ActiveRecord::Schema.define(version: 20210130053130) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -120,7 +120,7 @@ ActiveRecord::Schema.define(version: 20210129135356) do
     t.datetime "updated_at"
     t.integer  "cd_time",             limit: 4,     default: 15,    null: false
     t.boolean  "disable_discussion",                default: true,  null: false
-    t.integer  "freeze_time",         limit: 4,                     null: false
+    t.integer  "freeze_time",         limit: 4,     default: 0,     null: false
     t.boolean  "show_detail_result",                default: true,  null: false
     t.boolean  "hide_old_submission",               default: false, null: false
   end
