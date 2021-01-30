@@ -1,3 +1,5 @@
+<% hide_old_submission = ((not current_user or not current_user.admin?) and (not @contest.blank?) and @contest.hide_old_submission) %>
+
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
 </h4>
@@ -7,12 +9,14 @@
   <div class="col-md-2">
     <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
   </div>
-  <div class="col-md-2">
-    <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-  </div>
-  <div class="col-md-2">
-    <%= link_to 'Ranklist', problem_ranklist_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
-  </div>
+  <% if not hide_old_submission %>
+    <div class="col-md-2">
+      <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
+    </div>
+    <div class="col-md-2">
+      <%= link_to 'Ranklist', problem_ranklist_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
+    </div>
+  <% end %>
   <div class="col-md-2">
     <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_path(@contest), :class => 'btn btn-default btn-xs btn-block' %>
   </div>
@@ -35,63 +39,65 @@
 <% end %>
 </p>
 
-<div class="row">
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">TopCoder</h1>
-      </div>
-      <div class="panel-body">
-        <% tcoder = topcoder(@problem) %>
-        <% if tcoder %>
-          <div class="row">
-            <div class="col-md-5">
-              <%= link_to image_tag(tcoder.avatar.thumb.to_s, :class => "img-thumbnail img-responsive"), user_path(tcoder) %>
-            </div>
-            <div class="col-md-7">
-              <%= link_to tcoder.nickname, user_path(tcoder) %><br>
-              <blockquote><dfn><%= tcoder.motto %></dfn></blockquote>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-5">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h1 class="panel-title">User's AC Ratio</h1>
-          </div>
-          <div class="panel-body">
-            <%= users_ac_ratio(@problem) %>
-          </div>
+<% if not hide_old_submission %>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">TopCoder</h1>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h1 class="panel-title">Submission's AC Ratio</h1>
-          </div>
-          <div class="panel-body">
-            <%= submissions_ac_ratio(@problem) %>
-          </div>
+        <div class="panel-body">
+          <% tcoder = topcoder(@problem) %>
+          <% if tcoder %>
+            <div class="row">
+              <div class="col-md-5">
+                <%= link_to image_tag(tcoder.avatar.thumb.to_s, :class => "img-thumbnail img-responsive"), user_path(tcoder) %>
+              </div>
+              <div class="col-md-7">
+                <%= link_to tcoder.nickname, user_path(tcoder) %><br>
+                <blockquote><dfn><%= tcoder.motto %></dfn></blockquote>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-md-3">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Tags</h1>
+    <div class="col-md-5">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">User's AC Ratio</h1>
+            </div>
+            <div class="panel-body">
+              <%= users_ac_ratio(@problem) %>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Submission's AC Ratio</h1>
+            </div>
+            <div class="panel-body">
+              <%= submissions_ac_ratio(@problem) %>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="panel-body">
-        <%= raw @problem.tag_list.map{ |a| link_to a, problems_tag_path(a), :class => 'btn btn-xs btn-default' }.join(" ") %>
+    </div>
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Tags</h1>
+        </div>
+        <div class="panel-body">
+          <%= raw @problem.tag_list.map{ |a| link_to a, problems_tag_path(a), :class => 'btn btn-xs btn-default' }.join(" ") %>
+        </div>
       </div>
     </div>
   </div>
-</div>
+<% end %>
 
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -245,12 +251,14 @@
   <div class="col-md-2">
     <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
   </div>
-  <div class="col-md-2">
-    <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-  </div>
-  <div class="col-md-2">
-    <%= link_to 'Ranklist', problem_ranklist_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
-  </div>
+  <% if not hide_old_submission %>
+    <div class="col-md-2">
+      <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
+    </div>
+    <div class="col-md-2">
+      <%= link_to 'Ranklist', problem_ranklist_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
+    </div>
+  <% end %>
   <% if current_user and current_user.admin? %>
     <div class="col-md-2">
       <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
