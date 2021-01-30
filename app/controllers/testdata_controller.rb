@@ -48,11 +48,19 @@ class TestdataController < ApplicationController
     @testdatum.destroy
     respond_to do |format|
       if params[:index_all] == '1'
-        format.html {redirect_to '/testdata' }
+        format.html { redirect_to '/testdata' }
       else
         format.html { redirect_to problem_testdata_path(@problem) }
       end
       format.json { head :no_content }
+    end
+  end
+
+  def destroy_problem_testdata
+    testdata = @problem.testdata.order(position: :asc).includes(:limit)
+    testdata.destroy_all
+    respond_to do |format|
+      format.html { redirect_to problem_testdata_path(@problem), notice: 'All testdata was successfully deleted.' }
     end
   end
 

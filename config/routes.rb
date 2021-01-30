@@ -39,6 +39,8 @@ Tioj::Application.routes.draw do
   get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
   get 'problems/:problem_id/delsub' => 'submissions#delete_problem_submission', as: :problem_delsub
 
+  get 'problems/:problem_id/destroytd' => 'testdata#destroy_problem_testdata', as: :destroy_problem_testdata
+
   get 'fetch/sjcode' => 'fetch#sjcode'
   get 'fetch/code' => 'fetch#code'
   get 'fetch/interlib' => 'fetch#interlib'
