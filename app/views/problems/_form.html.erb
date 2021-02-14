@@ -181,6 +181,7 @@
     const form = document.getElementById('problem-form')
     form.addEventListener('submit', function () {
       const switc = document.getElementById('disable-fool-proof')
+      // disable the submit button for 10 sec if `disable fool proof` button is not checked
       if (!switc.checked) {
         btn.disabled = true
         setTimeout(() => btn.disabled = false, 10000)
