@@ -42,8 +42,8 @@ $ gem install rails -v 4.2.11
 #### 2. Clone TIOJ and its judge program
 
 ```
-$ git clone https://github.com/adrien1018/tioj
-$ git clone https://github.com/adrien1018/miku
+$ git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj
+$ git clone https://github.com/TIOJ-INFOR-Online-Judge/miku
 $ cd miku
 $ git submodule update --init
 ```
