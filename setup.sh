@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 TIOJ_PATH=$HOME/tioj
 MIKU_PATH=$HOME/miku
 DB_USERNAME=root
@@ -10,12 +8,13 @@ URL=http://localhost
 
 ubuntu_distribution=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
 
+set -x
+
 if [[ $ubuntu_distribution == "16.04" ]]; then
 	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl
 fi
 
-sudo apt-add-repository -y ppa:rael-gc/rvm 
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb -O /tmp/mac.deb
 
 if [[ $ubuntu_distribution == "20.04" ]]; then
@@ -25,8 +24,9 @@ echo "Please choose mysql 5.7 in next interactive window."
 read -n 1 -p "Press any key to continue."
 sudo dpkg -i /tmp/mac.deb # Prepare to install MySQL
 
+sudo apt-add-repository -y ppa:rael-gc/rvm 
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-sudo apt update
+sudo apt update --allow-unauthenticated
 sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
@@ -37,25 +37,25 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
 sudo mysql_secure_installation # Setup MySQL
 sudo usermod -a -G rvm $USER
 
-old_group=`id -g`
-newgrp rvm
-
 echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
-echo 'PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH' >> ~/.bashrc
+echo "PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH" >> ~/.bashrc
+
+newgrp rvm << RVMGRPEOF
+
+set -x
+
 source ~/.bashrc
 
 rvm install 2.6.5
-rvm use --default 2.6.5
-gem install rails -v 4.2.11
-
-newgrp $old_group
+rvm alias create default 2.6.5
+/usr/share/rvm/rubies/ruby-2.6.5/bin/gem install rails -v 4.2.11
 
 git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj $TIOJ_PATH
 git clone https://github.com/TIOJ-INFOR-Online-Judge/miku $MIKU_PATH
 git submodule update --init -C $MIKU_PATH
 
 cd $TIOJ_PATH
-bundle install
+/usr/share/rvm/rubies/ruby-2.6.5/bin/bundle install
 
 echo "Please choose ruby as main programming language and use default settings in next interactive window."
 read -n 1 -p "Press any key to continue."
@@ -86,9 +86,8 @@ production:
    database: tioj_production
 EOF
 
-
-TOKEN=$(rake secret)
-KEY=$(rake secret)
+TOKEN=\$(/usr/share/rvm/rubies/ruby-2.6.5/bin/rake secret)
+KEY=\$(/usr/share/rvm/rubies/ruby-2.6.5/bin/rake secret)
 
 cd $TIOJ_PATH
 cat <<EOF > config/initializers/secret_token.rb
@@ -106,11 +105,11 @@ tioj_key = "$KEY"
 EOF
 
 cd $TIOJ_PATH
-RAILS_ENV=production rake db:create db:schema:load db:seed
-RAILS_ENV=production rake assets:precompile
+RAILS_ENV=production /usr/share/rvm/rubies/ruby-2.6.5/bin/rake db:create db:schema:load db:seed
+RAILS_ENV=production /usr/share/rvm/rubies/ruby-2.6.5/bin/rake assets:precompile
 mkdir public/announcement
 echo -n '{"name":"","message":""}' > public/announcement/anno
 
-cd $MIKU_PATH
-make -j
+make -j -C $MIKU_PATH
 
+RVMGRPEOF
