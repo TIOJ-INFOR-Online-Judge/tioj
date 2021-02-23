@@ -27,14 +27,15 @@ sudo dpkg -i /tmp/mac.deb # Prepare to install MySQL
 sudo apt-add-repository -y ppa:rael-gc/rvm 
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt update --allow-unauthenticated
-sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl -y
+sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl libcap-dev -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
     --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 # Use GCC 9 as default
 
-sudo mysql_secure_installation # Setup MySQL
+# sudo mysql_secure_installation # Setup MySQL
+sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
 sudo usermod -a -G rvm $USER
 
 echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
