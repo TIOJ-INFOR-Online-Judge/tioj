@@ -44,22 +44,30 @@ newgrp rvm << RVMGRPEOF
 
 set -x
 
-source ~/.bashrc
+source /etc/profile.d/rvm.sh
+PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH
 
 rvm install 2.6.5
 rvm alias create default 2.6.5
-/usr/share/rvm/rubies/ruby-2.6.5/bin/gem install rails -v 4.2.11
+
+RVMGRPEOF
+
+source /etc/profile.d/rvm.sh
+PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH
+
+gem install rails -v 4.2.11
 
 git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj $TIOJ_PATH
 git clone https://github.com/TIOJ-INFOR-Online-Judge/miku $MIKU_PATH
 git submodule update --init -C $MIKU_PATH
 
 cd $TIOJ_PATH
-/usr/share/rvm/rubies/ruby-2.6.5/bin/bundle install
+bundle install
 
 echo "Please choose ruby as main programming language and use default settings in next interactive window."
 read -n 1 -p "Press any key to continue."
-sudo rvmsudo passenger-install-nginx-module
+ 
+rvmsudo_secure_path=1 /usr/share/rvm/bin/rvmsudo /usr/share/rvm/gems/ruby-2.6.5/bin/passenger-install-nginx-module
 
 sudo sed -i '/http {/a \ \ \ \ passenger_app_env production;' /opt/nginx/conf/nginx.conf
 sudo sed -i "/^[^#]*server_name/a \ \ \ \ \ \ \ \ passenger_enabled on;\n\ \ \ \ \ \ \ \ root $TIOJ_PATH/public;" /opt/nginx/conf/nginx.conf
@@ -79,37 +87,34 @@ development:
 
 test:
   <<: *default
-   database: tioj_test
+    database: tioj_test
 
 production:
   <<: *default
-   database: tioj_production
+    database: tioj_production
 EOF
 
-TOKEN=\$(/usr/share/rvm/rubies/ruby-2.6.5/bin/rake secret)
-KEY=\$(/usr/share/rvm/rubies/ruby-2.6.5/bin/rake secret)
+TOKEN=$(rake secret)
+KEY=$(rake secret)
 
-cd $TIOJ_PATH
-cat <<EOF > config/initializers/secret_token.rb
+cat <<EOF > $TIOJ_PATH/config/initializers/secret_token.rb
 Tioj::Application.config.secret_token = "$TOKEN"
 EOF
 
-cat <<EOF > config/initializers/fetch_key.rb
+cat <<EOF > $TIOJ_PATH/config/initializers/fetch_key.rb
 Tioj::Application.config.fetch_key = "$KEY"
 EOF
 
-cd $MIKU_PATH
-cat <<EOF > app/tioj_url.py
+cat <<EOF > $MIKU_PATH/app/tioj_url.py
 tioj_url = "$URL"
 tioj_key = "$KEY"
 EOF
 
 cd $TIOJ_PATH
-RAILS_ENV=production /usr/share/rvm/rubies/ruby-2.6.5/bin/rake db:create db:schema:load db:seed
-RAILS_ENV=production /usr/share/rvm/rubies/ruby-2.6.5/bin/rake assets:precompile
+RAILS_ENV=production rake db:create db:schema:load db:seed
+RAILS_ENV=production rake assets:precompile
 mkdir public/announcement
 echo -n '{"name":"","message":""}' > public/announcement/anno
 
-make -j -C $MIKU_PATH
+sudo make -j -C $MIKU_PATH
 
-RVMGRPEOF
