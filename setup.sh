@@ -86,15 +86,15 @@ default: &default
 
 development:
   <<: *default
-    database: tioj_development
+  database: tioj_development
 
 test:
   <<: *default
-    database: tioj_test
+  database: tioj_test
 
 production:
   <<: *default
-    database: tioj_production
+  database: tioj_production
 EOF
 
 TOKEN=$(rake secret)
