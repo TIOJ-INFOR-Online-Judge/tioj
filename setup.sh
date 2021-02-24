@@ -11,8 +11,8 @@ ubuntu_distribution=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2
 set -x
 
 if [[ $ubuntu_distribution == "16.04" ]]; then
-	sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl
+	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl -y
 fi
 
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb -O /tmp/mac.deb
@@ -24,8 +24,8 @@ echo "Please choose mysql 5.7 in next interactive window."
 read -n 1 -p "Press any key to continue."
 sudo dpkg -i /tmp/mac.deb # Prepare to install MySQL
 
-sudo apt-add-repository -y ppa:rael-gc/rvm 
-sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository ppa:rael-gc/rvm -y 
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 sudo apt update --allow-unauthenticated
 sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev openssl libcap-dev -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
@@ -60,7 +60,8 @@ gem install rails -v 4.2.11
 
 git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj $TIOJ_PATH
 git clone https://github.com/TIOJ-INFOR-Online-Judge/miku $MIKU_PATH
-git submodule update --init -C $MIKU_PATH
+cd $MIKU_PATH
+git submodule update --init
 
 cd $TIOJ_PATH
 bundle install
@@ -72,6 +73,7 @@ rvmsudo_secure_path=1 /usr/share/rvm/bin/rvmsudo /usr/share/rvm/gems/ruby-2.6.5/
 
 sudo sed -i '/http {/a \ \ \ \ passenger_app_env production;' /opt/nginx/conf/nginx.conf
 sudo sed -i "/^[^#]*server_name/a \ \ \ \ \ \ \ \ passenger_enabled on;\n\ \ \ \ \ \ \ \ root $TIOJ_PATH/public;" /opt/nginx/conf/nginx.conf
+sudo sed -i "/^\ *location \/ {/, /}/ s|^\(\ \{8\}\)|\1# |" /opt/nginx/conf/nginx.conf
 
 cat <<EOF > config/database.yml
 default: &default
