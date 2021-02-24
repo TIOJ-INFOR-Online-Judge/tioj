@@ -35,7 +35,9 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 # Use GCC 9 as default
 
 # sudo mysql_secure_installation # Setup MySQL
-sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+if [[ $ubuntu_distribution == "18.04" ]]; then
+    sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+fi
 sudo usermod -a -G rvm $USER
 
 echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
