@@ -20,7 +20,6 @@ read -n 1 -p "Press any key to continue."
 sudo dpkg -i /tmp/mac.deb # Prepare to install MySQL
 
 if [[ $ubuntu_distribution == "16.04" ]]; then
-	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y -n
 	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl -y -n
 fi
 sudo add-apt-repository ppa:rael-gc/rvm -y -n
@@ -100,18 +99,10 @@ EOF
 TOKEN=$(rake secret)
 KEY=$(rake secret)
 
-cat <<EOF > $TIOJ_PATH/config/initializers/secret_token.rb
-Tioj::Application.config.secret_token = "$TOKEN"
-EOF
+sed "s/\".*\"/\"$TOKEN\"/" $TIOJ_PATH/config/initializers/secret_token.rb.example > $TIOJ_PATH/config/initializers/secret_token.rb
+sed "s/\".*\"/\"$KEY\"/" $TIOJ_PATH/config/initializers/fetch_key.rb.example > $TIOJ_PATH/config/initializers/fetch_key.rb
 
-cat <<EOF > $TIOJ_PATH/config/initializers/fetch_key.rb
-Tioj::Application.config.fetch_key = "$KEY"
-EOF
-
-cat <<EOF > $MIKU_PATH/app/tioj_url.py
-tioj_url = "$URL"
-tioj_key = "$KEY"
-EOF
+sed "s/l.*/l = $URL/; s/y.*/y = $KEY/" $MIKU_PATH/app/tioj_url.py.example $MIKU_PATH/app/tioj_url.py
 
 cd $TIOJ_PATH
 RAILS_ENV=production rake db:create db:schema:load db:seed
