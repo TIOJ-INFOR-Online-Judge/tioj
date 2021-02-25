@@ -28,7 +28,8 @@ else
 	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y -n
 fi
 
-sudo apt update --allow-unauthenticated
+sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 8C718D3B5072E1F5
+sudo apt update
 sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev libcap-dev openssl -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
