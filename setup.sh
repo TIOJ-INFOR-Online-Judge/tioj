@@ -8,7 +8,7 @@ URL=http://localhost
 
 ubuntu_distribution=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
 
-set -x
+set -xe
 
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb -O /tmp/mac.deb
 
@@ -20,10 +20,14 @@ read -n 1 -p "Press any key to continue."
 sudo dpkg -i /tmp/mac.deb # Prepare to install MySQL
 
 if [[ $ubuntu_distribution == "16.04" ]]; then
-	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl -y -n
+	sudo add-apt-repository ppa:carsten-uppenbrink-net/openssl -y
+	sudo add-apt-repository ppa:rael-gc/rvm -y
+	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+else
+	sudo add-apt-repository ppa:rael-gc/rvm -y -n
+	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y -n
 fi
-sudo add-apt-repository ppa:rael-gc/rvm -y -n
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y -n
+
 sudo apt update --allow-unauthenticated
 sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev libcap-dev openssl -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
