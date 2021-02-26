@@ -107,7 +107,7 @@ KEY=$(rake secret)
 sed "s/\".*\"/\"$TOKEN\"/" $TIOJ_PATH/config/initializers/secret_token.rb.example > $TIOJ_PATH/config/initializers/secret_token.rb
 sed "s/\".*\"/\"$KEY\"/" $TIOJ_PATH/config/initializers/fetch_key.rb.example > $TIOJ_PATH/config/initializers/fetch_key.rb
 
-sed "s/l.*/l = $URL/; s/y.*/y = $KEY/" $MIKU_PATH/app/tioj_url.py.example $MIKU_PATH/app/tioj_url.py
+sed "s,l.*,l = $URL,; s/y.*/y = $KEY/" $MIKU_PATH/app/tioj_url.py.example $MIKU_PATH/app/tioj_url.py
 
 cd $TIOJ_PATH
 RAILS_ENV=production rake db:create db:schema:load db:seed
