@@ -37,7 +37,7 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 # Use GCC 9 as default
 
-if [[ $ubuntu_distribution != "16.04" ]]; then
+if [[ $ubuntu_distribution == "20.04" ]]; then
     sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
 fi
 sudo usermod -a -G rvm $USER
