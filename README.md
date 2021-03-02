@@ -11,6 +11,19 @@ Rails: 4.2.11
 
 It is recommended to deploy TIOJ on Ubuntu 16.04 LTS or 18.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
 
+### Install script
+
+There is a script contains following steps which tested in Ubuntu 16.04, 18.04 and 20.04. Run
+
+```
+wget https://raw.githubusercontent.com/TIOJ-INFOR-Online-Judge/tioj/main/setup.sh
+bash setup.sh
+```
+
+to install automatically. There will be several steps which need manually configuration in the script.
+
+### Manual install
+
 #### 1. Install prerequisites
 
 You need to follow the instructions on the screen when installing / setting up those packages.

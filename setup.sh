@@ -8,7 +8,7 @@ URL=http://localhost
 
 ubuntu_distribution=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
 
-set -xe
+set -e
 
 wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb -O /tmp/mac.deb
 
