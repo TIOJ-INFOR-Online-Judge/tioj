@@ -93,6 +93,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :display_solution %>
+    <%= f.select :display_solution, [["Hidden", false], ["Show", true]], {}, {:class => 'form-control flat'} %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :solution %>
         <%= f.text_area :solution, :class => 'form-control flat', :rows => '9' %>
   </div>
