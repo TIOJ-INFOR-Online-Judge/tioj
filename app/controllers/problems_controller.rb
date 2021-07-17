@@ -154,6 +154,7 @@ class ProblemsController < ApplicationController
         :example_output,
         :hint,
         :source,
+        :solution,
         :limit,
         :page,
         :visible_state,

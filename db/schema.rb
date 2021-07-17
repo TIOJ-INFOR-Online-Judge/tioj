@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200118041340) do
-
+ActiveRecord::Schema.define(version: 20210706141243) do
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
     t.text     "body",          limit: 65535
@@ -176,6 +175,8 @@ ActiveRecord::Schema.define(version: 20200118041340) do
     t.text     "sjcode",         limit: 16777215
     t.text     "interlib",       limit: 16777215
     t.integer  "old_pid",        limit: 4
+    t.string   "group",          limit: 255
+    t.text     "solution",       limit: 65535
   end
 
   add_index "problems", ["name"], name: "index_problems_on_name", using: :btree
