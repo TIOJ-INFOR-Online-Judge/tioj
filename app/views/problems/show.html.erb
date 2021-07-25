@@ -175,10 +175,10 @@
 
 <% if (current_user and current_user.admin?) or @problem.display_solution %>
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <h1 class="panel-title">Solution</h1>
+    <div class="panel-heading" onclick="toggleElementClass('solution-body', 'hidden')">
+      <h1 class="panel-title">Solution (Click to toggle)</h1>
     </div>
-    <div class="panel-body">
+    <div class="panel-body hidden" id="solution-body">
       <%= markdown(@problem.solution) %>
     </div>
   </div>
