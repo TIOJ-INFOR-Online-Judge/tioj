@@ -28,7 +28,7 @@ else
 	sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y -n
 fi
 
-sudo apt-key adv --keyserver keys.gnupg.net --recv-keys 8C718D3B5072E1F5
+sudo apt-key adv --keyserver keys.openpgp.org --recv-keys 8C718D3B5072E1F5
 sudo apt update
 sudo apt install gcc-9 g++-9 python python3 ghc rvm imagemagick mysql-server libmysqlclient-dev libcurl4-openssl-dev libcap-dev openssl -y
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
@@ -107,7 +107,7 @@ KEY=$(rake secret)
 sed "s/\".*\"/\"$TOKEN\"/" $TIOJ_PATH/config/initializers/secret_token.rb.example > $TIOJ_PATH/config/initializers/secret_token.rb
 sed "s/\".*\"/\"$KEY\"/" $TIOJ_PATH/config/initializers/fetch_key.rb.example > $TIOJ_PATH/config/initializers/fetch_key.rb
 
-sed "s,l.*,l = $URL,; s/y.*/y = $KEY/" $MIKU_PATH/app/tioj_url.py.example > $MIKU_PATH/app/tioj_url.py
+sed "s,l.*,l = \"$URL\",; s/y.*/y = \"$KEY\"/" $MIKU_PATH/app/tioj_url.py.example > $MIKU_PATH/app/tioj_url.py
 
 cd $TIOJ_PATH
 RAILS_ENV=production rake db:create db:schema:load db:seed
