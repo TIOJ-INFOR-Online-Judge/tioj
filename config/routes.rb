@@ -12,7 +12,7 @@ Tioj::Application.routes.draw do
 
   resources :judge_servers
   resources :submissions
-  resources :users
+  resources :users, constraints: { id: /.+/ }
   resources :posts do
     resources :comments
   end
