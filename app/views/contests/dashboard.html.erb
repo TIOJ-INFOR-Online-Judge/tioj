@@ -41,6 +41,9 @@
       <% if @contest.contest_type == 2 %>
         <th>Solv</th>
         <th>Penalty</th>
+      <% elsif @contest.contest_type == 3 %>
+        <th>Score</th>
+        <th>Penalty</th>
       <% else %>
         <th>Total</th>
       <% end %>

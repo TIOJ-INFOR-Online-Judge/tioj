@@ -58,7 +58,7 @@ class ContestsController < ApplicationController
     @submissions = @tasks.map{|x| @submissions[x.id] or []}
     first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
     @scores = []
-    if @contest.contest_type == 2
+    if @contest.contest_type == 2 #acm style
       unless user_signed_in? and current_user.admin?
         freeze_start = @contest.end_time - @contest.freeze_time * 60
       else
@@ -88,6 +88,42 @@ class ContestsController < ApplicationController
           end
         end
         @scores << [u, total_attm, total_solv, t, t.map{|a| a[1] == -1 ? 0 : a[1]}.sum + penalty, last_ac]
+      end
+      @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
+      @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
+      @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
+      @color << 0
+      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
+        flash.now[:notice] = "Scoreboard is now frozen."
+      end
+    elsif @contest.contest_type == 3 # ioicamp style
+      unless user_signed_in? and current_user.admin?
+        freeze_start = @contest.end_time - @contest.freeze_time * 60
+      else
+        freeze_start = @contest.end_time
+      end
+      @participants.each do |u|
+        t = []
+        total_score = 0
+        total_penalty = 0
+        last_update = 0
+        @submissions.zip(first_solved).each do |sub, firstsolve|
+          succ = sub.select{|a| a.user_id == u.id and a.score > 0 and a.created_at < freeze_start}.max_by{|a| [a.score, -a.id]}
+          if succ # has >0 solution
+            attm = sub.select{|a| a.user_id == u.id and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            tm = (succ.created_at - @contest.start_time).to_i / 60
+            last_update = [last_update, tm].max
+            t << [attm, tm, succ.id == firstsolve, pend]
+            total_score += succ.score
+            total_penalty += attm * 20 + tm
+          else
+            attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            t << [attm, -1, false, pend]
+          end
+        end
+        @scores << [u, 0, total_score, t, total_penalty, last_update]
       end
       @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
