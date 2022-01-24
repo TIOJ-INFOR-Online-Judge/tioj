@@ -1,5 +1,10 @@
 json.contest do
-  json.extract! @contest, :contest_type
+  json.extract! @contest, :contest_type, :title
+  json.tasks do
+    json.array! @tasks do |task|
+      json.extract! task, :name
+    end
+  end
 end
 json.scores do
   json.array! @scores do |score|

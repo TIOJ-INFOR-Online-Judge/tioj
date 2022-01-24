@@ -102,25 +102,36 @@ class ContestsController < ApplicationController
       else
         freeze_start = @contest.end_time
       end
+      high_score = @submissions.map{|sub| sub.select{|a| a.score > 0 and a.created_at < freeze_start}.max_by(&:score)} \
+                               .map{|a| a ? a.score : -1}
+      first_high_score = @submissions.zip(high_score) \
+                                     .map{|sub, score| sub.select{|a| a.score == score}.min_by(&:id)} \
+                                     .map{|a| a ? a.id : -1}
       @participants.each do |u|
         t = []
         total_score = 0
         total_penalty = 0
         last_update = 0
-        @submissions.zip(first_solved).each do |sub, firstsolve|
-          succ = sub.select{|a| a.user_id == u.id and a.score > 0 and a.created_at < freeze_start}.max_by{|a| [a.score, -a.id]}
+        @submissions.zip(first_high_score).each do |sub, first_high_score_id|
+          succ = sub.select{|a| a.user_id == u.id and a.score > 0 and a.created_at < freeze_start} \
+                    .max_by{|a| [a.score, -a.id]}
           if succ # has >0 solution
-            attm = sub.select{|a| a.user_id == u.id and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
-            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            penalty_attm = sub.select{|a| a.user_id == u.id and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            if succ.result == 'AC'
+              total_attm = penalty_attm + 1
+            else
+              total_attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            end
+            pending_attm = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
             tm = (succ.created_at - @contest.start_time).to_i / 60
             last_update = [last_update, tm].max
-            t << [attm, tm, succ.id == firstsolve, pend]
+            t << {total_attm: total_attm, penalty_attm: penalty_attm, pending_attm: pending_attm, tm: tm, first: succ.id == first_high_score_id, score: succ.score, AC: succ.result == 'AC'}
             total_score += succ.score
-            total_penalty += attm * 20 + tm
+            total_penalty += penalty_attm * 20 + tm
           else
-            attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
-            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
-            t << [attm, -1, false, pend]
+            total_attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
+            pending_attm = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
+            t << {total_attm: total_attm, penalty_attm: 0, pending_attm: pending_attm, tm: -1, first: false, score: 0, AC: false}
           end
         end
         @scores << [u, 0, total_score, t, total_penalty, last_update]
