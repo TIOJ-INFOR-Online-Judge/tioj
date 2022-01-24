@@ -18,17 +18,8 @@
   <% end %>
 
   <div class="form-group">
-    <%= render 'contest_type_chooser', :f => f %>
-  </div>
-
-  <div class="form-group">
     <%= f.label :title %>
     <%= f.text_field :title, :class => 'form-control flat' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :description, 'Description (it will be publicly available before contest)' %>
-    <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
   </div>
 
   <div class="alert alert-success alert-dismissible" role="alert">
@@ -38,14 +29,32 @@
     </button>
     <strong>Oh Geez! </strong><%= "If datetime picker isn't available, an example time format is `1996-12-19T16:39:57`." %>
   </div>
-  <div class="form-group">
-    <%= f.label :start_time %>
-    <%= f.datetime_local_field :start_time, :class => 'form-control flat', :type => 'datetime-local' %>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= render 'contest_type_chooser', :f => f %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :start_time %>
+        <%= f.datetime_local_field :start_time, :class => 'form-control flat', :type => 'datetime-local' %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :end_time %>
+        <%= f.datetime_local_field :end_time, :class => 'form-control flat', :type => 'datetime-local' %>
+      </div>
+    </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :end_time %>
-    <%= f.datetime_local_field :end_time, :class => 'form-control flat', :type => 'datetime-local' %>
+    <%= f.label :description, 'Description (it will be publicly available before contest)' %>
+    <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
   </div>
 
   <div class="form-group">
@@ -59,25 +68,26 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :user_whitelist, 'Users that are allowed to submit in this contest, in regex' %>
+    <%= f.text_field :user_whitelist, :class => 'form-control flat' %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :disable_discussion do %>
       <%= f.check_box :disable_discussion %>
       Disable global and problem discussion during the contest
     <% end %>
-  </div>
-
-  <div class="form-group">
+    <br>
     <%= f.label :show_detail_result do %>
       <%= f.check_box :show_detail_result %>
-      Show detail result of each testdata
+      Show detailed result of each testdata
+    <% end %>
+    <br>
+    <%= f.label :hide_old_submission do %>
+      <%= f.check_box :hide_old_submission %>
+      Hide old submissions in contest problems
     <% end %>
   </div>
-
-   <div class="form-group">
-     <%= f.label :hide_old_submission do %>
-       <%= f.check_box :hide_old_submission %>
-       Hide old submissions in contest problems
-     <% end %>
-   </div>
 
   <div class="form-group">
     <%= f.label :compilers do %>

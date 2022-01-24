@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_27_115238) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_27_121017) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -154,6 +154,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_27_115238) do
     t.integer "freeze_time", default: 0, null: false
     t.boolean "show_detail_result", default: true, null: false
     t.boolean "hide_old_submission", default: false, null: false
+    t.text "user_whitelist"
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 

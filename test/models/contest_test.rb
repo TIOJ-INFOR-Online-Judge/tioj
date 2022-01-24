@@ -15,6 +15,7 @@
 #  freeze_time         :integer          default(0), not null
 #  show_detail_result  :boolean          default(TRUE), not null
 #  hide_old_submission :boolean          default(FALSE), not null
+#  user_whitelist      :text(65535)
 #
 
 require 'test_helper'
