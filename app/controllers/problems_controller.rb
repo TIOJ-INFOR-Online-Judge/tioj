@@ -6,7 +6,7 @@ class ProblemsController < ApplicationController
   layout :set_contest_layout, only: [:show]
 
   def ranklist
-    @submissions = @problem.submissions.where("contest_id is NULL AND result = ?", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").includes(:compiler)
+    @submissions = @problem.submissions.where("contest_id is NULL AND result = ?", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").order("id ASC").includes(:compiler)
     set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name
   end
 
