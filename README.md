@@ -4,38 +4,37 @@
 ### Remember to change secret token in production!!!
 
 ## Current Development Environment
-Ruby: 2.6.5
-Rails: 5.2.3
+Ruby: 2.7.6
+Rails: 5.2.8
 
 ## Installation guide
 
-It is recommended to deploy TIOJ on Ubuntu 16.04 LTS or 18.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
+It is recommended to deploy TIOJ on Ubuntu 20.04 LTS or 22.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
 
 #### 1. Install prerequisites
 
 You need to follow the instructions on the screen when installing / setting up those packages.
 
 ```
-# add-apt-repository ppa:ubuntu-toolchain-r/test        # If Ubuntu 16.04 LTS is used
-# add-apt-repository ppa:carsten-uppenbrink-net/openssl # If Ubuntu 16.04 LTS is used
 # apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
-$ wget https://dev.mysql.com/get/mysql-apt-config_0.8.11-1_all.deb
 # dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
 # apt update
-# apt install g++-9 python python3 ghc rvm imagemagick mysql-server \
-  libmysqlclient-dev libcurl4-openssl-dev openssl
-# update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 \
-  --slave /usr/bin/g++ g++ /usr/bin/g++-9 \
-  --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 \
-  --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 \
-  --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 # Use GCC 9 as default
+# apt install python python3 ghc rvm imagemagick mysql-server \
+  libmysqlclient-dev libcurl4-openssl-dev openssl nodejs
 # mysql_secure_installation # Setup MySQL
 # usermod -a -G rvm $USER
+$ # ruby needs openssl 1.1.1 while default is openssl 3, so compile it manually
+$ wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/openssl/1.1.1l-1ubuntu1.3/openssl_1.1.1l.orig.tar.gz
+$ tar -xf openssl_1.1.1l.orig.tar.gz
+$ cd openssl-1.1.1l/
+$ ./config shared enable-ec_nistp_64_gcc_128 -Wl,-rpath=/usr/local/ssl/lib --prefix=/usr/local/ssl
+$ make -j4
+# make install
 $ echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
-$ echo 'PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH' >> ~/.bashrc
+$ echo 'PATH=$HOME/.rvm/gems/ruby-2.7.6/bin:$PATH' >> ~/.bashrc
 $ source ~/.bashrc
-$ rvm install 2.6.5
-$ rvm use --default 2.6.5
+$ rvm install 2.7.6 --with-openssl-dir=/usr/local/ssl/
+$ rvm use --default 2.7.6
 ```
 
 #### 2. Clone TIOJ and its judge program
@@ -50,7 +49,7 @@ $ git submodule update --init
 #### 3. Install gems
 
 ```
-$ bundle install
+$ bundle install  # in tioj/
 ```
 
 #### 4. Install web server
@@ -74,8 +73,8 @@ http {
 
   # The Passenger version and the username may be different from this example.
   # You need to use the path given in the previous step.
-  passenger_root /home/tioj/.rvm/gems/ruby-2.6.5/gems/passenger-6.0.4;
-  passenger_ruby /home/tioj/.rvm/gems/ruby-2.6.5/wrappers/ruby;
+  passenger_root /home/tioj/.rvm/gems/ruby-2.7.6/gems/passenger-6.0.14;
+  passenger_ruby /home/tioj/.rvm/gems/ruby-2.7.6/wrappers/ruby;
 
   server {
     # ... some settings ...
