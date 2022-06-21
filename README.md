@@ -5,7 +5,7 @@
 
 ## Current Development Environment
 Ruby: 2.6.5
-Rails: 4.2.11
+Rails: 5.2.3
 
 ## Installation guide
 
@@ -36,7 +36,6 @@ $ echo 'PATH=$HOME/.rvm/gems/ruby-2.6.5/bin:$PATH' >> ~/.bashrc
 $ source ~/.bashrc
 $ rvm install 2.6.5
 $ rvm use --default 2.6.5
-$ gem install rails -v 4.2.11
 ```
 
 #### 2. Clone TIOJ and its judge program

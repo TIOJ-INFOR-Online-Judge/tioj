@@ -15,18 +15,18 @@
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  submission_id: 1
-  position: 1
-  result: MyString
-  time: 1
-  memory: 1
-  score: 9.99
-
-two:
-  submission_id: 1
-  position: 1
-  result: MyString
-  time: 1
-  memory: 1
-  score: 9.99
+#one:
+#  submission_id: 1
+#  position: 1
+#  result: MyString
+#  time: 1
+#  memory: 1
+#  score: 9.99
+#
+#two:
+#  submission_id: 1
+#  position: 1
+#  result: MyString
+#  time: 1
+#  memory: 1
+#  score: 9.99

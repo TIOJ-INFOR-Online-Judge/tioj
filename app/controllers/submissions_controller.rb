@@ -5,7 +5,7 @@ class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
-  before_filter :set_contest, only: [:show]
+  before_action :set_contest, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new]
   helper_method :td_list_to_arr
 

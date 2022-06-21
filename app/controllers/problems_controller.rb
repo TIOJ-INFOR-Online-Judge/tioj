@@ -1,8 +1,8 @@
 class ProblemsController < ApplicationController
-  before_filter :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
-  before_filter :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
-  before_filter :set_contest, only: [:show]
-  before_filter :reduce_list, only: [:create, :update]
+  before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
+  before_action :set_contest, only: [:show]
+  before_action :reduce_list, only: [:create, :update]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
