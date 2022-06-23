@@ -35,6 +35,7 @@ Tioj::Application.routes.draw do
   get 'contests/:id/dashboard' => 'contests#dashboard'
   get 'contests/:id/dashboard_update' => 'contests#dashboard_update'
 
+  get 'verdicts' => 'submissions#verdict'
   get 'submissions/:id/rejudge' => 'submissions#rejudge'
   get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
   get 'problems/:problem_id/delsub' => 'submissions#delete_problem_submission', as: :problem_delsub

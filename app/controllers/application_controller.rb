@@ -11,12 +11,13 @@ class ApplicationController < ActionController::Base
     @verdict = {"AC" => "Accepted",
                 "WA" => "Wrong Answer",
                 "TLE" => "Time Limit Exceeded",
-                "MLE" => "Segmentation Fault",
+                "MLE" => "Memory Limit Exceeded",
                 "OLE" => "Output Limit Exceeded",
                 "RE" => "Runtime Error",
-                "SIG" => "Runtime Error (exited with signal)",
+                "SIG" => "Runtime Error (killed by signal)",
+                "EE" => "Execution Error",
                 "CE" => "Compilation Error",
-                "CO" => "Compilation Timed Out",
+                "CLE" => "Compilation Limit Exceeded",
                 "ER" => "WTF!"
     }
     @v2i = {"AC" => 0,
@@ -26,9 +27,10 @@ class ApplicationController < ActionController::Base
             "OLE" => 4,
             "RE" => 5,
             "SIG" => 6,
-            "CE" => 7,
-            "CO" => 8,
-            "ER" => 9
+            "EE" => 7,
+            "CE" => 8,
+            "CLE" => 9,
+            "ER" => 10
     }
     @i2v = {0 => "AC",
             1 => "WA",
@@ -37,9 +39,10 @@ class ApplicationController < ActionController::Base
             4 => "OLE",
             5 => "RE",
             6 => "SIG",
-            7 => "CE",
-            8 => "CO",
-            9 => "ER"
+            7 => "EE",
+            8 => "CE",
+            9 => "CLE",
+            10 => "ER"
     }
   end
 

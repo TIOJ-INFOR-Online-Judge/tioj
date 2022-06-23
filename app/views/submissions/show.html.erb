@@ -27,11 +27,19 @@
   <% when "TLE" %>
     <div class="panel panel-info">
   <% when "MLE" %>
-    <div class="panel panel-warning">
+    <div class="panel panel-mle">
+  <% when "OLE" %>
+    <div class="panel panel-ole">
   <% when "RE" %>
     <div class="panel panel-warning">
+  <% when "SIG" %>
+    <div class="panel panel-sig">
   <% when "AC" %>
     <div class="panel panel-success">
+  <% when "CE" %>
+    <div class="panel panel-ce">
+  <% when "CLE" %>
+    <div class="panel panel-ce">
   <% else %>
     <div class="panel panel-default">
 <% end %>
@@ -47,7 +55,7 @@
       <h1 class="panel-title">Max Memory (KiB)</h1>
     </div>
     <div class="col-md-3">
-      <h1 class="panel-title">Verdict</h1>
+      <h1 class="panel-title">Verdict <a href="/verdicts" class="glyphicon glyphicon-question-sign"></a></h1>
     </div>
     <div class="col-md-2">
       <h1 class="panel-title">Score</h1>
@@ -79,7 +87,7 @@
   </div>
 </div>
 
-<% unless @submission.result == 'CE' or @submission.result == 'ER' %>
+<% unless @submission.result == 'CE' or @submission.result == 'CLE' or @submission.result == 'ER' %>
   <div class="panel panel-default">
     <div class="panel-heading" data-toggle="collapse" href="#collapseSubtask">
       <h1 class="panel-title">
@@ -149,7 +157,7 @@
         </h1>
       </div>
       <div class="collapse in" id="collapseTestdata">
-        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
+        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'mle', 'SIG' => 'sig', 'OLE' => 'ole'} %>
         <table class="table table-condensed">
           <thead>
             <tr>
@@ -157,7 +165,7 @@
               <th>Subtasks</th>
               <th>Time (ms)</th>
               <th>Memory (KiB)</th>
-              <th>Verdict</th>
+              <th>Verdict <a href="/verdicts" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a></th>
               <th>Score</th>
             </tr>
           </thead>
@@ -203,7 +211,7 @@
         </h1>
       </div>
       <div class="collapse in" id="collapseTestdata">
-        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
+        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'mle', 'SIG' => 'sig', 'OLE' => 'ole'} %>
 		&nbsp; Individual testdata result is hidden during contest.
 	  </div>
 	</div>

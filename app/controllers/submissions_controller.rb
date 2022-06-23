@@ -1,6 +1,6 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_admin!, except: [:index, :show, :create, :new]
+  before_action :authenticate_admin!, except: [:index, :show, :create, :new, :verdict]
   before_action :set_submissions
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
@@ -159,6 +159,9 @@ class SubmissionsController < ApplicationController
       format.html { redirect_to submissions_url }
       format.json { head :no_content }
     end
+  end
+
+  def verdict
   end
 
   private
