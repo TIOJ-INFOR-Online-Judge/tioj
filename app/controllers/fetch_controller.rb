@@ -6,19 +6,19 @@ class FetchController < ApplicationController
   def interlib
     @problem = Problem.find(params[:pid])
     @interlib = @problem.interlib.to_s + "\n"
-    render text: @interlib
+    render plain: @interlib
   end
 
   def sjcode
     @problem = Problem.find(params[:pid])
     @sjcode = @problem.sjcode.to_s
-    render text: @sjcode
+    render plain: @sjcode
   end
 
   def code
     @submission = Submission.find(params[:sid])
     @code = @submission.code.to_s
-    render text: @code
+    render plain: @code
   end
 
   def testdata_meta
@@ -28,7 +28,7 @@ class FetchController < ApplicationController
       @result += t.id.to_s + " "
       @result += t.updated_at.to_i.to_s + "\n"
     end
-    render text: @result
+    render plain: @result
   end
 
   def testdata_limit
@@ -39,7 +39,7 @@ class FetchController < ApplicationController
       @result += t.limit.memory.to_s + " "
       @result += t.limit.output.to_s + "\n"
     end
-    render text: @result
+    render plain: @result
   end
 
   def write_result
@@ -52,7 +52,7 @@ class FetchController < ApplicationController
     else
       update_verdict
     end
-    render :nothing => true
+    render body: nil
   end
 
   def write_message
@@ -60,7 +60,7 @@ class FetchController < ApplicationController
     @submission = Submission.find(params[:sid])
     @submission.update(:message => @_message)
     #logger.info @_message
-    render :nothing => true
+    render body: nil
   end
 
   def update_verdict
@@ -103,7 +103,7 @@ class FetchController < ApplicationController
   def validating
     @submission = Submission.find(params[:sid])
     @submission.update(:result => "Validating")
-    render :nothing => true
+    render body: nil
   end
 
   def submission
@@ -134,13 +134,13 @@ class FetchController < ApplicationController
     else
       @result = "-1\n"
     end
-    render text: @result
+    render plain: @result
   end
 
 private
   def authenticate_key
     if (not params[:key]) or params[:key] != Tioj::Application.config.fetch_key
-      render :nothing => true
+      head :unauthorized
       return
     end
   end

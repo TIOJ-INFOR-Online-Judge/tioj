@@ -11,20 +11,20 @@ class SubmissionsController < ApplicationController
 
   def delete_problem_submission
     Submission.where(problem_id: params[:problem_id]).destroy_all
-    redirect_to :back
+    redirect_back fallback_location: root_path
   end
 
   def rejudge_problem
     subs = Submission.where(problem_id: params[:problem_id])
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     SubmissionTask.where(submission_id: subs.map{|x| x.id}).delete_all
-    redirect_to :back
+    redirect_back fallback_location: root_path
   end
 
   def rejudge
     @submission.submission_tasks.destroy_all
     @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
-    redirect_to :back
+    redirect_back fallback_location: root_path
   end
 
   def index

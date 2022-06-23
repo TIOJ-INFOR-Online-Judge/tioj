@@ -155,6 +155,10 @@ echo -n '{"name":"","message":""}' > public/announcement/anno
 make # -j8 for parallel compilation
 ```
 
+### 10. Switch to cgroups v1
+
+Add `GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0"` to `/etc/default/grub`, run `sudo update-grub` and then reboot.
+
 ### Done!
 
 Now start the web server and the judge server:
