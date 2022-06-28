@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
                 "EE" => "Execution Error",
                 "CE" => "Compilation Error",
                 "CLE" => "Compilation Limit Exceeded",
-                "ER" => "WTF!"
+                "ER" => "Judge Compilation Error"
     }
     @v2i = {"AC" => 0,
             "WA" => 1,

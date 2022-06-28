@@ -15,8 +15,8 @@
 
 class Post < ActiveRecord::Base
   belongs_to :user
-  belongs_to :problem
-  belongs_to :contest
+  belongs_to :problem, optional: true
+  belongs_to :contest, optional: true
   has_many :comments, dependent: :destroy
 
   validates_length_of :title, :in => 0..30

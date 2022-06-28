@@ -101,7 +101,6 @@
         <% num_tasks = problem.testdata.count %>
         <% testsets = problem.testdata_sets.order(id: :asc) %>
         <% show_cons = testsets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
-        <% result = @submission.submission_tasks.order(position: :asc).pluck(:score) %>
         <thead>
           <tr>
             <th width="15%">Subtask no.</th>
@@ -123,7 +122,7 @@
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% lst = result.values_at(*lst) %>
+              <% lst = @_result.transform_values{|i| i[3]}.values_at(*lst) %>
               <% if lst.nil? or lst.all?{|x| x.nil?} %>
                 <td></td>
               <% else %>

@@ -20,7 +20,7 @@
 class Submission < ActiveRecord::Base
   belongs_to :problem
   belongs_to :user
-  belongs_to :contest
+  belongs_to :contest, optional: true
   belongs_to :compiler
   has_many :submission_tasks, dependent: :delete_all
 

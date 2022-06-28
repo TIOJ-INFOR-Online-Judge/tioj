@@ -3,6 +3,8 @@ class FetchController < ApplicationController
   before_action :authenticate_key
   layout false
 
+  ### old api
+
   def interlib
     @problem = Problem.find(params[:pid])
     @interlib = @problem.interlib.to_s + "\n"
@@ -52,7 +54,6 @@ class FetchController < ApplicationController
     else
       update_verdict
     end
-    render body: nil
   end
 
   def write_message
@@ -60,7 +61,6 @@ class FetchController < ApplicationController
     @submission = Submission.find(params[:sid])
     @submission.update(:message => @_message)
     #logger.info @_message
-    render body: nil
   end
 
   def update_verdict
@@ -90,20 +90,9 @@ class FetchController < ApplicationController
     end
   end
 
-  def testdata
-    @testdata = Testdatum.find(params[:tid])
-    if params[:input]
-      @path = @testdata.test_input
-    else
-      @path = @testdata.test_output
-    end
-    send_file(@path.to_s)
-  end
-
   def validating
     @submission = Submission.find(params[:sid])
     @submission.update(:result => "Validating")
-    render body: nil
   end
 
   def submission
@@ -113,7 +102,7 @@ class FetchController < ApplicationController
         @submission = Submission.lock.where("`result` = 'queued'").order('id').first
       end
       if @submission
-        @submission.update(:result => "Validating")
+        @submission.update(:result => "received")
       end
     end
     #@submission = Submission.where("`result` = 'queued' AND `contest_id` IS NULL").order('id desc').first
@@ -137,9 +126,118 @@ class FetchController < ApplicationController
     render plain: @result
   end
 
+  ### both old and new api
+  def testdata
+    @testdata = Testdatum.find(params[:tid])
+    if params[:input]
+      @path = @testdata.test_input
+    else
+      @path = @testdata.test_output
+    end
+    send_file(@path.to_s)
+  end
+
+  ### new api
+
+  def submission_new
+    Submission.transaction do
+      @submission = Submission.lock.where("`result` = 'queued'").order('contest_id IS NOT NULL ASC', 'id ASC').first
+      if @submission
+        @submission.update(:result => "received")
+      else
+        render json: {}
+        return
+      end
+    end
+    @problem = @submission.problem
+    @user = @submission.user
+    td_count = @problem.testdata.count
+    render json: {
+      submission_id: @submission.id,
+      compiler: @submission.compiler.name,
+      user: {
+        id: @user.id,
+        name: @user.username,
+        nickname: @user.nickname,
+      },
+      problem: {
+        id: @problem.id,
+        type: @problem.problem_type,
+        sjcode: @problem.sjcode,
+        interlib: @problem.interlib,
+      },
+      td: @problem.testdata.order(position: :asc).includes(:limit).map { |t|
+        {
+          id: t.id,
+          updated_at: t.updated_at.to_i,
+          time: t.limit.time,
+          vss: t.limit.memory,
+          rss: 0,
+          output: t.limit.output,
+        }
+      },
+      tasks: @problem.testdata_sets.map { |s|
+        {
+          positions: td_list_to_arr(s.td_list, td_count),
+          score: (s.score * BigDecimal('1e+6')).to_i,
+        }
+      },
+    }
+  end
+
+  def td_result
+    @submission = Submission.find(params[:submission_id])
+    results = params[:results].map { |res|
+      {
+        submission_id: @submission.id,
+        position: res[:position],
+        result: res[:verdict],
+        time: res[:time] / 1000,
+        memory: res[:rss],
+        score: (BigDecimal(res[:score]) / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6')),
+      }
+    }
+    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :memory, :score])
+    score_map = @submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
+    @problem = @submission.problem
+    num_tasks = @problem.testdata.count
+    score = @problem.testdata_sets.map{|s|
+      lst = td_list_to_arr(s.td_list, num_tasks)
+      set_result = score_map.values_at(*lst)
+      set_result.all? ? (lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score : 0
+    }.sum / 100
+    max_score = BigDecimal('1e+12') - 1
+    score = score.clamp(-max_score, max_score).round(6)
+    @submission.update(:score => score)
+  end
+
+  def submission_result
+    @submission = Submission.find(params[:submission_id])
+    if params[:verdict] == 'Validating'
+      @submission.update(:result => 'Validating')
+      return
+    end
+    update_hash = {}
+    if params[:message]
+      update_hash[:message] = params[:message]
+    end
+    update_hash[:result] = @i2v[@v2i.fetch(params[:verdict], @v2i['ER'])]
+    if not ['ER', 'CE', 'CLE'].include? update_hash[:verdict]
+      tasks = @submission.submission_tasks
+      update_hash[:total_time] = tasks.map{|i| i.time}.sum
+      update_hash[:total_memory] = tasks.map{|i| i.memory}.max
+    end
+    @submission.update(**update_hash)
+  end
+
 private
   def authenticate_key
-    if (not params[:key]) or params[:key] != Tioj::Application.config.fetch_key
+    if not params[:key]
+      head :unauthorized
+      return
+    end
+    @judge = JudgeServer.find_by(key: params[:key])
+    if not @judge or @judge.ip != request.remote_ip
       head :unauthorized
       return
     end
