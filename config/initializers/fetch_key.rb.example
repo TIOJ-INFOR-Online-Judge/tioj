@@ -1,1 +1,0 @@
-Tioj::Application.config.fetch_key = "31415926"

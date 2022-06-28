@@ -123,11 +123,7 @@ TIOJ_PATH= # The path to the cloned 'tioj' repository
 JUDGE_PATH= # The path to the cloned 'miku' repository
 
 cd $TIOJ_PATH
-TOKEN=$(rake secret)
 KEY=$(rake secret)
-cat <<EOF >config/initializers/secret_token.rb
-Tioj::Application.config.secret_token = "$TOKEN"
-EOF
 cat <<EOF >config/initializers/fetch_key.rb
 Tioj::Application.config.fetch_key = "$KEY"
 EOF
@@ -142,8 +138,9 @@ EOF
 
 ```
 # Inside `tioj` repository
-RAILS_ENV=production rake db:create db:schema:load db:seed
-RAILS_ENV=production rake assets:precompile
+EDITOR=vim rails credentials:edit # just save the file
+RAILS_ENV=production rails db:create db:schema:load db:seed
+RAILS_ENV=production rails assets:precompile
 mkdir public/announcement
 echo -n '{"name":"","message":""}' > public/announcement/anno
 ```

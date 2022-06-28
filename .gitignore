@@ -21,10 +21,6 @@
 /log/*
 /tmp
 
-# Ignore secret token file
-/config/initializers/secret_token.rb
-/config/initializers/fetch_key.rb
-
 # Ignore all the testdata
 /td
 /public/uploads
@@ -53,3 +49,7 @@ docker-compose.yml
 *.swp
 
 passenger.*.pid.lock
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/config/credentials.yml.enc

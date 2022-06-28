@@ -5,6 +5,7 @@ gem "passenger", "~> 6", require: "phusion_passenger/rack_handler"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5'
 gem 'rdoc', '~> 4.0'
+gem 'bootsnap', require: false
 
 # Use mysql2 as the database for Active Record
 gem 'mysql2'
