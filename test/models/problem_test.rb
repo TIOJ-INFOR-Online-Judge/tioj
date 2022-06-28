@@ -2,21 +2,21 @@
 #
 # Table name: problems
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  name           :string(255)
-#  description    :text(65535)
-#  source         :text(65535)
+#  description    :text(16777215)
+#  source         :text(16777215)
 #  created_at     :datetime
 #  updated_at     :datetime
-#  input          :text(65535)
-#  output         :text(65535)
-#  example_input  :text(65535)
-#  example_output :text(65535)
-#  hint           :text(65535)
+#  input          :text(16777215)
+#  output         :text(16777215)
+#  example_input  :text(16777215)
+#  example_output :text(16777215)
+#  hint           :text(16777215)
 #  visible_state  :integer          default(0)
 #  problem_type   :integer
-#  sjcode         :text(16777215)
-#  interlib       :text(16777215)
+#  sjcode         :text(4294967295)
+#  interlib       :text(4294967295)
 #  old_pid        :integer
 #
 

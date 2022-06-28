@@ -1,4 +1,4 @@
-class CreateSubmissionTasks < ActiveRecord::Migration
+class CreateSubmissionTasks < ActiveRecord::Migration[4.2]
   def change
     create_table :submission_tasks do |t|
       t.integer :submission_id

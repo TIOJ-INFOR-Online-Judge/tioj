@@ -1,4 +1,4 @@
-class AddDefaultToSubmissions < ActiveRecord::Migration
+class AddDefaultToSubmissions < ActiveRecord::Migration[4.2]
   def change
 	change_column :submissions, :code, :text
 	change_column :submissions, :compiler, :string, :default => ""

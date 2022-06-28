@@ -1,4 +1,4 @@
-class CreateTestdata < ActiveRecord::Migration
+class CreateTestdata < ActiveRecord::Migration[4.2]
   def change
     create_table :testdata do |t|
       t.text :input

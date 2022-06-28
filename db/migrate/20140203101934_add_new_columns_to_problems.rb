@@ -1,4 +1,4 @@
-class AddNewColumnsToProblems < ActiveRecord::Migration
+class AddNewColumnsToProblems < ActiveRecord::Migration[4.2]
   def change
     change_table :problems do |t|
       t.text :input

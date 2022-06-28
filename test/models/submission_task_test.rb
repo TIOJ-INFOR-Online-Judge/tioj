@@ -2,8 +2,8 @@
 #
 # Table name: submission_tasks
 #
-#  id            :integer          not null, primary key
-#  submission_id :integer
+#  id            :bigint           not null, primary key
+#  submission_id :bigint
 #  position      :integer
 #  result        :string(255)
 #  time          :integer

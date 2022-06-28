@@ -2,14 +2,14 @@
 #
 # Table name: posts
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  title          :string(255)
-#  content        :text(65535)
-#  user_id        :integer
-#  problem_id     :integer
+#  content        :text(16777215)
+#  user_id        :bigint
+#  problem_id     :bigint
 #  created_at     :datetime
 #  updated_at     :datetime
-#  contest_id     :integer
+#  contest_id     :bigint
 #  global_visible :boolean          default(TRUE), not null
 #
 

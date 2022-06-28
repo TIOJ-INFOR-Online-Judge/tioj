@@ -2,8 +2,8 @@
 #
 # Table name: testdata
 #
-#  id          :integer          not null, primary key
-#  problem_id  :integer
+#  id          :bigint           not null, primary key
+#  problem_id  :bigint
 #  test_input  :string(255)
 #  test_output :string(255)
 #  created_at  :datetime

@@ -2,9 +2,9 @@
 #
 # Table name: contests
 #
-#  id                 :integer          not null, primary key
+#  id                 :bigint           not null, primary key
 #  title              :string(255)
-#  description        :text(65535)
+#  description        :text(16777215)
 #  start_time         :datetime
 #  end_time           :datetime
 #  contest_type       :integer
@@ -13,6 +13,7 @@
 #  cd_time            :integer          default(15), not null
 #  disable_discussion :boolean          default(TRUE), not null
 #  freeze_time        :integer          not null
+#  show_detail_result :boolean          default(TRUE), not null
 #
 
 require 'test_helper'

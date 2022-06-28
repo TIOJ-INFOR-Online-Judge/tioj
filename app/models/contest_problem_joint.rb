@@ -2,9 +2,9 @@
 #
 # Table name: contest_problem_joints
 #
-#  id         :integer          not null, primary key
-#  contest_id :integer
-#  problem_id :integer
+#  id         :bigint           not null, primary key
+#  contest_id :bigint
+#  problem_id :bigint
 #  created_at :datetime
 #  updated_at :datetime
 #

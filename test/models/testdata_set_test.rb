@@ -2,13 +2,13 @@
 #
 # Table name: testdata_sets
 #
-#  id         :integer          not null, primary key
-#  problem_id :integer
-#  from       :integer
-#  to         :integer
-#  score      :decimal(18, 6)
-#  created_at :datetime
-#  updated_at :datetime
+#  id          :bigint           not null, primary key
+#  problem_id  :bigint
+#  score       :decimal(18, 6)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  td_list     :string(255)      not null
+#  constraints :text(16777215)
 #
 
 require 'test_helper'

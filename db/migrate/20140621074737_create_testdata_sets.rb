@@ -1,4 +1,4 @@
-class CreateTestdataSets < ActiveRecord::Migration
+class CreateTestdataSets < ActiveRecord::Migration[4.2]
   def change
     create_table :testdata_sets do |t|
       t.integer :problem_id

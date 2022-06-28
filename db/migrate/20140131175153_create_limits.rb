@@ -1,4 +1,4 @@
-class CreateLimits < ActiveRecord::Migration
+class CreateLimits < ActiveRecord::Migration[4.2]
   def change
     create_table :limits do |t|
       t.integer :time

@@ -1,4 +1,4 @@
-class AddProblemTypeToProblems < ActiveRecord::Migration
+class AddProblemTypeToProblems < ActiveRecord::Migration[4.2]
   def change
     add_column :problems, :problem_type, :integer
   end

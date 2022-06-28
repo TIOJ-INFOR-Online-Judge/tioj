@@ -1,4 +1,4 @@
-class MoveResultToTable < ActiveRecord::Migration
+class MoveResultToTable < ActiveRecord::Migration[4.2]
   def change
     arr = []
     Submission.all.each do |sub|
