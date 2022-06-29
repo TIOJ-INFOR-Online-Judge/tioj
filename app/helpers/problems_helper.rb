@@ -1,12 +1,30 @@
 module ProblemsHelper
   def topcoder(problem)
-    submission = problem.submissions.select("user_id").where("contest_id is NULL AND result = ? ", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").first
+    submission = (problem.submissions.select(:user_id)
+        .where(contest_id: nil, result: 'AC')
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")).first
     return User.find_by_id(submission.user_id) if submission
     return nil if submission.blank?
   end
 
+  def topcoders(problems)
+    topcoder_clause = (Submission.select(:user_id)
+        .where(contest_id: nil, result: 'AC').where('problem_id = problems.id')
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")
+        .limit(1).to_sql)
+    problem_ids = problems.map(&:id)
+    lst = Problem.select(:id, "(#{topcoder_clause}) topcoder").where(id: problem_ids).to_a
+    topcoders = User.where(id: lst.map(&:topcoder).compact.uniq).index_by(&:id)
+    topcoders_mp = lst.collect { |prob| [prob.id, prob.topcoder ? topcoders[prob.topcoder] : nil] }.to_h
+    return topcoders_mp
+  end
+
+  def get_submissions_user(subs)
+    return User.where(id: subs.map(&:user_id).uniq).index_by(&:id)
+  end
+
   def users_ac_ratio(problem)
-    all = problem.submissions.where("contest_id is NULL").select("MIN(result) as result").group("user_id").map{|a| a.result}
+    all = problem.submissions.where(contest_id: nil).select("MIN(result) as result").group(:user_id).map{|a| a.result}
     ac = all.count{|a| a == "AC"}
     all = all.count
     ratio = "%.1f%%" % (100.0 * ac / all)
@@ -14,44 +32,32 @@ module ProblemsHelper
     return raw ( ratio + " (" + ranklist_page + ")" )
   end
 
-  def topcoders(problems)
-    problem_ids = problems.map(&:id)
-    lst = Problem.select("problems.id, (select user_id from submissions where problem_id = problems.id and (contest_id is null and result = 'AC') order by total_time asc, total_memory asc, length(code) asc limit 1) topcoder").where(id: problem_ids).to_a
-    topcoders = Hash[User.where(id: lst.map(&:topcoder).compact.uniq).to_a.collect { |user| [user.id, user] }]
-    topcoders_mp = Hash[lst.collect { |prob| [prob.id, prob.topcoder ? topcoders[prob.topcoder] : nil] }]
-    return topcoders_mp
-  end
-
-  def get_submissions_user(subs)
-    return Hash[User.where(id: subs.map(&:user_id).uniq).to_a.collect { |user| [user.id, user] }]
+  def ratio_text(ac, all)
+    return "%.1f%%" % (100.0 * ac / all)
   end
 
   def submissions_ac_ratio(problem)
-    all = problem.submissions.where("contest_id is NULL").select("result")
-    ac = all.where("result = ?", "AC")
+    all = problem.submissions.where(contest_id: nil).select(:result)
+    ac = all.where(result: 'AC').count
     all = all.count
-    ac = ac.count
-    ratio = "%.1f%%" % (100.0 * ac / all)
     ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
-    return raw ( ratio + " (" + ac_page + "/" + all_page + ")" )
+    return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
 
-  def users_ac_ratio_with_infor(problem)
-    all = problem.user_cnt
-    ac = problem.user_ac
-    ratio = "%.1f%%" % (100.0 * ac / all)
+  def users_ac_ratio_with_infor(problem, attr_map)
+    all = attr_map[problem.id].user_cnt
+    ac = attr_map[problem.id].user_ac
     ranklist_page = link_to ac.to_s + "/" + all.to_s, problem_ranklist_path(problem.id)
-    return raw ( ratio + " (" + ranklist_page + ")" )
+    return raw ( ratio_text(ac, all) + " (" + ranklist_page + ")" )
   end
 
-  def submissions_ac_ratio_with_infor(problem)
-    all = problem.sub_cnt
-    ac = problem.sub_ac
-    ratio = "%.1f%%" % (100.0 * ac / all)
+  def submissions_ac_ratio_with_infor(problem, attr_map)
+    all = attr_map[problem.id].sub_cnt
+    ac = attr_map[problem.id].sub_ac
     ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
-    return raw ( ratio + " (" + ac_page + "/" + all_page + ")" )
+    return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
 
   def user_problem_status(user, problem)
@@ -64,10 +70,10 @@ module ProblemsHelper
     end
   end
 
-  def user_problem_status_with_infor(problem)
-    if problem.cur_user_ac > 0
+  def user_problem_status_with_infor(problem, attr_map)
+    if attr_map[problem.id].cur_user_ac > 0
       raw '<span class="text-success glyphicon glyphicon-ok"></span>'
-    elsif problem.cur_user_tried > 0
+    elsif attr_map[problem.id].cur_user_tried > 0
       raw '<span class="text-danger glyphicon glyphicon-thumbs-down"></span>'
     else
       raw '<span class="text-muted glyphicon glyphicon-minus"></span>'

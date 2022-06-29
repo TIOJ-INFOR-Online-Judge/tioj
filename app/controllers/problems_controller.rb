@@ -2,11 +2,14 @@ class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_action :set_contest, only: [:show]
+  before_action :set_compiler, only: [:edit]
   before_action :reduce_list, only: [:create, :update]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
-    @submissions = @problem.submissions.where("contest_id is NULL AND result = ?", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").includes(:compiler)
+    @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")
+        .includes(:compiler))
     set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name
   end
 
@@ -15,7 +18,9 @@ class ProblemsController < ApplicationController
       redirect_to problem_path(params[:search_id])
       return
     end
-    @problems = Problem.select("problems.*, count(distinct case when s.result = 'AC' then s.user_id end) user_ac, count(distinct s.user_id) user_cnt, count(case when s.result = 'AC' then 1 end) sub_ac, count(s.id) sub_cnt, bit_or(s.result = 'AC' and s.user_id = %d) cur_user_ac, bit_or(s.user_id = %d) cur_user_tried" % ([current_user ? current_user.id : 0]*2)).joins("left join submissions s on s.problem_id = problems.id and s.contest_id is NULL").group("problems.id").includes(:tags)
+
+    # filtering
+    @problems = Problem.includes(:tags)
     if not params[:search_name].blank?
       @problems = @problems.where("name LIKE ?", "%%%s%%"%params[:search_name])
     end
@@ -23,7 +28,25 @@ class ProblemsController < ApplicationController
       @problems = @problems.tagged_with(params[:tag])
     end
 
-    @problems = @problems.order("problems.id ASC").page(params[:page]).per(100)
+    @problems = @problems.order(id: :asc).page(params[:page]).per(100)
+
+    problem_ids = @problems.map(&:id).to_a
+    query_user_id = current_user ? current_user.id : 0
+    attributes = [
+      :id,
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.user_id END) user_ac",
+      "COUNT(DISTINCT s.user_id) user_cnt",
+      "COUNT(CASE WHEN s.result = 'AC' THEN 1 END) sub_ac",
+      "COUNT(s.id) sub_cnt",
+      "BIT_OR(s.result = 'AC' AND s.user_id = %d) cur_user_ac" % query_user_id,
+      "BIT_OR(s.user_id = %d) cur_user_tried" % query_user_id,
+    ]
+    @attr_map = (Problem.select(*attributes)
+        .where(:id => problem_ids)
+        .joins("LEFT JOIN submissions s ON s.problem_id = problems.id AND s.contest_id IS NULL")
+        .group(:id)
+        .index_by(&:id))
+
     set_page_title "Problems"
   end
 
