@@ -101,6 +101,7 @@ gem 'activerecord-import'
 
 # Bullet for debugging
 gem 'bullet', group: 'development'
+gem 'listen', group: 'development'
 
 # Used for testing
 gem 'capybara', group: 'test'

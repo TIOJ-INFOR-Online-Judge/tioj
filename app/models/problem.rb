@@ -37,6 +37,8 @@ class Problem < ActiveRecord::Base
   has_many :posts, dependent: :destroy
   accepts_nested_attributes_for :posts, :allow_destroy => true, :reject_if => :all_blank
 
+  belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
+
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
 

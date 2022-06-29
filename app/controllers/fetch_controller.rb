@@ -114,7 +114,10 @@ class FetchController < ApplicationController
       @result += "\n"
       @result += @submission.problem_id.to_s
       @result += "\n"
-      @result += @submission.problem.problem_type.to_s
+      spectype = @submission.problem.specjudge_type
+      libtype = @submission.problem.interlib_type
+      probtype = spectype == 1 ? 1 : (libtype == 1 ? 2 : 0)
+      @result += probtype.to_s
       @result += "\n"
       @result += @submission.user_id.to_s
       @result += "\n"
@@ -162,7 +165,9 @@ class FetchController < ApplicationController
       },
       problem: {
         id: @problem.id,
-        type: @problem.problem_type,
+        specjudge_type: @problem.specjudge_type,
+        specjudge_lang: @problem.specjudge_compiler&.name,
+        interlib_type: @problem.interlib_type,
         sjcode: @problem.sjcode,
         interlib: @problem.interlib,
       },

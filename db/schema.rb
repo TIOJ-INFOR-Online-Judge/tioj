@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_28_043306) do
+ActiveRecord::Schema.define(version: 2022_06_29_054123) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
@@ -161,11 +161,14 @@ ActiveRecord::Schema.define(version: 2022_06_28_043306) do
     t.text "example_output", limit: 16777215
     t.text "hint", limit: 16777215
     t.integer "visible_state", default: 0
-    t.integer "problem_type"
     t.text "sjcode", limit: 4294967295
     t.text "interlib", limit: 4294967295
     t.integer "old_pid"
+    t.integer "specjudge_type", null: false
+    t.integer "interlib_type", null: false
+    t.bigint "specjudge_compiler_id"
     t.index ["name"], name: "index_problems_on_name"
+    t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
   end
 
@@ -278,5 +281,6 @@ ActiveRecord::Schema.define(version: 2022_06_28_043306) do
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "ban_compilers", "contests"
   add_foreign_key "posts", "contests"
+  add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "submissions", "compilers"
 end

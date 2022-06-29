@@ -11,12 +11,15 @@
   <% end %>
 
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-12">
       <div class="form-group">
         <%= f.label :name %>
         <%= f.text_field :name, :class => 'form-control flat' %>
       </div>
     </div>
+  </div>
+
+  <div class="row">
     <div class="col-md-3">
       <div class="form-group">
         <%= f.label :tag_list, "Tags" %>
@@ -35,9 +38,18 @@
     </div>
     <div class="col-md-3">
       <div class="form-group">
-        <%= f.label :problem_type %>
-        <%= f.select :problem_type, [["[0]Batch Judge", "0"],
-        ["[1]Special Judge", "1"], ["[2]Interactive", "2"]], {}, {:class => 'form-control flat'} %>
+        <%= f.label :specjudge_type, "Judge Type" %>
+        <%= f.select :specjudge_type,
+          [["[0]Default Compare", "0"], ["[1]Old-style Special Judge", "1"], ["[2]New-style Special Judge", "2"]],
+          {}, {:class => 'form-control flat'} %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <%= f.label :interlib_type, "Interactive Library Type" %>
+        <%= f.select :interlib_type,
+          [["[0]None", "0"], ["[1]Header", "1"]],
+          {}, {:class => 'form-control flat'} %>
       </div>
     </div>
   </div>
@@ -92,14 +104,25 @@
     </div>
   </div>
 
-  <% if @problem.problem_type == 1 %>
+  <% if @problem.specjudge_type != 0 %>
     <div class="form-group">
-      <%= f.label :sjcode, raw("Special Judge Code (output 0 for AC, otherwise WA)<br><code>argv[1]: path to testee output</code>  <code>argv[2]: path to testdata input</code>  <code>argv[3]: path to testdata output</code>  <code>argv[4]: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</code>  <code>argv[5]: path to source code</code>") %>
+      <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
+      <%= f.select :specjudge_compiler_id, @compiler.map{|x| [x.description, x.id]},
+          {}, {:class => 'form-control flat'} %>
+    </div>
+    <div class="form-group">
+      <% if @problem.specjudge_type == 1 %>
+        <%= f.label :sjcode, raw("Special Judge Code (output 0 for AC, otherwise WA)<br><code>argv[1]: path to testee output</code>  <code>argv[2]: path to testdata input</code>  <code>argv[3]: path to testdata output</code>  <code>argv[4]: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</code>  <code>argv[5]: path to source code</code>") %>
+      <% else %>
+        <%= f.label :sjcode, raw("Special Judge Code") %>
+      <% end %>
       <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
-  <% elsif @problem.problem_type == 2 %>
+  <% end %>
+
+  <% if @problem.interlib_type == 1 %>
     <div class="form-group">
-      <%= f.label :interlib, raw('Interactive Library ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
+      <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
       <%= f.text_area :interlib, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
   <% end %>

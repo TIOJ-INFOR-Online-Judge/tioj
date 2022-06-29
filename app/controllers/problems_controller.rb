@@ -58,7 +58,7 @@ class ProblemsController < ApplicationController
   end
 
   def create
-    @problem = Problem.new(problem_params)
+    @problem = Problem.new(check_compiler())
     respond_to do |format|
       if @problem.save
         format.html { redirect_to @problem, notice: 'Problem was successfully created.' }
@@ -72,7 +72,7 @@ class ProblemsController < ApplicationController
 
   def update
     respond_to do |format|
-      @problem.attributes = problem_params
+      @problem.attributes = check_compiler()
       pre_ids = @problem.testdata_sets.collect(&:id)
       changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
       if @problem.save
@@ -110,6 +110,10 @@ class ProblemsController < ApplicationController
       @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
     end
 
+    def set_compiler
+      @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+    end
+
     def reduce_list
       unless problem_params[:testdata_sets_attributes]
         return
@@ -120,26 +124,34 @@ class ProblemsController < ApplicationController
       end
     end
 
+    def check_compiler
+      params = problem_params.clone
+      if params[:specjudge_type].to_i != 0 and not params[:specjudge_compiler_id]
+        params[:specjudge_compiler_id] = Compiler.where(name: 'c++14').first.id
+      end
+      if params[:specjudge_type].to_i == 0 and params[:specjudge_compiler_id]
+        params[:specjudge_compiler_id] = nil
+      end
+      return params
+    end
+
     def recalc_score
-      logger.fatal 'meow'
       num_tasks = @problem.testdata.count
-      td_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+      tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
       @problem.submissions.select(:id).each_slice(256) do |s|
         ids = s.map(&:id).to_a
         arr = SubmissionTask.where(:submission_id => ids).
-            select(:submission_id, :position, :score).group_by(&:submission_id).map{|x, y|
-          sub_mp = y.map{|t| [t.position, t.score]}.to_h
-          score = td_map.map{|td, score|
-            td.size > 0 ? sub_mp.values_at(*td).map{|x| x ? x : 0}.min * score : 100 * score
-          }.sum / 100
-          score = [score, BigDecimal('1e+12') - 1].min.round(6)
-          '(%d, %s)' % [x, score.to_s]
-        }.join(',')
-        ActiveRecord::Base.connection.execute(
-            'INSERT INTO submissions (id, score) VALUES ' + arr +
-            ' ON DUPLICATE KEY UPDATE score = VALUES(score);')
+            select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
+          td_map = y.map{|t| [t.position, t.score]}.to_h
+          score = tdset_map.map{|td, td_score|
+            (td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score
+          }.sum / BigDecimal('100')
+          max_score = BigDecimal('1e+12') - 1
+          score = score.clamp(-max_score, max_score).round(6)
+          {id: x, score: score.to_s}
+        }
+        Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
       end
-      logger.fatal 'meow'
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
@@ -158,7 +170,9 @@ class ProblemsController < ApplicationController
         :page,
         :visible_state,
         :tag_list,
-        :problem_type,
+        :specjudge_type,
+        :specjudge_compiler_id,
+        :interlib_type,
         :sjcode,
         :interlib,
         :old_pid,
