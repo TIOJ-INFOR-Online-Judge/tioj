@@ -73,7 +73,7 @@
       <% Compiler.order(order: :asc).all.each do |c| %>
         <span class="button-checkbox">
           <%= button_tag c.name, type: "button", class: "btn", "data-color": "danger" %>
-          <%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c), hidden: true %> 
+          <%= check_box_tag "contest[compiler_ids][]", c.id, @ban_compiler_ids.include?(c.id), hidden: true %> 
         </span>
       <% end %>
     <% end %>

@@ -212,7 +212,10 @@ class SubmissionsController < ApplicationController
   end
 
   def set_compiler
-    @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+    @compiler = Compiler.where.not(id: @problem.compilers.map{|x| x.id})
+    if @contest
+      @compiler = @compiler.where.not(id: @contest.compilers.map{|x| x.id})
+    end
     @compiler = @compiler.order(order: :asc).to_a
   end
 

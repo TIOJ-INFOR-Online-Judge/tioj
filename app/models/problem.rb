@@ -30,6 +30,9 @@ class Problem < ActiveRecord::Base
   has_many :contest_problem_joints, dependent: :destroy
   has_many :contests, :through => :contest_problem_joints
 
+  has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
+  has_many :compilers, :through => :ban_compilers, :as => :with_compiler
+
   has_many :testdata, dependent: :destroy
   accepts_nested_attributes_for :testdata, :allow_destroy => true, :reject_if => :all_blank
 

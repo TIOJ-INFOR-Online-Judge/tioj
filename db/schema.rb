@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_30_053717) do
+ActiveRecord::Schema.define(version: 2022_06_30_082950) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
@@ -67,12 +67,14 @@ ActiveRecord::Schema.define(version: 2022_06_30_053717) do
   end
 
   create_table "ban_compilers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
-    t.bigint "contest_id"
     t.bigint "compiler_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "with_compiler_type"
+    t.bigint "with_compiler_id"
     t.index ["compiler_id"], name: "fk_rails_6b2cbab705"
-    t.index ["contest_id", "compiler_id"], name: "index_ban_compilers_on_contest_id_and_compiler_id", unique: true
+    t.index ["with_compiler_type", "with_compiler_id", "compiler_id"], name: "index_ban_compiler_unique", unique: true
+    t.index ["with_compiler_type", "with_compiler_id"], name: "index_ban_compilers_on_with_compiler_type_and_with_compiler_id"
   end
 
   create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
@@ -283,7 +285,6 @@ ActiveRecord::Schema.define(version: 2022_06_30_053717) do
   end
 
   add_foreign_key "ban_compilers", "compilers"
-  add_foreign_key "ban_compilers", "contests"
   add_foreign_key "posts", "contests"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "submissions", "compilers"

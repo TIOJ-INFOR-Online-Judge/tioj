@@ -141,6 +141,7 @@ class ContestsController < ApplicationController
   end
 
   def edit
+    @ban_compiler_ids = @contest.compilers.map(&:id).to_set
     set_page_title ("Edit contest - " + @contest.title)
   end
 
@@ -202,10 +203,10 @@ class ContestsController < ApplicationController
       end
       return false
     end
-	if contest_params[:contest_problem_joints_attributes].nil?
+    if contest_params[:contest_problem_joints_attributes].nil?
       return true
-	end
-    ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
+    end
+    ret = contest_params[:contest_problem_joints_attributes].to_unsafe_h.map { |key, val| l_check(val) }
     return !ret.any?
   end
 
@@ -233,7 +234,7 @@ class ContestsController < ApplicationController
       :cd_time,
       :disable_discussion,
       :freeze_time,
-	  :show_detail_result,
+      :show_detail_result,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,

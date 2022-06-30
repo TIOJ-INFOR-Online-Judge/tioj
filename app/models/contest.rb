@@ -21,8 +21,9 @@ class Contest < ActiveRecord::Base
   has_many :problems, :through => :contest_problem_joints
   has_many :submissions
   has_many :posts
-  has_many :ban_compilers, :dependent => :destroy
-  has_many :compilers, :through => :ban_compilers
+
+  has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
+  has_many :compilers, :through => :ban_compilers, :as => :with_compiler
 
   validates :start_time, :presence => true
   validates :end_time, :presence => true

@@ -10,6 +10,6 @@
 #
 
 class BanCompiler < ActiveRecord::Base
-  belongs_to :contest
+  belongs_to :with_compiler, :polymorphic => true
   belongs_to :compiler
 end

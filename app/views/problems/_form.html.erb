@@ -104,6 +104,19 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :compilers do %>
+      Banned compilers
+      <br>
+      <% Compiler.order(order: :asc).all.each do |c| %>
+        <span class="button-checkbox">
+          <%= button_tag c.name, type: "button", class: "btn", "data-color": "danger" %>
+          <%= check_box_tag "problem[compiler_ids][]", c.id, @ban_compiler_ids.include?(c.id), hidden: true %> 
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+
   <% if @problem.specjudge_type != 0 %>
     <div class="form-group">
       <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
@@ -217,7 +230,8 @@
 <% end %>
 
 <script>
-    $(document).on('nested:fieldRemoved',function(event){
-        event.field.find("input").removeAttr("min max required");
+  $(document).on('nested:fieldRemoved',function(event){
+      event.field.find("input").removeAttr("min max required");
     });
+  contest_form_style_main();
 </script>

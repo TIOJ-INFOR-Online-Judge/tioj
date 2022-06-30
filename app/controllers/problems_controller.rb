@@ -77,10 +77,12 @@ class ProblemsController < ApplicationController
   end
 
   def edit
+    @ban_compiler_ids = @problem.compilers.map(&:id).to_set
     set_page_title "Edit " + @problem.id.to_s + " - " + @problem.name
   end
 
   def create
+    params[:problem][:compiler_ids] ||= []
     @problem = Problem.new(check_compiler())
     respond_to do |format|
       if @problem.save
@@ -94,6 +96,7 @@ class ProblemsController < ApplicationController
   end
 
   def update
+    params[:problem][:compiler_ids] ||= []
     respond_to do |format|
       @problem.attributes = check_compiler()
       pre_ids = @problem.testdata_sets.collect(&:id)
@@ -200,6 +203,7 @@ class ProblemsController < ApplicationController
         :sjcode,
         :interlib,
         :old_pid,
+        compiler_ids: [],
         testdata_sets_attributes:
         [
           :id,

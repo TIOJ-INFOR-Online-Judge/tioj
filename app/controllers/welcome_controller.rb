@@ -5,7 +5,7 @@ class WelcomeController < ApplicationController
       @bulletins = @bulletins.where(public: true)
     end
     @bulletins = @bulletins.limit(5)
-    @contests = Contest.order("id DESC").limit(3)
+    @contests = Contest.order(id: :desc).limit(3)
     @users = get_sorted_user(10)
   end
 
