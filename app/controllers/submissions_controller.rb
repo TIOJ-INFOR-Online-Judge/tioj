@@ -32,7 +32,6 @@ class SubmissionsController < ApplicationController
     unless user_signed_in? and current_user.admin?
       @submissions = @submissions.preload(:contest)
     end
-    @submissions = @submissions.select("STRAIGHT_JOIN `submissions`.*");
     set_page_title "Submissions"
   end
 
@@ -195,7 +194,10 @@ class SubmissionsController < ApplicationController
       end
     end
     @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?
-    @submissions = @submissions.joins("INNER JOIN users ON submissions.user_id = users.id").where("users.username LIKE ?", params[:filter_username]) if not params[:filter_username].blank?
+    if not params[:filter_username].blank?
+      usr_clause = User.select(:id).where('username LIKE ?', params[:filter_username]).to_sql
+      @submissions = @submissions.where("user_id IN (#{usr_clause})")
+    end
     @submissions = @submissions.where(user_id: params[:filter_user_id]) if not params[:filter_user_id].blank?
     @submissions = @submissions.where(result: params[:filter_status]) if not params[:filter_status].blank?
     @submissions = @submissions.where(compiler_id: params[:filter_compiler].map{|x| x.to_i}) if not params[:filter_compiler].blank?

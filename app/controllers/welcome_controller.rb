@@ -6,7 +6,7 @@ class WelcomeController < ApplicationController
     end
     @bulletins = @bulletins.limit(5)
     @contests = Contest.order("id DESC").limit(3)
-    @users = get_sorted_user.take(10)
+    @users = get_sorted_user(10)
   end
 
   def edit_announcement

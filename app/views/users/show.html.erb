@@ -11,36 +11,44 @@
     <!--<% @user.email %><br/>-->
     <br>
     <% if not @user.motto.blank? %><blockquote><dfn><%= @user.motto %></dfn></blockquote><% end %>
-    <div class="row">
-      <div class="col-md-7">
-        Tried and accepted:<br>
-        Tried but in vain:<br>
-        AC Ratio:
-      </div>
-      <div class="col-md-5">
-        <%= @user.ac_count %><br>
-        <%= @user.in_vain_count %><br>
-        <%= ac_ratio_by_user(@user) %>
-      </div>
-    </div>
+    <table>
+      <tr>
+        <td class="col-md-7">Tried and accepted (+contests):</td>
+        <td class="col-md-5"><%= @tried.count{|x| x == 1} %></td>
+      </tr>
+      <tr>
+        <td class="col-md-7">Tried but in vain (+contests):</td>
+        <td class="col-md-5"><%= @tried.count{|x| x == 2} %></td>
+      </tr>
+      <tr>
+        <td class="col-md-7">AC Ratio (-contests):</td>
+        <td class="col-md-5"><%= ac_ratio_by_user(@user) %></td>
+      </tr>
+    </table>
     <br>
     <% if user_signed_in? and (current_user.id == @user.id or current_user.admin?) %>
-      <div class="row">
-        <div class="col-md-5">
-          Admin:<br>
-          Name:<br>
-          School:<br>
-          Gradyear:<br>
-          Email:
-        </div>
-        <div class="col-md-7">
-          <%= @user.admin %><br>
-          <%= @user.name %><br>
-          <%= @user.school %><br>
-          <%= @user.gradyear %><br>
-          <%= @user.email %>
-        </div>
-      </div>
+      <table>
+        <tr>
+          <td class="col-md-3">Admin:</td>
+          <td class="col-md-9"><%= @user.admin %></td>
+        </tr>
+        <tr>
+          <td class="col-md-3">Name:</td>
+          <td class="col-md-9"><%= @user.name %></td>
+        </tr>
+        <tr>
+          <td class="col-md-3">School:</td>
+          <td class="col-md-9"><%= @user.school %></td>
+        </tr>
+        <tr>
+          <td class="col-md-3">Gradyear:</td>
+          <td class="col-md-9"><%= @user.gradyear %></td>
+        </tr>
+        <tr>
+          <td class="col-md-3">Email:</td>
+          <td class="col-md-9"><%= @user.email %></td>
+        </tr>
+      </table>
       <br>
     <% end %>
     Signed up at: <%= @user.created_at.to_s(:clean) %><br>

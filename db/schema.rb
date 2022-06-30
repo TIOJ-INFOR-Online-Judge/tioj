@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_30_042509) do
+ActiveRecord::Schema.define(version: 2022_06_30_053717) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
@@ -201,10 +201,12 @@ ActiveRecord::Schema.define(version: 2022_06_30_042509) do
     t.text "message", limit: 16777215
     t.bigint "compiler_id", default: 1, null: false
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
+    t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
+    t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder", order: { score: :desc }
+    t.index ["contest_id", "problem_id", "user_id", "result"], name: "index_submissions_problem_query"
+    t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result", order: { id: :desc }
+    t.index ["contest_id", "user_id", "problem_id", "result"], name: "index_submissions_user_query"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
-    t.index ["problem_id"], name: "index_submissions_on_problem_id"
-    t.index ["result"], name: "index_submissions_on_result"
-    t.index ["total_time", "total_memory"], name: "submissions_sort_ix"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 

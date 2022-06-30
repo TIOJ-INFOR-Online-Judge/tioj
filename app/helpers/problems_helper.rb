@@ -23,21 +23,19 @@ module ProblemsHelper
     return User.where(id: subs.map(&:user_id).uniq).index_by(&:id)
   end
 
-  def users_ac_ratio(problem)
-    all = problem.submissions.where(contest_id: nil).select("MIN(result) as result").group(:user_id).map{|a| a.result}
-    ac = all.count{|a| a == "AC"}
-    all = all.count
-    ratio = "%.1f%%" % (100.0 * ac / all)
-    ranklist_page = link_to ac.to_s + "/" + all.to_s, problem_ranklist_path(problem.id)
-    return raw ( ratio + " (" + ranklist_page + ")" )
-  end
-
   def ratio_text(ac, all)
     return "%.1f%%" % (100.0 * ac / all)
   end
 
+  def users_ac_ratio(problem)
+    all = problem.submissions.select('COUNT(DISTINCT user_id) cnt').first.cnt
+    ac = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(result: 'AC').first.cnt
+    ranklist_page = link_to ac.to_s + "/" + all.to_s, problem_ranklist_path(problem.id)
+    return raw ( ratio_text(ac, all) + " (" + ranklist_page + ")" )
+  end
+
   def submissions_ac_ratio(problem)
-    all = problem.submissions.where(contest_id: nil).select(:result)
+    all = problem.submissions.where(contest_id: nil)
     ac = all.where(result: 'AC').count
     all = all.count
     ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"

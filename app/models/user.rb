@@ -67,57 +67,6 @@ class User < ActiveRecord::Base
   validates_length_of :username, :in => 3..20
   validates_length_of :motto, :maximum => 75
 
-  def ac_count
-    submits = self.submissions.select do |s|
-      s.result == "AC" && s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-    submits.count
-  end
-
-  def in_vain_count
-    submits = self.submissions.select do |s|
-      s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-    submits.count - self.ac_count
-  end
-
-  def ac_ratio
-    all = self.submissions.select do |s|
-      s.contest_id == nil
-    end
-    ac = all.select do |s|
-      s.result == "AC"
-    end
-    all = all.count
-    ac = ac.count
-    ratio = (100.0 * ac / all)
-    if ratio.nan?
-      ratio = 0.0
-    end
-    ratio
-  end
-
-  def uniq_submits_by_res(res="AC")
-    submits = self.submissions.select do |s|
-      s.result == res && s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-  end
-
-  def prob_by_res(res="AC")
-    submits = self.uniq_submits_by_res(res)
-    submits = submits.collect do |s|
-      s.problem_id
-    end
-  end
   extend FriendlyId
   friendly_id :username
 end

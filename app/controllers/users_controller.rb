@@ -3,6 +3,7 @@ class UsersController < ApplicationController
     @users = Kaminari.paginate_array(get_sorted_user).page(params[:page]).per(25)
     set_page_title "Users"
   end
+
   def show
     begin
       @user = User.friendly.find(params[:id])
@@ -14,11 +15,15 @@ class UsersController < ApplicationController
       redirect_to users_path, :alert => "Username '#{params[:id]}' not found."
       return
     end
-    @problems = Problem.select("id").order("id ASC")
-    tried = @user.submissions.select("problem_id, MIN(result) as result").group("problem_id")
+    @problems = Problem.select(:id).order(id: :asc)
+    tried = @user.submissions.select(:problem_id).group(:problem_id)
+    ac = @user.submissions.select(:problem_id).where(result: 'AC').group(:problem_id)
     @tried = Array.new(@problems.count + 1)
     tried.each do |t|
-      @tried[t.problem_id] = (t.result == "AC" ? 1 : 2)
+      @tried[t.problem_id] = 2
+    end
+    ac.each do |t|
+      @tried[t.problem_id] = 1
     end
 
     set_page_title @user.username

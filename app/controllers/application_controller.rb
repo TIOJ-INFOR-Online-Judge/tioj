@@ -94,8 +94,21 @@ protected
     @anno = JSON.parse(File.read("public/announcement/anno"))
   end
 
-  def get_sorted_user
-    User.select("users.*, count(distinct case when s.result='AC' then s.problem_id end) ac, ifnull(sum(s.result='AC'), 0) acsub,  count(s.id) sub, sum(s.result='AC') / count(s.id) acratio").joins("left join submissions s on s.user_id = users.id and s.contest_id is NULL").group("users.id").order('ac desc, acratio desc, sub desc, users.id').to_a
+  def get_sorted_user(limit = nil)
+    attributes = [
+      "users.*",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.problem_id END) ac",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) acsub",
+      "COUNT(s.id) sub",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) / COUNT(s.id) acratio",
+    ]
+    query = User.select(*attributes)
+        .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
+        .group(:id).order('ac DESC', 'acratio DESC', 'sub DESC', :id)
+    if limit
+      query = query.limit(limit)
+    end
+    query.to_a
   end
 
   def td_list_to_arr(str, sz)
