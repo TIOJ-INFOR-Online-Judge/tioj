@@ -2,19 +2,19 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_30_082950) do
+ActiveRecord::Schema.define(version: 2022_06_30_114055) do
 
-  create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
-    t.text "body", limit: 16777215
+    t.text "body", size: :medium
     t.string "resource_id", null: false
     t.string "resource_type", null: false
     t.bigint "author_id"
@@ -26,7 +26,35 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
-  create_table "admin_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", charset: "utf8mb3", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "admin_users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -45,9 +73,9 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["username"], name: "index_admin_users_on_username", unique: true
   end
 
-  create_table "articles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "articles", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
-    t.text "content", limit: 16777215
+    t.text "content", size: :medium
     t.bigint "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -58,7 +86,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["category", "pinned", "era"], name: "index_articles_on_category_and_pinned_and_era"
   end
 
-  create_table "attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "article_id"
     t.string "path"
     t.datetime "created_at"
@@ -66,7 +94,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["article_id"], name: "index_attachments_on_article_id"
   end
 
-  create_table "ban_compilers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "ban_compilers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "compiler_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -77,9 +105,9 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["with_compiler_type", "with_compiler_id"], name: "index_ban_compilers_on_with_compiler_type_and_with_compiler_id"
   end
 
-  create_table "comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
-    t.text "content", limit: 16777215
+    t.text "content", size: :medium
     t.bigint "user_id"
     t.bigint "post_id"
     t.datetime "created_at"
@@ -88,7 +116,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "compilers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "compilers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "format_type"
@@ -98,7 +126,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["name"], name: "index_compilers_on_name", unique: true
   end
 
-  create_table "contest_problem_joints", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "contest_problem_joints", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "contest_id"
     t.bigint "problem_id"
     t.datetime "created_at"
@@ -106,9 +134,9 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["contest_id", "problem_id"], name: "contest_task_ix", unique: true
   end
 
-  create_table "contests", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "contests", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
-    t.text "description", limit: 16777215
+    t.text "description", size: :medium
     t.datetime "start_time"
     t.datetime "end_time"
     t.integer "contest_type"
@@ -121,7 +149,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
-  create_table "judge_servers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "judge_servers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "ip"
     t.string "key"
@@ -129,7 +157,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.datetime "updated_at"
   end
 
-  create_table "limits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "limits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "time", default: 1000
     t.integer "memory", default: 65536
     t.integer "output", default: 65536
@@ -139,9 +167,9 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["testdatum_id"], name: "index_limits_on_testdatum_id"
   end
 
-  create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
-    t.text "content", limit: 16777215
+    t.text "content", size: :medium
     t.bigint "user_id"
     t.bigint "problem_id"
     t.datetime "created_at"
@@ -153,20 +181,20 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
-  create_table "problems", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "problems", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
-    t.text "description", limit: 16777215
-    t.text "source", limit: 16777215
+    t.text "description", size: :medium
+    t.text "source", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text "input", limit: 16777215
-    t.text "output", limit: 16777215
-    t.text "example_input", limit: 16777215
-    t.text "example_output", limit: 16777215
-    t.text "hint", limit: 16777215
+    t.text "input", size: :medium
+    t.text "output", size: :medium
+    t.text "example_input", size: :medium
+    t.text "example_output", size: :medium
+    t.text "hint", size: :medium
     t.integer "visible_state", default: 0
-    t.text "sjcode", limit: 4294967295
-    t.text "interlib", limit: 4294967295
+    t.text "sjcode", size: :long
+    t.text "interlib", size: :long
     t.integer "old_pid"
     t.integer "specjudge_type", null: false
     t.integer "interlib_type", null: false
@@ -176,7 +204,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["visible_state"], name: "index_problems_on_visible_state"
   end
 
-  create_table "submission_tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "submission_tasks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.integer "position"
     t.string "result"
@@ -189,8 +217,8 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["submission_id"], name: "index_submission_tasks_on_submission_id"
   end
 
-  create_table "submissions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
-    t.text "code", limit: 4294967295
+  create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.text "code", size: :long
     t.string "result", default: "queued"
     t.decimal "score", precision: 18, scale: 6, default: "0.0"
     t.datetime "created_at"
@@ -200,7 +228,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.bigint "contest_id"
     t.integer "total_time"
     t.integer "total_memory"
-    t.text "message", limit: 16777215
+    t.text "message", size: :medium
     t.bigint "compiler_id", default: 1, null: false
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
@@ -212,7 +240,7 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
-  create_table "taggings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"
@@ -231,13 +259,13 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
   end
 
-  create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "testdata", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.string "test_input"
     t.string "test_output"
@@ -246,17 +274,17 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.integer "position"
   end
 
-  create_table "testdata_sets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "td_list", null: false
-    t.text "constraints", limit: 16777215
+    t.text "constraints", size: :medium
     t.index ["problem_id"], name: "index_testdata_sets_on_problem_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -284,6 +312,8 @@ ActiveRecord::Schema.define(version: 2022_06_30_082950) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "posts", "contests"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
