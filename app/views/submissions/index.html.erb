@@ -42,7 +42,7 @@
   </div>
   <div class="form-group">
     <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple="multiple" title="Select Compiler">
-      <% Compiler.all.each do |x| %>
+      <% Compiler.order(order: :asc).all.each do |x| %>
         <option value="<%= x.id %>"><%= x.name %></option>
       <% end %>
     </select>
@@ -118,7 +118,7 @@ $("button:not([type='submit'])").attr("type", "button");
           <% else %>
             <td><%= submission.result %></td>
         <% end %>
-        <td><%= compiler_id_name(submission.compiler.id) %></td>
+        <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code.bytesize) %></td>
         <td><%= sprintf("%g", submission.score) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>

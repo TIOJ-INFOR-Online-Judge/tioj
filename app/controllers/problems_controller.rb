@@ -135,6 +135,7 @@ class ProblemsController < ApplicationController
 
     def set_compiler
       @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+      @compiler = @compiler.order(order: :asc).to_a
     end
 
     def reduce_list

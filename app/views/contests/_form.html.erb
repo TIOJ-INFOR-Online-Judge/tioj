@@ -70,11 +70,11 @@
     <%= f.label :compilers do %>
       Banned compilers
       <br>
-      <% Compiler.all.each do |c| %>
-	    	<span class="button-checkbox">
-		  		<%= button_tag c.name, type: "button", class: "btn", "data-color": "danger" %>
-		  		<%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c), hidden: true %> 
-				</span>
+      <% Compiler.order(order: :asc).all.each do |c| %>
+        <span class="button-checkbox">
+          <%= button_tag c.name, type: "button", class: "btn", "data-color": "danger" %>
+          <%= check_box_tag "contest[compiler_ids][]", c.id, f.object.compilers.include?(c), hidden: true %> 
+        </span>
       <% end %>
     <% end %>
   </div>

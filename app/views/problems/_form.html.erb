@@ -107,7 +107,7 @@
   <% if @problem.specjudge_type != 0 %>
     <div class="form-group">
       <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
-      <%= f.select :specjudge_compiler_id, @compiler.map{|x| [x.description, x.id]},
+      <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @compiler[0].id),
           {}, {:class => 'form-control flat'} %>
     </div>
     <div class="form-group">
@@ -155,7 +155,7 @@
                   max_rss_kb: 68488,
                 },
               }) %></pre>
-              Note: <code>original_verdict</code> will be an empty string if the program terminated normally. If you use C++, you can <code>#include "nlohmann/json.hpp"</code><a href="https://github.com/nlohmann/json/tree/v3.10.5">(docs)</a> for manipulating JSON objects.<br>
+              Note: <code>original_verdict</code> will be an empty string if the program terminated normally.<br>
               The program must output a JSON object to stdout with the following fields:
               <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
                 verdict: 'AC',
@@ -164,8 +164,9 @@
                 vss_kib: 66888,
                 rss_kib: 44888,
               }) %></pre>
-              Note: <code>score</code> can be given by float or string. All fields other than <code>verdict</code> are optional.
+              Note: <code>score</code> can be given by float or string. All fields other than <code>verdict</code> are optional.<br>
             <% end %>
+            <code>#include "testlib.h"</code> (<a href="https://github.com/MikeMirzayanov/testlib/tree/6daa79fdc9c2b113be8d40f828e3dc81e67ce33d">docs</a>) and <code>#include "nlohmann/json.hpp"</code> (<a href="https://github.com/nlohmann/json/tree/v3.10.5">docs</a>) are provided for C++ special judge programs. If you're using <code>testlib</code>, note that the <code>argv</code> format of TIOJ is different from that required by the library, thus some preprocessing is needed before calling <code>registerTestlibCmd</code>.
           </div>
         </div>
       </div>

@@ -16,17 +16,16 @@
 //= require jquery_ujs
 //= require popper
 //= require bootstrap
+//= require bootstrap-select.min
 //= require jquery.tagsinput
 
 //= require jquery-ui-1.10.3.custom.min
 //= require jquery.ui.touch-punch.min
-//= require bootstrap.min
 //= require flatui-checkbox
 //= require flatui-radio
 //= require jquery.placeholder
 // require jquery.turbolinks
 // require turbolinks
-//= require bootstrap-select
 //= require bootstrap-switch
 //= require bootstrap-notify.min
 //= require jquery_nested_form

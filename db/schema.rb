@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_29_054123) do
+ActiveRecord::Schema.define(version: 2022_06_30_042509) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
@@ -92,6 +92,8 @@ ActiveRecord::Schema.define(version: 2022_06_29_054123) do
     t.string "format_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order"
+    t.index ["name"], name: "index_compilers_on_name", unique: true
   end
 
   create_table "contest_problem_joints", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
