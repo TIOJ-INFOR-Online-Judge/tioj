@@ -1,6 +1,6 @@
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -9,8 +9,7 @@ Bundler.require(*Rails.groups)
 module Tioj
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
-    config.autoloader = :zeitwerk
+    config.load_defaults 7.0
     config.time_zone = "Taipei"
     config.site_name = "TIOJ INFOR Online Judge"
     ActsAsTaggableOn.strict_case_match = true

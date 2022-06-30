@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem "passenger", "~> 6", require: "phusion_passenger/rack_handler"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6'
+gem 'rails', '~> 7'
 gem 'rdoc', '~> 6'
 gem 'bootsnap', require: false
 
@@ -50,7 +50,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
-gem 'mathjax-rails', git: 'https://github.com/adrien1018/mathjax-rails.git', ref: '3470f7ab623e5be7e1b67daa30d5fdb620f0f19f'
+gem 'mathjax-rails', git: 'https://github.com/adrien1018/mathjax-rails.git', tag: 'v3.2.2'
 
 # tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
@@ -96,6 +96,9 @@ gem 'jquery-tablesorter'
 
 # Activerecord-import for bulk insert
 gem 'activerecord-import'
+
+# Fix warning: https://stackoverflow.com/questions/67773514/getting-warning-already-initialized-constant-on-assets-precompile-at-the-time
+gem 'net-http'
 
 # Bullet for debugging
 gem 'bullet', group: 'development'

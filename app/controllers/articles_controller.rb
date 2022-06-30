@@ -3,15 +3,26 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :edit, :update, :destroy]
 
   def index
-    @articles = Article.where(era: get_era, category: 0).order(pinned: :desc, id: :desc)
-    @courses = Article.where(era: get_era, category: 1).order(pinned: :desc, id: :desc)
+    @era_list = Article
+    unless user_signed_in?
+      @era_list = @era_list.where(public: true)
+    end
+    @era_list = @era_list.distinct.order(era: :desc).pluck(:era)
+    if params[:era] == nil
+      now_era = @era_list[0]
+    else
+      now_era = params[:era].to_i
+    end
+
+    @articles = Article.where(era: now_era, category: 0).order(pinned: :desc, id: :desc)
+    @courses = Article.where(era: now_era, category: 1).order(pinned: :desc, id: :desc)
     unless user_signed_in?
       @articles = @articles.where(public: true)
       @courses = @courses.where(public: true)
     end
     @articles = @articles.includes(:user)
     @courses = @courses.includes(:user)
-    @era = get_era.to_s
+    @era = now_era.to_s
   end
 
   def show
