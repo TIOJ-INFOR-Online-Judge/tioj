@@ -111,11 +111,64 @@
           {}, {:class => 'form-control flat'} %>
     </div>
     <div class="form-group">
-      <% if @problem.specjudge_type == 1 %>
-        <%= f.label :sjcode, raw("Special Judge Code (output 0 for AC, otherwise WA)<br><code>argv[1]: path to testee output</code>  <code>argv[2]: path to testdata input</code>  <code>argv[3]: path to testdata output</code>  <code>argv[4]: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</code>  <code>argv[5]: path to source code</code>") %>
-      <% else %>
-        <%= f.label :sjcode, raw("Special Judge Code") %>
-      <% end %>
+      <%= f.label :sjcode, raw('Special Judge Code <a class="glyphicon glyphicon-question-sign" data-toggle="collapse" href="#sjDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a></label>') %>
+      <div class="collapse" id="sjDescription" style="height: auto;">
+        <div class="panel panel-default">
+          <div class="panel-body small">
+            <% if @problem.specjudge_type == 1 %>
+              Output <code>0</code> to stdout for AC, WA otherwise. This program will only be called when the user program terminated normally.<br>
+              <div style="line-height: 1.3;">
+                <code>argv[1]</code>: path to testee output<br>
+                <code>argv[2]</code>: path to testdata input<br>
+                <code>argv[3]</code>: path to testdata output<br>
+                <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
+                <code>argv[5]</code>: path to source code
+              </div>
+            <% else %>
+              This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
+              The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
+              <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
+                input_file: 'path_to_testdata_input',
+                answer_file: 'path_to_testdata_answer',
+                user_output_file: 'path_to_user_output',
+                user_code_file: 'path_to_user_source_code',
+                problem_id: 1234,
+                submission_id: 123456,
+                submitter_id: 123,
+                submitter_name: 'username',
+                submission_time: 1656430000,
+                compiler: 'c++14/python2/etc.',
+                testdata_index: 0,
+                limits: {
+                  time_us: 1000000,
+                  vss_kb: 262144,
+                  rss_kb: 0,
+                  output_kb: 262144,
+                },
+                stats: {
+                  original_verdict: 'TLE',
+                  exit_code: 0,
+                  real_us: 512345,
+                  user_us: 412345,
+                  sys_us: 98765,
+                  max_vss_kb: 80004,
+                  max_rss_kb: 68488,
+                },
+              }) %></pre>
+              Note: <code>original_verdict</code> will be an empty string if the program terminated normally. If you use C++, you can <code>#include "nlohmann/json.hpp"</code><a href="https://github.com/nlohmann/json/tree/v3.10.5">(docs)</a> for manipulating JSON objects.<br>
+              The program must output a JSON object to stdout with the following fields:
+              <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
+                verdict: 'AC',
+                score: '1.35',
+                time_us: 123456,
+                vss_kib: 66888,
+                rss_kib: 44888,
+              }) %></pre>
+              Note: <code>score</code> can be given by float or string. All fields other than <code>verdict</code> are optional.
+            <% end %>
+          </div>
+        </div>
+      </div>
       <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
   <% end %>

@@ -14,7 +14,8 @@
 //= require jquery
 //= require_tree .
 //= require jquery_ujs
-//  require twitter/bootstrap
+//= require popper
+//= require bootstrap
 //= require jquery.tagsinput
 
 //= require jquery-ui-1.10.3.custom.min
