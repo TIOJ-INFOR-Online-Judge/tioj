@@ -20,7 +20,7 @@ class Contest < ActiveRecord::Base
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints
   has_many :submissions
-  has_many :posts
+  has_many :posts, :dependent => :destroy
 
   has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
   has_many :compilers, :through => :ban_compilers, :as => :with_compiler

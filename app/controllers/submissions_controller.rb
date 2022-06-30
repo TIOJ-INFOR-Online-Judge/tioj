@@ -219,7 +219,7 @@ class SubmissionsController < ApplicationController
   end
 
   def check_compiler
-    unless @compiler.exists?(submission_params[:compiler_id].to_i)
+    unless @compiler.any? { |c| c.id == submission_params[:compiler_id].to_i }
       redirect_to submissions_path, alert: 'Invalid compiler.'
       return
     end

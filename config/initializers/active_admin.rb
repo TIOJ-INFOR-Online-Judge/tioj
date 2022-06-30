@@ -244,9 +244,11 @@ ActiveAdmin.setup do |config|
 
 end
 
-class ActiveAdmin::Devise::SessionsController
-   include ::ActiveAdmin::Devise::Controller
-   def after_sign_in_path_for(resource)
-       '/admin'
-   end
+Rails.application.config.to_prepare do
+  class ActiveAdmin::Devise::SessionsController
+    include ::ActiveAdmin::Devise::Controller
+    def after_sign_in_path_for(resource)
+        '/admin'
+    end
+  end
 end

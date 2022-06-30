@@ -16,7 +16,7 @@
  * Somehow the ".default" in theme.default is stripped by sprocket 4 asset finding logic.
  * We add another .default to as an dirty hack to make it find the correct asset.
  *
- *= require jquery-tablesorter/theme.default.default.css
+ *= require jquery-tablesorter/theme.blue
  *= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
  *= require animate
  */

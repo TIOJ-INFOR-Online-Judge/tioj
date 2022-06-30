@@ -16,6 +16,7 @@ ActiveAdmin.register Problem do
   filter :specjudge_type
   filter :specjudge_compiler_id
   filter :interlib_type
+  includes :specjudge_compiler
 
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

@@ -123,7 +123,7 @@
     <% end %>
   </div>
 
-  <% if @problem.specjudge_type != 0 %>
+  <% if (@problem.specjudge_type || 0) != 0 %>
     <div class="form-group">
       <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
       <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @compiler[0].id),
