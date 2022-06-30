@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem "passenger", "~> 6", require: "phusion_passenger/rack_handler"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5'
-gem 'rdoc', '~> 4.0'
+gem 'rails', '~> 6'
+gem 'rdoc', '~> 6'
 gem 'bootsnap', require: false
 
 # Use mysql2 as the database for Active Record
@@ -12,7 +12,7 @@ gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
-gem 'bootstrap-sass'
+gem 'bootstrap-sass', '~> 3'
 gem 'popper_js'
 gem 'sprockets', '~> 4'
 # user
@@ -83,7 +83,6 @@ gem 'friendly_id'
 # annotate (showing model info in model.rb)
 gem 'annotate'
 
-gem 'seo_helper'
 gem 'nokogiri' #getting old tioj probs
 
 # Timezone data

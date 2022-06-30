@@ -11,6 +11,7 @@ module Tioj
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.0
     config.time_zone = "Taipei"
+    config.site_name = "TIOJ INFOR Online Judge"
     ActsAsTaggableOn.strict_case_match = true
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

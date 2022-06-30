@@ -116,7 +116,6 @@ class ContestsController < ApplicationController
   end
 
   def dashboard
-    set_page_title ("Dashboard - " + @contest.title)
   end
 
   def dashboard_update
@@ -127,22 +126,19 @@ class ContestsController < ApplicationController
 
   def index
     @contests = Contest.order("id DESC").page(params[:page])
-    set_page_title "Contests"
   end
 
   def show
-    set_page_title @contest.title
   end
 
   def new
     @contest = Contest.new
     1.times { @contest.contest_problem_joints.build }
-    set_page_title "New contest"
+    @ban_compiler_ids = Set[]
   end
 
   def edit
     @ban_compiler_ids = @contest.compilers.map(&:id).to_set
-    set_page_title ("Edit contest - " + @contest.title)
   end
 
   def create

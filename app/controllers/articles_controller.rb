@@ -12,11 +12,9 @@ class ArticlesController < ApplicationController
     @articles = @articles.includes(:user)
     @courses = @courses.includes(:user)
     @era = get_era.to_s
-    set_page_title "Bulletin - " + @era
   end
 
   def show
-    set_page_title @article.title
   end
 
   def create
@@ -35,11 +33,9 @@ class ArticlesController < ApplicationController
 
   def new
     @article = Article.new
-    set_page_title "New article"
   end
 
   def edit
-    set_page_title "Edit - " + @article.title
   end
 
   def update

@@ -1,3 +1,9 @@
+<% if @problem.persisted? %>
+  <% set_page_title "Edit " + @problem.id.to_s + " - " + @problem.name %>
+<% else %>
+  <% set_page_title "New problem" %>
+<% end %>
+
 <%= nested_form_for @problem, :html => {:class => 'form'} do |f| %>
   <% if @problem.errors.any? %>
     <div id="error_explanation">

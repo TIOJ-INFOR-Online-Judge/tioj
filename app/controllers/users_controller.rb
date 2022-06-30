@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   def index
     @users = Kaminari.paginate_array(get_sorted_user).page(params[:page]).per(25)
-    set_page_title "Users"
   end
 
   def show
@@ -25,7 +24,5 @@ class UsersController < ApplicationController
     ac.each do |t|
       @tried[t.problem_id] = 1
     end
-
-    set_page_title @user.username
   end
 end

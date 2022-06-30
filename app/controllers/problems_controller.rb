@@ -2,7 +2,7 @@ class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_action :set_contest, only: [:show]
-  before_action :set_compiler, only: [:edit]
+  before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
   layout :set_contest_layout, only: [:show]
 
@@ -10,7 +10,6 @@ class ProblemsController < ApplicationController
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
         .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")
         .includes(:compiler))
-    set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name
   end
 
   def index
@@ -46,8 +45,6 @@ class ProblemsController < ApplicationController
         .joins("LEFT JOIN submissions s ON s.problem_id = problems.id AND s.contest_id IS NULL")
         .group(:id)
         .index_by(&:id))
-
-    set_page_title "Problems"
   end
 
   def show
@@ -68,17 +65,15 @@ class ProblemsController < ApplicationController
     end
     @tdlist = inverse_td_list(@problem)
     #@contest_id = params[:contest_id]
-    set_page_title @problem.id.to_s + " - " + @problem.name
   end
 
   def new
     @problem = Problem.new
-    set_page_title "New problem"
+    @ban_compiler_ids = Set[]
   end
 
   def edit
     @ban_compiler_ids = @problem.compilers.map(&:id).to_set
-    set_page_title "Edit " + @problem.id.to_s + " - " + @problem.name
   end
 
   def create

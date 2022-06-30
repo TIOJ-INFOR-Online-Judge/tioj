@@ -52,4 +52,19 @@ module ApplicationHelper
   def rejudge_glyph
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
+
+  def page_title(title)
+    title.empty? ? Rails.application.config.site_name : title
+  end
+
+  def set_page_title(title, site_name = nil)
+    site_name ||= Rails.application.config.site_name
+    if params[:page]
+      @page_title = "#{title} - Page #{params[:page]}"
+    else
+      @page_title = title
+    end
+    @page_title = "#{@page_title} | #{site_name}"
+    content_for :title, @page_title
+  end
 end

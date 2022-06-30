@@ -32,7 +32,6 @@ class SubmissionsController < ApplicationController
     unless user_signed_in? and current_user.admin?
       @submissions = @submissions.preload(:contest)
     end
-    set_page_title "Submissions"
   end
 
   def show
@@ -50,7 +49,6 @@ class SubmissionsController < ApplicationController
     }.to_h
     @tdlist = @submission.problem.testdata_sets
     @invtdlist = inverse_td_list(@submission.problem)
-    set_page_title "Submission - " + @submission.id.to_s
   end
 
   def new
@@ -76,7 +74,6 @@ class SubmissionsController < ApplicationController
     end
     @submission = Submission.new
     @contest_id = params[:contest_id]
-    set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name
   end
 
   def create
@@ -136,7 +133,6 @@ class SubmissionsController < ApplicationController
   end
 
   def edit
-    set_page_title "Edit submission - " + @submission.id.to_s
   end
 
   def update
@@ -212,6 +208,9 @@ class SubmissionsController < ApplicationController
   end
 
   def set_compiler
+    if not @problem
+      @problem = @submission.problem
+    end
     @compiler = Compiler.where.not(id: @problem.compilers.map{|x| x.id})
     if @contest
       @compiler = @compiler.where.not(id: @contest.compilers.map{|x| x.id})

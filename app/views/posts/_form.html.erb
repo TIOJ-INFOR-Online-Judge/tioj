@@ -1,3 +1,9 @@
+<% if @post.persisted? %>
+  <% set_page_title "Edit post - " + @post.title %>
+<% else %>
+  <% set_page_title "New post" %>
+<% end %>
+
 <% form_target = @post %>
 <% if @contest %>
   <% form_target = @problem ? [@contest, @problem, @post] : [@contest, @post] %>

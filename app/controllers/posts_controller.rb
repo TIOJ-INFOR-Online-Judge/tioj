@@ -9,11 +9,9 @@ class PostsController < ApplicationController
   def index
     @posts = @posts.order("updated_at DESC").page(params[:page]).includes(:user).preload(comments: :user)
     if @contest
-        @title = "Q & A"
-        set_page_title "Q & A"
+      @title = "Q & A"
     else
-        @title = "Discuss"
-        set_page_title = "Discuss"
+      @title = "Discuss"
     end
   end
 
@@ -21,18 +19,15 @@ class PostsController < ApplicationController
   # GET /posts/1.json
   def show
     @post = @posts.find(params[:id])
-    set_page_title "Discuss - " + @post.id.to_s
   end
 
   # GET /posts/new
   def new
     @post = @posts.build
-    set_page_title "New post"
   end
 
   # GET /posts/1/edit
   def edit
-    set_page_title "Edit post - " + @post.id.to_s
   end
 
   # POST /posts

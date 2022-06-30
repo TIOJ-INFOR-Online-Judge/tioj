@@ -1,3 +1,9 @@
+<% if @contest.persisted? %>
+  <% set_page_title "Edit contest - " + @contest.title %>
+<% else %>
+  <% set_page_title "New contest" %>
+<% end %>
+
 <%= nested_form_for(@contest) do |f| %>
    <% if @contest.errors.any? %>
        <div id="error_explanation">
