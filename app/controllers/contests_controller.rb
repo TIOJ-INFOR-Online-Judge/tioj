@@ -9,17 +9,10 @@ class ContestsController < ApplicationController
 
   def set_contest_task
     redirect_to contest_path(@contest)
-    case params[:alter_to].to_i
-      when 0
-        flash[:notice] = "Contest tasks set to public."
-      when 1
-        flash[:notice] = "Contest tasks set to only visible during contest."
-      when 2
-        flash[:notice] = "Contest tasks set to invisible."
-      else
-        return
-    end
-    @tasks.map{|a| a.update(:visible_state => params[:alter_to].to_i)}
+    alter_to = params[:alter_to].to_i
+    name = Problem.visible_states.key(alter_to)
+    flash[:notice] = "Contest tasks set to #{helpers.visible_state_desc_map[name]}."
+    @tasks.map{|a| a.update(:visible_state => alter_to)}
   end
 
   def calculate_ranking
@@ -28,7 +21,7 @@ class ContestsController < ApplicationController
     end
 
     c_submissions = nil
-    if @contest.contest_type == 1 and Time.now >= @contest.start_time and Time.now <= @contest.end_time
+    if @contest.type_ioi? and Time.now >= @contest.start_time and Time.now <= @contest.end_time
       authenticate_user!
       if not current_user.admin?
         c_submissions = @contest.submissions.where("user_id = ?", current_user.id)
@@ -58,7 +51,7 @@ class ContestsController < ApplicationController
     @submissions = @tasks.map{|x| @submissions[x.id] or []}
     first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
     @scores = []
-    if @contest.contest_type == 2
+    if @contest.type_acm?
       unless user_signed_in? and current_user.admin?
         freeze_start = @contest.end_time - @contest.freeze_time * 60
       else

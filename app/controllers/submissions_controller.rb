@@ -57,10 +57,10 @@ class SubmissionsController < ApplicationController
       return
     end
     unless current_user.admin?
-      if @problem.visible_state == 2
+      if @problem.visible_private?
         redirect_to action:'index'
         return
-      elsif @problem.visible_state == 1
+      elsif @problem.visible_contest?
         if params[:contest_id].blank?
           redirect_to action:'index'
           return
@@ -95,10 +95,10 @@ class SubmissionsController < ApplicationController
       return
     end
     unless current_user.admin?
-      if @problem.visible_state == 2
+      if @problem.visible_private?
         redirect_to action:'index'
         return
-      elsif @problem.visible_state == 1
+      elsif @problem.visible_contest?
         if params[:contest_id].blank?
           redirect_to action:'index'
           return
@@ -186,7 +186,7 @@ class SubmissionsController < ApplicationController
     else
       @submissions = @submissions.where(contest_id: nil)
       unless user_signed_in? and current_user.admin?
-       @submissions = @submissions.joins(:problem).where("problems.visible_state = 0")
+        @submissions = @submissions.joins(:problem).where(visible_state: :public)
       end
     end
     @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?

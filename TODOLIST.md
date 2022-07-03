@@ -3,12 +3,13 @@
 - [x] Remove `problem_type` & add `specjudge_type`, `specjudge_lang`, `interlib_type`
 - [x] Add problem banned compiler
 - [x] Rails 6
-- [ ] Refactor some integer DB fields to enum (e.g. problem type)
+- [x] Refactor some integer DB fields to enum (e.g. problem type)
 - [ ] Change post to optional polymorphism & allow post for problems
     - types: normal / issue / solution (reimplement PR #10); issue will also appear in global posts for admins
     - control discussion / view solution independently
-- [ ] Add RSS & VSS on limits & results
+- [ ] Add RSS & VSS on limits & results / change to us precision on td
 - [ ] Add priority at new fetch API
+- [ ] Add library implementation
 - [ ] Move current result to old & rejudge all submissions into new result
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs

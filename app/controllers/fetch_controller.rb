@@ -167,9 +167,9 @@ class FetchController < ApplicationController
       },
       problem: {
         id: @problem.id,
-        specjudge_type: @problem.specjudge_type,
+        specjudge_type: Problem.specjudge_types[@problem.specjudge_type],
         specjudge_compiler: @problem.specjudge_compiler&.name,
-        interlib_type: @problem.interlib_type,
+        interlib_type: Problem.interlib_types[@problem.interlib_type],
         sjcode: @problem.sjcode,
         interlib: @problem.interlib,
       },

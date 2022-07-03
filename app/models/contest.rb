@@ -17,6 +17,8 @@
 #
 
 class Contest < ActiveRecord::Base
+  enum :contest_type, {gcj: 0, ioi: 1, acm: 2}, prefix: :type
+
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints
   has_many :submissions

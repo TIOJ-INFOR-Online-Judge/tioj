@@ -78,4 +78,18 @@ module ProblemsHelper
     end
   end
 
+  def specjudge_type_desc_map
+    {
+      "none" => "Default compare",
+      "old" => "Old-style special judge",
+      "new" => "New-style special judge",
+    }
+  end
+
+  def interlib_type_desc_map
+    {
+      "none" => "No interactive library",
+      "header" => "With interactive library",
+    }
+  end
 end

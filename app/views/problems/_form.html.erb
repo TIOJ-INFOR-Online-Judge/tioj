@@ -38,23 +38,21 @@
     <div class="col-md-3">
       <div class="form-group">
         <%= f.label :visible_state %>
-        <%= f.select :visible_state, [["[0]Public", "0"],
-        ["[1]Visible during contest", "1"], ["[2]Invisible", "2"]], {}, {:class => 'form-control flat'} %>
+        <%= f.select :visible_state, Problem.visible_states.keys.map.with_index {|x, index| ["[#{index}] #{visible_state_desc_map[x].capitalize}", x]},
+          {}, {:class => 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-3">
       <div class="form-group">
         <%= f.label :specjudge_type, "Judge Type" %>
-        <%= f.select :specjudge_type,
-          [["[0]Default Compare", "0"], ["[1]Old-style Special Judge", "1"], ["[2]New-style Special Judge", "2"]],
+        <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
           {}, {:class => 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-3">
       <div class="form-group">
         <%= f.label :interlib_type, "Interactive Library Type" %>
-        <%= f.select :interlib_type,
-          [["[0]None", "0"], ["[1]Header", "1"]],
+        <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
           {}, {:class => 'form-control flat'} %>
       </div>
     </div>
@@ -123,7 +121,7 @@
     <% end %>
   </div>
 
-  <% if (@problem.specjudge_type || 0) != 0 %>
+  <% if @problem.specjudge_type and not @problem.specjudge_none? %>
     <div class="form-group">
       <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
       <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
@@ -134,7 +132,7 @@
       <div class="collapse" id="sjDescription" style="height: auto;">
         <div class="panel panel-default">
           <div class="panel-body small">
-            <% if @problem.specjudge_type == 1 %>
+            <% if @problem.specjudge_old? %>
               Output <code>0</code> to stdout for AC, WA otherwise. This program will only be called when the user program terminated normally.<br>
               <div style="line-height: 1.3;">
                 <code>argv[1]</code>: path to testee output<br>
@@ -143,7 +141,7 @@
                 <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
                 <code>argv[5]</code>: path to source code
               </div>
-            <% else %>
+            <% elsif @problem.specjudge_new? %>
               This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
               The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
               <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
@@ -194,7 +192,7 @@
     </div>
   <% end %>
 
-  <% if @problem.interlib_type == 1 %>
+  <% if @problem.interlib_header? %>
     <div class="form-group">
       <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
       <%= f.text_area :interlib, :class => 'form-control flat code-input', :rows => '7' %>

@@ -56,7 +56,7 @@ th {
       <th>#</th>
       <th></th>
       <th>Submitter</th>
-      <% if @problem.specjudge_type == 2 %>
+      <% if @problem.specjudge_new? %>
         <th>
           Score
           <span class="glyphicon glyphicon-sort icon-non"></span>
@@ -114,7 +114,7 @@ th {
         <td><%= link_to submission.id, submission_path(submission) %></td>
         <td><%= link_to image_tag(now_user.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(submission.user_id) %></td>
         <td><%= link_to now_user.nickname, user_path(submission.user_id) %></td>
-        <% if @problem.specjudge_type == 2 %>
+        <% if @problem.specjudge_new? %>
           <td><%= score_str(submission.score) %></td>
         <% end %>
         <td><%= submission.total_time %></td>
@@ -169,7 +169,7 @@ $(document).ready(function()
                 1: { sorter: false},
                 2: { sorter: false},
                 3: { sorter: false},
-                <%= @problem.specjudge_type == 2 ? 8 : 7 %>: { sorter: 'file-size'}
+                <%= @problem.specjudge_new? ? 8 : 7 %>: { sorter: 'file-size'}
             },
             theme: 'meow' // non-existent theme
         }).tablesorterPager({

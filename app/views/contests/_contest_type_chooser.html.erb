@@ -1,6 +1,3 @@
 <%= f.label :contest_type %><br>
-<%= f.select :contest_type, [
-["[0]gcj style (partial/dashboard)", "0"],
-["[1]ioi style (partial/no dashboard)", "1"],
-["[2]acm style (no partial/dashboard)", "2"]
-], {}, {:class => 'form-control flat'} %>
+<%= f.select :contest_type, Contest.contest_types.keys.map.with_index {|x, index| ["[#{index}] #{contest_type_desc_map[x]}", x]},
+  {}, {:class => 'form-control flat'} %>

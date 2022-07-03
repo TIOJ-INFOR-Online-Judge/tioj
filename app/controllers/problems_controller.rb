@@ -49,7 +49,7 @@ class ProblemsController < ApplicationController
 
   def show
     unless user_signed_in? && current_user.admin == true
-      if @problem.visible_state == 1
+      if @problem.visible_contest?
         if params[:contest_id].blank?
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
           return
@@ -58,7 +58,7 @@ class ProblemsController < ApplicationController
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
           return
         end
-      elsif @problem.visible_state == 2
+      elsif @problem.visible_private?
         redirect_to :back, :notice => 'Insufficient User Permissions.'
         return
       end

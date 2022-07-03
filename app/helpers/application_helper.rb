@@ -57,6 +57,14 @@ module ApplicationHelper
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end
 
+  def visible_state_desc_map
+    {
+      "public" => "public",
+      "contest" => "only visible during contest",
+      "invisible" => "invisible",
+    }
+  end
+
   def page_title(title)
     title.empty? ? Rails.application.config.site_name : title
   end

@@ -23,6 +23,10 @@
 #
 
 class Problem < ActiveRecord::Base
+  enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
+  enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
+  enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
+
   acts_as_taggable_on :tags
 
   has_many :submissions, dependent: :destroy

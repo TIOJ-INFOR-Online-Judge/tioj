@@ -35,15 +35,7 @@
         <% end %>
         <td><%= contest.start_time.to_s(:clean) %></td>
         <td><%= contest.end_time.to_s(:clean) %></td>
-        <% if contest.contest_type == 0 %>
-          <td>gcj style</td>
-        <% elsif contest.contest_type == 1 %>
-          <td>ioi style</td>
-        <% elsif contest.contest_type == 2 %>
-          <td>acm style</td>
-        <% else %>
-          <td>wtf</td>
-        <% end %>
+        <td><%= contest.contest_type %> style</td>
         <% if user_signed_in? && current_user.admin == true %>
           <td>
             <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
