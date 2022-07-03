@@ -126,7 +126,7 @@
   <% if (@problem.specjudge_type || 0) != 0 %>
     <div class="form-group">
       <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
-      <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @compiler[0].id),
+      <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
           {}, {:class => 'form-control flat'} %>
     </div>
     <div class="form-group">
@@ -155,6 +155,7 @@
                 submission_id: 123456,
                 submitter_id: 123,
                 submitter_name: 'username',
+                submitter_nickname: 'nickname',
                 submission_time: 1656430000,
                 compiler: 'c++14/python2/etc.',
                 testdata_index: 0,

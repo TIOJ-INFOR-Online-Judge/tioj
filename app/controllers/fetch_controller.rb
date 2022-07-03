@@ -144,7 +144,7 @@ class FetchController < ApplicationController
 
   def submission_new
     Submission.transaction do
-      @submission = Submission.lock.where("`result` = 'queued'").order('contest_id IS NOT NULL ASC', 'id ASC').first
+      @submission = Submission.lock.where("`result` = 'queued'").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
       if @submission
         @submission.update(:result => "received")
       else
@@ -158,6 +158,8 @@ class FetchController < ApplicationController
     render json: {
       submission_id: @submission.id,
       compiler: @submission.compiler.name,
+      time: @submission.created_at.to_i,
+      code: @submission.code.to_s,
       user: {
         id: @user.id,
         name: @user.username,
@@ -166,7 +168,7 @@ class FetchController < ApplicationController
       problem: {
         id: @problem.id,
         specjudge_type: @problem.specjudge_type,
-        specjudge_lang: @problem.specjudge_compiler&.name,
+        specjudge_compiler: @problem.specjudge_compiler&.name,
         interlib_type: @problem.interlib_type,
         sjcode: @problem.sjcode,
         interlib: @problem.interlib,
@@ -175,7 +177,7 @@ class FetchController < ApplicationController
         {
           id: t.id,
           updated_at: t.updated_at.to_i,
-          time: t.limit.time,
+          time: t.limit.time * 1000, # us
           vss: t.limit.memory,
           rss: 0,
           output: t.limit.output,

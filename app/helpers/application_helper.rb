@@ -53,6 +53,10 @@ module ApplicationHelper
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
 
+  def score_str(x)
+    number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
+  end
+
   def page_title(title)
     title.empty? ? Rails.application.config.site_name : title
   end
