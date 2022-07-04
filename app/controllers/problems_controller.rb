@@ -150,13 +150,13 @@ class ProblemsController < ApplicationController
     end
     problem_params[:testdata_sets_attributes].each do |x, y|
       params[:problem][:testdata_sets_attributes][x][:td_list] = \
-          reduce_td_list(y[:td_list], @problem.testdata.count)
+          reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
     end
   end
 
   def check_compiler
     params = problem_params.clone
-    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and not @problem.specjudge_compiler_id
+    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and (not @problem&.specjudge_compiler_id)
       params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
     end
     params

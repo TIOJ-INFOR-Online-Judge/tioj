@@ -157,6 +157,7 @@ class FetchController < ApplicationController
     td_count = @problem.testdata.count
     render json: {
       submission_id: @submission.id,
+      priority: (@submission.contest ? 100000000 : 0) - @submission.id,
       compiler: @submission.compiler.name,
       time: @submission.created_at.to_i,
       code: @submission.code.to_s,
