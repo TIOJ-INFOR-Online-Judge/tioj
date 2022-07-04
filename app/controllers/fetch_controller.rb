@@ -171,8 +171,9 @@ class FetchController < ApplicationController
         specjudge_type: Problem.specjudge_types[@problem.specjudge_type],
         specjudge_compiler: @problem.specjudge_compiler&.name,
         interlib_type: Problem.interlib_types[@problem.interlib_type],
-        sjcode: @problem.sjcode,
-        interlib: @problem.interlib,
+        sjcode: @problem.sjcode || "",
+        interlib: @problem.interlib || "",
+        interlib_impl: @problem.interlib_impl || "",
       },
       td: @problem.testdata.order(position: :asc).includes(:limit).map { |t|
         {

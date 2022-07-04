@@ -21,6 +21,7 @@
 #  interlib_type         :integer          not null
 #  specjudge_compiler_id :bigint
 #  discussion_visibility :integer          default("enabled")
+#  interlib_impl         :text(4294967295)
 #
 
 class Problem < ActiveRecord::Base

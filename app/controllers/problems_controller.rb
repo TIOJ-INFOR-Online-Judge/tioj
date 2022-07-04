@@ -203,6 +203,7 @@ class ProblemsController < ApplicationController
       :interlib_type,
       :sjcode,
       :interlib,
+      :interlib_impl,
       :old_pid,
       compiler_ids: [],
       testdata_sets_attributes:

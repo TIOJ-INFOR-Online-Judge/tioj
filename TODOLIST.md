@@ -9,7 +9,7 @@
     - control discussion / view solution independently
 - [x] Add RSS & VSS on limits & results / change to us precision on td
 - [x] Add priority at new fetch API
-- [ ] Add interlib implementation
+- [x] Add interlib implementation
 - [ ] Move current result to old & rejudge all submissions into new result
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
