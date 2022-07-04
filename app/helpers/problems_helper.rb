@@ -92,4 +92,12 @@ module ProblemsHelper
       "header" => "With interactive library",
     }
   end
+
+  def discussion_visibility_desc_map
+    {
+      "disabled" => "No discussion",
+      "readonly" => "Read admin posts only",
+      "enabled" => "Allow discussion",
+    }
+  end
 end

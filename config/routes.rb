@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   resources :problems do
     resources :testdata
     resources :submissions
-    resources :posts
+    resources :posts do
+      resources :comments
+    end
   end
 
   resources :judge_servers

@@ -1,9 +1,12 @@
 class CommentsController < ApplicationController
+  include PostFilteringConcern
+
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   before_action :find_post
   before_action :set_comment, only: [:show, :edit, :update, :destroy]
-  before_action :check_contest
+  before_action :check_contest_and_problem
+  before_action :check_post_create, only: [:new, :create]
   before_action :check_user!, only: [:create, :edit, :update, :destroy]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
@@ -35,9 +38,9 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-        set_comment_path
+        set_comment_object
         format.html { redirect_to @page_path, notice: 'Comment was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @comment_path }
+        format.json { render action: 'show', status: :created, location: polymorphic_path(@comment_object) }
       else
         format.html { render @page_path }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
@@ -70,11 +73,13 @@ class CommentsController < ApplicationController
   end
 
   private
-  def check_contest
+
+  def check_post_create
+    check_problem_allow_create
+    # disable comment on contests
     unless user_signed_in? and current_user.admin?
-      if Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
-        redirect_to root_path, :alert => "No discussion during contest."
-        return
+      if @contest
+        redirect_to contest_posts_path(@contest), :alert => "Comments not allowed in contest."
       end
     end
   end
@@ -87,22 +92,22 @@ class CommentsController < ApplicationController
     end
   end
 
-  def set_comment_path
-    @comment_path = @contest ? contest_post_comment_path(@contest, @post, @comment) : post_comment_path(@post, @comment)
+  def set_comment_object
+    if @postable
+      @comment_object = [@postable, @post, @comment]
+    else
+      @comment_object = [@post, @comment]
+    end
   end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
-    set_comment_path
   end
 
   def find_post
-    @posts = current_user.admin? ? Post : Post.where('user_id = ? OR global_visible', current_user.id)
+    filter_posts
     @post = @posts.find(params[:post_id])
-    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
-    @page_path = @contest ? contest_posts_path(@contest) : posts_path
-    @page_url = @contest ? contest_posts_url(@contest) : posts_url
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

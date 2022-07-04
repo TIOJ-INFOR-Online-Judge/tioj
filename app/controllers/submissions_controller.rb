@@ -57,7 +57,7 @@ class SubmissionsController < ApplicationController
       return
     end
     unless current_user.admin?
-      if @problem.visible_private?
+      if @problem.visible_invisible?
         redirect_to action:'index'
         return
       elsif @problem.visible_contest?
@@ -95,7 +95,7 @@ class SubmissionsController < ApplicationController
       return
     end
     unless current_user.admin?
-      if @problem.visible_private?
+      if @problem.visible_invisible?
         redirect_to action:'index'
         return
       elsif @problem.visible_contest?

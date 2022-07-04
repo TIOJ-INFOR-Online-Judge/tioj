@@ -4,7 +4,7 @@
 - [x] Add problem banned compiler
 - [x] Rails 6
 - [x] Refactor some integer DB fields to enum (e.g. problem type)
-- [ ] Change post to optional polymorphism & allow post for problems
+- [x] Change post to optional polymorphism & allow post for problems
     - types: normal / issue / solution (reimplement PR #10); issue will also appear in global posts for admins
     - control discussion / view solution independently
 - [ ] Add RSS & VSS on limits & results / change to us precision on td

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_06_30_144124) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_04_051510) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -111,6 +111,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_144124) do
     t.bigint "post_id"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
+    t.boolean "user_visible", default: false
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -170,12 +171,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_144124) do
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
-    t.bigint "problem_id"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-    t.bigint "contest_id"
     t.boolean "global_visible", default: true, null: false
-    t.index ["contest_id"], name: "index_posts_on_contest_id"
+    t.string "postable_type"
+    t.bigint "postable_id"
+    t.integer "post_type", default: 0
+    t.boolean "user_visible", default: false
+    t.index ["postable_type", "post_type"], name: "index_post_post_type"
+    t.index ["postable_type", "postable_id"], name: "index_post_postable"
+    t.index ["postable_type", "postable_id"], name: "index_posts_on_postable"
     t.index ["updated_at"], name: "index_posts_on_updated_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
@@ -198,6 +203,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_144124) do
     t.integer "specjudge_type", null: false
     t.integer "interlib_type", null: false
     t.bigint "specjudge_compiler_id"
+    t.integer "discussion_visibility", default: 2
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
@@ -314,7 +320,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_06_30_144124) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ban_compilers", "compilers"
-  add_foreign_key "posts", "contests"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "submissions", "compilers"
 end

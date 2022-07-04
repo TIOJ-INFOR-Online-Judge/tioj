@@ -58,7 +58,7 @@ class ProblemsController < ApplicationController
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
           return
         end
-      elsif @problem.visible_private?
+      elsif @problem.visible_invisible?
         redirect_to :back, :notice => 'Insufficient User Permissions.'
         return
       end
@@ -192,6 +192,7 @@ class ProblemsController < ApplicationController
         :page,
         :visible_state,
         :tag_list,
+        :discussion_visibility,
         :specjudge_type,
         :specjudge_compiler_id,
         :interlib_type,

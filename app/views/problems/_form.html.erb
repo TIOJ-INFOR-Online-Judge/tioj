@@ -109,6 +109,12 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :discussion_visibility %>
+    <%= f.select :discussion_visibility, Problem.discussion_visibilities.keys.map.with_index {|x, index| ["[#{index}] #{discussion_visibility_desc_map[x]}", x]},
+      {}, {:class => 'form-control flat'} %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
       <br>

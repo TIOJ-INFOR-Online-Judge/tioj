@@ -1,0 +1,22 @@
+<% commenter = comment.user %>
+<% comment_object = @postable ? [@postable, post, comment] : [post, comment] %>
+
+<h4 class="comment_title">
+  <% if count %>#<%= count %><% end %> <%= comment.title %>
+</h4>
+<div class="comment_content">
+  <%= markdown_no_html(comment.content) %>
+</div>
+<div class="comment_footer small">
+  <% if !(user_signed_in? and current_user.admin?) and not comment.user_visible %>
+    anonymous - <%= comment.created_at.to_s(:clean) %>
+  <% elsif commenter == nil %>
+    deleted account - <%= comment.created_at.to_s(:clean) %>
+  <% else %>
+    <%= link_to commenter.username, user_path(commenter) %> - <%= comment.created_at.to_s(:clean) %>
+  <% end %>
+</div>
+<% if user_signed_in? and (current_user.admin? or (current_user.id == comment.user_id and not @contest)) %>
+  <%= link_to "Edit", edit_polymorphic_path(comment_object), :class=>'btn btn-primary btn-xs' %>
+  <%= link_to "Delete", polymorphic_path(comment_object), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+<% end %>

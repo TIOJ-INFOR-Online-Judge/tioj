@@ -1,0 +1,61 @@
+<% poster = post.user %>
+<% post_object = @postable ? [@postable, post] : [post] %>
+
+<div class="post_title">
+  <h4 class="post_title">
+    <% if not @postable %>
+      <% if post.postable_type == 'Problem' %>
+        <span class="title_post_type small">[Issue: Problem #<%= post.postable_id %>]</span>
+      <% elsif post.post_type == 'issue' %>
+        <span class="title_post_type small">[Issue]</span>
+      <% end %>
+    <% elsif @problem %>
+      <span class="title_post_type small">[<%= post.post_type.capitalize %>]</span>
+    <% end %>
+    <%= post.title %>
+  </h4>
+</div>
+<div class="post_content">
+  <%= markdown_no_html(post.content) %>
+</div>
+<div class="post_footer small">
+  <% if !(user_signed_in? and current_user.admin?) and not post.user_visible and not (user_signed_in? and current_user.id == poster.id) %>
+    anonymous - <%= post.created_at.to_s(:clean) %>
+  <% elsif poster == nil %>
+    deleted account - <%= post.created_at.to_s(:clean) %>
+  <% else %>
+    <%= link_to poster.username, user_path(poster) %> - <%= post.created_at.to_s(:clean) %>
+  <% end %>
+  <% if post.global_visible %>
+    (public post)
+  <% else %>
+    (private post)
+  <% end %>
+</div>
+<% if user_signed_in? and (current_user.admin? or (current_user.id == post.user_id and not @contest)) %>
+  <%= link_to "Edit Post", edit_polymorphic_path(post_object), :class=>'btn btn-primary btn-xs'%>
+  <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+<% end %>
+<% if post.comments.present? %>
+  <div class="comments">
+    <h5>Comments: </h5>
+    <% comments = post.comments %>
+    <% count = 0;%>
+    <% comments.each do |comment| %>
+      <% count += 1 %>
+      <div class="comment well well-lg">
+        <%= render partial: 'comments/show_comment', :locals => {:post => post, :comment => comment, :count => count}  %>
+      </div>
+    <% end %><!-- comments.each -->
+  </div> <!-- comments -->
+<% end %> <!-- if post.comments.present? -->
+<% if user_signed_in? and (current_user.admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
+  <div class="new_comment" style="display:inline">
+    <button class="new_comment btn btn-info btn-xs">New Comment</button>
+    <br>
+    <div class="new_comment_form">
+      <br>
+      <%= render partial: 'comment_form', :locals => {:post => post}  %>
+    </div> <!-- new_comment_form -->
+  </div> <!-- new_comment -->
+<% end %>

@@ -13,13 +13,14 @@
 #  example_input         :text(16777215)
 #  example_output        :text(16777215)
 #  hint                  :text(16777215)
-#  visible_state         :integer          default(0)
+#  visible_state         :integer          default("public")
 #  sjcode                :text(4294967295)
 #  interlib              :text(4294967295)
 #  old_pid               :integer
 #  specjudge_type        :integer          not null
 #  interlib_type         :integer          not null
 #  specjudge_compiler_id :bigint
+#  discussion_visibility :integer          default("enabled")
 #
 
 require 'test_helper'

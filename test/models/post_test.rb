@@ -6,11 +6,13 @@
 #  title          :string(255)
 #  content        :text(16777215)
 #  user_id        :bigint
-#  problem_id     :bigint
 #  created_at     :datetime
 #  updated_at     :datetime
-#  contest_id     :bigint
 #  global_visible :boolean          default(TRUE), not null
+#  postable_type  :string(255)
+#  postable_id    :bigint
+#  post_type      :integer          default("discuss")
+#  user_visible   :boolean          default(FALSE)
 #
 
 require 'test_helper'
