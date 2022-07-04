@@ -30,4 +30,9 @@ module SubmissionsHelper
     scale = scale < 0.5 ? 0.5 - 2 * (0.5 - scale) ** 2 : 0.5 + 2 * (scale - 0.5) ** 2
     hsv_to_rgb(scale * 120, 100, 85 - 40 * scale)
   end
+
+  def time_str(x)
+    prefix = '0' * [0, 4 - x.fix.to_i.to_s.length].max
+    raw("<span style=\"visibility: hidden;\">#{prefix}</span>" + number_with_precision(x, strip_insignificant_zeros: true, precision: 1))
+  end
 end

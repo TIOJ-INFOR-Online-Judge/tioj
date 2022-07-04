@@ -123,7 +123,7 @@
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% lst = @_result.transform_values{|i| i[3]}.values_at(*lst) %>
+              <% lst = @_result.transform_values{|i| i[4]}.values_at(*lst) %>
               <% if lst.nil? or lst.all?{|x| x.nil?} %>
                 <td></td>
               <% else %>
@@ -164,7 +164,10 @@
               <th>Testdata no.</th>
               <th>Subtasks</th>
               <th>Time (ms)</th>
-              <th>Memory (KiB)</th>
+              <% if @has_vss %>
+                <th>Memory (VSS, KiB)</th>
+              <% end %>
+              <th>Memory (RSS, KiB)</th>
               <th>Verdict <a href="/verdicts" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a></th>
               <th>Score</th>
             </tr>
@@ -186,10 +189,13 @@
                       <% end %>
                     <% end %>
                   </td>
-                  <td><%= task[1] %></td>
-                  <td><%= task[2] %></td>
+                  <td><%= time_str(task[1]) %></td>
+                  <% if @has_vss %>
+                    <td><%= task[2] %></td>
+                  <% end %>
+                  <td><%= task[3] %></td>
                   <td><%= @verdict[task[0]] %></td>
-                  <td><%= score_str(task[3]) %></td>
+                  <td><%= score_str(task[4]) %></td>
                 </tr>
               <% else %>
                 <tr>

@@ -45,8 +45,9 @@ class SubmissionsController < ApplicationController
       end
     end
     @_result = @submission.submission_tasks.to_a.map { |task|
-      [task.position, [task.result, task.time, task.memory, task.score]]
+      [task.position, [task.result, task.time, task.vss, task.rss, task.score]]
     }.to_h
+    @has_vss = @_result.values.any?{|x| x[2]}
     @tdlist = @submission.problem.testdata_sets
     @invtdlist = inverse_td_list(@submission.problem)
   end

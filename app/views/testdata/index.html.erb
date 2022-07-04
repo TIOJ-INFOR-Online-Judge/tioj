@@ -9,7 +9,8 @@
           <th>Input</th>
           <th>Output</th>
           <th>Time Limit</th>
-          <th>Memory Limit</th>
+          <th>Memory Limit (VSS)</th>
+          <th>Memory Limit (RSS)</th>
           <th>Output Limit</th>
           <th></th>
     </tr>
@@ -23,7 +24,8 @@
         <td><%= testdatum.test_input.blank? ? "Nil" : truncate(testdatum.test_input_identifier,length: 30) %></td>
         <td><%= testdatum.test_output.blank? ? "Nil" : truncate(testdatum.test_output_identifier,length: 30) %></td>
         <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
-        <td><%= testdatum.limit.memory.blank? ? "Nil" : testdatum.limit.memory %></td>
+        <td><%= testdatum.limit.vss || '-' %></td>
+        <td><%= testdatum.limit.rss || '-' %></td>
         <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
         <td>
           <%= link_to 'Edit', edit_problem_testdatum_path(@problem, testdatum), :class => 'btn btn-info btn-xs' %>

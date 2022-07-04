@@ -38,9 +38,13 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-        set_comment_object
+        if @postable
+          target = [@postable, @post, @comment]
+        else
+          target = [@post, @comment]
+        end
         format.html { redirect_to @page_path, notice: 'Comment was successfully created.' }
-        format.json { render action: 'show', status: :created, location: polymorphic_path(@comment_object) }
+        format.json { render action: 'show', status: :created, location: polymorphic_path(target) }
       else
         format.html { render @page_path }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
@@ -93,11 +97,6 @@ class CommentsController < ApplicationController
   end
 
   def set_comment_object
-    if @postable
-      @comment_object = [@postable, @post, @comment]
-    else
-      @comment_object = [@post, @comment]
-    end
   end
 
   # Use callbacks to share common setup or constraints between actions.

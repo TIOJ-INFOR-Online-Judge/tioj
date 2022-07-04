@@ -72,7 +72,8 @@ class TestdataController < ApplicationController
         [
           :id,
           :time,
-          :memory,
+          :rss,
+          :vss,
           :output,
           :problem_id,
           :testdatum_id

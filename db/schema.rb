@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_04_051510) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_04_093836) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -159,11 +159,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_051510) do
 
   create_table "limits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "time", default: 1000
-    t.integer "memory", default: 65536
+    t.integer "vss", default: 65536
     t.integer "output", default: 65536
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.bigint "testdatum_id"
+    t.integer "rss"
     t.index ["testdatum_id"], name: "index_limits_on_testdatum_id"
   end
 
@@ -213,11 +214,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_04_051510) do
     t.bigint "submission_id"
     t.integer "position"
     t.string "result"
-    t.integer "time"
-    t.integer "memory"
+    t.decimal "time", precision: 12, scale: 3
+    t.integer "rss"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "vss"
     t.index ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true
     t.index ["submission_id"], name: "index_submission_tasks_on_submission_id"
   end

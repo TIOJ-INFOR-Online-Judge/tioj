@@ -2,6 +2,7 @@ class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_action :set_contest, only: [:show]
+  before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
   layout :set_contest_layout, only: [:show]
@@ -123,91 +124,95 @@ class ProblemsController < ApplicationController
   end
 
   private
-    def set_problem
-      @problem = Problem.find(params[:id])
-    end
 
-    def set_contest
-      @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
-    end
+  def set_problem
+    @problem = Problem.find(params[:id])
+  end
 
-    def set_compiler
-      @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
-      @compiler = @compiler.order(order: :asc).to_a
-    end
+  def set_contest
+    @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
+  end
 
-    def reduce_list
-      unless problem_params[:testdata_sets_attributes]
-        return
-      end
-      problem_params[:testdata_sets_attributes].each do |x, y|
-        params[:problem][:testdata_sets_attributes][x][:td_list] = \
-            reduce_td_list(y[:td_list], @problem.testdata.count)
-      end
-    end
+  def set_testdata
+    @testdata = @problem.testdata.order(position: :asc).includes(:limit)
+    @has_rss = @testdata.any?{|x| x.limit.rss}
+    @has_vss = @testdata.any?{|x| x.limit.vss}
+  end
 
-    def check_compiler
-      params = problem_params.clone
-      if params[:specjudge_type].to_i != 0 and not params[:specjudge_compiler_id]
-        params[:specjudge_compiler_id] = Compiler.where(name: 'c++14').first.id
-      end
-      if params[:specjudge_type].to_i == 0 and params[:specjudge_compiler_id]
-        params[:specjudge_compiler_id] = nil
-      end
-      return params
-    end
+  def set_compiler
+    @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+    @compiler = @compiler.order(order: :asc).to_a
+  end
 
-    def recalc_score
-      num_tasks = @problem.testdata.count
-      tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
-      @problem.submissions.select(:id).each_slice(256) do |s|
-        ids = s.map(&:id).to_a
-        arr = SubmissionTask.where(:submission_id => ids).
-            select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
-          td_map = y.map{|t| [t.position, t.score]}.to_h
-          score = tdset_map.map{|td, td_score|
-            (td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score
-          }.sum / BigDecimal('100')
-          max_score = BigDecimal('1e+12') - 1
-          score = score.clamp(-max_score, max_score).round(6)
-          {id: x, score: score.to_s}
-        }
-        Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
-      end
+  def reduce_list
+    unless problem_params[:testdata_sets_attributes]
+      return
     end
+    problem_params[:testdata_sets_attributes].each do |x, y|
+      params[:problem][:testdata_sets_attributes][x][:td_list] = \
+          reduce_td_list(y[:td_list], @problem.testdata.count)
+    end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def problem_params
-      params.require(:problem).permit(
+  def check_compiler
+    params = problem_params.clone
+    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and not @problem.specjudge_compiler_id
+      params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
+    end
+    params
+  end
+
+  def recalc_score
+    num_tasks = @problem.testdata.count
+    tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+    @problem.submissions.select(:id).each_slice(256) do |s|
+      ids = s.map(&:id).to_a
+      arr = SubmissionTask.where(:submission_id => ids).
+          select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
+        td_map = y.map{|t| [t.position, t.score]}.to_h
+        score = tdset_map.map{|td, td_score|
+          (td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score
+        }.sum / BigDecimal('100')
+        max_score = BigDecimal('1e+12') - 1
+        score = score.clamp(-max_score, max_score).round(6)
+        {id: x, score: score.to_s}
+      }
+      Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
+    end
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def problem_params
+    params.require(:problem).permit(
+      :id,
+      :name,
+      :description,
+      :input,
+      :output,
+      :example_input,
+      :example_output,
+      :hint,
+      :source,
+      :limit,
+      :page,
+      :visible_state,
+      :tag_list,
+      :discussion_visibility,
+      :specjudge_type,
+      :specjudge_compiler_id,
+      :interlib_type,
+      :sjcode,
+      :interlib,
+      :old_pid,
+      compiler_ids: [],
+      testdata_sets_attributes:
+      [
         :id,
-        :name,
-        :description,
-        :input,
-        :output,
-        :example_input,
-        :example_output,
-        :hint,
-        :source,
-        :limit,
-        :page,
-        :visible_state,
-        :tag_list,
-        :discussion_visibility,
-        :specjudge_type,
-        :specjudge_compiler_id,
-        :interlib_type,
-        :sjcode,
-        :interlib,
-        :old_pid,
-        compiler_ids: [],
-        testdata_sets_attributes:
-        [
-          :id,
-          :td_list,
-          :constraints,
-          :score,
-          :_destroy
-        ]
-      )
-    end
+        :td_list,
+        :constraints,
+        :score,
+        :_destroy
+      ]
+    )
+  end
 end

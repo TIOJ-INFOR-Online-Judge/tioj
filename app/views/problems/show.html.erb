@@ -136,7 +136,7 @@
     <div class="panel panel-default copy-group problem-copy-group">
       <div class="panel-heading">
         <h1 class="panel-title pull-left">Sample Input</h1>
-				<button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+        <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
       </div>
       <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
         <%= raw @problem.example_input.gsub(/\n/, '<br/>') %>
@@ -147,7 +147,7 @@
     <div class="panel panel-default copy-group problem-copy-group">
       <div class="panel-heading">
         <h1 class="panel-title pull-left">Sample Output</h1>
-				<button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+        <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
       </div>
       <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
         <%= raw @problem.example_output.gsub(/\n/, '<br/>') %>
@@ -221,18 +221,28 @@
       <tr>
         <th>No.</th>
         <th>Time Limit (ms)</th>
-        <th>Memory Limit (KiB)</th>
+        <% if @has_vss %>
+          <th>Memory Limit (VSS, KiB)</th>
+        <% end %>
+        <% if @has_rss %>
+          <th>Memory Limit (RSS, KiB)</th>
+        <% end %>
         <th>Output Limit (KiB)</th>
         <th>Subtasks</th>
       </tr>
     </thead>
     <tbody>
-      <% @problem.testdata.order(position: :asc).includes(:limit).each_with_index do |testdatum, index| %>
+      <% @testdata.each_with_index do |testdatum, index| %>
         <tr>
           <td><%= index %></td>
-          <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
-          <td><%= testdatum.limit.memory.blank? ? "Nil" : testdatum.limit.memory %></td>
-          <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
+          <td><%= testdatum.limit.time || "-" %></td>
+          <% if @has_vss %>
+            <td><%= testdatum.limit.vss || "-" %></td>
+          <% end %>
+          <% if @has_rss %>
+            <td><%= testdatum.limit.rss || "-" %></td>
+          <% end %>
+          <td><%= testdatum.limit.output || "-" %></td>
           <td>
             <% if @tdlist[index] %>
               <% @tdlist[index].each do |x| %>

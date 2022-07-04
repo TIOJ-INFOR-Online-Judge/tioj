@@ -38,7 +38,7 @@ class FetchController < ApplicationController
     @result = ""
     @problem.testdata.order(position: :asc).includes(:limit).each do |t|
       @result += t.limit.time.to_s + " "
-      @result += t.limit.memory.to_s + " "
+      @result += (t.limit.vss || t.limit.rss).to_s + " "
       @result += t.limit.output.to_s + "\n"
     end
     render plain: @result
@@ -67,10 +67,10 @@ class FetchController < ApplicationController
     #score
     @_result = @_result.split("/").each_slice(3).map.with_index { |res, id|
       {:submission_id => @submission.id, :position => id, :result => res[0],
-       :time => res[1].to_i, :memory => res[2].to_i,
+       :time => res[1].to_i, :rss => res[2].to_i,
        :score => res[0] == 'AC' ? 100 : 0}
     }.select{|x| x[:result] != ''}
-    SubmissionTask.import(@_result, on_duplicate_key_update: [:result, :time, :memory, :score])
+    SubmissionTask.import(@_result, on_duplicate_key_update: [:result, :time, :rss, :score])
     @problem = @submission.problem
     num_tasks = @problem.testdata.count
     @score = @problem.testdata_sets.map{|s|
@@ -84,7 +84,7 @@ class FetchController < ApplicationController
     #verdict
     if params[:status] == "OK"
       ttime = @_result.map{|i| i[:time]}.sum
-      tmem = @_result.map{|i| i[:memory]}.max
+      tmem = @_result.map{|i| i[:rss]}.max
       @result = @_result.map{|i| @v2i[i[:result]] ? @v2i[i[:result]] : 9}.max
       @submission.update(:result => @i2v[@result], :total_time => ttime, :total_memory => tmem)
     end
@@ -178,8 +178,8 @@ class FetchController < ApplicationController
           id: t.id,
           updated_at: t.updated_at.to_i,
           time: t.limit.time * 1000, # us
-          vss: t.limit.memory,
-          rss: 0,
+          vss: t.limit.vss || 0,
+          rss: t.limit.rss || 0,
           output: t.limit.output,
         }
       },
@@ -199,12 +199,13 @@ class FetchController < ApplicationController
         submission_id: @submission.id,
         position: res[:position],
         result: res[:verdict],
-        time: res[:time] / 1000,
-        memory: res[:rss],
+        time: BigDecimal(res[:time]) / 1000,
+        rss: res[:rss],
+        vss: res[:vss],
         score: (BigDecimal(res[:score]) / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6')),
       }
     }
-    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :memory, :score])
+    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score])
     score_map = @submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
     @problem = @submission.problem
     num_tasks = @problem.testdata.count
@@ -231,8 +232,8 @@ class FetchController < ApplicationController
     update_hash[:result] = @i2v[@v2i.fetch(params[:verdict], @v2i['ER'])]
     if not ['ER', 'CE', 'CLE'].include? update_hash[:verdict]
       tasks = @submission.submission_tasks
-      update_hash[:total_time] = tasks.map{|i| i.time}.sum
-      update_hash[:total_memory] = tasks.map{|i| i.memory}.max
+      update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
+      update_hash[:total_memory] = tasks.map{|i| i.rss}.max
     end
     @submission.update(**update_hash)
   end
