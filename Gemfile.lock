@@ -199,7 +199,6 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    libv8 (3.16.14.19)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -228,8 +227,8 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.16.1)
-    msgpack (1.5.2)
+    minitest (5.16.2)
+    msgpack (1.5.3)
     multi_xml (0.6.0)
     mysql2 (0.5.4)
     nested_form (0.3.2)
@@ -256,13 +255,13 @@ GEM
     nokogiri (1.13.6)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    oauth2 (2.0.3)
+    oauth2 (2.0.4)
       faraday (>= 0.17.3, < 3.0)
       jwt (>= 1.0, < 3.0)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
       rash_alt (>= 0.4, < 1)
-      version_gem (~> 1.0)
+      version_gem (~> 1.1)
     omniauth (2.1.0)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
@@ -283,7 +282,7 @@ GEM
     puma (5.6.4)
       nio4r (~> 2.0)
     racc (1.6.0)
-    rack (2.2.3.1)
+    rack (2.2.4)
     rack-protection (2.2.0)
       rack
     rack-test (2.0.2)
@@ -327,7 +326,6 @@ GEM
     rdoc (6.4.0)
       psych (>= 4.0.0)
     redcarpet (3.5.1)
-    ref (2.0.0)
     regexp_parser (2.5.0)
     responders (3.0.1)
       actionpack (>= 5.0)
@@ -365,9 +363,6 @@ GEM
     ssrf_filter (1.0.7)
     stringio (3.0.2)
     strscan (3.0.3)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (1.2.1)
     tilt (2.0.10)
     timeout (0.3.0)
@@ -437,9 +432,8 @@ DEPENDENCIES
   sdoc
   selenium-webdriver
   sprockets (~> 4)
-  therubyracer
   tzinfo-data
   uglifier
 
 BUNDLED WITH
-   2.1.4
+   2.3.17

@@ -27,7 +27,6 @@ gem 'uglifier'
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
-gem 'therubyracer'
 
 # use Kaminari to paginate
 gem 'kaminari'
