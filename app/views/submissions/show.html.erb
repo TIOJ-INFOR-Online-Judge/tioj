@@ -88,7 +88,7 @@
   </div>
 </div>
 
-<% unless @submission.result == 'CE' or @submission.result == 'CLE' or @submission.result == 'ER' %>
+<% unless ['JE', 'ER', 'CE', 'CLE'].include? @submission.result %>
   <div class="panel panel-default">
     <div class="panel-heading" data-toggle="collapse" href="#collapseSubtask">
       <h1 class="panel-title">

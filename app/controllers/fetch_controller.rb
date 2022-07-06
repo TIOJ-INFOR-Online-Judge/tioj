@@ -231,8 +231,8 @@ class FetchController < ApplicationController
     if params[:message]
       update_hash[:message] = params[:message]
     end
-    update_hash[:result] = @i2v[@v2i.fetch(params[:verdict], @v2i['ER'])]
-    if not ['ER', 'CE', 'CLE'].include? update_hash[:verdict]
+    update_hash[:result] = @i2v[@v2i.fetch(params[:verdict], @v2i['JE'])]
+    unless ['JE', 'ER', 'CE', 'CLE'].include? update_hash[:verdict]
       tasks = @submission.submission_tasks
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max

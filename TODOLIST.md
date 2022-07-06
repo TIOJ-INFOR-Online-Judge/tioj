@@ -10,10 +10,12 @@
 - [x] Add RSS & VSS on limits & results / change to us precision on td
 - [x] Add priority at new fetch API
 - [x] Add interlib implementation
+- [ ] Move announcement to database
 - [ ] Move current result to old & rejudge all submissions into new result
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
-- [ ] Move announcement to database
+- [ ] Add reject API for fetching
+- [ ] ActionCable for submission notifying
 
 ## Enhance features & PRs
 
@@ -21,7 +23,7 @@
     - fields for limits & position
     - checkbox for "same as above" & shortcut for check/uncheck all
     - don't change problem tasks
-- [ ] Enhance posts UI
+- [ ] Option to ignore some testdata in overall verdict
 - [ ] PR #3 (issue #1)
 - [ ] PR #4 (issue #2)
 - [ ] PR #11 (use MIN(id) to MAX(id))
@@ -31,6 +33,7 @@
 ## Future
 
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
+- [ ] Enhance posts UI
 - [ ] Upload submission by file
 - [ ] Add more languages
 - [ ] Write basic tests

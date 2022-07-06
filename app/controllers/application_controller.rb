@@ -8,42 +8,35 @@ class ApplicationController < ActionController::Base
   before_action :set_anno
 
   def set_verdict_hash
-    @verdict = {"AC" => "Accepted",
-                "WA" => "Wrong Answer",
-                "TLE" => "Time Limit Exceeded",
-                "MLE" => "Memory Limit Exceeded",
-                "OLE" => "Output Limit Exceeded",
-                "RE" => "Runtime Error",
-                "SIG" => "Runtime Error (killed by signal)",
-                "EE" => "Execution Error",
-                "CE" => "Compilation Error",
-                "CLE" => "Compilation Limit Exceeded",
-                "ER" => "Judge Compilation Error"
+    @verdict = {
+      "AC" => "Accepted",
+      "WA" => "Wrong Answer",
+      "TLE" => "Time Limit Exceeded",
+      "MLE" => "Memory Limit Exceeded",
+      "OLE" => "Output Limit Exceeded",
+      "RE" => "Runtime Error",
+      "SIG" => "Runtime Error (killed by signal)",
+      "EE" => "Execution Error",
+      "CE" => "Compilation Error",
+      "CLE" => "Compilation Limit Exceeded",
+      "ER" => "Judge Compilation Error",
+      "JE" => "Judge Error",
     }
-    @v2i = {"AC" => 0,
-            "WA" => 1,
-            "TLE" => 2,
-            "MLE" => 3,
-            "OLE" => 4,
-            "RE" => 5,
-            "SIG" => 6,
-            "EE" => 7,
-            "CE" => 8,
-            "CLE" => 9,
-            "ER" => 10
+    @v2i = {
+      "AC" => 0,
+      "WA" => 1,
+      "TLE" => 2,
+      "MLE" => 3,
+      "OLE" => 4,
+      "RE" => 5,
+      "SIG" => 6,
+      "EE" => 7,
+      "CE" => 8,
+      "CLE" => 9,
+      "ER" => 10,
+      "JE" => 11,
     }
-    @i2v = {0 => "AC",
-            1 => "WA",
-            2 => "TLE",
-            3 => "MLE",
-            4 => "OLE",
-            5 => "RE",
-            6 => "SIG",
-            7 => "EE",
-            8 => "CE",
-            9 => "CLE",
-            10 => "ER"
-    }
+    @i2v = @v2i.map{|x, y| [y, x]}.to_h
   end
 
   def store_location
