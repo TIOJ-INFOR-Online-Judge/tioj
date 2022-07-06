@@ -24,7 +24,7 @@
 #  interlib_impl         :text(4294967295)
 #
 
-class Problem < ActiveRecord::Base
+class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
   enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib

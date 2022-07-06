@@ -10,7 +10,7 @@
 #  with_compiler_id   :bigint
 #
 
-class BanCompiler < ActiveRecord::Base
+class BanCompiler < ApplicationRecord
   belongs_to :with_compiler, :polymorphic => true
   belongs_to :compiler
 end

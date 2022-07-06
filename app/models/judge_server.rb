@@ -10,5 +10,5 @@
 #  updated_at :datetime
 #
 
-class JudgeServer < ActiveRecord::Base
+class JudgeServer < ApplicationRecord
 end

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :announcements
 
   devise_for :users, :controllers => {:registrations => "registrations"}
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -59,8 +60,6 @@ Rails.application.routes.draw do
 
   mathjax 'mathjax'
 
-  get 'edit_announcement' => 'welcome#edit_announcement', as: :edit_announcement
-  post 'alter_announcement' => 'welcome#alter_announcement', as: :alter_announcement
   get 'about' => 'about#index', as: :about
 
   get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false, :id => /[0-9]+/

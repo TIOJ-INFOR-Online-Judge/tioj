@@ -9,7 +9,7 @@
 #  updated_at :datetime
 #
 
-class ContestProblemJoint < ActiveRecord::Base
+class ContestProblemJoint < ApplicationRecord
   default_scope { order('id ASC') }
 
   belongs_to :contest

@@ -16,7 +16,7 @@
 #  show_detail_result :boolean          default(TRUE), not null
 #
 
-class Contest < ActiveRecord::Base
+class Contest < ApplicationRecord
   enum :contest_type, {gcj: 0, ioi: 1, acm: 2}, prefix: :type
 
   has_many :contest_problem_joints, :dependent => :destroy

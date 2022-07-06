@@ -17,7 +17,7 @@
 #  compiler_id  :bigint           default(1), not null
 #
 
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   belongs_to :problem
   belongs_to :user
   belongs_to :contest, optional: true

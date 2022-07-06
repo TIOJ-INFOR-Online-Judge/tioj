@@ -14,6 +14,6 @@
 #  vss           :integer
 #
 
-class SubmissionTask < ActiveRecord::Base
+class SubmissionTask < ApplicationRecord
   belongs_to :submission
 end

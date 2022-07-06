@@ -187,7 +187,7 @@ class SubmissionsController < ApplicationController
     else
       @submissions = @submissions.where(contest_id: nil)
       unless user_signed_in? and current_user.admin?
-        @submissions = @submissions.joins(:problem).where(visible_state: :public)
+        @submissions = @submissions.joins(:problem).where(problem: {visible_state: :public})
       end
     end
     @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?

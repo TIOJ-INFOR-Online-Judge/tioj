@@ -11,6 +11,6 @@
 #  constraints :text(16777215)
 #
 
-class TestdataSet < ActiveRecord::Base
+class TestdataSet < ApplicationRecord
   belongs_to :problem
 end

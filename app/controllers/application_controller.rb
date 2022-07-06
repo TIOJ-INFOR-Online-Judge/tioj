@@ -90,8 +90,7 @@ protected
   end
 
   def set_anno
-    require "json"
-    @anno = JSON.parse(File.read("public/announcement/anno"))
+    @annos = Announcement.all.to_a
   end
 
   def get_sorted_user(limit = nil)

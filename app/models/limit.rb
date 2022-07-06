@@ -12,7 +12,7 @@
 #  rss          :integer
 #
 
-class Limit < ActiveRecord::Base
+class Limit < ApplicationRecord
   belongs_to :testdatum
 
   validates :time, :numericality => { :greater_than_or_equal_to => 0 }

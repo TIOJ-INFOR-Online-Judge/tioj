@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: announcements
+#
+#  id         :bigint           not null, primary key
+#  title      :string(255)
+#  body       :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+one:
+  title: MyString
+  body: MyString
+
+two:
+  title: MyString
+  body: MyString

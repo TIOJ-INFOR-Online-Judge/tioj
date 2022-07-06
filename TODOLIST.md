@@ -30,7 +30,7 @@
 
 ## Future
 
-- [ ] Stop on first non-AC testdata of each task (score = 0 if unfinished)
+- [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Upload submission by file
 - [ ] Add more languages
 - [ ] Write basic tests

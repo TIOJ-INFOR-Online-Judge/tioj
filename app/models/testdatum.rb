@@ -11,7 +11,7 @@
 #  position    :integer
 #
 
-class Testdatum < ActiveRecord::Base
+class Testdatum < ApplicationRecord
   belongs_to :problem
   acts_as_list scope: :problem
   has_one :limit, dependent: :destroy

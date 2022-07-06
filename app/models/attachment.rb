@@ -9,7 +9,7 @@
 #  updated_at :datetime
 #
 
-class Attachment < ActiveRecord::Base
+class Attachment < ApplicationRecord
   belongs_to :article
 
   mount_uploader :path, AttachmentUploader

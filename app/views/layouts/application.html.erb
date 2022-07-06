@@ -71,13 +71,15 @@ MathJax = ({
 
 <div class="container-fluid" id="page-content">
   <!--alert and notice-->
-  <% if (not @anno["name"].blank?) or (not @anno["message"].blank?) %>
+  <% if not @annos.empty? %>
     <div class="alert alert-info alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert">
         <span aria-hidden="true">&times;</span>
         <span class="sr-only">Close</span>
       </button>
-      <strong><%= raw @anno["name"].to_s %></strong> <%= raw @anno["message"].to_s %>
+      <% @annos.each_with_index do |anno, index| %>
+        <strong><%= raw anno.title %></strong> <%= raw anno.body %><% if index != @annos.size - 1 %><br><% end %>
+      <% end %>
     </div>
   <% end %>
   <% if notice %>

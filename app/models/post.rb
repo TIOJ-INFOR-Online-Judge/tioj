@@ -15,7 +15,7 @@
 #  user_visible   :boolean          default(FALSE)
 #
 
-class Post < ActiveRecord::Base
+class Post < ApplicationRecord
   enum :post_type, {discuss: 0, solution: 1, issue: 2}, prefix: :type
 
   belongs_to :user

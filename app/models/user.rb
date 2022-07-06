@@ -27,7 +27,7 @@
 #
 
 require 'file_size_validator'
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :submissions, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
