@@ -1,14 +1,50 @@
-<p style="color: green"><%= notice %></p>
+<h4 class="page-header">New Announcement</h4>
 
-<h1>Announcements</h1>
+<%= semantic_form_for @announcement, :html => { :class => "form-inline" } do |f| %>
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="form-group" style="display: unset;">
+        <%= f.label :title %><br>
+        <%= f.text_field :title, :class => "form-control input-sm flat", :style => "width: 100%;" %><br>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group" style="display: unset;">
+        <%= f.label :body %><br>
+        <%= f.text_field :body, :class => "form-control input-sm flat", :style => "width: 100%;" %><br>
+      </div>
+    </div>
+  </div>
 
-<div id="announcements">
-  <% @announcements.each do |announcement| %>
-    <%= render announcement %>
-    <p>
-      <%= link_to "Show this announcement", announcement %>
-    </p>
-  <% end %>
-</div>
+  <div class="actions">
+    <%= f.submit :class => 'btn btn-success btn-xs' %>
+  </div>
+<% end %>
+<br>
 
-<%= link_to "New announcement", new_announcement_path %>
+<h4 class="page-header">Announcements</h4>
+
+<table class = "table table-hover table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Body</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @announcements.each do |anno| %>
+      <tr>
+        <td><%= raw anno.title %></td>
+        <td><%= raw anno.body %></td>
+        <td style="width: 0; white-space: nowrap;">
+          <%= link_to 'Edit', edit_announcement_path(anno), :class => 'btn btn-info btn-xs' %>
+          <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back to Home', root_path, :class => 'btn btn-default btn-xs' %>

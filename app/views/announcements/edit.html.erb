@@ -1,10 +1,7 @@
-<h1>Editing announcement</h1>
+<h4 class="page-header">Editing announcement</h4>
 
 <%= render "form", announcement: @announcement %>
 
 <br>
 
-<div>
-  <%= link_to "Show this announcement", @announcement %> |
-  <%= link_to "Back to announcements", announcements_path %>
-</div>
+<%= link_to 'Back to Announcements', announcements_path, :class => 'btn btn-default btn-xs' %>

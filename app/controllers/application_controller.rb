@@ -83,7 +83,7 @@ protected
   end
 
   def set_anno
-    @annos = Announcement.all.to_a
+    @annos = Announcement.order(:id).all.to_a
   end
 
   def get_sorted_user(limit = nil)

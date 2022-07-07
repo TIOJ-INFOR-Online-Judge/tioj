@@ -191,7 +191,7 @@
                   </td>
                   <td><%= time_str(task[1]) %></td>
                   <% if @has_vss %>
-                    <td><%= task[2] %></td>
+                    <td><%= task[2] || '-' %></td>
                   <% end %>
                   <td><%= task[3] %></td>
                   <td><%= @verdict[task[0]] %></td>

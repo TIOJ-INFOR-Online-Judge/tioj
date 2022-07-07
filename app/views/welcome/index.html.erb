@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <% if user_signed_in? and current_user.admin? %>
       <div>
-        <%= link_to "Alter Announcement", edit_announcement_path, :class => "btn btn-info btn-xs" %>
+        <%= link_to "Alter Announcement", announcements_path, :class => "btn btn-info btn-xs" %>
       </div>
     <% end %>
     <div class="well well-lg">
