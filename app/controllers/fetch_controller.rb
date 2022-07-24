@@ -143,10 +143,15 @@ class FetchController < ApplicationController
   ### new api
 
   def submission_new
+    is_old = false
     Submission.transaction do
-      @submission = Submission.lock.where("`result` = 'queued'").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
+      @submission = Submission.lock.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
+      if not @submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
+        @submission = Submission.lock.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(id: :desc).first
+        is_old = true
+      end
       if @submission
-        @submission.update(:result => "received")
+        @submission.update(result: "received")
       else
         render json: {}
         return
@@ -157,8 +162,8 @@ class FetchController < ApplicationController
     td_count = @problem.testdata.count
     render json: {
       submission_id: @submission.id,
-      priority: (@submission.contest ? 100000000 : 0) - @submission.id,
       contest_id: @submission.contest_id || -1,
+      priority: (is_old ? -200000000 + 2 * @submission.id : (@submission.contest ? 100000000 : 0)) - @submission.id,
       compiler: @submission.compiler.name,
       time: @submission.created_at.to_i,
       code: @submission.code.to_s,
@@ -228,7 +233,7 @@ class FetchController < ApplicationController
       @submission.update(:result => params[:verdict])
       return
     end
-    update_hash = {}
+    update_hash = {new_rejudged: true}
     if params[:message]
       update_hash[:message] = params[:message]
     end
