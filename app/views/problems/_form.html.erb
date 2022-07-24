@@ -4,7 +4,7 @@
   <% set_page_title "New problem" %>
 <% end %>
 
-<%= nested_form_for @problem, :html => {:class => 'form'} do |f| %>
+<%= nested_form_for @problem, :html => {:class => 'form', :id => 'problem-form'} do |f| %>
   <% if @problem.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@problem.errors.count, "error") %> prohibited this problem from being saved:</h2>
@@ -241,13 +241,58 @@
   <%= f.link_to_add "Add a range", :testdata_sets, :class => 'btn btn-warning' %>
   <hr>
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <span class="flex-container-bottom-align">
+      <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
+      <% if @isNewProblem == true %>
+        &nbsp;
+        <span class="fancy-checkbox">
+          <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
+          <div class="btn-group">
+            <label for="disable-fool-proof" class="btn btn-xs btn-default">
+              <span class="glyphicon glyphicon-ok"></span>
+              <span></span>
+            </label>
+            <label for="disable-fool-proof" class="btn btn-xs btn-default">
+              Disable fool-proof of repeat submit
+            </label>
+          </div>
+        </span>
+      <% end %>
+    </span>
   </div>
 <% end %>
 
+<style>
+.flex-container-bottom-align {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+</style>
+
 <script>
   $(document).on('nested:fieldRemoved',function(event){
-      event.field.find("input").removeAttr("min max required");
-    });
-  contest_form_style_main();
+    event.field.find("input").removeAttr("min max required");
+  });
+  button_checkbox_init();
 </script>
+
+<% if @isNewProblem == true %>
+  <script>
+    const btn = document.getElementById('submit-btn')
+    window.addEventListener('load', function () {
+      btn.disabled = false
+    });
+
+    const form = document.getElementById('problem-form')
+    form.addEventListener('submit', function () {
+      const switc = document.getElementById('disable-fool-proof')
+      // disable the submit button for 10 sec if `disable fool proof` button is not checked
+      if (!switc.checked) {
+        btn.disabled = true
+        setTimeout(() => btn.disabled = false, 10000)
+      }
+    })
+  </script>
+<% end %>
