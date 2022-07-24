@@ -158,6 +158,7 @@ class FetchController < ApplicationController
     render json: {
       submission_id: @submission.id,
       priority: (@submission.contest ? 100000000 : 0) - @submission.id,
+      contest_id: @submission.contest_id || -1,
       compiler: @submission.compiler.name,
       time: @submission.created_at.to_i,
       code: @submission.code.to_s,
@@ -223,8 +224,8 @@ class FetchController < ApplicationController
 
   def submission_result
     @submission = Submission.find(params[:submission_id])
-    if params[:verdict] == 'Validating'
-      @submission.update(:result => 'Validating')
+    if ['Validating', 'queued'].include? params[:verdict]
+      @submission.update(:result => params[:verdict])
       return
     end
     update_hash = {}
