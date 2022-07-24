@@ -31,6 +31,13 @@ Rails.application.routes.draw do
 
   resources :articles
 
+  resources :users do
+    member do
+      get 'changed_problems'
+      get 'changed_submissions'
+    end
+  end
+
   get 'problems/tag/:tag' => 'problems#index', as: :problems_tag
   get 'problems/:id/ranklist' => 'problems#ranklist', as: :problem_ranklist
 

@@ -53,6 +53,24 @@ module ApplicationHelper
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
 
+  def verdict_text(x)
+    class_map = {
+      "AC" => "text-success",
+      "WA" => "text-danger",
+      "TLE" => "text-info",
+      "MLE" => "text-mle",
+      "OLE" => "text-ole",
+      "RE" => "text-warning",
+      "SIG" => "text-sig",
+      "queued" => "text-muted",
+    }
+    if class_map[x]
+      return raw '<span class="' + class_map[x] + '">' + x + '</span>'
+    else
+      return x
+    end
+  end
+
   def help_icon(x)
     raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
   end

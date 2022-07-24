@@ -1,0 +1,67 @@
+<% set_page_title "Submissions" %>
+<h4 class="page-header">
+  Submissions Failed After Rejudge
+  <% if @problem %>
+    <small>Problem #<%= @problem.id%></small>
+  <% end %>
+</h4>
+
+<form class="form-inline" accept-charset="UTF-8" method="get">
+  <label for="filter_problem">Quick Filter</label>
+  <div class="form-group">
+    <input id="filter_problem" name="problem_id" class="form-control input-sm flat" type="number" min="1" placeholder="Enter Problem ID">
+  </div>
+  <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+</form>
+
+<table class='table table-hover table-striped'>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>PID</th>
+      <th>Submitter</th>
+      <th>New Verdict</th>
+      <th>New Score</th>
+      <th>Old Verdict</th>
+      <th>Old Score</th>
+      <th>Compiler</th>
+      <th>Submit Time</th>
+      <% if user_signed_in? && current_user.admin %>
+         <th></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @submissions.each do |submission| %>
+      <tr>
+      <% if censored(submission) %>
+        <td></td>
+        <td></td>
+        <td><code>censored</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      <% else %>
+        <td><%= link_to submission.id, submission_path(submission) %></td>
+        <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
+        <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
+        <td><%= verdict_text submission.result %></td>
+        <td><%= sprintf("%g", submission.score) %></td>
+        <td><%= verdict_text submission.old_result %></td>
+        <td><%= sprintf("%g", submission.old_score) %></td>
+        <td><%= submission.compiler.name %></td>
+        <td><%= submission.created_at.to_s(:clean) %></td>
+        <% if user_signed_in? && current_user.admin == true %>
+          <td>
+            <%= link_to 'Rejudge', {:controller => :submissions, :action => :rejudge, :id => submission.id} , :class => 'btn btn-xs btn-primary' %>
+          </td>
+        <% end %>
+      <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @submissions %>

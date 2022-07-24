@@ -12,7 +12,7 @@
 - [x] Add interlib implementation
 - [x] Move announcement to database
 - [x] Add description about RSS & VSS and move them to /about
-- [ ] Move current result to old & rejudge all submissions into new result
+- [x] Move current result to old & rejudge all submissions into new result
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
 - [x] Add reject API for fetching
