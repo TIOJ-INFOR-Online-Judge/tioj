@@ -9,7 +9,7 @@
 <form class="form-inline" accept-charset="UTF-8" method="get">
   <label for="filter_problem">Quick Filter</label>
   <div class="form-group">
-    <input id="filter_problem" name="problem_id" class="form-control input-sm flat" type="number" min="1" placeholder="Enter Problem ID">
+    <input id="filter_problem" name="problem_id" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first.id %>" max="<%= Problem.order(id: :desc).first.id %>" placeholder="Enter Problem ID">
   </div>
   <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
 </form>

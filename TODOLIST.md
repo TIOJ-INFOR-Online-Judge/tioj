@@ -27,7 +27,7 @@
 - [ ] Option to ignore some testdata in overall verdict
 - [ ] PR #3 (issue #1)
 - [ ] PR #4 (issue #2)
-- [ ] PR #11 (use MIN(id) to MAX(id))
+- [x] PR #11 (use MIN(id) to MAX(id))
 - [ ] PR #12
 - [ ] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
 

@@ -27,7 +27,7 @@
     <input id="filter_username" name="filter_username" class="form-control input-sm flat" type="text" placeholder="Enter Username">
   </div>
   <div class="form-group">
-    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" type="number" min="1" placeholder="Enter Problem ID">
+    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first.id %>" max="<%= Problem.order(id: :desc).first.id %>" placeholder="Enter Problem ID">
   </div>
   <div class="form-group">
     <select id="filter_status" name="filter_status[]" class="selectpicker" multiple title="Select Result">
