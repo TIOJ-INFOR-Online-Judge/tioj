@@ -3,3 +3,6 @@ if user_signed_in? and ( current_user.admin? or current_user.id == @submission.u
 else
   json.extract! @submission, :id, :compiler, :result, :score, :created_at, :updated_at
 end
+json.testdata_attributes @submission.submission_tasks do |task|
+  json.extract! task, :position, :result, :time, :vss, :rss, :score
+end

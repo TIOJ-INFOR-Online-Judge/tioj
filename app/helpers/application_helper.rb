@@ -53,6 +53,10 @@ module ApplicationHelper
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
 
+  def help_icon(x)
+    raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+  end
+
   def score_str(x)
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end

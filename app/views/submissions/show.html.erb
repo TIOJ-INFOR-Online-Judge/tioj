@@ -53,10 +53,10 @@
       <h1 class="panel-title">Total Time (ms)</h1>
     </div>
     <div class="col-md-2">
-      <h1 class="panel-title">Max Memory (KiB)</h1>
+      <h1 class="panel-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h1>
     </div>
     <div class="col-md-3">
-      <h1 class="panel-title">Verdict <a href="/verdicts" class="glyphicon glyphicon-question-sign"></a></h1>
+      <h1 class="panel-title">Verdict <%= help_icon '/about/verdicts' %></h1>
     </div>
     <div class="col-md-2">
       <h1 class="panel-title">Score</h1>
@@ -165,10 +165,10 @@
               <th>Subtasks</th>
               <th>Time (ms)</th>
               <% if @has_vss %>
-                <th>Memory (VSS, KiB)</th>
+                <th>Memory (VSS, KiB) <%= help_icon '/about/memory' %></th>
               <% end %>
-              <th>Memory (RSS, KiB)</th>
-              <th>Verdict <a href="/verdicts" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a></th>
+              <th>Memory (RSS, KiB) <%= help_icon '/about/memory' %></th>
+              <th>Verdict <%= help_icon '/about/verdicts' %></th>
               <th>Score</th>
             </tr>
           </thead>

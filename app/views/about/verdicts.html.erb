@@ -2,8 +2,6 @@
 
 <div class="well">
 
-<p>
-
 <table style="border-collapse: unset; line-height: 1.55;" class="table">
   <tr>
     <th>Verdict</th>
@@ -28,7 +26,7 @@
   <tr class="mle">
     <td><span class="text-mle">MLE</span></td>
     <td class="text-nowrap">Memory Limit Exceeded</td>
-    <td>Your program used too much memory.<br>Note that the judge determines whether a program exceeded the VSS limit by setting a slightly larger hard VSS limit than the indicated VSS limit, and checking if the resulting memory usage is larger than the indicated limit (before checking whether the program terminated normally). If the program allocated a large block of memory at once, you may end up getting <span class="text-sig">SIG</span> instead, because failed memory allocation could cause <code>std::bad_alloc</code> exception or <code>malloc</code> returning NULL, and they could indirectly cause SIGABRT (if the program didn't deal with <code>std::bad_alloc</code>) or SIGSEGV (if the program dereferenced the NULL pointer returned by <code>malloc</code>); it is also possible that the global and static variables alone exceeded the VSS limit, which will directly cause SIGSEGV.<br>On the other hand, the detection of <span class="text-mle">MLE</span> on RSS limit is reliable. If a program exceeded the RSS limit, it would always get an <span class="text-mle">MLE</span>.</td>
+    <td>Your program used too much memory.<br>Program that used too much memory would not necessarily get an <span class="text-mle">MLE</span>; see <a href="/about/memory">Memory Accounting Types</a> for more details.</td>
   </tr>
   <tr class="ole">
     <td><span class="text-ole">OLE</span></td>
@@ -71,8 +69,6 @@
   </tr>
 </table>
 
-</p>
-
 </div>
 
-<%= link_to 'Back to Submission', :back, :class => 'btn btn-xs btn-default' %>
+<%= link_to 'Back', :back, :class => 'btn btn-xs btn-default' %>

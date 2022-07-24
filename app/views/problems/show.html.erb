@@ -222,10 +222,10 @@
         <th>No.</th>
         <th>Time Limit (ms)</th>
         <% if @has_vss %>
-          <th>Memory Limit (VSS, KiB)</th>
+          <th>Memory Limit (VSS, KiB) <%= help_icon '/about/memory' %></th>
         <% end %>
         <% if @has_rss %>
-          <th>Memory Limit (RSS, KiB)</th>
+          <th>Memory Limit (RSS, KiB) <%= help_icon '/about/memory' %></th>
         <% end %>
         <th>Output Limit (KiB)</th>
         <th>Subtasks</th>

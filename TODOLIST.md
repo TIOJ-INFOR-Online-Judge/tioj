@@ -11,7 +11,7 @@
 - [x] Add priority at new fetch API
 - [x] Add interlib implementation
 - [x] Move announcement to database
-- [ ] Add description about RSS & VSS and move them to /about
+- [x] Add description about RSS & VSS and move them to /about
 - [ ] Move current result to old & rejudge all submissions into new result
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
@@ -39,6 +39,7 @@
 - [ ] Add more languages
 - [ ] Write basic tests
 - [ ] Send compiler information from judge server
+- [ ] Per-language memory/time limit
 - [ ] Contest-only users + batch creation
     - don't appear in rank, can only submit to contests
 - [ ] Role for problem setter

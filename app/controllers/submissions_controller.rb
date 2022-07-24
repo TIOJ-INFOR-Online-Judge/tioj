@@ -157,9 +157,6 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def verdict
-  end
-
   private
   def set_submissions
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]

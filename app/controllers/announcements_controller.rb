@@ -1,4 +1,5 @@
 class AnnouncementsController < InheritedResources::Base
+  actions :index, :create, :edit, :update, :destroy # no :show & :new
   before_action :authenticate_admin!
 
   def index
