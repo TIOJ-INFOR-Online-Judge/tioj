@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_27_121017) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_27_075555) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -269,6 +269,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_27_121017) do
     t.index ["contest_id", "user_id", "result", "old_result"], name: "index_submissions_old_user_result"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
     t.index ["result", "contest_id", "id"], name: "index_submissions_fetch"
+    t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 

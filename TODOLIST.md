@@ -25,6 +25,7 @@
     - checkbox for "same as above" & shortcut for check/uncheck all
     - don't change problem tasks
 - [ ] Option to ignore some testdata in overall verdict
+    - add button to recalculate score without rejudge
 - [x] PR #3 (issue #1)
 - [x] PR #4 (issue #2)
 - [x] PR #11 (use MIN(id) to MAX(id))

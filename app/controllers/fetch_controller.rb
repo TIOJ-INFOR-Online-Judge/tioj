@@ -143,6 +143,9 @@ class FetchController < ApplicationController
   ### new api
 
   def submission_new
+    # set dead submissions (probably because of killed judge) to queued
+    Submission.where(result: ["received", "Validating"], updated_at: ..30.minute.ago).update_all(result: "queued")
+
     is_old = false
     Submission.transaction do
       @submission = Submission.lock.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
