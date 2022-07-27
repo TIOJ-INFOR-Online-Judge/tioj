@@ -15,6 +15,11 @@
 #  total_memory :integer
 #  message      :text(16777215)
 #  compiler_id  :bigint           default(1), not null
+#  old_result   :string(255)
+#  old_score    :decimal(18, 6)
+#  old_time     :integer
+#  old_memory   :integer
+#  new_rejudged :boolean          default(TRUE)
 #
 
 class Submission < ApplicationRecord

@@ -12,6 +12,10 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  vss           :integer
+#  old_result    :string(255)
+#  old_score     :decimal(18, 6)
+#  old_time      :decimal(12, 3)
+#  old_memory    :integer
 #
 
 class SubmissionTask < ApplicationRecord
