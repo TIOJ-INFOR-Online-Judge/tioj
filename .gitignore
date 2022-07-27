@@ -7,9 +7,6 @@
 /tempioj
 /sql\ dump
 
-# Ignore announcements.
-/public/announcement/anno
-
 # Ignore bundler config.
 /.bundle
 
@@ -23,15 +20,11 @@
 
 # Ignore all the testdata
 /td
-/public/uploads
-/public/pmisc
-/public/pimgs
-/public/pcontest
-/public/STL
-/public/cppref
-/public/cppref-17
-/public/INFOR
-/public/test
+/public
+!/public/codehighlighter
+!/public/fonts
+!/public/images
+!/public/robots.txt
 
 # Ignore binaries
 /bin

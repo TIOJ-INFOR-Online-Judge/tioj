@@ -36,10 +36,11 @@ class UsersController < ApplicationController
       @submissions = @user.submissions
     end
     @submissions = @submissions.where(old_result: 'AC').where.not(result: 'AC')
-    if params[:problem_id]
+    if not params[:problem_id].blank?
       @problem = Problem.find(params[:problem_id])
       @submissions = @submissions.where(problem_id: params[:problem_id])
     end
+    @submissions = @submissions.where(result: params[:filter_status]) if not params[:filter_status].blank?
     @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
   end
 

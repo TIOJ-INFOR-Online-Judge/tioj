@@ -147,7 +147,7 @@ class FetchController < ApplicationController
     Submission.transaction do
       @submission = Submission.lock.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
       if not @submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
-        @submission = Submission.lock.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(id: :desc).first
+        @submission = Submission.lock.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
         is_old = true
       end
       if @submission
