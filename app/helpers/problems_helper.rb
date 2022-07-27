@@ -2,7 +2,7 @@ module ProblemsHelper
   def topcoder(problem)
     submission = (problem.submissions.select(:user_id)
         .where(contest_id: nil, result: 'AC')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")).first
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)).first
     return User.find_by_id(submission.user_id) if submission
     return nil if submission.blank?
   end
@@ -10,7 +10,7 @@ module ProblemsHelper
   def topcoders(problems)
     topcoder_clause = (Submission.select(:user_id)
         .where(contest_id: nil, result: 'AC').where('problem_id = problems.id')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
         .limit(1).to_sql)
     problem_ids = problems.map(&:id)
     lst = Problem.select(:id, "(#{topcoder_clause}) topcoder").where(id: problem_ids).to_a

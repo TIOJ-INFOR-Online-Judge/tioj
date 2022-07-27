@@ -9,7 +9,7 @@ class ProblemsController < ApplicationController
 
   def ranklist
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC")
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
         .includes(:compiler))
   end
 
