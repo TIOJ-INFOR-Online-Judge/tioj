@@ -36,7 +36,7 @@
 
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Enhance posts UI
-- [ ] Upload submission by file
+- [ ] Upload submission by file + non-UTF-8 code
 - [ ] Add more languages
 - [ ] Write basic tests
 - [ ] Send compiler information from judge server

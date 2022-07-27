@@ -6,7 +6,12 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
   #resources :limits
   resources :problems do
-    resources :testdata
+    resources :testdata do
+      collection do
+        get 'batch_edit'
+        post 'batch_edit', to: 'testdata#batch_update'
+      end
+    end
     resources :submissions
     resources :posts do
       resources :comments

@@ -1,0 +1,67 @@
+<%= form_tag batch_edit_problem_testdata_path(@problem) do %>
+  <% if @testdata.map{|x| x.errors.any?}.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@testdata.sum{|x| x.errors.count}, "error") %> prohibited this testdatum from being saved:</h2>
+      <ul>
+        <% @testdata.each do |td| %>
+          <% td.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <table>
+    <tr>
+      <th>Input</th>
+      <th>Output</th>
+      <th>TL</th>
+      <th>ML (VSS)</th>
+      <th>ML (RSS)</th>
+      <th>OL</th>
+      <th>Position</th>
+      <th>Same as above?</th>
+      <th>Delete?</th>
+    </tr>
+    <% @testdata.each_with_index do |td, index| %>
+      <tr>
+        <%= fields_for "td[]", td do |f| %>
+          <td>
+            <%= strip_uuid(td.test_input_identifier) %>
+          </td>
+          <td>
+            <%= strip_uuid(td.test_output_identifier) %>
+          </td>
+          <td>
+            <%= f.number_field :time_limit, :class => 'form-control flat' %>
+          </td>
+          <td>
+            <%= f.number_field :vss_limit, :class => 'form-control flat' %>
+          </td>
+          <td>
+            <%= f.number_field :rss_limit, :class => 'form-control flat' %>
+          </td>
+          <td>
+            <%= f.number_field :output_limit, :class => 'form-control flat' %>
+          </td>
+          <td>
+            <%= f.number_field :position, :class => 'form-control flat' %>
+          </td>
+          <td>
+            <% if index > 0 %>
+              <%= f.check_box :form_same_as_above %>
+            <% end %>
+          </td>
+          <td>
+            <%= f.check_box :form_delete %>
+        <% end %>
+          </td>
+      </tr>
+    <% end %>
+  </table>
+
+  <div class="actions">
+    <%= submit_tag 'Submit', :class => 'btn btn-success btn-lg' %>
+  </div>
+<% end %>

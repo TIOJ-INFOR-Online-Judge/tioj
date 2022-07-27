@@ -21,8 +21,8 @@
     <% @testdata.each_with_index do |testdatum, index| %>
       <tr>
         <td><%= index %></td>
-        <td><%= testdatum.test_input.blank? ? "Nil" : truncate(testdatum.test_input_identifier,length: 30) %></td>
-        <td><%= testdatum.test_output.blank? ? "Nil" : truncate(testdatum.test_output_identifier,length: 30) %></td>
+        <td><%= testdatum.test_input.blank? ? "Nil" : strip_uuid(testdatum.test_input_identifier) %></td>
+        <td><%= testdatum.test_output.blank? ? "Nil" : strip_uuid(testdatum.test_output_identifier) %></td>
         <td><%= testdatum.time_limit %></td>
         <td><%= testdatum.vss_limit || '-' %></td>
         <td><%= testdatum.rss_limit || '-' %></td>
