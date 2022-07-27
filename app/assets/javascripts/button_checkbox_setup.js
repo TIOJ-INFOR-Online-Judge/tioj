@@ -1,5 +1,5 @@
 
-function button_checkbox_init() {
+function button_checkbox_setup() {
 
 $('.button-checkbox').each(function () {
 

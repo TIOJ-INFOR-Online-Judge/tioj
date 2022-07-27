@@ -224,6 +224,7 @@ class ContestsController < ApplicationController
       :disable_discussion,
       :freeze_time,
       :show_detail_result,
+      :hide_old_submission,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,

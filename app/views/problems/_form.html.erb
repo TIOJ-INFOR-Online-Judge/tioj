@@ -275,7 +275,7 @@
   $(document).on('nested:fieldRemoved',function(event){
     event.field.find("input").removeAttr("min max required");
   });
-  button_checkbox_init();
+  button_checkbox_setup();
 </script>
 
 <% if @isNewProblem == true %>
