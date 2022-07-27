@@ -243,14 +243,14 @@
       <% @testdata.each_with_index do |testdatum, index| %>
         <tr>
           <td><%= index %></td>
-          <td><%= testdatum.limit.time || "-" %></td>
+          <td><%= testdatum.time_limit || "-" %></td>
           <% if @has_vss %>
-            <td><%= testdatum.limit.vss || "-" %></td>
+            <td><%= testdatum.vss_limit || "-" %></td>
           <% end %>
           <% if @has_rss %>
-            <td><%= testdatum.limit.rss || "-" %></td>
+            <td><%= testdatum.rss_limit || "-" %></td>
           <% end %>
-          <td><%= testdatum.limit.output || "-" %></td>
+          <td><%= testdatum.output_limit || "-" %></td>
           <td>
             <% if @tdlist[index] %>
               <% @tdlist[index].each do |x| %>

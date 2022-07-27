@@ -26,7 +26,7 @@ class FetchController < ApplicationController
   def testdata_meta
     @problem = Problem.find(params[:pid])
     @result = @problem.testdata.count.to_s + " "
-    @problem.testdata.order(position: :asc).each do |t|
+    @problem.testdata.each do |t|
       @result += t.id.to_s + " "
       @result += t.updated_at.to_i.to_s + "\n"
     end
@@ -36,10 +36,10 @@ class FetchController < ApplicationController
   def testdata_limit
     @problem = Problem.find(params[:pid])
     @result = ""
-    @problem.testdata.order(position: :asc).includes(:limit).each do |t|
-      @result += t.limit.time.to_s + " "
-      @result += (t.limit.vss || t.limit.rss).to_s + " "
-      @result += t.limit.output.to_s + "\n"
+    @problem.testdata.each do |t|
+      @result += t.time_limit.to_s + " "
+      @result += (t.vss_limit || t.rss_limit).to_s + " "
+      @result += t.output_limit.to_s + "\n"
     end
     render plain: @result
   end
@@ -184,14 +184,14 @@ class FetchController < ApplicationController
         interlib: @problem.interlib || "",
         interlib_impl: @problem.interlib_impl || "",
       },
-      td: @problem.testdata.order(position: :asc).includes(:limit).map { |t|
+      td: @problem.testdata.map { |t|
         {
           id: t.id,
           updated_at: t.updated_at.to_i,
-          time: t.limit.time * 1000, # us
-          vss: t.limit.vss || 0,
-          rss: t.limit.rss || 0,
-          output: t.limit.output,
+          time: t.time_limit * 1000, # us
+          vss: t.vss_limit || 0,
+          rss: t.rss_limit || 0,
+          output: t.output_limit,
         }
       },
       tasks: @problem.testdata_sets.map { |s|

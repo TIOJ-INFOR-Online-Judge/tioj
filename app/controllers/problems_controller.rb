@@ -134,9 +134,9 @@ class ProblemsController < ApplicationController
   end
 
   def set_testdata
-    @testdata = @problem.testdata.order(position: :asc).includes(:limit)
-    @has_rss = @testdata.any?{|x| x.limit.rss}
-    @has_vss = @testdata.any?{|x| x.limit.vss}
+    @testdata = @problem.testdata
+    @has_rss = @testdata.any?{|x| x.rss_limit}
+    @has_vss = @testdata.any?{|x| x.vss_limit}
   end
 
   def set_compiler

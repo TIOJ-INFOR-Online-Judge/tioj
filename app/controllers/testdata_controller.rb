@@ -2,20 +2,14 @@ class TestdataController < ApplicationController
   before_action :authenticate_admin!
   before_action :set_problem
   before_action :set_testdatum, only: [:edit, :update, :destroy]
+  before_action :set_testdata, only: [:batch_edit, :batch_update]
 
   def index
-    @testdata = @problem.testdata.order(position: :asc).includes(:limit)
+    @testdata = @problem.testdata
   end
 
   def new
     @testdatum = @problem.testdata.build
-    @testdatum.build_limit
-  end
-
-  def edit
-    if not @testdatum.limit
-      @testdatum.build_limit
-    end
   end
 
   def create
@@ -30,6 +24,9 @@ class TestdataController < ApplicationController
         format.json { render json: @testdatum.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def edit
   end
 
   def update
@@ -61,22 +58,24 @@ class TestdataController < ApplicationController
     @testdatum = Testdatum.find(params[:id])
   end
 
+  def set_testdata
+    @testdata = @problem.testdata
+  end
+
   def set_problem
     @problem = Problem.find(params[:problem_id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def testdatum_params
-    params.require(:testdatum).permit(:problem_id, :test_input, :test_output,
-      limit_attributes:
-        [
-          :id,
-          :time,
-          :rss,
-          :vss,
-          :output,
-          :problem_id,
-          :testdatum_id
-     ])
+    params.require(:testdatum).permit(
+      :problem_id,
+      :test_input,
+      :test_output,
+      :time_limit,
+      :rss_limit,
+      :vss_limit,
+      :output_limit,
+    )
   end
 end

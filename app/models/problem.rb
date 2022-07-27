@@ -40,7 +40,7 @@ class Problem < ApplicationRecord
   has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
   has_many :compilers, :through => :ban_compilers, :as => :with_compiler
 
-  has_many :testdata, :dependent => :destroy
+  has_many :testdata, -> { order(position: :asc) }, :dependent => :destroy
   accepts_nested_attributes_for :testdata, :allow_destroy => true, :reject_if => :all_blank
 
   has_many :testdata_sets, dependent: :delete_all

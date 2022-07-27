@@ -18,15 +18,15 @@
 
   <tbody >
   <% if @testdata.present? %>
-    <% @testdata.order(position: :asc).each_with_index do |testdatum, index| %>
+    <% @testdata.each_with_index do |testdatum, index| %>
       <tr>
         <td><%= index %></td>
         <td><%= testdatum.test_input.blank? ? "Nil" : truncate(testdatum.test_input_identifier,length: 30) %></td>
         <td><%= testdatum.test_output.blank? ? "Nil" : truncate(testdatum.test_output_identifier,length: 30) %></td>
-        <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
-        <td><%= testdatum.limit.vss || '-' %></td>
-        <td><%= testdatum.limit.rss || '-' %></td>
-        <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
+        <td><%= testdatum.time_limit %></td>
+        <td><%= testdatum.vss_limit || '-' %></td>
+        <td><%= testdatum.rss_limit || '-' %></td>
+        <td><%= testdatum.output_limit %></td>
         <td>
           <%= link_to 'Edit', edit_problem_testdatum_path(@problem, testdatum), :class => 'btn btn-info btn-xs' %>
           <%= link_to 'Destroy', problem_testdatum_path(@problem, testdatum), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>

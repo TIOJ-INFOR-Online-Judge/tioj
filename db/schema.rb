@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_27_075555) do
+ActiveRecord::Schema[7.0].define(version: 2022_07_27_100011) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -166,17 +166,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_27_075555) do
     t.datetime "updated_at", precision: nil
   end
 
-  create_table "limits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
-    t.integer "time", default: 1000
-    t.integer "vss", default: 65536
-    t.integer "output", default: 65536
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
-    t.bigint "testdatum_id"
-    t.integer "rss"
-    t.index ["testdatum_id"], name: "index_limits_on_testdatum_id"
-  end
-
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
@@ -305,6 +294,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_27_075555) do
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
     t.integer "position"
+    t.integer "time_limit", default: 1000
+    t.integer "vss_limit", default: 65536
+    t.integer "rss_limit"
+    t.integer "output_limit", default: 65536
   end
 
   create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
