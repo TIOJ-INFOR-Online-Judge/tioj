@@ -13,19 +13,20 @@
 - [x] Move announcement to database
 - [x] Add description about RSS & VSS and move them to /about
 - [x] Move current result to old & rejudge all submissions into new result
+- [ ] Add score precision to problem
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
 - [x] Add reject API for fetching
 - [ ] ActionCable for submission notifying
+- [ ] Multistage problems
 
 ## Enhance features & PRs
 
-- [ ] Testdata rearrange & batch modify
+- [x] Testdata rearrange & batch modify (issue #5)
     - fields for limits & position
     - checkbox for "same as above" & shortcut for check/uncheck all
     - don't change problem tasks
 - [ ] Option to ignore some testdata in overall verdict
-    - add button to recalculate score without rejudge
 - [x] PR #3 (issue #1)
 - [x] PR #4 (issue #2)
 - [x] PR #11 (use MIN(id) to MAX(id))
@@ -37,6 +38,8 @@
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Enhance posts UI
 - [ ] Upload submission by file + non-UTF-8 code
+- [ ] Output-only problems
+- [ ] Batch upload testdata
 - [ ] Add more languages
 - [ ] Write basic tests
 - [ ] Send compiler information from judge server

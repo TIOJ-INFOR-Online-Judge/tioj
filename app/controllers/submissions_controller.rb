@@ -47,7 +47,9 @@ class SubmissionsController < ApplicationController
     @_result = @submission.submission_tasks.to_a.map { |task|
       [task.position, [task.result, task.time, task.vss, task.rss, task.score]]
     }.to_h
-    @has_vss = @_result.empty? or @_result.values.any?{|x| x[2]}
+    logger.fatal [@_result.empty?, @_result.values.any?{|x| x[2]}]
+    @has_vss = @_result.empty? || @_result.values.any?{|x| x[2]}
+    logger.fatal @has_vss
     @tdlist = @submission.problem.testdata_sets
     @invtdlist = inverse_td_list(@submission.problem)
   end
