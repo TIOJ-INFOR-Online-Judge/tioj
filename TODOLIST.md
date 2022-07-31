@@ -15,7 +15,7 @@
 - [x] Move current result to old & rejudge all submissions into new result
 - [x] Add score precision to problem
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
-    - also update tioj-docker & test in VMs
+    - Deprecate tioj-docker; test in VMs
 - [x] Add reject API for fetching
 - [ ] ActionCable for submission notifying
 - [ ] Multistage problems

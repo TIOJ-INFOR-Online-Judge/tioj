@@ -262,7 +262,7 @@ private
       return
     end
     @judge = JudgeServer.find_by(key: params[:key])
-    if not @judge or @judge.ip != request.remote_ip
+    if not @judge or (not (@judge.ip || "").empty? and @judge.ip != request.remote_ip)
       head :unauthorized
       return
     end

@@ -1,0 +1,54 @@
+version: "3.7"
+
+x-logging:
+  &default-logging
+  driver: "json-file"
+  options:
+    max-size: "100m"
+    max-file: "2"
+
+services:
+  web:
+    build:
+      context: ./
+      args:
+        MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+        TIOJ_KEY: $FETCH_KEY
+    environment:
+      RAILS_ENV: production
+    volumes:
+      - /srv/tioj/web-td:/tioj/td
+      - /srv/tioj/web-log:/tioj/log
+      - /srv/tioj/public:/tioj/public
+    depends_on:
+      - db
+    networks:
+      - app
+    ports:
+      - "4000:4000"
+    logging: *default-logging
+  db:
+    image: mysql:8.0
+    volumes:
+      - /srv/tioj/db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=tioj_production
+    networks:
+      - app
+    logging: *default-logging
+  judge:
+    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#main
+    environment:
+      TIOJ_URL: "http://localhost:4000"
+      TIOJ_KEY: $FETCH_KEY
+    volumes:
+      - /srv/tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
+      - /srv/tioj/judge-testdata:/var/lib/tioj-judge/testdata
+    privileged: true
+    network_mode: host
+    pid: host
+    logging: *default-logging
+
+networks:
+  app:

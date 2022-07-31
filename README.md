@@ -1,23 +1,26 @@
 [TIOJ INFOR Online Judge](http://tioj.ck.tp.edu.tw/)
 ==
 
-### Remember to change secret token in production!!!
+## Installation guide
+
+First, install `docker-compose` and setup `.env` using the format of `.env.example`. After that, `docker-compose up` and enjoy TIOJ on port 4000!
+
+If you don't want to use docker, you can also follow the [manual installation guide](#manual-installation).
 
 ## Current Development Environment
-Ruby: 2.7.6
-Rails: 5.2.8
+Ruby: 3.1.2
+Rails: 7.0.3
 
-## Installation guide
+## Manual installation
 
 It is recommended to deploy TIOJ on Ubuntu 20.04 LTS or 22.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
 
 #### 1. Install prerequisites
 
+(TODO: Update)
 You need to follow the instructions on the screen when installing / setting up those packages.
 
 ```
-# apt-add-repository -y ppa:rael-gc/rvm # PPA for RVM
-# dpkg -i mysql-apt-config_0.8.11-1_all.deb # Prepare to install MySQL
 # apt update
 # apt install python python3 ghc rvm imagemagick mysql-server \
   libmysqlclient-dev libcurl4-openssl-dev openssl nodejs
