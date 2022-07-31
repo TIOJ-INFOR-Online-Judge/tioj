@@ -22,6 +22,7 @@
 #  specjudge_compiler_id :bigint
 #  discussion_visibility :integer          default("enabled")
 #  interlib_impl         :text(4294967295)
+#  score_precision       :integer          default(2)
 #
 
 class Problem < ApplicationRecord
@@ -53,4 +54,6 @@ class Problem < ApplicationRecord
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
+
+  validates :score_precision, numericality: { in: 0..6 }
 end

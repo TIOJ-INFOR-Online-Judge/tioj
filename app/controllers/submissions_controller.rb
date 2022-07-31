@@ -6,6 +6,7 @@ class SubmissionsController < ApplicationController
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
   before_action :set_contest, only: [:show]
+  before_action :set_problem, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new]
   helper_method :td_list_to_arr
 
@@ -213,6 +214,10 @@ class SubmissionsController < ApplicationController
 
   def set_contest
     @contest = @submission.contest
+  end
+
+  def set_problem
+    @problem = @submission.problem
   end
 
   def set_compiler

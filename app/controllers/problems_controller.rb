@@ -97,6 +97,7 @@ class ProblemsController < ApplicationController
       @problem.attributes = check_compiler()
       pre_ids = @problem.testdata_sets.collect(&:id)
       changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
+      changed ||= @problem.score_precision_changed?
       if @problem.save
         changed ||= pre_ids.sort != @problem.testdata_sets.collect(&:id).sort
         if changed
@@ -171,8 +172,8 @@ class ProblemsController < ApplicationController
           select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
         td_map = y.map{|t| [t.position, t.score]}.to_h
         score = tdset_map.map{|td, td_score|
-          (td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score
-        }.sum / BigDecimal('100')
+          ((td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score / 100).round(@problem.score_precision)
+        }.sum
         max_score = BigDecimal('1e+12') - 1
         score = score.clamp(-max_score, max_score).round(6)
         {id: x, score: score.to_s}
@@ -198,6 +199,7 @@ class ProblemsController < ApplicationController
       :visible_state,
       :tag_list,
       :discussion_visibility,
+      :score_precision,
       :specjudge_type,
       :specjudge_compiler_id,
       :interlib_type,

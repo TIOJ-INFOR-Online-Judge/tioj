@@ -134,7 +134,7 @@
                     </span>
                   <% else %>
                     <% p = lst.size > 0 ? lst.min / 100 : 1 %>
-                    <% score = (p * s.score).round(6) %>
+                    <% score = (p * s.score).round(@problem.score_precision) %>
                     <span class="subtask-display" style="background-color:<%= color_map(p) %>;">
                       <%= '%s / %s' % [score_str(score), score_str(s.score)] %>
                     </span>
@@ -175,20 +175,20 @@
           <tbody>
             <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
               <% task = @_result[i] %>
-              <% if task then %>
-                <% if styleclass_map[task[0]] %>
-                  <tr class="<%= styleclass_map[task[0]] %>">
-                <% else %>
-                  <tr>
-                <% end %>
-                  <td><%= i %></td>
-                  <td>
-                    <% if @invtdlist[i] %>
-                      <% @invtdlist[i].each do |x| %>
-                        <span class="subtask-icon"><%= x + 1 %></span>
-                      <% end %>
+              <% if task and styleclass_map[task[0]] %>
+                <tr class="<%= styleclass_map[task[0]] %>">
+              <% else %>
+                <tr>
+              <% end %>
+                <td><%= i %></td>
+                <td>
+                  <% if @invtdlist[i] %>
+                    <% @invtdlist[i].each do |x| %>
+                      <span class="subtask-icon"><%= x + 1 %></span>
                     <% end %>
-                  </td>
+                  <% end %>
+                </td>
+                <% if task then %>
                   <td><%= time_str(task[1]) %></td>
                   <% if @has_vss %>
                     <td><%= task[2] || '-' %></td>
@@ -196,14 +196,17 @@
                   <td><%= task[3] %></td>
                   <td><%= @verdict[task[0]] %></td>
                   <td><%= score_str(task[4]) %></td>
-                </tr>
-              <% else %>
-                <tr>
-                  <td><%= i %></td>
-                  <td></td> <td></td> <td></td> <td></td> <td></td>
-                </tr>
-              <% end %>
-            <% end %>
+                <% else %>
+                  <td></td>
+                  <% if @has_vss %>
+                    <td></td>
+                  <% end %>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                <% end %>
+              </tr>
+            <% end %> <!-- Range.new -->
           </tbody>
         </table>
       </div>

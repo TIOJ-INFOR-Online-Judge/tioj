@@ -223,8 +223,8 @@ class FetchController < ApplicationController
     score = @problem.testdata_sets.map{|s|
       lst = td_list_to_arr(s.td_list, num_tasks)
       set_result = score_map.values_at(*lst)
-      set_result.all? ? (lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score : 0
-    }.sum / 100
+      set_result.all? ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(@problem.score_precision) : 0
+    }.sum
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
     @submission.update(:score => score)

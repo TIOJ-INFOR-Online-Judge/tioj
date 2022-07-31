@@ -115,6 +115,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :score_precision %>
+    <%= f.number_field :score_precision, :in => 0..6, :class => 'form-control flat', :required => true %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
       <br>

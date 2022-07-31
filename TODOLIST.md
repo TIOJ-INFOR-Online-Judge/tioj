@@ -13,7 +13,7 @@
 - [x] Move announcement to database
 - [x] Add description about RSS & VSS and move them to /about
 - [x] Move current result to old & rejudge all submissions into new result
-- [ ] Add score precision to problem
+- [x] Add score precision to problem
 - [ ] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - also update tioj-docker & test in VMs
 - [x] Add reject API for fetching
