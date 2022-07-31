@@ -163,6 +163,7 @@ class FetchController < ApplicationController
     @problem = @submission.problem
     @user = @submission.user
     td_count = @problem.testdata.count
+    verdict_ignore_set = td_list_to_arr(@problem.verdict_ignore_td_list, td_count)
     render json: {
       submission_id: @submission.id,
       contest_id: @submission.contest_id || -1,
@@ -184,7 +185,7 @@ class FetchController < ApplicationController
         interlib: @problem.interlib || "",
         interlib_impl: @problem.interlib_impl || "",
       },
-      td: @problem.testdata.map { |t|
+      td: @problem.testdata.map.with_index { |t, index|
         {
           id: t.id,
           updated_at: t.updated_at.to_i,
@@ -192,6 +193,7 @@ class FetchController < ApplicationController
           vss: t.vss_limit || 0,
           rss: t.rss_limit || 0,
           output: t.output_limit,
+          verdict_ignore: verdict_ignore_set.include?(index),
         }
       },
       tasks: @problem.testdata_sets.map { |s|

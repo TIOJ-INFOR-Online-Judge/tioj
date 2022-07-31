@@ -146,12 +146,15 @@ class ProblemsController < ApplicationController
   end
 
   def reduce_list
-    unless problem_params[:testdata_sets_attributes]
-      return
+    if problem_params[:testdata_sets_attributes]
+      problem_params[:testdata_sets_attributes].each do |x, y|
+        params[:problem][:testdata_sets_attributes][x][:td_list] = \
+            reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
+      end
     end
-    problem_params[:testdata_sets_attributes].each do |x, y|
-      params[:problem][:testdata_sets_attributes][x][:td_list] = \
-          reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
+    if problem_params[:verdict_ignore_td_list]
+      params[:problem][:verdict_ignore_td_list] = \
+          reduce_td_list(problem_params[:verdict_ignore_td_list], @problem ? @problem.testdata.count : 0)
     end
   end
 
@@ -200,6 +203,7 @@ class ProblemsController < ApplicationController
       :tag_list,
       :discussion_visibility,
       :score_precision,
+      :verdict_ignore_td_list,
       :specjudge_type,
       :specjudge_compiler_id,
       :interlib_type,

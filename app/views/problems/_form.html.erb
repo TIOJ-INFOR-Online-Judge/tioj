@@ -244,6 +244,17 @@
     </div>
   <% end %>
   <%= f.link_to_add "Add a range", :testdata_sets, :class => 'btn btn-warning' %>
+
+  <br><br>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation" %>
+        <%= f.text_field :verdict_ignore_td_list, :class => 'form-control flat' %>
+      </div>
+    </div>
+  </div>
+
   <hr>
   <div class="actions">
     <span class="flex-container-bottom-align">

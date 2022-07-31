@@ -26,7 +26,7 @@
     - fields for limits & position
     - checkbox for "same as above" & shortcut for check/uncheck all
     - don't change problem tasks
-- [ ] Option to ignore some testdata in overall verdict
+- [x] Option to ignore some testdata in overall verdict
 - [x] PR #3 (issue #1)
 - [x] PR #4 (issue #2)
 - [x] PR #11 (use MIN(id) to MAX(id))
@@ -38,7 +38,7 @@
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Enhance posts UI
 - [ ] Upload submission by file + non-UTF-8 code
-- [ ] Output-only problems
+- [ ] I/O interactive & output-only problems
 - [ ] Batch upload testdata
 - [ ] Add more languages
 - [ ] Write basic tests
