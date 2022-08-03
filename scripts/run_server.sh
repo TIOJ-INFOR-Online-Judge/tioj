@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 if [ "$1" == "1" ]; then
   if [ -d public-tmp ]; then
     rsync -avh public-tmp/ public/
@@ -10,5 +12,9 @@ if [ "$1" == "1" ]; then
   done
 fi
 
-rails db:setup
+if rails db:exists; then
+  rails db:migrate
+else
+  rails db:setup
+fi
 /usr/local/bundle/bin/passenger start --port 4000

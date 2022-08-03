@@ -14,27 +14,22 @@ RUN MAKEFLAGS='-j2' bundle install
 
 COPY . /tioj
 
-RUN echo "development:\n\
- adapter: mysql2\n\
- database: tioj_dev\n\
- host: db\n\
- username: root\n\
- password: $PASSWORD\n\
- encoding: utf8\n\
+RUN echo "default: &default\n\
+  adapter: mysql2\n\
+  host: db\n\
+  username: root\n\
+  password: $PASSWORD\n\
+  encoding: utf8\n\
+\n\
+development:\n\
+  <<: *default\n\
+  database: tioj_dev\n\
 test:\n\
- adapter: mysql2\n\
- database: tioj_test\n\
- host: db\n\
- username: root\n\
- password: $PASSWORD\n\
- encoding: utf8\n\
+  <<: *default\n\
+  database: tioj_test\n\
 production:\n\
- adapter: mysql2\n\
- database: tioj_production\n\
- host: db\n\
- username: root\n\
- password: $PASSWORD\n\
- encoding: utf8"\
+  <<: *default\n\
+  database: tioj_production"\
 > config/database.yml
 
 RUN rails assets:precompile
@@ -44,4 +39,4 @@ RUN EDITOR=cat rails credentials:edit
 #  run_server moves it back
 RUN mv public public-tmp
 
-CMD ./run_server.sh 1
+CMD /tioj/scripts/run_server.sh 1

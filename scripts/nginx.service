@@ -1,0 +1,17 @@
+[Unit]
+Description=Nginx Server
+After=syslog.target
+Requires=network.target remote-fs.target nss-lookup.target mysql.service
+
+[Service]
+Type=forking
+Environment="LOGLEVEL=debug"
+PIDFile=/opt/nginx/logs/nginx.pid
+ExecStartPre=/opt/nginx/sbin/nginx -t
+ExecStart=/opt/nginx/sbin/nginx
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

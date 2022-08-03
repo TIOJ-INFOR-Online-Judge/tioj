@@ -3,176 +3,34 @@
 
 ## Installation guide
 
-First, install `docker-compose` and setup `.env` using the format of `.env.example`. After that, `docker-compose up` and enjoy TIOJ on port 4000!
+### Direct installation
 
-If you don't want to use docker, you can also follow the [manual installation guide](#manual-installation).
+Make sure the current user has `sudo` privileges, and run the installation script:
+
+```
+curl -sSL https://raw.githubusercontent.com/TIOJ-INFOR-Online-Judge/tioj/new-judge/scripts/install.sh | DB_PASSWORD=some_password bash -s
+```
+
+It is recommended to run this script on a freshly-installed machine. This script will install both the web server (by `passenger-install-nginx-module`) and the [judge client](https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge), and start & enable them via systemd.
+
+The systemd service names are `nginx.service` and `tioj-judge.service`. The configuration files are located at `/opt/nginx/conf` and `/etc/tioj-judge.conf`. You can modify them and reload/restart the services.
+
+This script is tested on Ubuntu 20.04 LTS and 22.04 LTS. It also works on Arch Linux, but direct installation on Arch Linux is not recommended since it involves rebuilding some community packages for static libraries.
+
+### Docker
+
+1. Install `docker-compose` and setup `.env` using the format of `.env.example`.
+2. `docker-compose up -d` and enjoy TIOJ on port 4000.
 
 ## Current Development Environment
+
 Ruby: 3.1.2
 Rails: 7.0.3
 
-## Manual installation
-
-It is recommended to deploy TIOJ on Ubuntu 20.04 LTS or 22.04 LTS. The following guide uses RVM for Ruby, Passenger + Nginx for web server.
-
-#### 1. Install prerequisites
-
-(TODO: Update)
-You need to follow the instructions on the screen when installing / setting up those packages.
-
-```
-# apt update
-# apt install python python3 ghc rvm imagemagick mysql-server \
-  libmysqlclient-dev libcurl4-openssl-dev openssl nodejs
-# mysql_secure_installation # Setup MySQL
-# usermod -a -G rvm $USER
-$ # ruby needs openssl 1.1.1 while default is openssl 3, so compile it manually
-$ wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/openssl/1.1.1l-1ubuntu1.3/openssl_1.1.1l.orig.tar.gz
-$ tar -xf openssl_1.1.1l.orig.tar.gz
-$ cd openssl-1.1.1l/
-$ ./config shared enable-ec_nistp_64_gcc_128 -Wl,-rpath=/usr/local/ssl/lib --prefix=/usr/local/ssl
-$ make -j4
-# make install
-$ echo 'source /etc/profile.d/rvm.sh' >> ~/.bashrc
-$ echo 'PATH=$HOME/.rvm/gems/ruby-2.7.6/bin:$PATH' >> ~/.bashrc
-$ source ~/.bashrc
-$ rvm install 2.7.6 --with-openssl-dir=/usr/local/ssl/
-$ rvm use --default 2.7.6
-```
-
-#### 2. Clone TIOJ and its judge program
-
-```
-$ git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj
-$ git clone https://github.com/TIOJ-INFOR-Online-Judge/miku
-$ cd miku
-$ git submodule update --init
-```
-
-#### 3. Install gems
-
-```
-$ bundle install  # in tioj/
-```
-
-#### 4. Install web server
-
-```
-$ rvmsudo passenger-install-nginx-module
-```
-
-When prompted for selecting the language, select Ruby. Use all recommended settings.
-
-#### 5. Configure Nginx
-
-```
-# vim /opt/nginx/conf/nginx.conf
-```
-You need to add some settings to the Nginx configuration:
-```
-http {
-  # ... some settings ...
-  passenger_app_env production;
-
-  # The Passenger version and the username may be different from this example.
-  # You need to use the path given in the previous step.
-  passenger_root /home/tioj/.rvm/gems/ruby-2.7.6/gems/passenger-6.0.14;
-  passenger_ruby /home/tioj/.rvm/gems/ruby-2.7.6/wrappers/ruby;
-
-  server {
-    # ... some settings ...
-    passenger_enabled on;
-    root ${TIOJ_PATH}/public; # Replace ${TIOJ_PATH} with the path to the cloned 'tioj' repository
-  }
-}
-```
-
-#### 6. Edit database settings
-
-Add the following to `tioj/config/database.yml` and change `${PASSWORD}` to the password of the MySQL root account:
-
-```
-development:
- adapter: mysql2
- database: tioj_dev
- host: localhost
- username: root
- password: ${PASSWORD}
- encoding: utf8
-test:
- adapter: mysql2
- database: tioj_test
- host: localhost
- username: root
- password: ${PASSWORD}
- encoding: utf8
-production:
- adapter: mysql2
- database: tioj_production
- host: localhost
- username: root
- password: ${PASSWORD}
- encoding: utf8
- socket: /var/run/mysqld/mysqld.sock # You may need to check MySQL settings to get the socket path
-```
-
-#### 7. Generate keys
-
-There are two keys need to be generated. The first is the Rails secret token, and the second is the key to update judge results. The following shell script can do this:
-
-```
-URL= # The URL of webpage (e.g. 'http://127.0.0.1' or 'https://some.website.com'), without the terminating '/'
-TIOJ_PATH= # The path to the cloned 'tioj' repository
-JUDGE_PATH= # The path to the cloned 'miku' repository
-
-cd $TIOJ_PATH
-KEY=$(rake secret)
-cat <<EOF >config/initializers/fetch_key.rb
-Tioj::Application.config.fetch_key = "$KEY"
-EOF
-cd $JUDGE_PATH
-cat <<EOF >app/tioj_url.py
-tioj_url = "$URL"
-tioj_key = "$KEY"
-EOF
-```
-
-#### 8. Create database & assets & announcements
-
-```
-# Inside `tioj` repository
-EDITOR=vim rails credentials:edit # just save the file
-RAILS_ENV=production rails db:create db:schema:load db:seed
-RAILS_ENV=production rails assets:precompile
-mkdir public/announcement
-echo -n '{"name":"","message":""}' > public/announcement/anno
-```
-
-#### 9. Compile judge server
-
-```
-# Inside `miku` repository
-make # -j8 for parallel compilation
-```
-
-### 10. Switch to cgroups v1
-
-Add `GRUB_CMDLINE_LINUX="systemd.unified_cgroup_hierarchy=0"` to `/etc/default/grub`, run `sudo update-grub` and then reboot.
-
-### Done!
-
-Now start the web server and the judge server:
-```
-# /opt/nginx/sbin/nginx
-# PATH=${JUDGE_PATH}/app:${JUDGE_PATH}/bin:$PATH \
-  ${JUDGE_PATH}/bin/miku --parallel 2 -b 100 --verbose --aggressive-update
-```
-
-You can add the commands to systemd for the convenience of starting / stopping those servers.
-
-
 ## Judge Management
 
-TIOJ has an admin control panel located at `/admin` (powered by [Active Admin](https://activeadmin.info/)), which has an independent authentication system. The default admin username and password are both `admin` (set in `db/seeds.rb` and created when running `rake db:seed`).
+TIOJ has an admin control panel located at `/admin` (powered by [Active Admin](https://activeadmin.info/)), which has an independent authentication system. The default admin username and password are both `admin` (set in `db/seeds.rb` and created when running `rails db:seed`).
 
 Though one can add/edit some settings through the control panel, it is not the recommended way to manage the judge (and it might lead to some errors). Instead, one should create an ordinary account, enter the `Users` tab in the control panel to set the account as an admin account, and use it to do all ordinary management such as problem setting, testdata uploading, and article creation.
+
+It is possible to have multiple judge clients by setting up the fetch keys in the `Judge Servers` tab in the control panel.
