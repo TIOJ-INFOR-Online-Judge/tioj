@@ -35,7 +35,7 @@
 - [x] PR #11 (use MIN(id) to MAX(id))
 - [x] PR #12
 - [x] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
-- [ ] Precise timestamp (for testdata fetching)
+- [x] Precise timestamp (for testdata fetching)
 
 ## Future
 

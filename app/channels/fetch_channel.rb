@@ -95,7 +95,7 @@ class FetchChannel < ApplicationCable::Channel
       td: @problem.testdata.map.with_index { |t, index|
         {
           id: t.id,
-          updated_at: t.updated_at.to_i,
+          updated_at: t.updated_at.to_i * 1000000 + t.updated_at.usec,
           time: t.time_limit * 1000, # us
           vss: t.vss_limit || 0,
           rss: t.rss_limit || 0,
