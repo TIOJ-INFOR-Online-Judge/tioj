@@ -17,7 +17,10 @@
 - [x] Provide Dockerfile / install script (PR #6) & update README (after tioj-judge finished)
     - Deprecate tioj-docker; test in VMs
 - [x] Add reject API for fetching
-- [ ] ActionCable for submission notifying
+- [x] ActionCable for submission notifying
+    - [x] Add judge client online status
+    - [x] Move most of the fetch code (except testdata download) to channel
+    - [ ] Update Dockerfile & install script
 - [ ] Multistage problems
 
 ## Enhance features & PRs
@@ -32,6 +35,7 @@
 - [x] PR #11 (use MIN(id) to MAX(id))
 - [x] PR #12
 - [x] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
+- [ ] Precise timestamp (for testdata fetching)
 
 ## Future
 
@@ -41,6 +45,7 @@
 - [ ] I/O interactive & output-only problems
 - [ ] Batch upload testdata
 - [ ] Add more languages
+- [ ] Judge load balancing
 - [ ] Write basic tests
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit

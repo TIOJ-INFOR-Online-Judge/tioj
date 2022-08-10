@@ -24,7 +24,6 @@ class UsersController < ApplicationController
     ac_cur = @user.submissions.select(:problem_id).where(result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
     ac_old = @user.submissions.select(:problem_id).where(old_result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
     changed = ac_old - ac_cur
-    # logger.fatal [ac_cur, ac_old, changed]
     @problems = Problem.where(id: changed)
     @problems = @problems.order(id: :asc).page(params[:page]).per(50)
   end

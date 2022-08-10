@@ -10,6 +10,7 @@ if [ "$1" == "1" ]; then
   until timeout 2s nc -z db 3306; do
     sleep 1
   done
+  redis-server & disown
 fi
 
 if rails db:exists; then

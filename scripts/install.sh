@@ -19,8 +19,8 @@ if grep -q 'Ubuntu' /etc/*-release; then
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       git cmake ninja-build g++-11 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev ghc
+      imagemagick nodejs redis-server \
+      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev ghc
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
@@ -32,7 +32,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
   # Setup mysql
   sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
 elif grep -q 'Arch Linux' /etc/*-release; then
-  sudo pacman -S --noconfirm --needed base-devel git cmake ninja mariadb nodejs
+  sudo pacman -S --noconfirm --needed base-devel git cmake ninja mariadb nodejs redis boost
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
@@ -141,7 +141,9 @@ EOF
 # Setup systemctl
 cd "$SCRIPT_DIR"
 sudo cp nginx.service tioj-judge.service /etc/systemd/system/
+sudo systemctl enable redis
 sudo systemctl enable nginx
 sudo systemctl enable tioj-judge
+sudo systemctl start redis
 sudo systemctl start nginx
 sudo systemctl start tioj-judge

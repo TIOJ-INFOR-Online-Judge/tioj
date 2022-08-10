@@ -6,37 +6,44 @@ class ApplicationController < ActionController::Base
   before_action :set_verdict_hash
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_anno
+  mattr_accessor :verdict
+  mattr_accessor :v2i
+  mattr_accessor :i2v
+
+  @@verdict = {
+    "AC" => "Accepted",
+    "WA" => "Wrong Answer",
+    "TLE" => "Time Limit Exceeded",
+    "MLE" => "Memory Limit Exceeded",
+    "OLE" => "Output Limit Exceeded",
+    "RE" => "Runtime Error",
+    "SIG" => "Runtime Error (killed by signal)",
+    "EE" => "Execution Error",
+    "CE" => "Compilation Error",
+    "CLE" => "Compilation Limit Exceeded",
+    "ER" => "Judge Compilation Error",
+    "JE" => "Judge Error",
+  }
+  @@v2i = {
+    "AC" => 0,
+    "WA" => 1,
+    "TLE" => 2,
+    "MLE" => 3,
+    "OLE" => 4,
+    "RE" => 5,
+    "SIG" => 6,
+    "EE" => 7,
+    "CE" => 8,
+    "CLE" => 9,
+    "ER" => 10,
+    "JE" => 11,
+  }
+  @@i2v = @@v2i.map{|x, y| [y, x]}.to_h
 
   def set_verdict_hash
-    @verdict = {
-      "AC" => "Accepted",
-      "WA" => "Wrong Answer",
-      "TLE" => "Time Limit Exceeded",
-      "MLE" => "Memory Limit Exceeded",
-      "OLE" => "Output Limit Exceeded",
-      "RE" => "Runtime Error",
-      "SIG" => "Runtime Error (killed by signal)",
-      "EE" => "Execution Error",
-      "CE" => "Compilation Error",
-      "CLE" => "Compilation Limit Exceeded",
-      "ER" => "Judge Compilation Error",
-      "JE" => "Judge Error",
-    }
-    @v2i = {
-      "AC" => 0,
-      "WA" => 1,
-      "TLE" => 2,
-      "MLE" => 3,
-      "OLE" => 4,
-      "RE" => 5,
-      "SIG" => 6,
-      "EE" => 7,
-      "CE" => 8,
-      "CLE" => 9,
-      "ER" => 10,
-      "JE" => 11,
-    }
-    @i2v = @v2i.map{|x, y| [y, x]}.to_h
+    @verdict = @@verdict
+    @v2i = @@v2i
+    @i2v = @@i2v
   end
 
   def store_location
@@ -104,10 +111,7 @@ protected
   end
 
   def td_list_to_arr(str, sz)
-    str.split(',').map{|x|
-      t = x.split('-')
-      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
-    }.flatten.sort.uniq
+    ApplicationController.td_list_to_arr(str, sz)
   end
 
   def reduce_td_list(str, sz)
@@ -122,5 +126,14 @@ protected
     sz = prob.testdata.count
     prob.testdata_sets.map.with_index{|x, i| td_list_to_arr(x.td_list, sz).map{|y| [y, i]}}
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
+  end
+
+  public
+
+  def self.td_list_to_arr(str, sz)
+    str.split(',').map{|x|
+      t = x.split('-')
+      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
+    }.flatten.sort.uniq
   end
 end

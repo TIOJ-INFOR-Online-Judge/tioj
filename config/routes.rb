@@ -57,15 +57,6 @@ Rails.application.routes.draw do
   get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
   get 'problems/:problem_id/delsub' => 'submissions#delete_problem_submission', as: :problem_delsub
 
-  get 'fetch/sjcode' => 'fetch#sjcode'
-  get 'fetch/code' => 'fetch#code'
-  get 'fetch/interlib' => 'fetch#interlib'
-  get 'fetch/submission' => 'fetch#submission'
-  get 'fetch/validating' => 'fetch#validating'
-  get 'fetch/write_result' => 'fetch#write_result'
-  post 'fetch/write_message' => 'fetch#write_message'
-  get 'fetch/testdata_limit' => 'fetch#testdata_limit'
-  get 'fetch/testdata_meta' => 'fetch#testdata_meta'
   get 'fetch/testdata' => 'fetch#testdata'
 
   get 'fetch/submission_new' => 'fetch#submission_new'

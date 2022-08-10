@@ -19,12 +19,14 @@ class SubmissionsController < ApplicationController
     subs = Submission.where(problem_id: params[:problem_id])
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     SubmissionTask.where(submission_id: subs.map{|x| x.id}).delete_all
+    ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     redirect_back fallback_location: root_path
   end
 
   def rejudge
     @submission.submission_tasks.destroy_all
     @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
+    ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
     redirect_back fallback_location: root_path
   end
 
@@ -48,9 +50,7 @@ class SubmissionsController < ApplicationController
     @_result = @submission.submission_tasks.to_a.map { |task|
       [task.position, [task.result, task.time, task.vss, task.rss, task.score]]
     }.to_h
-    logger.fatal [@_result.empty?, @_result.values.any?{|x| x[2]}]
     @has_vss = @_result.empty? || @_result.values.any?{|x| x[2]}
-    logger.fatal @has_vss
     @tdlist = @submission.problem.testdata_sets
     @invtdlist = inverse_td_list(@submission.problem)
   end
@@ -135,6 +135,7 @@ class SubmissionsController < ApplicationController
     end
     respond_to do |format|
       if @submission.save
+        ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
         format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
         format.json { render action: 'show', status: :created, location: @submission }
       else

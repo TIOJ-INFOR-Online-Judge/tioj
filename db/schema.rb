@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_09_123650) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -18,8 +18,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "resource_type", null: false
     t.bigint "author_id"
     t.string "author_type"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
@@ -30,7 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", precision: nil, null: false
+    t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -43,7 +43,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "service_name", null: false
     t.bigint "byte_size", null: false
     t.string "checksum"
-    t.datetime "created_at", precision: nil, null: false
+    t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -57,15 +57,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "username"
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
@@ -83,8 +83,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer "era"
     t.boolean "pinned"
     t.integer "category"
@@ -95,15 +95,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
   create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "article_id"
     t.string "path"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["article_id"], name: "index_attachments_on_article_id"
   end
 
   create_table "ban_compilers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "compiler_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "with_compiler_type"
     t.bigint "with_compiler_id"
     t.index ["compiler_id"], name: "fk_rails_6b2cbab705"
@@ -116,8 +116,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.text "content", size: :medium
     t.bigint "user_id"
     t.bigint "post_id"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean "user_visible", default: false
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
@@ -127,8 +127,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "name"
     t.string "description"
     t.string "format_type"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "order"
     t.index ["name"], name: "index_compilers_on_name", unique: true
   end
@@ -136,19 +136,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
   create_table "contest_problem_joints", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "contest_id"
     t.bigint "problem_id"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["contest_id", "problem_id"], name: "contest_task_ix", unique: true
   end
 
   create_table "contests", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "description", size: :medium
-    t.datetime "start_time", precision: nil
-    t.datetime "end_time", precision: nil
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.integer "contest_type"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer "cd_time", default: 15, null: false
     t.boolean "disable_discussion", default: true, null: false
     t.integer "freeze_time", default: 0, null: false
@@ -162,16 +162,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "name"
     t.string "ip"
     t.string "key"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean "online", default: false
   end
 
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean "global_visible", default: true, null: false
     t.string "postable_type"
     t.bigint "postable_id"
@@ -188,8 +189,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "name"
     t.text "description", size: :medium
     t.text "source", size: :medium
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.text "input", size: :medium
     t.text "output", size: :medium
     t.text "example_input", size: :medium
@@ -218,8 +219,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.decimal "time", precision: 12, scale: 3
     t.integer "rss"
     t.decimal "score", precision: 18, scale: 6
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "vss"
     t.string "old_result"
     t.decimal "old_score", precision: 18, scale: 6
@@ -233,8 +234,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.text "code", size: :long
     t.string "result", default: "queued"
     t.decimal "score", precision: 18, scale: 6, default: "0.0"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.bigint "problem_id", default: 0
     t.bigint "user_id", default: 0
     t.bigint "contest_id"
@@ -271,7 +272,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.bigint "tagger_id"
     t.string "tagger_type"
     t.string "context", limit: 128
-    t.datetime "created_at", precision: nil
+    t.datetime "created_at"
     t.index ["context"], name: "index_taggings_on_context"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
     t.index ["tag_id"], name: "index_taggings_on_tag_id"
@@ -293,8 +294,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.bigint "problem_id"
     t.string "test_input"
     t.string "test_output"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer "position"
     t.integer "time_limit", default: 1000
     t.integer "vss_limit", default: 65536
@@ -305,8 +306,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
   create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.decimal "score", precision: 18, scale: 6
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "td_list", null: false
     t.text "constraints", size: :medium
     t.index ["problem_id"], name: "index_testdata_sets_on_problem_id"
@@ -316,15 +317,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.datetime "remember_created_at", precision: nil
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "nickname"
     t.string "avatar"
     t.boolean "admin", default: false
@@ -333,7 +334,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_31_045447) do
     t.string "school"
     t.integer "gradyear"
     t.string "name"
-    t.datetime "last_submit_time", precision: nil
+    t.datetime "last_submit_time"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["nickname"], name: "index_users_on_nickname", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

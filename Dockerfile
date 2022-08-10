@@ -1,7 +1,7 @@
 FROM ruby:3.1.2
 
 RUN apt update
-RUN apt install -y netcat rsync nodejs
+RUN apt install -y netcat rsync nodejs redis-server
 
 ARG MYSQL_ROOT_PASSWORD
 ENV PASSWORD=$MYSQL_ROOT_PASSWORD

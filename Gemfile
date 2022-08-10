@@ -99,6 +99,9 @@ gem 'activerecord-import'
 # Fix warning: https://stackoverflow.com/questions/67773514/getting-warning-already-initialized-constant-on-assets-precompile-at-the-time
 gem 'net-http'
 
+# Redis for Action Cable
+gem 'redis'
+
 # Bullet for debugging
 gem 'bullet', group: 'development'
 gem 'listen', group: 'development'
