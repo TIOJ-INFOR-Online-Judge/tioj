@@ -59,10 +59,6 @@ Rails.application.routes.draw do
 
   get 'fetch/testdata' => 'fetch#testdata'
 
-  get 'fetch/submission_new' => 'fetch#submission_new'
-  post 'fetch/td_result' => 'fetch#td_result'
-  post 'fetch/submission_result' => 'fetch#submission_result'
-
   mathjax 'mathjax'
 
   get 'about' => 'about#index', as: :about

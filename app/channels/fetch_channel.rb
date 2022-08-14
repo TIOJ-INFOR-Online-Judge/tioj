@@ -6,18 +6,18 @@ class FetchChannel < ApplicationCable::Channel
 
   def td_result(data)
     data = data.deep_symbolize_keys
-    @submission = Submission.find(data[:submission_id])
-    update_task_results data[:results]
+    submission = Submission.find(data[:submission_id])
+    update_task_results(data[:results], submission)
   end
 
   def submission_result(data)
     data = data.deep_symbolize_keys
-    @submission = Submission.find(data[:submission_id])
+    submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
-      @submission.update(:result => data[:verdict])
+      submission.update(:result => data[:verdict])
       return
     end
-    update_task_results data[:td_results]
+    update_task_results(data[:td_results], submission) if data[:td_results]
     update_hash = {new_rejudged: true}
     if data[:message]
       update_hash[:message] = data[:message]
@@ -29,11 +29,11 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
     else
-      tasks = @submission.submission_tasks
+      tasks = submission.submission_tasks
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
-    @submission.update(**update_hash)
+    submission.update(**update_hash)
   end
 
   def report_queued(data)
@@ -48,51 +48,51 @@ class FetchChannel < ApplicationCable::Channel
     is_old = false
     for i in 1..n_retry
       is_old = false
-      @submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
-      if not @submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
-        @submission = Submission.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
+      submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
+      if not submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
+        submission = Submission.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
         is_old = true
       end
-      if @submission
-        @submission.with_lock do
-          if @submission.result == "received"
+      if submission
+        submission.with_lock do
+          if submission.result == "received"
             next if i != n_retry
             return
           end
-          @submission.update(result: "received")
+          submission.update(result: "received")
         end
       else
         return
       end
       break
     end
-    @problem = @submission.problem
-    @user = @submission.user
-    td_count = @problem.testdata.count
-    verdict_ignore_set = ApplicationController.td_list_to_arr(@problem.verdict_ignore_td_list, td_count)
-    priority = (is_old ? -200000000 + 2 * @submission.id : (@submission.contest ? 100000000 : 0)) - @submission.id
+    problem = submission.problem
+    user = submission.user
+    td_count = problem.testdata.count
+    verdict_ignore_set = ApplicationController.td_list_to_arr(problem.verdict_ignore_td_list, td_count)
+    priority = (is_old ? -200000000 + 2 * submission.id : (submission.contest ? 100000000 : 0)) - submission.id
     data = {
-      submission_id: @submission.id,
-      contest_id: @submission.contest_id || -1,
+      submission_id: submission.id,
+      contest_id: submission.contest_id || -1,
       priority: priority,
-      compiler: @submission.compiler.name,
-      time: @submission.created_at.to_i,
-      code: @submission.code.to_s,
+      compiler: submission.compiler.name,
+      time: submission.created_at.to_i,
+      code: submission.code.to_s,
       user: {
-        id: @user.id,
-        name: @user.username,
-        nickname: @user.nickname,
+        id: user.id,
+        name: user.username,
+        nickname: user.nickname,
       },
       problem: {
-        id: @problem.id,
-        specjudge_type: Problem.specjudge_types[@problem.specjudge_type],
-        specjudge_compiler: @problem.specjudge_compiler&.name,
-        interlib_type: Problem.interlib_types[@problem.interlib_type],
-        sjcode: @problem.sjcode || "",
-        interlib: @problem.interlib || "",
-        interlib_impl: @problem.interlib_impl || "",
+        id: problem.id,
+        specjudge_type: Problem.specjudge_types[problem.specjudge_type],
+        specjudge_compiler: problem.specjudge_compiler&.name,
+        interlib_type: Problem.interlib_types[problem.interlib_type],
+        sjcode: problem.sjcode || "",
+        interlib: problem.interlib || "",
+        interlib_impl: problem.interlib_impl || "",
       },
-      td: @problem.testdata.map.with_index { |t, index|
+      td: problem.testdata.map.with_index { |t, index|
         {
           id: t.id,
           updated_at: t.updated_at.to_i * 1000000 + t.updated_at.usec,
@@ -103,7 +103,7 @@ class FetchChannel < ApplicationCable::Channel
           verdict_ignore: verdict_ignore_set.include?(index),
         }
       },
-      tasks: @problem.testdata_sets.map { |s|
+      tasks: problem.testdata_sets.map { |s|
         {
           positions: ApplicationController.td_list_to_arr(s.td_list, td_count),
           score: (s.score * BigDecimal('1e+6')).to_i,
@@ -118,10 +118,10 @@ class FetchChannel < ApplicationCable::Channel
 
   private
 
-  def update_task_results(data)
+  def update_task_results(data, submission)
     results = data.map { |res|
       {
-        submission_id: @submission.id,
+        submission_id: submission.id,
         position: res[:position],
         result: res[:verdict],
         time: BigDecimal(res[:time]) / 1000,
@@ -131,16 +131,16 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score])
-    score_map = @submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
-    @problem = @submission.problem
-    num_tasks = @problem.testdata.count
-    score = @problem.testdata_sets.map{|s|
+    score_map = submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
+    problem = submission.problem
+    num_tasks = problem.testdata.count
+    score = problem.testdata_sets.map{|s|
       lst = ApplicationController.td_list_to_arr(s.td_list, num_tasks)
       set_result = score_map.values_at(*lst)
-      set_result.all? ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(@problem.score_precision) : 0
+      set_result.all? ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
     }.sum
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
-    @submission.update(:score => score)
+    submission.update(:score => score)
   end
 end
