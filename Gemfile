@@ -49,7 +49,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
-gem 'mathjax-rails', git: 'https://github.com/adrien1018/mathjax-rails.git', tag: 'v3.2.2'
+gem 'mathjax-rails-3'
 
 # tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
