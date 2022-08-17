@@ -20,8 +20,8 @@
 - [x] ActionCable for submission notifying
     - [x] Add judge client online status
     - [x] Move most of the fetch code (except testdata download) to channel
-    - [ ] Update Dockerfile & install script
-- [ ] Multistage problems
+    - [x] Update Dockerfile & install script
+- [ ] Multistage problems & strict mode
 
 ## Enhance features & PRs
 
@@ -40,6 +40,7 @@
 ## Future
 
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
+- [ ] Pin
 - [ ] Enhance posts UI
 - [ ] Upload submission by file + non-UTF-8 code
 - [ ] I/O interactive & output-only problems

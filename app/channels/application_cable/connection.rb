@@ -1,18 +1,30 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     identified_by :judge_server
+    
+    def initialize(*args)
+      super
+      @mutex = Mutex.new
+    end
 
     def connect
-      self.judge_server = find_judge_server
-      self.judge_server.with_lock do
-        reject_unauthorized_connection if self.judge_server.online
-        self.judge_server.update(online: true)
+      @mutex.synchronize do
+        return if @disconnected
+        judge_server = find_judge_server
+        judge_server.with_lock do
+          reject_unauthorized_connection if judge_server.online
+          judge_server.update(online: true)
+        end
+        self.judge_server = judge_server
       end
     end
 
     def disconnect
-      if self.judge_server
-        self.judge_server.update(online: false)
+      @mutex.synchronize do
+        if self.judge_server
+          self.judge_server.update(online: false)
+        end
+        @disconnected = true
       end
     end
 

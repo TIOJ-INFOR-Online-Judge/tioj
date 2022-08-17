@@ -48,6 +48,7 @@ class FetchChannel < ApplicationCable::Channel
     is_old = false
     for i in 1..n_retry
       is_old = false
+      flag = false
       submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
       if not submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
         submission = Submission.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
@@ -56,11 +57,15 @@ class FetchChannel < ApplicationCable::Channel
       if submission
         submission.with_lock do
           if submission.result == "received"
-            next if i != n_retry
+            if i != n_retry
+              flag = true
+              next # breaks with_lock
+            end
             return
           end
           submission.update(result: "received")
         end
+        next if flag
       else
         return
       end
