@@ -38,7 +38,7 @@ class FetchChannel < ApplicationCable::Channel
 
   def report_queued(data)
     data.deep_symbolize_keys
-    # report every 10 seconds if has submission; 30 seconds otherwise
+    # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
   end
@@ -81,7 +81,7 @@ class FetchChannel < ApplicationCable::Channel
       contest_id: submission.contest_id || -1,
       priority: priority,
       compiler: submission.compiler.name,
-      time: submission.created_at.to_i,
+      time: submission.created_at.to_i * 1000000 + submission.created_at.usec,
       code: submission.code.to_s,
       user: {
         id: user.id,
@@ -96,6 +96,10 @@ class FetchChannel < ApplicationCable::Channel
         sjcode: problem.sjcode || "",
         interlib: problem.interlib || "",
         interlib_impl: problem.interlib_impl || "",
+        strict_mode: problem.strict_mode,
+        num_stages: problem.num_stages,
+        judge_between_stages: problem.judge_between_stages,
+        default_scoring_args: ApplicationController.shellsplit_safe(problem.default_scoring_args),
       },
       td: problem.testdata.map.with_index { |t, index|
         {

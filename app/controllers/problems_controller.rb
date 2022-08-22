@@ -79,7 +79,7 @@ class ProblemsController < ApplicationController
 
   def create
     params[:problem][:compiler_ids] ||= []
-    @problem = Problem.new(check_compiler())
+    @problem = Problem.new(check_params())
     respond_to do |format|
       if @problem.save
         format.html { redirect_to @problem, notice: 'Problem was successfully created.' }
@@ -94,7 +94,7 @@ class ProblemsController < ApplicationController
   def update
     params[:problem][:compiler_ids] ||= []
     respond_to do |format|
-      @problem.attributes = check_compiler()
+      @problem.attributes = check_params()
       pre_ids = @problem.testdata_sets.collect(&:id)
       changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
       changed ||= @problem.score_precision_changed?
@@ -158,14 +158,6 @@ class ProblemsController < ApplicationController
     end
   end
 
-  def check_compiler
-    params = problem_params.clone
-    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and (not @problem&.specjudge_compiler_id)
-      params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
-    end
-    params
-  end
-
   def recalc_score
     num_tasks = @problem.testdata.count
     tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
@@ -183,6 +175,17 @@ class ProblemsController < ApplicationController
       }
       Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
     end
+  end
+
+  def check_params
+    params = problem_params.clone
+    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and (not @problem&.specjudge_compiler_id)
+      params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
+    end
+    if params[:specjudge_type] == 'none'
+      params[:judge_between_stages] = false
+    end
+    params
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
@@ -204,12 +207,16 @@ class ProblemsController < ApplicationController
       :discussion_visibility,
       :score_precision,
       :verdict_ignore_td_list,
+      :num_stages,
       :specjudge_type,
       :specjudge_compiler_id,
+      :judge_between_stages,
+      :default_scoring_args,
       :interlib_type,
       :sjcode,
       :interlib,
       :interlib_impl,
+      :strict_mode,
       :old_pid,
       compiler_ids: [],
       testdata_sets_attributes:

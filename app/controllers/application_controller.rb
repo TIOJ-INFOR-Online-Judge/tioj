@@ -128,6 +128,10 @@ protected
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
   end
 
+  def shellsplit_safe(line)
+    ApplicationController.shellsplit_safe(line)
+  end
+
   public
 
   def self.td_list_to_arr(str, sz)
@@ -135,5 +139,22 @@ protected
       t = x.split('-')
       Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
     }.flatten.sort.uniq
+  end
+
+  def self.shellsplit_safe(line)
+    # adapted from shellwords library
+    return [] if not line
+    words = []
+    field = String.new
+    line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m) do
+      |word, sq, dq, esc, garbage, sep|
+      p [word, sq, dq, esc, garbage, sep]
+      field << (word || sq || (dq && dq.gsub(/\\([$`"\\\n])/, '\\1')) || esc.gsub(/\\(.)/, '\\1')) if not garbage
+      if sep
+        words << field
+        field = String.new
+      end
+    end
+    words
   end
 end

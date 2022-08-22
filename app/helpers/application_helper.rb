@@ -75,6 +75,10 @@ module ApplicationHelper
     raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
   end
 
+  def help_collapse_toggle(x, target)
+    raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
+  end
+
   def score_str(x)
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end

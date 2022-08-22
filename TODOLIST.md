@@ -20,8 +20,9 @@
 - [x] ActionCable for submission notifying
     - [x] Add judge client online status
     - [x] Move most of the fetch code (except testdata download) to channel
-    - [x] Update Dockerfile & install script
-- [ ] Multistage problems & strict mode
+    - [ ] Update Dockerfile & fix install script (systemd)
+- [x] Multistage problems & strict mode
+- [ ] Testdata message (collapsable row)
 
 ## Enhance features & PRs
 

@@ -20,6 +20,7 @@ module ApplicationCable
     end
 
     def disconnect
+      # connect and disconnect may be called in different thread simutaneously, thus use a mutex to prevent races
       @mutex.synchronize do
         if self.judge_server
           self.judge_server.update(online: false)

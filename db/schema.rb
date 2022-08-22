@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_09_123650) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_20_135133) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -207,6 +207,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_09_123650) do
     t.text "interlib_impl", size: :long
     t.integer "score_precision", default: 2
     t.string "verdict_ignore_td_list", null: false
+    t.integer "num_stages", default: 1
+    t.boolean "judge_between_stages", default: false
+    t.string "default_scoring_args"
+    t.boolean "strict_mode", default: false
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
