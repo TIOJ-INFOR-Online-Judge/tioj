@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_20_135133) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_22_151559) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -230,6 +230,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_20_135133) do
     t.decimal "old_score", precision: 18, scale: 6
     t.decimal "old_time", precision: 12, scale: 3
     t.integer "old_memory"
+    t.string "message_type"
+    t.text "message", size: :medium
     t.index ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true
     t.index ["submission_id"], name: "index_submission_tasks_on_submission_id"
   end

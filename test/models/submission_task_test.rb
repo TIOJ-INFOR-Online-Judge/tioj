@@ -16,6 +16,8 @@
 #  old_score     :decimal(18, 6)
 #  old_time      :decimal(12, 3)
 #  old_memory    :integer
+#  message_type  :string(255)
+#  message       :text(16777215)
 #
 
 require 'test_helper'

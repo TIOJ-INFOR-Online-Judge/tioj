@@ -8,6 +8,7 @@
 #  key        :string(255)
 #  created_at :datetime
 #  updated_at :datetime
+#  online     :boolean          default(FALSE)
 #
 
 require 'test_helper'

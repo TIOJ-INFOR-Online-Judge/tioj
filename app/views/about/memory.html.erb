@@ -89,8 +89,8 @@ EOF
   <h5>Implementation</h5>
 
   <p>
-  TIOJ limits VSS by <code>setrlimit</code>, and reports VSS usage by <code>taskstats</code> interface.<br>
-  TIOJ limits RSS by the memory subgroup of <code>cgroups</code>, and reports RSS usage by the <code>struct rusage</code> reported by <code>wait4</code>.
+  TIOJ limits VSS by <code>setrlimit</code>, and reports VSS usage using taskstats interface.<br>
+  TIOJ limits RSS by the memory subgroup of cgroups, and reports RSS usage using the <code>struct rusage</code> returned by <code>wait4</code>.
   </p>
 
   <p>
@@ -101,22 +101,28 @@ EOF
   </p>
 
   <p>
-  On the other hand, the detection of <span class="text-mle">MLE</span> on RSS limit is reliable, because a process exceeding the RSS limit will be instantly killed by OOM killer. That is, if a program exceeds the RSS limit, it will always get an <span class="text-mle">MLE</span>.
+  On the other hand, the detection of <span class="text-mle">MLE</span> on RSS limit is reliable, because a process exceeding the RSS limit will be instantly killed by OOM killer. That is, if a program exceeds the RSS limit, it will always get an <span class="text-mle">MLE</span>. The hard RSS limit, however, are still set to be larger than the indicated limit by the output limit, since cgroups also accounts tmpfs (shmem) into a process' memory usage, and the output file is normally a file in tmpfs (unless strict mode is enabled).
   </p>
 
   <h5>Other notes</h5>
 
-  <p>
+  <ul>
+  <li>
   By definition, VSS should be always greater or equal than RSS. However, the accounting is done by different methods in kernel, so it is possible the  reported VSS is smaller than the reported RSS.
-  </p>
+  </li>
 
-  <p>
+  <li>
+  Normally, VSS will be stable across different runs of the same program, while RSS will show some fluctuations.
+  </li>
+
+  <li>
   The memory limits of old TIOJ are VSS limits, and the reported memory usage values are RSS. All limits are migrated as-is.
-  </p>
+  </li>
 
-  <p>
-  Because Haskell uses a lot of VSS, TIOJ converts all VSS limit to RSS limit when judging Haskell submissions.
-  </p>
+  <li>
+  Because Haskell uses a lot of VSS, TIOJ converts all VSS limits to RSS limits when judging Haskell submissions.
+  </li>
+  </ul>
 
 </div>
 

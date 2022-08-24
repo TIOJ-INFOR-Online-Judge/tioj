@@ -137,9 +137,11 @@ class FetchChannel < ApplicationCable::Channel
         rss: res[:rss],
         vss: res[:vss],
         score: (BigDecimal(res[:score]) / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6')),
+        message_type: res[:message_type],
+        message: res[:message],
       }
     }
-    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score])
+    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
     score_map = submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
     problem = submission.problem
     num_tasks = problem.testdata.count

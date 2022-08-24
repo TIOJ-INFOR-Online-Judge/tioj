@@ -224,6 +224,8 @@
                 time_us: 123456,
                 vss_kib: 66888,
                 rss_kib: 44888,
+                message_type: 'text',
+                message: 'meow',
               }) %></pre>
               Notes:
               <ul style="line-height: 1.4;">
@@ -233,6 +235,7 @@
                 <li>All output fields are optional; if <code>verdict</code> is not given, the final verdict will be <code>original_verdict</code> or <span class="text-danger">WA</span> if it is empty.</li>
                 <li>If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 2], inclusive), or -1 if it is the final stage. For intermediate stages (where <code>current_stage != -1</code>), if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string or be omitted. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
                 <li><code>score</code> can be given by float or string.</li>
+                <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 16 KiB.</li>
               </ul>
             <% end %>
             <div style="line-height: 1.4;">

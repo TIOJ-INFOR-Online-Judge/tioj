@@ -24,6 +24,10 @@
 #  interlib_impl          :text(4294967295)
 #  score_precision        :integer          default(2)
 #  verdict_ignore_td_list :string(255)      not null
+#  num_stages             :integer          default(1)
+#  judge_between_stages   :boolean          default(FALSE)
+#  default_scoring_args   :string(255)
+#  strict_mode            :boolean          default(FALSE)
 #
 
 class Problem < ApplicationRecord

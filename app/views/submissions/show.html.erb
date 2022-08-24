@@ -123,7 +123,7 @@
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% lst = @_result.transform_values{|i| i[4]}.values_at(*lst) %>
+              <% lst = @_result.transform_values{|i| i.score}.values_at(*lst) %>
               <% if lst.nil? or lst.all?{|x| x.nil?} %>
                 <td></td>
               <% else %>
@@ -170,16 +170,24 @@
               <th>Memory (RSS, KiB) <%= help_icon '/about/memory' %></th>
               <th>Verdict <%= help_icon '/about/verdicts' %></th>
               <th>Score</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
               <% task = @_result[i] %>
-              <% if task and styleclass_map[task[0]] %>
-                <tr class="<%= styleclass_map[task[0]] %>">
-              <% else %>
-                <tr>
+              <% tr_attr = {} %>
+              <% tr_attr[:class] = styleclass_map[task.result] if task and styleclass_map[task.result] %>
+              <% if task&.message_type %>
+                <% collapse_id = "collapseTask#{i}" %>
+                <% tr_attr.merge!({data: {toggle: "collapse"}, href: "##{collapse_id}"}) %>
+                <% if tr_attr[:class] %>
+                  <% tr_attr[:class] += " panel-heading" %>
+                <% else %>
+                  <% tr_attr[:class] = "panel-heading" %>
+                <% end %>
               <% end %>
+              <%= tag.tr(**tr_attr) do %>
                 <td><%= i %></td>
                 <td>
                   <% if @invtdlist[i] %>
@@ -189,13 +197,18 @@
                   <% end %>
                 </td>
                 <% if task then %>
-                  <td><%= time_str(task[1]) %></td>
+                  <td><%= time_str(task.time) %></td>
                   <% if @has_vss %>
-                    <td><%= task[2] || '-' %></td>
+                    <td><%= task.vss || '-' %></td>
                   <% end %>
-                  <td><%= task[3] %></td>
-                  <td><%= @verdict[task[0]] %></td>
-                  <td><%= score_str(task[4]) %></td>
+                  <td><%= task.rss %></td>
+                  <td><%= @verdict[task.result] %></td>
+                  <td><%= score_str(task.score) %></td>
+                  <td>
+                    <% if task&.message_type %>
+                      <i class="indicator glyphicon glyphicon-chevron-down"></i>
+                    <% end %>
+                  </td>
                 <% else %>
                   <td></td>
                   <% if @has_vss %>
@@ -204,9 +217,21 @@
                   <td></td>
                   <td></td>
                   <td></td>
+                  <td></td>
                 <% end %>
-              </tr>
-            <% end %> <!-- Range.new -->
+              <% end %> <%# tr %>
+              <% if task&.message_type %>
+                <tr class="collapse collapse-no-anim" id="<%= collapse_id %>">
+                  <td colspan="<%= @has_vss ? 8 : 7 %>">
+                    <% if task.message_type == "html" %>
+                      <%= raw task.message %>
+                    <% else %>
+                      <pre class="pre-scrollable" style="margin: 0;"><code class=""><%= task.message %></code></pre>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %> <%# Range.new %>
           </tbody>
         </table>
       </div>
@@ -221,9 +246,9 @@
       </div>
       <div class="collapse in" id="collapseTestdata">
         <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'mle', 'SIG' => 'sig', 'OLE' => 'ole'} %>
-		&nbsp; Individual testdata result is hidden during contest.
-	  </div>
-	</div>
+        &nbsp; Individual testdata result is hidden during contest.
+      </div>
+    </div>
   <% end %>
 <% end %>
 
@@ -258,7 +283,7 @@
       </div>
       <div class="panel-body">
         <% if @submission.message.present? %>
-          <pre class="pre-scrollable"><code class=""><%= @submission.message %></code></pre>
+          <pre class="pre-scrollable" style="margin: 0;"><code class=""><%= @submission.message %></code></pre>
         <% else %>
           Sorry, no compilation error message available.
         <% end %>

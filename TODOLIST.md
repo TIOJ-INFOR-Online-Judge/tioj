@@ -22,7 +22,7 @@
     - [x] Move most of the fetch code (except testdata download) to channel
     - [ ] Update Dockerfile & fix install script (systemd)
 - [x] Multistage problems & strict mode
-- [ ] Testdata message (collapsable row)
+- [x] Testdata message (collapsable row)
 
 ## Enhance features & PRs
 
@@ -47,6 +47,7 @@
 - [ ] I/O interactive & output-only problems
 - [ ] Batch upload testdata
 - [ ] Add more languages
+- [ ] IOI-style scoring in contest (max of each subtask)
 - [ ] Judge load balancing
 - [ ] Write basic tests
 - [ ] Send compiler information from judge server

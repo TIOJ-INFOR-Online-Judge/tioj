@@ -8,11 +8,18 @@ toggleChevron = (e) ->
         .find('i.indicator')
         .toggleClass('glyphicon-chevron-down glyphicon-chevron-up')
 
+immediateToggle = (e) ->
+    $(e.target).toggle()
+
+noPropagate = (e) ->
+    e.stopPropagation()
+
 jQuery ->
-    $('#collapseSubtask').on('hidden.bs.collapse', toggleChevron)
-    $('#collapseSubtask').on('shown.bs.collapse', toggleChevron)
-    $('#collapseTestdata').on('hidden.bs.collapse', toggleChevron)
-    $('#collapseTestdata').on('shown.bs.collapse', toggleChevron)
+    $('#collapseSubtask').on('hidden.bs.collapse shown.bs.collapse', toggleChevron)
+    $('#collapseTestdata').on('hidden.bs.collapse shown.bs.collapse', toggleChevron)
+    $('.collapse-no-anim.collapse').on('hide.bs.collapse show.bs.collapse', toggleChevron)
+    $('.collapse-no-anim.collapse').on('hide.bs.collapse show.bs.collapse', immediateToggle)
+    $('.collapse-no-anim.collapse').on('hidden.bs.collapse shown.bs.collapse', noPropagate)
     $("#quick_submit").click ->
         prob_id = $('#quick_prob_id').val()
         if prob_id == ""
