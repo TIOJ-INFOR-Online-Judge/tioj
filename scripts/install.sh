@@ -8,9 +8,17 @@ DB_PASSWORD=${DB_PASSWORD:-SAMPLE_PASSWORD}
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+{ # prevent sudo timeout
+  while true; do
+    sudo -v
+    sleep 30
+  done
+} &
+
 # Install dependencies
 if grep -q 'Ubuntu' /etc/*-release; then
   UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
+  sudo apt -y update
   sudo apt -y install software-properties-common
   sudo apt-add-repository -y ppa:rael-gc/rvm
   if [ "$UBUNTU_DIST" != "22.04" ]; then
@@ -31,8 +39,10 @@ if grep -q 'Ubuntu' /etc/*-release; then
 
   # Setup mysql
   sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+
+  REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
-  sudo pacman -S --noconfirm --needed base-devel git cmake ninja mariadb nodejs redis boost
+  sudo pacman -Syu --noconfirm --needed base-devel git cmake ninja mariadb nodejs redis boost
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
@@ -68,6 +78,7 @@ elif grep -q 'Arch Linux' /etc/*-release; then
 
   # Setup mysql
   sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; flush privileges;"
+  REDIS_SERVICE=redis
 else
   echo 'Unknown distribution'
   exit 1
@@ -176,9 +187,11 @@ ExecStop=/bin/kill -s INT \$MAINPID
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl enable redis
+sudo systemctl enable "$REDIS_SERVICE"
 sudo systemctl enable nginx
 sudo systemctl enable tioj-judge
-sudo systemctl start redis
+sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
+
+kill %1

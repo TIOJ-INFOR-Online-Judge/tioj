@@ -20,9 +20,11 @@
 - [x] ActionCable for submission notifying
     - [x] Add judge client online status
     - [x] Move most of the fetch code (except testdata download) to channel
-    - [ ] Update Dockerfile & fix install script (systemd)
+    - [x] Update Dockerfile & fix install script (systemd)
 - [x] Multistage problems & strict mode
 - [x] Testdata message (collapsable row)
+- [ ] Change rejudge & delete submission to POST
+- [ ] Validate permission when displaying submission (?) and JSON endpoints
 
 ## Enhance features & PRs
 
@@ -37,19 +39,23 @@
 - [x] PR #12
 - [x] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
 - [x] Precise timestamp (for testdata fetching)
+- [ ] Fix forget password (issue #9)
 
 ## Future
 
+- [ ] Batch upload testdata
+- [ ] Problem import & export
+    - [ ] Native format
+    - [ ] Polygon & Kattis & CMS support
+- [ ] Upload submission by file + non-UTF-8 code
 - [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Pin
-- [ ] Enhance posts UI
-- [ ] Upload submission by file + non-UTF-8 code
-- [ ] I/O interactive & output-only problems
-- [ ] Batch upload testdata
-- [ ] Add more languages
 - [ ] IOI-style scoring in contest (max of each subtask)
+- [ ] I/O interactive & output-only problems
 - [ ] Judge load balancing
 - [ ] Write basic tests
+- [ ] Enhance posts UI
+- [ ] Add more languages
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit
 - [ ] Contest-only users + batch creation
@@ -59,4 +65,3 @@
 - [ ] Teaming in contest
 - [ ] Post voting & contribution system
 - [ ] Notification system for problem issue reporting
-- [ ] Problem import & export
