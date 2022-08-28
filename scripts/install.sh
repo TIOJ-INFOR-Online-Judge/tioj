@@ -139,8 +139,43 @@ max_submission_queue_size = 200
 EOF
 
 # Setup systemctl
-cd "$SCRIPT_DIR"
-sudo cp nginx.service tioj-judge.service /etc/systemd/system/
+cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
+[Unit]
+Description=Nginx Server
+After=syslog.target
+Requires=network.target remote-fs.target nss-lookup.target mysql.service
+
+[Service]
+Type=forking
+Environment="LOGLEVEL=debug"
+PIDFile=/opt/nginx/logs/nginx.pid
+ExecStartPre=/opt/nginx/sbin/nginx -t
+ExecStart=/opt/nginx/sbin/nginx
+ExecReload=/bin/kill -s HUP \$MAINPID
+ExecStop=/bin/kill -s QUIT \$MAINPID
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat <<EOF | sudo tee /etc/systemd/system/tioj-judge.service > /dev/null
+[Unit]
+Description=TIOJ Judge Client
+After=syslog.target network.target
+
+[Service]
+Type=simple
+StandardOut=syslog
+StandardError=syslog
+SyslogIdentifier=tioj-judge
+ExecStart=/usr/bin/nice -n -10 tioj-judge -v
+ExecStop=/bin/kill -s INT \$MAINPID
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 sudo systemctl enable redis
 sudo systemctl enable nginx
 sudo systemctl enable tioj-judge
