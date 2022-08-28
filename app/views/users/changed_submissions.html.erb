@@ -73,7 +73,9 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= submission.created_at.to_s(:clean) %></td>
         <% if user_signed_in? && current_user.admin == true %>
           <td>
-            <%= link_to 'Rejudge', {:controller => :submissions, :action => :rejudge, :id => submission.id} , :class => 'btn btn-xs btn-primary' %>
+            <%= form_with url: rejudge_submission_path(submission) do |f| %>
+              <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+            <% end %>
           </td>
         <% end %>
       <% end %>

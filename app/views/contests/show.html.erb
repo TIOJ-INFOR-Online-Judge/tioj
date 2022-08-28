@@ -48,7 +48,10 @@
 <% if user_signed_in? and current_user.admin? %>
   <div style="margin-bottom:10px;">
     <% Problem.visible_states.each do |name, val| %>
-      <%= link_to "Set contest tasks to #{visible_state_desc_map[name.to_s]}", set_contest_task_path(@contest, val.to_s), :class => "btn btn-xs btn-inverse" %>
+      <%= form_with url: set_contest_task_contest_path(@contest), :html => {:style => 'display: inline;'} do |f| %>
+        <%= f.hidden_field :alter_to, :value => val %>
+        <%= f.submit "Set contest tasks to #{visible_state_desc_map[name.to_s]}", :class => 'btn btn-inverse btn-xs' %>
+      <% end %>
     <% end %>
   </div>
 <% end %>

@@ -30,7 +30,7 @@ module ProblemsHelper
   def users_ac_ratio(problem)
     all = problem.submissions.select('COUNT(DISTINCT user_id) cnt').first.cnt
     ac = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(result: 'AC').first.cnt
-    ranklist_page = link_to ac.to_s + "/" + all.to_s, problem_ranklist_path(problem.id)
+    ranklist_page = link_to ac.to_s + "/" + all.to_s, ranklist_problem_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ranklist_page + ")" )
   end
 
@@ -46,7 +46,7 @@ module ProblemsHelper
   def users_ac_ratio_with_infor(problem, attr_map)
     all = attr_map[problem.id].user_cnt
     ac = attr_map[problem.id].user_ac
-    ranklist_page = link_to ac.to_s + "/" + all.to_s, problem_ranklist_path(problem.id)
+    ranklist_page = link_to ac.to_s + "/" + all.to_s, ranklist_problem_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ranklist_page + ")" )
   end
 

@@ -16,10 +16,22 @@ Rails.application.routes.draw do
     resources :posts do
       resources :comments
     end
+
+    member do
+      post 'rejudge'
+      post 'delsub', to: 'problems#delete_submissions'
+      get 'ranklist'
+    end
   end
 
   resources :judge_servers
-  resources :submissions
+
+  resources :submissions do
+    member do
+      post 'rejudge'
+    end
+  end
+
   resources :users, constraints: { id: /[^\/]+/ }
   resources :posts do
     resources :comments
@@ -30,6 +42,12 @@ Rails.application.routes.draw do
     resources :problems
     resources :posts do
       resources :comments
+    end
+
+    member do
+      post 'set_contest_task'
+      get 'dashboard'
+      get 'dashboard_update'
     end
   end
   resources :contest_problem_joints
@@ -44,18 +62,9 @@ Rails.application.routes.draw do
   end
 
   get 'problems/tag/:tag' => 'problems#index', as: :problems_tag
-  get 'problems/:id/ranklist' => 'problems#ranklist', as: :problem_ranklist
-
-  get 'contests/:id/set_contest_task/:alter_to' => 'contests#set_contest_task', as: :set_contest_task
-  get 'contests/:id/dashboard' => 'contests#dashboard'
-  get 'contests/:id/dashboard_update' => 'contests#dashboard_update'
 
   get 'about/verdicts' => 'about#verdicts'
   get 'about/memory' => 'about#memory'
-
-  get 'submissions/:id/rejudge' => 'submissions#rejudge'
-  get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
-  get 'problems/:problem_id/delsub' => 'submissions#delete_problem_submission', as: :problem_delsub
 
   get 'fetch/testdata' => 'fetch#testdata'
 

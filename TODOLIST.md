@@ -23,7 +23,7 @@
     - [x] Update Dockerfile & fix install script (systemd)
 - [x] Multistage problems & strict mode
 - [x] Testdata message (collapsable row)
-- [ ] Change rejudge & delete submission to POST
+- [x] Change rejudge & delete submission to POST
 - [ ] Validate permission when displaying submission (?) and JSON endpoints
 
 ## Enhance features & PRs

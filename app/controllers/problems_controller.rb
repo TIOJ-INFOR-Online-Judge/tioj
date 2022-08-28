@@ -13,6 +13,19 @@ class ProblemsController < ApplicationController
         .includes(:compiler))
   end
 
+  def delete_submissions
+    Submission.where(problem_id: params[:id]).destroy_all
+    redirect_back fallback_location: root_path
+  end
+
+  def rejudge
+    subs = Submission.where(problem_id: params[:id])
+    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
+    SubmissionTask.where(submission_id: subs.map(&:id)).delete_all
+    ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
+    redirect_back fallback_location: root_path
+  end
+
   def index
     if not params[:search_id].blank?
       redirect_to problem_path(params[:search_id])
