@@ -32,10 +32,11 @@ class User < ApplicationRecord
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
   has_many :articles, :dependent => :destroy
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  devise :recoverable if Rails.application.credentials.mail_settings
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
@@ -53,6 +54,7 @@ class User < ApplicationRecord
       where(conditions).first
     end
   end
+
   validates_presence_of :username, :nickname
   validates :username,
     :uniqueness => {:case_sensitive => false},

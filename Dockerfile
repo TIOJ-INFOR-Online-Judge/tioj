@@ -33,7 +33,6 @@ production:\n\
 > config/database.yml
 
 RUN rails assets:precompile
-RUN EDITOR=cat rails credentials:edit
 
 # Move public/ to public-tmp/ since we're going to override it with 'volumes';
 #  run_server moves it back

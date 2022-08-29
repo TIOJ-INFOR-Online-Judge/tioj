@@ -15,11 +15,14 @@ It is recommended to run this script on a freshly-installed machine. This script
 
 The systemd service names are `nginx.service` and `tioj-judge.service`. The configuration files are located at `/opt/nginx/conf` and `/etc/tioj-judge.conf`. You can modify them and reload/restart the services.
 
+If password recovery is needed, pass the `SMTP_*` and `MAIL_*` environment variables to `bash` just like those in `.env.example`, or just run `RAILS_ENV=production rails credentials:edit` in `~/tioj`, uncomment & edit the related fields and restart the web server.
+
 This script is tested on Ubuntu 20.04 LTS and 22.04 LTS. It also works on Arch Linux, but direct installation on Arch Linux is not recommended since it involves rebuilding some community packages for static libraries.
 
 ### Docker
 
 1. Install `docker-compose` and setup `.env` using the format of `.env.example`.
+    - The `SMTP_*` and `MAIL_*` variables are only added if password recovery function is needed. Without them, the function is automatically disabled.
 2. `docker-compose up -d` and enjoy TIOJ on port 4000.
 
 ## Current Development Environment

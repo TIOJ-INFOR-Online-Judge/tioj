@@ -15,7 +15,13 @@ services:
         MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
         TIOJ_KEY: $FETCH_KEY
     environment:
-      RAILS_ENV: production
+      - RAILS_ENV=production
+      - SMTP_USERNAME
+      - SMTP_PASSWORD
+      - SMTP_PORT
+      - SMTP_ADDRESS
+      - MAIL_HOSTNAME
+      - MAIL_SENDER
     volumes:
       - /srv/tioj/web-td:/tioj/td
       - /srv/tioj/web-log:/tioj/log

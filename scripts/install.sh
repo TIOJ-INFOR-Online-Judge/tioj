@@ -8,6 +8,14 @@ DB_PASSWORD=${DB_PASSWORD:-SAMPLE_PASSWORD}
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+if [[ "${SMTP_USERNAME:-}" != "" && "${SMTP_PASSWORD:-}" != "" ]]; then
+  echo 'SMTP settings detected. Will enable password recovery.'
+else
+  echo 'SMTP settings not detected. Will disable password recovery.'
+fi
+echo 'You can change this later by editing/adding/removing the `mail_settings` section in `rails credential:edit`'
+sleep 1
+
 { # prevent sudo timeout
   while true; do
     sudo -v
@@ -130,7 +138,38 @@ EOF
 # Setup web server
 FETCH_KEY=$(head -c 32 /dev/urandom | xxd -ps -c 128)
 export RAILS_ENV=production
-EDITOR=cat rails credentials:edit
+
+TEMPFILE=$(mktemp)
+EDITOR=cat rails credentials:edit | head -n -1 | tail -n +8 > "$TEMPFILE"
+if [[ "${SMTP_USERNAME:-}" != "" && "${SMTP_PASSWORD:-}" != "" ]]; then
+  cat <<EOF >> "$TEMPFILE"
+mail_settings:
+  smtp_settings:
+    address: ${SMTP_ADDRESS:-smtp.gmail.com}
+    port: ${SMTP_PORT:-587}
+    user_name: $SMTP_USERNAME
+    password: $SMTP_PASSWORD
+    enable_starttls_auto: true
+  url_options:
+    host: ${MAIL_HOSTNAME:-hostname}
+  sender: ${MAIL_SENDER:-$SMTP_USERNAME}
+EOF
+else
+  cat <<EOF >> "$TEMPFILE"
+#mail_settings:
+#  smtp_settings:
+#    address: smtp.example.com
+#    port: 587
+#    user_name: email_username
+#    password: email_password
+#    enable_starttls_auto: true
+#  url_options:
+#    host: http://tioj.example.com
+#  sender: tioj@example.com
+EOF
+fi
+EDITOR="mv $TEMPFILE" rails credentials:edit
+
 rails assets:precompile
 TIOJ_KEY=$FETCH_KEY rails db:setup
 
