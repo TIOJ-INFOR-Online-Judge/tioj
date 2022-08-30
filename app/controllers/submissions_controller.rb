@@ -1,13 +1,14 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :authenticate_admin!, except: [:index, :show, :create, :new, :verdict]
-  before_action :set_submissions
+  before_action :set_contest_problem_by_param, only: [:new, :create, :index]
+  before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
-  before_action :set_contest, only: [:show]
   before_action :set_problem, only: [:show]
-  layout :set_contest_layout, only: [:show, :index, :new]
+  before_action :set_show_detail, only: [:show]
+  layout :set_contest_layout, only: [:show, :index, :new, :edit]
   helper_method :td_list_to_arr
 
   def rejudge
@@ -19,13 +20,13 @@ class SubmissionsController < ApplicationController
 
   def index
     @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
-    unless user_signed_in? and current_user.admin?
+    unless current_user&.admin?
       @submissions = @submissions.preload(:contest)
     end
   end
 
   def show
-    unless (user_signed_in? and current_user.admin?) or (user_signed_in? and current_user.id == @submission.user_id) or not @submission.contest
+    unless current_user&.admin? or current_user&.id == @submission.user_id or not @submission.contest
       if Time.now <= @submission.contest.end_time
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
         return
@@ -71,25 +72,26 @@ class SubmissionsController < ApplicationController
 
   def create
     cd_time = @contest ? @contest.cd_time : 15
-    if not current_user.admin? and not current_user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
-      redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
-      return
-    end
-    User.transaction do
-      user = User.lock("LOCK IN SHARE MODE").find(current_user.id)
-      if not user.update(:last_submit_time => Time.now)
-        redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
-        return
+    user = current_user
+    if user.admin?
+      user.update(last_submit_time: Time.now)
+    else
+      user.with_lock do
+        if not user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
+          redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
+          return
+        end
+        user.update(last_submit_time: Time.now)
       end
     end
 
     if params[:problem_id].blank?
-      redirect_to action:'index'
+      redirect_to action: 'index'
       return
     end
     unless current_user.admin?
       if @problem.visible_invisible?
-        redirect_to action:'index'
+        redirect_to action: 'index'
         return
       elsif @problem.visible_contest?
         if params[:contest_id].blank?
@@ -155,14 +157,30 @@ class SubmissionsController < ApplicationController
   end
 
   private
-  def set_submissions
-    @problem = Problem.find(params[:problem_id]) if params[:problem_id]
+
+  def set_contest_problem_by_param
     @contest = Contest.find(params[:contest_id]) if params[:contest_id]
+    @problem = Problem.find(params[:problem_id]) if params[:problem_id]
+  end
+
+  def set_submissions
+    if @problem
+      unless current_user&.admin
+        if @problem.visible_contest?
+          if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time)
+            redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+          end
+        elsif @problem.visible_invisible?
+          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        end
+      end
+    end
+
     @submissions = Submission
     @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
     if params[:contest_id]
       @submissions = @submissions.where(contest_id: params[:contest_id])
-      unless user_signed_in? and current_user.admin?
+      unless current_user&.admin?
         if user_signed_in?
           @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.end_time - @contest.freeze_time * 60, current_user.id)
         else
@@ -173,14 +191,14 @@ class SubmissionsController < ApplicationController
           if user_signed_in?
             @submissions = @submissions.where(user_id: current_user.id)
           else
-            @submissions = @submissions.where(user_id: 0) #just make it an empty set whatsoeveAr
+            @submissions = @submissions.where(user_id: 0) # just make it an empty set whatsoever
             return
           end
         end
       end
     else
       @submissions = @submissions.where(contest_id: nil)
-      unless user_signed_in? and current_user.admin?
+      unless current_user&.admin?
         @submissions = @submissions.joins(:problem).where(problem: {visible_state: :public})
       end
     end
@@ -196,24 +214,30 @@ class SubmissionsController < ApplicationController
 
   def set_submission
     @submission = Submission.find(params[:id])
-  end
-
-  def set_contest
     @contest = @submission.contest
+    if @contest
+      raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
+      unless current_user&.admin?
+        raise_not_found if @submission.created_at >= @contest.end_time - @contest.freeze_time * 60 && current_user&.id != @submission.user_id
+        if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
+          raise_not_found if current_user&.id != @submission.user_id
+        end
+      end
+    end
   end
 
   def set_problem
     @problem = @submission.problem
   end
 
+  def set_show_detail
+    @show_detail = current_user&.admin? || @contest.blank? || @contest.show_detail_result? || Time.now > @contest.end_time
+  end
+
   def set_compiler
-    if not @problem
-      @problem = @submission.problem
-    end
+    @problem = @submission.problem if not @problem
     @compiler = Compiler.where.not(id: @problem.compilers.map{|x| x.id})
-    if @contest
-      @compiler = @compiler.where.not(id: @contest.compilers.map{|x| x.id})
-    end
+    @compiler = @compiler.where.not(id: @contest.compilers.map{|x| x.id}) if @contest
     @compiler = @compiler.order(order: :asc).to_a
   end
 

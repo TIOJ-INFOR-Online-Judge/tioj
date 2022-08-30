@@ -77,18 +77,6 @@ $("button:not([type='submit'])").attr("type", "button");
   <tbody>
     <% @submissions.each do |submission| %>
       <tr>
-      <% if censored(submission) %>
-        <td></td>
-        <td></td>
-        <td><code>censored</code></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      <% else %>
         <% if submission.contest_id.blank? %>
           <td><%= link_to submission.id, submission_path(submission) %></td>
           <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
@@ -99,26 +87,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
         <td><%= submission.total_time.to_i %></td>
         <td><%= submission.total_memory.to_i %></td>
-        <% case submission.result %>
-          <% when "WA" %>
-            <td class="text-danger">WA</td>
-          <% when "TLE" %>
-            <td class="text-info">TLE</td>
-          <% when "MLE" %>
-            <td class="text-mle">MLE</td>
-          <% when "OLE" %>
-            <td class="text-ole">OLE</td>
-          <% when "RE" %>
-            <td class="text-warning">RE</td>
-          <% when "SIG" %>
-            <td class="text-sig">SIG</td>
-          <% when "AC" %>
-            <td class="text-success">AC</td>
-          <% when "queued" %>
-            <td class="text-muted">queued</td>
-          <% else %>
-            <td><%= submission.result %></td>
-        <% end %>
+        <td><%= verdict_text submission.result %></td>
         <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code.bytesize) %></td>
         <td><%= sprintf("%g", submission.score) %></td>
@@ -130,7 +99,6 @@ $("button:not([type='submit'])").attr("type", "button");
             <% end %>
           </td>
         <% end %>
-      <% end %>
       </tr>
     <% end %>
   </tbody>

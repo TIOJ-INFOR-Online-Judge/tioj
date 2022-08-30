@@ -5,6 +5,7 @@ class ProblemsController < ApplicationController
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
+  before_action :check_visibility!, only: [:show, :ranklist]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
@@ -62,21 +63,6 @@ class ProblemsController < ApplicationController
   end
 
   def show
-    unless user_signed_in? && current_user.admin == true
-      if @problem.visible_contest?
-        if params[:contest_id].blank?
-          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
-          return
-        end
-        unless @contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time
-          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
-          return
-        end
-      elsif @problem.visible_invisible?
-        redirect_to :back, :notice => 'Insufficient User Permissions.'
-        return
-      end
-    end
     @tdlist = inverse_td_list(@problem)
     #@contest_id = params[:contest_id]
   end
@@ -190,9 +176,21 @@ class ProblemsController < ApplicationController
     end
   end
 
+  def check_visibility!
+    unless current_user&.admin
+      if @problem.visible_contest?
+        if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time)
+          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        end
+      elsif @problem.visible_invisible?
+        redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+      end
+    end
+  end
+
   def check_params
     params = problem_params.clone
-    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and (not @problem&.specjudge_compiler_id)
+    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and not @problem&.specjudge_compiler_id
       params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
     end
     if params[:specjudge_type] == 'none'

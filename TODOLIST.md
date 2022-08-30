@@ -24,7 +24,8 @@
 - [x] Multistage problems & strict mode
 - [x] Testdata message (collapsable row)
 - [x] Change rejudge & delete submission to POST
-- [ ] Validate permission when displaying submission (?) and JSON endpoints
+- [x] Validate permission when displaying submission (?) and JSON endpoints
+- [ ] Refactor: `freeze_time` -> `freeze_minutes`
 
 ## Enhance features & PRs
 
@@ -40,6 +41,7 @@
 - [x] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
 - [x] Precise timestamp (for testdata fetching)
 - [x] Fix forget password (issue #9)
+- [ ] ActionCable for updating submission judge status (issue #8)
 
 ## Future
 

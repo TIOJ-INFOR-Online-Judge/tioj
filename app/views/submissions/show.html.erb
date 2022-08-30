@@ -1,9 +1,4 @@
 <% set_page_title "Submission - " + @submission.id.to_s %>
-<% if censored(@submission) %>
-  <h4 class="page-header">Results of submission #<code>censored</code></h4>
-  <code>censored</code>
-<% else %>
-
 <h4 class="page-header">Results of submission #<%= @submission.id %></h4>
 
 <p>
@@ -150,7 +145,7 @@
     </div>
   </div>
 
-  <% if @contest.blank? or @contest.show_detail_result? or Time.now > @contest.end_time or (user_signed_in? and current_user.admin?) %>
+  <% if @show_detail %>
     <div class="panel panel-default">
       <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
         <h1 class="panel-title">
@@ -277,7 +272,7 @@
   </div>
 </div>
 
-<% if user_signed_in? and ( current_user.admin? or current_user.id == @submission.user_id ) %>
+<% if user_signed_in? and (current_user.admin? or current_user.id == @submission.user_id) %>
   <% if @submission.result == "CE" or @submission.message.present? %>
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -298,8 +293,6 @@
 <% end %>
 
 <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs' %>
-
-<% end %>
 
 <%= javascript_include_tag         "/codehighlighter/prism.js" %>
 <%= stylesheet_link_tag         "/codehighlighter/prism.css" %>

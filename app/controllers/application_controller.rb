@@ -132,6 +132,10 @@ protected
     ApplicationController.shellsplit_safe(line)
   end
 
+  def raise_not_found
+    raise ActionController::RoutingError.new('')
+  end
+
   public
 
   def self.td_list_to_arr(str, sz)

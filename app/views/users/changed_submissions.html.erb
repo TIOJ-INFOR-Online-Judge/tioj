@@ -51,17 +51,6 @@ $("button:not([type='submit'])").attr("type", "button");
   <tbody>
     <% @submissions.each do |submission| %>
       <tr>
-      <% if censored(submission) %>
-        <td></td>
-        <td></td>
-        <td><code>censored</code></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      <% else %>
         <td><%= link_to submission.id, submission_path(submission) %></td>
         <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
         <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
@@ -78,7 +67,6 @@ $("button:not([type='submit'])").attr("type", "button");
             <% end %>
           </td>
         <% end %>
-      <% end %>
       </tr>
     <% end %>
   </tbody>

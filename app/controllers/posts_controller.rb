@@ -128,7 +128,8 @@ class PostsController < ApplicationController
     if user_signed_in? and current_user.admin?
       return
     end
-    if (@contest and params[:post][:global_visible].to_i == 1) or (not @post_types.map{|x| x[1]}.include?(params[:post][:post_type]))
+    params[:post][:global_visible] = '0' if @contest
+    if not @post_types.map{|x| x[1]}.include?(params[:post][:post_type])
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action: 'index'
       return
