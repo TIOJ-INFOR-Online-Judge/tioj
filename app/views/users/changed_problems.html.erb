@@ -21,7 +21,7 @@ The problem will be removed from this list once you solved it again.
   <tbody>
     <% problem_a = @problems.to_a %>
     <% problem_a.each do |problem| %>
-      <% if (user_signed_in? and current_user.admin?) or problem.visible_public? %>
+      <% if current_user&.admin? or problem.visible_public? %>
         <tr>
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
           <td>

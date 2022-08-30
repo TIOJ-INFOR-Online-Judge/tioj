@@ -52,11 +52,7 @@ class ContestsController < ApplicationController
     first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
     @scores = []
     if @contest.type_acm?
-      unless user_signed_in? and current_user.admin?
-        freeze_start = @contest.end_time - @contest.freeze_time * 60
-      else
-        freeze_start = @contest.end_time
-      end
+      freeze_start = current_user&.admin? ? @contest.end_time : @contest.freeze_after
       @participants.each do |u|
         t = []
         total_attm = 0
@@ -86,7 +82,7 @@ class ContestsController < ApplicationController
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
-      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
+      if not current_user&.admin? and Time.now >= freeze_start and @contest.freeze_minutes != 0
         flash.now[:notice] = "Scoreboard is now frozen."
       end
     else
@@ -200,7 +196,7 @@ class ContestsController < ApplicationController
   end
 
   def is_started?
-    Time.now >= @contest.start_time or (user_signed_in? and current_user.admin?)
+    Time.now >= @contest.start_time or current_user&.admin?
   end
 
   def check_started!
@@ -222,7 +218,7 @@ class ContestsController < ApplicationController
       :contest_type,
       :cd_time,
       :disable_discussion,
-      :freeze_time,
+      :freeze_minutes,
       :show_detail_result,
       :hide_old_submission,
       :user_whitelist,

@@ -1,7 +1,7 @@
 <% set_page_title "Contests" %>
 <h4 class="page-header">Contests</h4>
 
-<% if user_signed_in? && current_user.admin == true %>
+<% if current_user&.admin %>
   <%= link_to 'New Contest', new_contest_path, :class => 'btn btn-success btn-sm' %>
   <br>
 <% end %>
@@ -15,7 +15,7 @@
       <th>Start Time</th>
       <th>End Time</th>
       <th>Contest Type</th>
-      <% if user_signed_in? && current_user.admin == true %>
+      <% if current_user&.admin %>
         <th></th>
       <% end %>
     </tr>
@@ -36,7 +36,7 @@
         <td><%= contest.start_time.to_s(:clean) %></td>
         <td><%= contest.end_time.to_s(:clean) %></td>
         <td><%= contest.contest_type %> style</td>
-        <% if user_signed_in? && current_user.admin == true %>
+        <% if current_user&.admin %>
           <td>
             <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
             <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-xs' %>

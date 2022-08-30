@@ -27,7 +27,7 @@
       </tr>
     </table>
     <br>
-    <% if user_signed_in? and (current_user.id == @user.id or current_user.admin?) %>
+    <% if current_user&.admin? or current_user&.id == @user.id %>
       <table>
         <tr>
           <td class="col-md-3">Admin:</td>

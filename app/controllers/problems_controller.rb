@@ -45,7 +45,7 @@ class ProblemsController < ApplicationController
     @problems = @problems.order(id: :asc).page(params[:page]).per(100)
 
     problem_ids = @problems.map(&:id).to_a
-    query_user_id = current_user ? current_user.id : 0
+    query_user_id = current_user&.id || 0
     attributes = [
       :id,
       "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.user_id END) user_ac",

@@ -30,7 +30,7 @@ class SubmissionsController < ApplicationController
       if Time.now <= @submission.contest.end_time
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
         return
-      elsif @submission.created_at >= @contest.end_time - @contest.freeze_time * 60
+      elsif @submission.created_at >= @contest.freeze_after
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored before unfreeze.'
         return
       end
@@ -77,7 +77,7 @@ class SubmissionsController < ApplicationController
       user.update(last_submit_time: Time.now)
     else
       user.with_lock do
-        if not user.last_submit_time.blank? and Time.now - current_user.last_submit_time < cd_time
+        if not user.last_submit_time.blank? and Time.now - user.last_submit_time < cd_time
           redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
           return
         end
@@ -182,9 +182,9 @@ class SubmissionsController < ApplicationController
       @submissions = @submissions.where(contest_id: params[:contest_id])
       unless current_user&.admin?
         if user_signed_in?
-          @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.end_time - @contest.freeze_time * 60, current_user.id)
+          @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.freeze_after, current_user.id)
         else
-          @submissions = @submissions.where("submissions.created_at < ?", @contest.end_time - @contest.freeze_time * 60)
+          @submissions = @submissions.where("submissions.created_at < ?", @contest.freeze_after)
         end
         if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
           #only self submission
@@ -218,7 +218,7 @@ class SubmissionsController < ApplicationController
     if @contest
       raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
       unless current_user&.admin?
-        raise_not_found if @submission.created_at >= @contest.end_time - @contest.freeze_time * 60 && current_user&.id != @submission.user_id
+        raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
         if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
           raise_not_found if current_user&.id != @submission.user_id
         end

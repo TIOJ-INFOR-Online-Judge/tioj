@@ -31,8 +31,12 @@ class Contest < ApplicationRecord
 
   validates :start_time, :presence => true
   validates :end_time, :presence => true
-  validates_numericality_of :freeze_time, :greater_than_or_equal_to => 0
+  validates_numericality_of :freeze_minutes, :greater_than_or_equal_to => 0
 
   accepts_nested_attributes_for :contest_problem_joints, :reject_if => lambda { |a| a[:problem_id].blank? }, :allow_destroy => true
   accepts_nested_attributes_for :ban_compilers, :allow_destroy => true
+
+  def freeze_after
+    end_time - freeze_minutes * 60
+  end
 end

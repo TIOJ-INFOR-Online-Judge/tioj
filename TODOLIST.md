@@ -25,7 +25,8 @@
 - [x] Testdata message (collapsable row)
 - [x] Change rejudge & delete submission to POST
 - [x] Validate permission when displaying submission (?) and JSON endpoints
-- [ ] Refactor: `freeze_time` -> `freeze_minutes`
+- [x] Refactor: `freeze_time` -> `freeze_minutes`
+- [ ] Scoreboard freeze in IOI & GCJ style
 
 ## Enhance features & PRs
 

@@ -9,9 +9,9 @@ module PostFilteringConcern
 
   def check_contest_and_problem
     # also PostsController#check_contest_and_problem
-    unless user_signed_in? and current_user.admin?
+    unless current_user&.admin?
       if not @contest and Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
-        redirect_to root_path, :alert => "No discussion during contest."
+        redirect_back fallback_location: root_path, :notice => "No discussion during contest."
         return
       end
       if @problem and @problem.discussion_disabled?
@@ -23,7 +23,7 @@ module PostFilteringConcern
 
   def check_problem_allow_create
     # also PostsController#check_create
-    unless user_signed_in? and current_user.admin?
+    unless current_user&.admin?
       if @problem and not @problem.discussion_enabled?
         redirect_to problem_posts_path(@problem), :alert => "Discussion not allowed in this problem."
         return

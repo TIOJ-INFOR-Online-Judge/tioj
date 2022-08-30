@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   end
 
   def changed_submissions
-    if user_signed_in? and current_user.admin? and params[:all_user] == '1'
+    if current_user&.admin? and params[:all_user] == '1'
       @submissions = Submission
     else
       @submissions = @user.submissions
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   private
 
   def authenticate_current!
-    unless (user_signed_in? and current_user.admin?) or (user_signed_in? and current_user.username == params[:id])
+    unless current_user&.admin? or current_user&.username == params[:id]
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action: 'index'
       return

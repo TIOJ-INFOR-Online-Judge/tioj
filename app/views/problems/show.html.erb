@@ -1,5 +1,5 @@
 <% set_page_title @problem.id.to_s + " - " + @problem.name %>
-<% hide_old_submission = ((not current_user or not current_user.admin?) and (not @contest.blank?) and @contest.hide_old_submission) %>
+<% hide_old_submission = (not current_user&.admin?) && @contest&.hide_old_submission %>
 
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
@@ -15,7 +15,7 @@
       <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
     </div>
   <% end %>
-  <% if not @problem.discussion_disabled? %>
+  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.start_time <= Time.now and @contest.end_time >= Time.now) %>
     <div class="col-md-2">
       <%= link_to 'Discussion / Solution', problem_posts_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
     </div>
@@ -29,7 +29,7 @@
     <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_path(@contest), :class => 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>
-<% if current_user and current_user.admin? %>
+<% if current_user&.admin? %>
   <div class="row" style="padding-top:10px;">
     <div class="col-md-2">
       <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
@@ -281,7 +281,7 @@
       <%= link_to 'Ranklist', ranklist_problem_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
     </div>
   <% end %>
-  <% if current_user and current_user.admin? %>
+  <% if current_user&.admin? %>
     <div class="col-md-2">
       <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
     </div>

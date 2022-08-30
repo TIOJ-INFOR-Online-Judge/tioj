@@ -7,7 +7,7 @@
 <% else %>
   <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
 <% end %>
-<% if user_signed_in? and current_user.admin? %>
+<% if current_user&.admin? %>
   <%= form_with url: rejudge_submission_path(@submission), :html => {:style => 'display: inline;'} do |f| %>
     <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
   <% end %>
@@ -272,7 +272,7 @@
   </div>
 </div>
 
-<% if user_signed_in? and (current_user.admin? or current_user.id == @submission.user_id) %>
+<% if current_user&.admin? or current_user&.id == @submission.user_id %>
   <% if @submission.result == "CE" or @submission.message.present? %>
     <div class="panel panel-default">
       <div class="panel-heading">

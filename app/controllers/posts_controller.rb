@@ -96,9 +96,7 @@ class PostsController < ApplicationController
       @post_types = [['discuss', nil]]
     else
       @post_types = Post.post_types.keys
-      if not @problem or not (user_signed_in? and current_user.admin?)
-        @post_types.delete('solution')
-      end
+      @post_types.delete('solution') unless @problem && current_user&.admin?
       if @problem
         desc = {
           "discuss" => "Normal discussion",
@@ -117,7 +115,7 @@ class PostsController < ApplicationController
 
   def check_user!
     @post = @posts.find(params[:id])
-    if not user_signed_in? or (not current_user.admin? and (current_user.id != @post.user_id or @contest))
+    unless current_user&.admin? or (current_user&.id == @post.user_id and not @contest)
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action: 'index'
       return
@@ -125,9 +123,7 @@ class PostsController < ApplicationController
   end
 
   def check_params!
-    if user_signed_in? and current_user.admin?
-      return
-    end
+    return if current_user&.admin?
     params[:post][:global_visible] = '0' if @contest
     if not @post_types.map{|x| x[1]}.include?(params[:post][:post_type])
       flash[:alert] = 'Insufficient User Permissions.'
