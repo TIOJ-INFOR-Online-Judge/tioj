@@ -23,6 +23,9 @@ class ApplicationController < ActionController::Base
     "CLE" => "Compilation Limit Exceeded",
     "ER" => "Judge Compilation Error",
     "JE" => "Judge Error",
+    "queued" => "Waiting for judge server",
+    "received" => "Queued in judge server",
+    "Validating" => "Validating",
   }
   @@v2i = {
     "AC" => 0,

@@ -1,4 +1,19 @@
 <% set_page_title "Submissions" %>
+
+<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% verdict_class_map = {
+  "AC" => "text-success",
+  "WA" => "text-danger",
+  "TLE" => "text-info",
+  "MLE" => "text-mle",
+  "OLE" => "text-ole",
+  "RE" => "text-warning",
+  "SIG" => "text-sig",
+  "queued" => "text-muted",
+} %>
+<% verdict_class_map.default = '' %>
+<% waiting_submissions = [] %>
+
 <h4 class="page-header">
   Submissions
   <% if @problem %>
@@ -77,6 +92,7 @@ $("button:not([type='submit'])").attr("type", "button");
   <tbody>
     <% @submissions.each do |submission| %>
       <tr>
+        <% waiting_submissions.append(submission.id) if waiting_verdicts.include?(submission.result) %>
         <% if submission.contest_id.blank? %>
           <td><%= link_to submission.id, submission_path(submission) %></td>
           <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
@@ -85,12 +101,12 @@ $("button:not([type='submit'])").attr("type", "button");
           <td><%= link_to submission.problem_id, contest_problem_path(submission.contest_id, submission.problem) %></td>
         <% end %>
         <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
-        <td><%= submission.total_time.to_i %></td>
-        <td><%= submission.total_memory.to_i %></td>
-        <td><%= verdict_text submission.result %></td>
+        <td id="time-<%= submission.id %>"><%= submission.total_time.to_i %></td>
+        <td id="memory-<%= submission.id %>"><%= submission.total_memory.to_i %></td>
+        <td id="verdict-<%= submission.id %>" class="<%= verdict_class_map[submission.result] %>"><%= submission.result %></td>
         <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code.bytesize) %></td>
-        <td><%= sprintf("%g", submission.score) %></td>
+        <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
         <% if current_user&.admin %>
           <td>
@@ -105,4 +121,24 @@ $("button:not([type='submit'])").attr("type", "button");
 </table>
 <%= paginate @submissions %>
 
+<% if not waiting_submissions.empty? %>
+<script>
+var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
+function score_str(str) {
+  return String(str).replace(/\.0$/, '');
+}
+
+function updateResult(data) {
+  var id = data['id'];
+  $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
+  if (data['total_time']) $('#time-' + id).text(data['total_time']);
+  if (data['total_memory']) $('#memory-' + id).text(data['total_memory']);
+  if ('score' in data) $('#score-' + id).text(score_str(data['score']));
+}
+
+$(document).ready(function() {
+  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateResult);
+});
+</script>
+<% end %>

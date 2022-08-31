@@ -36,4 +36,12 @@ class Submission < ApplicationRecord
     contest_id != nil
   end
 
+  def allowed_for(cur_user)
+    return true if cur_user&.admin? || !contest?
+    return false if created_at >= contest.freeze_after && cur_user&.id != user_id
+    if Time.now <= contest.end_time #and Time.now >= contest.start_time
+      return false if cur_user&.id != user_id
+    end
+    true
+  end
 end

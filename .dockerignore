@@ -31,6 +31,8 @@ passenger.*.pid.lock
 /config/master.key
 /config/credentials.yml.enc
 
+.env
+
 # dockerignore specific
 README.md
 Dockerfile

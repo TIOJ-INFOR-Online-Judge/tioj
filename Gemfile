@@ -100,7 +100,7 @@ gem 'activerecord-import'
 gem 'net-http'
 
 # Redis for Action Cable
-gem 'redis'
+gem 'redis', '~> 4'
 
 # Bullet for debugging
 gem 'bullet', group: 'development'

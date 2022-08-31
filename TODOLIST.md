@@ -42,7 +42,7 @@
 - [x] PR #13 (cherry-pick: `271eaed`, `bcfc6ac`, `ba5967c`; reimplement: `719b4d6`)
 - [x] Precise timestamp (for testdata fetching)
 - [x] Fix forget password (issue #9)
-- [ ] ActionCable for updating submission judge status (issue #8)
+- [x] ActionCable for updating submission judge status (issue #8)
 
 ## Future
 

@@ -15,6 +15,7 @@ class FetchChannel < ApplicationCable::Channel
     submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
       submission.update(:result => data[:verdict])
+      ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
       return
     end
     update_task_results(data[:td_results], submission) if data[:td_results]
@@ -34,6 +35,7 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
     submission.update(**update_hash)
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
   end
 
   def report_queued(data)
@@ -120,6 +122,7 @@ class FetchChannel < ApplicationCable::Channel
       },
     }
     ActionCable.server.broadcast("fetch_#{judge_server.id}", {type: 'submission', data: data})
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", {result: 'received', id: submission.id})
   end
 
   def unsubscribed
@@ -142,16 +145,15 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    score_map = submission.submission_tasks.map { |t| [t.position, t.score] }.to_h
-    problem = submission.problem
-    num_tasks = problem.testdata.count
-    score = problem.testdata_sets.map{|s|
-      lst = ApplicationController.td_list_to_arr(s.td_list, num_tasks)
-      set_result = score_map.values_at(*lst)
-      set_result.all? ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
-    }.sum
+    td_set_scores = calc_td_set_scores(submission)
+    score = td_set_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
-    submission.update(:score => score)
+    submission.with_lock do
+      return if submission.new_rejudged and not ['Validating', 'received'].include?(submission.result)
+      submission.update(:score => score)
+    end
+    ActionCable.server.broadcast("submission_#{submission.id}", {td_set_scores: td_set_scores, tasks: results})
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
   end
 end
