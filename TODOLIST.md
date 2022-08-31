@@ -26,7 +26,7 @@
 - [x] Change rejudge & delete submission to POST
 - [x] Validate permission when displaying submission (?) and JSON endpoints
 - [x] Refactor: `freeze_time` -> `freeze_minutes`
-- [ ] Scoreboard freeze in IOI & GCJ style
+- [x] Scoreboard freeze in IOI & GCJ style
 
 ## Enhance features & PRs
 
@@ -58,6 +58,7 @@
 - [ ] Judge load balancing
 - [ ] Write basic tests
 - [ ] Enhance posts UI
+- [ ] Rewrite contest scoreboard refresh using ActionCable
 - [ ] Add more languages
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit

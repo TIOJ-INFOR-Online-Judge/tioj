@@ -39,7 +39,12 @@
       <td><%= s[4] %></td>
     <% else %>
       <% s[1].each do |t|%>
-        <td><%= sprintf("%g", t) %></td>
+        <td>
+          <%= sprintf("%g", t[0]) %>
+          <% if t[1] > 0 %>
+            <small><span style="color:#888;">+<%= t[1] %></span></small>
+          <% end %>
+        </td>
       <% end %>
       <td><%= sprintf("%g", s[2]) %></td>
     <% end %>

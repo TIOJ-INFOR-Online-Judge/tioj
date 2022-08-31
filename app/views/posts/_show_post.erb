@@ -32,7 +32,7 @@
     (private post)
   <% end %>
 </div>
-<% if current_user&.admin? or (current_user&.id == post.user_id and not @contest)) %>
+<% if current_user&.admin? or (current_user&.id == post.user_id and not @contest) %>
   <%= link_to "Edit Post", edit_polymorphic_path(post_object), :class=>'btn btn-primary btn-xs'%>
   <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
 <% end %>
