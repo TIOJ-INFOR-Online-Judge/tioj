@@ -36,7 +36,8 @@ class ProblemsController < ApplicationController
     # filtering
     @problems = Problem.includes(:tags)
     if not params[:search_name].blank?
-      @problems = @problems.where("name LIKE ?", "%#{sanitize_sql_like(params[:search_name])}%")
+      sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_name])
+      @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
     end
     if not params[:tag].blank?
       @problems = @problems.tagged_with(params[:tag])

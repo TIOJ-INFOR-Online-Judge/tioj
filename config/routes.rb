@@ -61,6 +61,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'current_user/:path' => 'users#current', constraints: { path: /.*/ }
+
   get 'problems/tag/:tag' => 'problems#index', as: :problems_tag
 
   get 'about/verdicts' => 'about#verdicts'

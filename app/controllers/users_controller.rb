@@ -43,6 +43,11 @@ class UsersController < ApplicationController
     @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
   end
 
+  def current
+    authenticate_user!
+    redirect_to user_path(current_user) + '/' + params[:path]
+  end
+
   private
 
   def authenticate_current!
