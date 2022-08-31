@@ -23,5 +23,5 @@
 class SubmissionTask < ApplicationRecord
   belongs_to :submission
 
-  validates_length_of :message, maximum: 16384
+  validates_length_of :message, maximum: 32768
 end

@@ -36,7 +36,8 @@ if grep -q 'Ubuntu' /etc/*-release; then
       git cmake ninja-build g++-11 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
       imagemagick nodejs redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev ghc
+      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev \
+      ghc python3-numpy python3-pil
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
@@ -50,7 +51,9 @@ if grep -q 'Ubuntu' /etc/*-release; then
 
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
-  sudo pacman -Syu --noconfirm --needed base-devel git cmake ninja mariadb nodejs redis boost
+  sudo pacman -Syu --noconfirm --needed \
+      base-devel git cmake ninja mariadb nodejs redis boost \
+      ghc python-numpy python-pillow
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql

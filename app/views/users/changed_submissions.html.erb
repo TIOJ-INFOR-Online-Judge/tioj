@@ -23,6 +23,13 @@
       <option value="CE">Compilation Error</option>
     </select>
   </div>
+  <% if current_user&.admin %>
+    <div class="form-group">
+      <label for="all_user">
+        <input id="all_user" type="checkbox" name="all_user" value="1">List all users' submissions
+      </label>
+    </div>
+  <% end %>
   <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
 </form>
 

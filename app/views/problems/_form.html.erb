@@ -206,17 +206,17 @@
                 message: '',
                 limits: {
                   time_us: 1000000,
-                  vss_kb: 262144,
-                  rss_kb: 0,
-                  output_kb: 262144,
+                  vss_kib: 262144,
+                  rss_kib: 0,
+                  output_kib: 262144,
                 },
                 stats: {
                   exit_code: 0,
                   real_us: 512345,
                   user_us: 412345,
                   sys_us: 98765,
-                  max_vss_kb: 80004,
-                  max_rss_kb: 68488,
+                  max_vss_kib: 80004,
+                  max_rss_kib: 68488,
                 },
               }) %></pre>
               The program must output a JSON object to stdout with the following fields (all fields are optional; see below for more details):
@@ -237,7 +237,7 @@
                 <li>If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string or be omitted. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
                 <li>If <code>verdict</code> is not given, the final verdict will be <code>original_verdict</code> if it exists. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
                 <li><code>score</code> can be given by float or string. If not given, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
-                <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 16 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
+                <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
                 <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the actual value. Overriding <code>time_us</code> in intermediate stages also effectively changes the time limit of the remaining stages (calculated by TL - time), so it is possible to set adaptive time limits using this behavior.</li>
               </ul>
             <% end %>
@@ -339,7 +339,7 @@
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
-        <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation" %>
+        <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
         <%= f.text_field :verdict_ignore_td_list, :class => 'form-control flat' %>
       </div>
     </div>

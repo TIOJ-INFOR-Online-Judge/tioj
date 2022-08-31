@@ -315,7 +315,7 @@ function score_str(str) {
 }
 
 function time_str(str) {
-  str = String(str).replace(/(\.\d)\d+/, '$1');
+  str = parseFloat(str).toFixed(1)
   pad = 6 - str.length;
   if (pad > 0) str = '<span style="visibility: hidden;">' + '0'.repeat(pad) + '</span>' + str;
   return str;

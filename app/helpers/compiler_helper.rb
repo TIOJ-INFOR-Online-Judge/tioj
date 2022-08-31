@@ -10,7 +10,7 @@ module CompilerHelper
     ["language-c", "c99/gnu c compiler 11.2.0 | options: -O2 -std=c99 -lm", "c99"],
     ["language-c", "c90/gnu c compiler 11.2.0 | options: -O2 -ansi -lm", "c90"],
     ["language-python", "python2/CPython 2.7.18 | options: -m py_compile", "python2"],
-    ["language-python", "python3/CPython 3.10.4 | options: -m py_compile", "python3"],
+    ["language-python", "python3/CPython 3.10.4 with numpy & PIL | options: -m py_compile", "python3"],
     ["language-haskell", "haskell/glasgow haskell compiler 8.8.4 with haskell platform | options: -O", "haskell"],
   ]
 
