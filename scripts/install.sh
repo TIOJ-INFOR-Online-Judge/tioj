@@ -109,7 +109,6 @@ git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git
 
 # Install gems
 cd "$WORKDIR/tioj"
-git checkout new-judge # remove this after merge
 MAKEFLAGS='-j4' bundle install
 
 # Setup nginx

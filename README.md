@@ -8,7 +8,7 @@
 Make sure the current user has `sudo` privileges, and run the installation script:
 
 ```
-curl -sSL https://raw.githubusercontent.com/TIOJ-INFOR-Online-Judge/tioj/new-judge/scripts/install.sh | DB_PASSWORD=some_password bash -s
+curl -sSL https://raw.githubusercontent.com/TIOJ-INFOR-Online-Judge/tioj/main/scripts/install.sh | DB_PASSWORD=some_password bash -s
 ```
 
 It is recommended to run this script on a freshly-installed machine. This script will install both the web server (by `passenger-install-nginx-module`) and the [judge client](https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge), and start & enable them via systemd.
