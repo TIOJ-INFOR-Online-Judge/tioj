@@ -172,7 +172,8 @@ class ProblemsController < ApplicationController
         }.sum
         max_score = BigDecimal('1e+12') - 1
         score = score.clamp(-max_score, max_score).round(6)
-        {id: x, score: score.to_s}
+        # compiler_id is only there to prevent SQL error; it will not be used
+        {id: x, score: score.to_s, compiler_id: 0}
       }
       Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_30_054114) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_01_141607) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -248,7 +248,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_30_054114) do
     t.integer "total_time"
     t.integer "total_memory"
     t.text "message", size: :medium
-    t.bigint "compiler_id", default: 1, null: false
+    t.bigint "compiler_id", null: false
     t.string "old_result"
     t.decimal "old_score", precision: 18, scale: 6
     t.integer "old_time"

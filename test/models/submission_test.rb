@@ -14,7 +14,7 @@
 #  total_time   :integer
 #  total_memory :integer
 #  message      :text(16777215)
-#  compiler_id  :bigint           default(1), not null
+#  compiler_id  :bigint           not null
 #  old_result   :string(255)
 #  old_score    :decimal(18, 6)
 #  old_time     :integer

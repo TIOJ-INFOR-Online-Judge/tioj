@@ -47,6 +47,7 @@
 ## Future
 
 - [ ] Batch upload testdata
+- [ ] Testdata download for admin
 - [ ] Problem import & export
     - [ ] Native format
     - [ ] Polygon & Kattis & CMS support

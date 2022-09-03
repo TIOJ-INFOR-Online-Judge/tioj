@@ -6,7 +6,7 @@
     <% if not @postable %>
       <% if post.postable_type == 'Problem' %>
         <span class="title_post_type small">[Issue: Problem #<%= post.postable_id %>]</span>
-      <% elsif post.post_type == 'issue' %>
+      <% elsif post.type_issue? %>
         <span class="title_post_type small">[Issue]</span>
       <% end %>
     <% elsif @problem %>
@@ -16,7 +16,11 @@
   </h4>
 </div>
 <div class="post_content">
-  <%= markdown_no_html(post.content) %>
+  <% if post.type_solution? %>
+    <%= markdown(post.content) %>
+  <% else %>
+    <%= markdown_no_html(post.content) %>
+  <% end %>
 </div>
 <div class="post_footer small">
   <% if not current_user&.admin and not post.user_visible and current_user&.id != poster.id %>

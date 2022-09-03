@@ -28,8 +28,8 @@ module ProblemsHelper
   end
 
   def users_ac_ratio(problem)
-    all = problem.submissions.select('COUNT(DISTINCT user_id) cnt').first.cnt
-    ac = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(result: 'AC').first.cnt
+    all = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(contest_id: nil).first.cnt
+    ac = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(contest_id: nil, result: 'AC').first.cnt
     ranklist_page = link_to ac.to_s + "/" + all.to_s, ranklist_problem_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ranklist_page + ")" )
   end
