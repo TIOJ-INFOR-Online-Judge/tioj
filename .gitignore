@@ -21,7 +21,7 @@
 
 # Ignore all the testdata
 /td
-/public
+/public/*
 /public-tmp
 !/public/codehighlighter
 !/public/fonts

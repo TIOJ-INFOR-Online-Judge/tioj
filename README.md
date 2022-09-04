@@ -15,7 +15,7 @@ It is recommended to run this script on a freshly-installed machine. This script
 
 The systemd service names are `nginx.service` and `tioj-judge.service`. The configuration files are located at `/opt/nginx/conf` and `/etc/tioj-judge.conf`. You can modify them and reload/restart the services.
 
-If password recovery is needed, pass the `SMTP_*` and `MAIL_*` environment variables to `bash` just like those in `.env.example`, or just run `RAILS_ENV=production rails credentials:edit` in `~/tioj`, uncomment & edit the related fields and restart the web server.
+If password recovery is needed, [setup credentials](#credentials) after the installation is completed, or pass the `SMTP_*` and `MAIL_*` environment variables to `bash` just like those in `.env.example`.
 
 This script is tested on Ubuntu 20.04 LTS and 22.04 LTS. It also works on Arch Linux, but direct installation on Arch Linux is not recommended since it involves rebuilding some community packages for static libraries.
 
@@ -24,6 +24,27 @@ This script is tested on Ubuntu 20.04 LTS and 22.04 LTS. It also works on Arch L
 1. Install `docker-compose` and setup `.env` using the format of `.env.example`.
     - The `SMTP_*` and `MAIL_*` variables are only added if password recovery function is needed. Without them, the function is automatically disabled.
 2. `docker-compose up -d` and enjoy TIOJ on port 4000.
+
+### Credentials
+
+Some settings is managed by the Rails credentials system. It can be set via `RAILS_ENV=production rails credentials:edit`. Besides `secret_key_base`, the following fields can be added to optionally enable password recovery & Sentry monitoring:
+
+```yaml
+# Password recovery settings
+mail_settings:
+  smtp_settings: # SMTP server settings; it will be passed to config.action_mailer.smtp_settings
+    address: smtp.example.com
+    port: 587
+    user_name: tioj@example.com
+    password: some_password
+    enable_starttls_auto: true
+  url_options:
+    host: https://tioj.example.com # the URL of the website, used to generate the link in the email
+  sender: tioj.example.com # email sender
+
+# Sentry settings
+sentry_dsn: https://xxxxxxx@xxxx.ingest.sentry.io/xxxx # copy from your sentry project
+```
 
 ## Current Development Environment
 

@@ -187,7 +187,7 @@ sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
 tioj_key = $FETCH_KEY
 parallel = 2
-max_submission_queue_size = 200
+max_submission_queue_size = 20
 EOF
 
 # Setup systemctl
