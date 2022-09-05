@@ -39,9 +39,10 @@ class FetchChannel < ApplicationCable::Channel
   end
 
   def report_queued(data)
-    data.deep_symbolize_keys
+    data = data.deep_symbolize_keys
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
+    # requeue dead submissions
     Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
   end
 

@@ -19,6 +19,8 @@ If password recovery is needed, [setup credentials](#credentials) after the inst
 
 This script is tested on Ubuntu 20.04 LTS and 22.04 LTS. It also works on Arch Linux, but direct installation on Arch Linux is not recommended since it involves rebuilding some community packages for static libraries.
 
+It is strongly recommended to mount tmpfs on `/tmp` by adding `tmpfs /tmp tmpfs rw,nosuid,nodev` in `/etc/fstab`.
+
 ### Docker
 
 1. Install `docker-compose` and setup `.env` using the format of `.env.example`.
