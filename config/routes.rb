@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   resources :contest_problem_joints
 
   resources :articles
+  resources :testdata, only: [:show]
 
   resources :users do
     member do

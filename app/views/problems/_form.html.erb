@@ -267,6 +267,7 @@
               <li><code>strict</code>: Byte-wise comparison.<br></li>
               <li><code>white-diff</code>: Compare two files line-by-line. Two lines are considered matched if the list of non-empty, whitespace-separated "words" is the same. Trailing lines containing only whitespaces are ignored. This is the behavior of CMS white-diff comparator.<br></li>
               <li><code>float-diff [absolute/relative/absolute-relative] [threshold]</code>: Similar to <code>white-diff</code>, but two words are also considered matched if the answer is a floating-point number (specifically, parsable by <code>std::stold</code> and contains at least one of the following characters: <code>.eExXnN</code>), and the absolute and/or relative error of the user's output is less than or equal to the given threshold.<br></li>
+              <li><code>verbose</code>: Send a message indicating the incorrect output position to the user. Can be prepended to the above options.</li>
             </ul>
           </div>
         </div>

@@ -1,8 +1,9 @@
 class TestdataController < ApplicationController
   before_action :authenticate_admin!
-  before_action :set_problem
-  before_action :set_testdatum, only: [:edit, :update, :destroy]
+  before_action :set_problem, except: [:show]
+  before_action :set_testdatum, only: [:show, :edit, :update, :destroy]
   before_action :set_testdata, only: [:batch_edit, :batch_update]
+  helper_method :strip_uuid
 
   def index
     @testdata = @problem.testdata
@@ -10,6 +11,19 @@ class TestdataController < ApplicationController
 
   def new
     @testdatum = @problem.testdata.build
+  end
+
+  def show
+    if params[:type] == 'input'
+      path = @testdatum.test_input
+      name = @testdatum.test_input_identifier
+    elsif params[:type] == 'output'
+      path = @testdatum.test_output
+      name = @testdatum.test_output_identifier
+    else
+      raise_not_found
+    end
+    send_file path.to_s, filename: strip_uuid(name)
   end
 
   def create
@@ -110,6 +124,10 @@ class TestdataController < ApplicationController
 
   def set_problem
     @problem = Problem.find(params[:problem_id])
+  end
+
+  def strip_uuid(x)
+    x[0...-37]
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
