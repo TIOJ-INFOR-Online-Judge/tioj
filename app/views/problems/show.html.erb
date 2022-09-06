@@ -101,10 +101,12 @@
     <div class="col-md-3">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h1 class="panel-title">Tags</h1>
+          <h1 class="panel-title">Tags
+            <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+          </h1>
         </div>
         <div class="panel-body">
-          <%= raw @problem.tag_list.map{ |a| link_to a, problems_tag_path(a), :class => 'btn btn-xs btn-default' }.join(" ") %>
+          <%= tag_list_html(@problem) %>
         </div>
       </div>
     </div>

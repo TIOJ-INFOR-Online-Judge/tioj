@@ -78,6 +78,11 @@ module ProblemsHelper
     end
   end
 
+  def tag_list_html(problem)
+    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-default' } +
+         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
+  end
+
   def specjudge_type_desc_map
     {
       "none" => "Default compare",

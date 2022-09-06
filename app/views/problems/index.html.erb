@@ -42,7 +42,9 @@ window.onpageshow = function(e){
     <tr>
       <th></th>
       <th>#</th>
-      <th>Name</th>
+      <th>Name
+        <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+      </th>
       <th>TopCoder</th>
       <th>AC Ratio(user)</th>
       <th>AC (submission)</th>
@@ -63,7 +65,7 @@ window.onpageshow = function(e){
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
           <td>
             <div style="float:left"><%= link_to problem.name, problem_path(problem.id) %></div>
-            <div style="float:right"><%= raw problem.tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-default' }.join(" ") %></div>
+            <div style="float:right"><%= tag_list_html(problem) %></div>
           </td>
           <td class="text-center">
             <% begin %>

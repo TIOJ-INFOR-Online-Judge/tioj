@@ -35,7 +35,7 @@ class ProblemsController < ApplicationController
     end
 
     # filtering
-    @problems = Problem.includes(:tags)
+    @problems = Problem.includes(:tags, :solution_tags)
     if not params[:search_name].blank?
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_name])
       @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
@@ -218,6 +218,7 @@ class ProblemsController < ApplicationController
       :page,
       :visible_state,
       :tag_list,
+      :solution_tag_list,
       :discussion_visibility,
       :score_precision,
       :verdict_ignore_td_list,

@@ -36,7 +36,7 @@ class Problem < ApplicationRecord
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion
 
-  acts_as_taggable_on :tags
+  acts_as_taggable_on :tags, :solution_tags
 
   has_many :submissions, :dependent => :destroy
 
