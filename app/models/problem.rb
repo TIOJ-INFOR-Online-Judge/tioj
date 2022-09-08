@@ -10,8 +10,6 @@
 #  updated_at             :datetime
 #  input                  :text(16777215)
 #  output                 :text(16777215)
-#  example_input          :text(16777215)
-#  example_output         :text(16777215)
 #  hint                   :text(16777215)
 #  visible_state          :integer          default("public")
 #  sjcode                 :text(4294967295)
@@ -54,6 +52,9 @@ class Problem < ApplicationRecord
 
   has_many :posts, :as => :postable, :dependent => :destroy
   accepts_nested_attributes_for :posts, :allow_destroy => true, :reject_if => :all_blank
+
+  has_many :sample_testdata, dependent: :destroy
+  accepts_nested_attributes_for :sample_testdata, :allow_destroy => true, :reject_if => :all_blank
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
 

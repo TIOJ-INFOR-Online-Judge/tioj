@@ -70,20 +70,25 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <div class="form-group">
-        <%= f.label :example_input, "Sample Input" %>
-        <%= f.text_area :example_input, :class => 'form-control flat code-input', :rows => '7' %>
+  <%= f.fields_for :sample_testdata do |t| %>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= t.label :input, "Sample Input", :class => "sample_input" %>
+          <%= t.link_to_remove "Remove this sample testdatum", :class => "btn btn-danger", :name => "testdatum_remove" %>
+          <%= t.text_area :input, :class => 'form-control flat code-input', :rows => '7' %>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <%= t.label :output, "Sample Output", :class => "sample_output" %>
+          <%= t.text_area :output, :class => 'form-control flat code-input', :rows => '7' %>
+        </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="form-group">
-        <%= f.label :example_output, "Sample Output" %>
-        <%= f.text_area :example_output, :class => 'form-control flat code-input', :rows => '7' %>
-      </div>
-    </div>
-  </div>
+  <% end %>
+
+  <%= f.link_to_add "Add sample testdatum", :sample_testdata, :class => "btn btn-warning", :id => "testdatum_add" %>
 
   <div class="row">
     <div class="col-md-6">

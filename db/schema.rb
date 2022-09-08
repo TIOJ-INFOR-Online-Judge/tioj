@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_01_141607) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_08_124550) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -193,8 +193,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_141607) do
     t.datetime "updated_at"
     t.text "input", size: :medium
     t.text "output", size: :medium
-    t.text "example_input", size: :medium
-    t.text "example_output", size: :medium
     t.text "hint", size: :medium
     t.integer "visible_state", default: 0
     t.text "sjcode", size: :long
@@ -214,6 +212,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_01_141607) do
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
+  end
+
+  create_table "sample_testdata", charset: "utf8mb4", force: :cascade do |t|
+    t.bigint "problem_id"
+    t.text "input", size: :medium
+    t.text "output", size: :medium
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
   create_table "submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

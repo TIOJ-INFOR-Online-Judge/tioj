@@ -71,10 +71,14 @@ class ProblemsController < ApplicationController
 
   def new
     @problem = Problem.new
+    1.times { @problem.sample_testdata.build }
     @ban_compiler_ids = Set[]
   end
 
   def edit
+    if @problem.sample_testdata.length == 0
+      1.times { @problem.sample_testdata.build }
+    end
     @ban_compiler_ids = @problem.compilers.map(&:id).to_set
   end
 
@@ -233,6 +237,14 @@ class ProblemsController < ApplicationController
       :interlib_impl,
       :strict_mode,
       :old_pid,
+      sample_testdata_attributes:
+      [
+        :id,
+        :problem_id,
+        :input,
+        :output,
+        :_destroy
+      ],
       compiler_ids: [],
       testdata_sets_attributes:
       [
