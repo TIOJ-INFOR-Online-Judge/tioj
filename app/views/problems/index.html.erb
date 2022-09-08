@@ -42,11 +42,11 @@ window.onpageshow = function(e){
     <tr>
       <th></th>
       <th>#</th>
-      <th>Name
+      <th style="width: 45%;">Name
         <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
       </th>
-      <th>TopCoder</th>
-      <th>AC Ratio(user)</th>
+      <th class="text-center">TopCoder</th>
+      <th>AC Ratio (user)</th>
       <th>AC (submission)</th>
       <% if current_user&.admin %>
         <th>Visibility</th>
@@ -81,7 +81,7 @@ window.onpageshow = function(e){
             <td><%= problem.visible_state.capitalize %></td>
           <% end %>
           <% if user_signed_in? %>
-            <td>
+            <td style="white-space: nowrap;">
               <% if current_user.admin? %>
                 <%= link_to 'Edit', edit_problem_path(problem), :class => 'btn btn-info btn-xs' %>
               <% end %>
