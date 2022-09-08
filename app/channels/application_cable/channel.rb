@@ -10,8 +10,9 @@ module ApplicationCable
         lst = ApplicationController.td_list_to_arr(s.td_list, num_tasks)
         set_result = score_map.values_at(*lst)
         finished = set_result.all?
+        ratio = finished ? (lst.size > 0 ? set_result.min.to_f / 100 : 1.0) : 0.0
         set_score = finished ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
-        {score: set_score, ratio: set_score.to_f / s.score.to_f, position: index, finished: finished}
+        {score: set_score, ratio: ratio, position: index, finished: finished}
       }
     end
   end
