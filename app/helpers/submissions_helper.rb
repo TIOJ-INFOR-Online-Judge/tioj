@@ -22,8 +22,9 @@ module SubmissionsHelper
   end
 
   def time_str(x)
+    ret = number_with_precision(x, precision: 1)
     # pad by invisible digits to align decimal
-    prefix = '0' * [0, 4 - x.fix.to_i.to_s.length].max
-    raw("<span style=\"visibility: hidden;\">#{prefix}</span>" + number_with_precision(x, precision: 1))
+    prefix = '0' * [0, 6 - ret.length].max
+    raw("<span style=\"visibility: hidden;\">#{prefix}</span>" + ret)
   end
 end
