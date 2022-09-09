@@ -34,7 +34,9 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
-    submission.update(**update_hash)
+    submission.with_lock do
+      submission.update(**update_hash)
+    end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
   end
 
