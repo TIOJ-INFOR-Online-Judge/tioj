@@ -34,8 +34,10 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
-    submission.with_lock do
-      submission.update(**update_hash)
+    retry_lock do
+      submission.with_lock do
+        submission.update(**update_hash)
+      end
     end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
   end
@@ -53,22 +55,25 @@ class FetchChannel < ApplicationCable::Channel
     is_old = false
     for i in 1..n_retry
       is_old = false
-      flag = false
       submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
       if not submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
         submission = Submission.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
         is_old = true
       end
+      flag = false
       if submission
-        submission.with_lock do
-          if submission.result == "received"
-            if i != n_retry
-              flag = true
-              next # breaks with_lock
+        retry_lock(3) do
+          submission.with_lock do
+            if submission.result == "received"
+              if i != n_retry
+                flag = true
+                next # breaks with_lock
+              end
+              return
             end
-            return
+            submission.update(result: "received")
           end
-          submission.update(result: "received")
+          next if flag
         end
         next if flag
       else
@@ -152,11 +157,28 @@ class FetchChannel < ApplicationCable::Channel
     score = td_set_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
-    submission.with_lock do
-      return if submission.new_rejudged and not ['Validating', 'received'].include?(submission.result)
-      submission.update(:score => score)
+    retry_lock do
+      submission.with_lock do
+        return if submission.new_rejudged and not ['Validating', 'received'].include?(submission.result)
+        submission.update(:score => score)
+      end
     end
     ActionCable.server.broadcast("submission_#{submission.id}", {td_set_scores: td_set_scores, tasks: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
+  end
+
+  def retry_lock(retry_times=4, interval=0.3)
+    begin
+      raise ActiveRecord::Deadlocked if retry_times == 4
+      yield
+    rescue ActiveRecord::Deadlocked => e
+      retry_times -= 1
+      if retry_times > 0
+        sleep interval
+        retry
+      else
+        raise e
+      end
+    end
   end
 end
