@@ -136,6 +136,7 @@ production:
   <<: *default
   database: tioj_production
 EOF
+cp config/settings.yml.example config/settings.yml
 
 # Setup web server
 FETCH_KEY=$(head -c 32 /dev/urandom | xxd -ps -c 128)

@@ -31,6 +31,7 @@ production:\n\
   <<: *default\n\
   database: tioj_production"\
 > config/database.yml
+RUN cp config/settings.yml.example config/settings.yml
 
 RUN rails assets:precompile
 

@@ -28,12 +28,12 @@
 !/public/images
 !/public/robots.txt
 
-/config/database.yml
-
 passenger.*.pid.lock
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/database.yml
+/config/settings.yml
 /config/credentials.yml.enc
 
 .env

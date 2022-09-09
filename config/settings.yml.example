@@ -1,0 +1,4 @@
+shared:
+  sentry_sample_rate:
+    normal: 0.002
+    cable: 0.001
