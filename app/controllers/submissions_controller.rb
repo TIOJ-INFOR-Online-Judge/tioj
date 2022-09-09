@@ -6,7 +6,6 @@ class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :check_compiler, only: [:create, :update]
-  before_action :set_problem, only: [:show]
   before_action :set_show_detail, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
   helper_method :td_list_to_arr
@@ -167,7 +166,7 @@ class SubmissionsController < ApplicationController
     if @problem
       unless current_user&.admin
         if @problem.visible_contest?
-          if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time)
+          if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
             redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
           end
         elsif @problem.visible_invisible?
@@ -214,7 +213,15 @@ class SubmissionsController < ApplicationController
 
   def set_submission
     @submission = Submission.find(params[:id])
+    @problem = @submission.problem
     @contest = @submission.contest
+    unless current_user&.admin
+      if @problem.visible_contest?
+        raise_not_found if not @contest
+      elsif @problem.visible_invisible?
+        raise_not_found
+      end
+    end
     if @contest
       raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
       unless current_user&.admin?
@@ -224,10 +231,6 @@ class SubmissionsController < ApplicationController
         end
       end
     end
-  end
-
-  def set_problem
-    @problem = @submission.problem
   end
 
   def set_show_detail
