@@ -37,7 +37,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
       imagemagick nodejs redis-server \
       libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev \
-      ghc python3-numpy python3-pil
+      ghc python2 python3-numpy python3-pil
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
@@ -199,7 +199,6 @@ Requires=network.target remote-fs.target nss-lookup.target mysql.service
 
 [Service]
 Type=forking
-Environment="LOGLEVEL=debug"
 PIDFile=/opt/nginx/logs/nginx.pid
 ExecStartPre=/opt/nginx/sbin/nginx -t
 ExecStart=/opt/nginx/sbin/nginx
