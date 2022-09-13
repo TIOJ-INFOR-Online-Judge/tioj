@@ -7,9 +7,9 @@ if Rails.application.credentials.sentry_dsn
         next sampling_context[:parent_sampled]
       end
       if sampling_context[:transaction_context][:op] == 'rails.action_cable'
-        Rails.logger.fatal Rails.configuration.x.settings.sentry_sample_rate[:cable]
+        Rails.configuration.x.settings.sentry_sample_rate[:cable]
       else
-        Rails.logger.fatal Rails.configuration.x.settings.sentry_sample_rate[:normal]
+        Rails.configuration.x.settings.sentry_sample_rate[:normal]
       end
     end
   end
