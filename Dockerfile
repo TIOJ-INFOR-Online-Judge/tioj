@@ -19,7 +19,7 @@ RUN echo "default: &default\n\
   host: db\n\
   username: root\n\
   password: $PASSWORD\n\
-  encoding: utf8\n\
+  encoding: utf8mb4\n\
 \n\
 development:\n\
   <<: *default\n\

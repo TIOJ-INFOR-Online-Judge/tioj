@@ -125,7 +125,7 @@ default: &default
   username: $DB_USERNAME
   password: $DB_PASSWORD
   socket: /var/run/mysqld/mysqld.sock
-  encoding: utf8
+  encoding: utf8mb4
 development:
   <<: *default
   database: tioj_dev
