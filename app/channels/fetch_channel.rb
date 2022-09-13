@@ -34,8 +34,8 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
-    submission.reload
-    retry_lock do
+    retry_op do |is_first|
+      submission.reload if not is_first
       submission.with_lock do
         submission.update(**update_hash)
       end
@@ -48,7 +48,9 @@ class FetchChannel < ApplicationCable::Channel
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+    retry_op do |is_first|
+      Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+    end
   end
 
   def fetch_submission(data)
@@ -63,7 +65,8 @@ class FetchChannel < ApplicationCable::Channel
       end
       flag = false
       if submission
-        retry_lock(3) do
+        retry_op(3) do |is_first|
+          submission.reload if not is_first
           submission.with_lock do
             if submission.result == "received"
               if i != n_retry
@@ -158,7 +161,8 @@ class FetchChannel < ApplicationCable::Channel
     score = td_set_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
-    retry_lock do
+    retry_op do |is_first|
+      submission.reload if not is_first
       submission.with_lock do
         return if submission.new_rejudged and not ['Validating', 'received'].include?(submission.result)
         submission.update(:score => score)
@@ -168,12 +172,14 @@ class FetchChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
   end
 
-  def retry_lock(retry_times=4, interval=0.3)
+  def retry_op(retry_times=4, interval=0.3)
+    is_first = true
     begin
       raise ActiveRecord::Deadlocked if retry_times == 4
-      yield
+      yield(is_first)
     rescue ActiveRecord::Deadlocked => e
       retry_times -= 1
+      is_first = false
       if retry_times > 0
         sleep interval
         retry
