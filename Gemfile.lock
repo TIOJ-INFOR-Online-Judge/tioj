@@ -200,7 +200,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
-    mathjax-rails-3 (3.2.2.1)
+    mathjax-rails-3 (3.2.2.2)
       railties (>= 3.0)
     matrix (0.4.2)
     mechanize (2.8.5)
