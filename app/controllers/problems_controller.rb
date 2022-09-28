@@ -232,7 +232,6 @@ class ProblemsController < ApplicationController
       :interlib,
       :interlib_impl,
       :strict_mode,
-      :old_pid,
       compiler_ids: [],
       testdata_sets_attributes:
       [

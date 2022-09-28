@@ -20,29 +20,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def changed_problems
-    ac_cur = @user.submissions.select(:problem_id).where(result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
-    ac_old = @user.submissions.select(:problem_id).where(old_result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
-    changed = ac_old - ac_cur
-    @problems = Problem.where(id: changed)
-    @problems = @problems.order(id: :asc).page(params[:page]).per(50)
-  end
-
-  def changed_submissions
-    if current_user&.admin? and params[:all_user] == '1'
-      @submissions = Submission
-    else
-      @submissions = @user.submissions
-    end
-    @submissions = @submissions.where(old_result: 'AC').where.not(result: 'AC')
-    if not params[:problem_id].blank?
-      @problem = Problem.find(params[:problem_id])
-      @submissions = @submissions.where(problem_id: params[:problem_id])
-    end
-    @submissions = @submissions.where(result: params[:filter_status]) if not params[:filter_status].blank?
-    @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
-  end
-
   def current
     authenticate_user!
     redirect_to user_path(current_user) + '/' + params[:path]

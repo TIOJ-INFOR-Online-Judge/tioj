@@ -54,13 +54,7 @@ Rails.application.routes.draw do
 
   resources :articles
   resources :testdata, only: [:show]
-
-  resources :users do
-    member do
-      get 'changed_problems'
-      get 'changed_submissions'
-    end
-  end
+  resources :users
 
   get 'current_user/:path' => 'users#current', constraints: { path: /.*/ }
 

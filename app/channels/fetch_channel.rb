@@ -19,7 +19,7 @@ class FetchChannel < ApplicationCable::Channel
       return
     end
     update_task_results(data[:td_results], submission) if data[:td_results]
-    update_hash = {new_rejudged: true}
+    update_hash = {}
     if data[:message]
       update_hash[:message] = data[:message]
     end
@@ -55,14 +55,8 @@ class FetchChannel < ApplicationCable::Channel
 
   def fetch_submission(data)
     n_retry = 5
-    is_old = false
     for i in 1..n_retry
-      is_old = false
       submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
-      if not submission and Submission.where(contest_id: nil, new_rejudged: false, result: ["received", "Validating"]).count < 10
-        submission = Submission.where(contest_id: nil, new_rejudged: false).where.not(result: ["received", "Validating"]).order(result: :asc, id: :desc).first
-        is_old = true
-      end
       flag = false
       if submission
         retry_op(3) do |is_first|
@@ -89,7 +83,7 @@ class FetchChannel < ApplicationCable::Channel
     user = submission.user
     td_count = problem.testdata.count
     verdict_ignore_set = ApplicationController.td_list_to_arr(problem.verdict_ignore_td_list, td_count)
-    priority = (is_old ? -200000000 + 2 * submission.id : (submission.contest ? 100000000 : 0)) - submission.id
+    priority = (submission.contest ? 100000000 : 0) - submission.id
     data = {
       submission_id: submission.id,
       contest_id: submission.contest_id || -1,
@@ -164,7 +158,7 @@ class FetchChannel < ApplicationCable::Channel
     retry_op do |is_first|
       submission.reload if not is_first
       submission.with_lock do
-        return if submission.new_rejudged and not ['Validating', 'received'].include?(submission.result)
+        return if not ['Validating', 'received'].include?(submission.result)
         submission.update(:score => score)
       end
     end
