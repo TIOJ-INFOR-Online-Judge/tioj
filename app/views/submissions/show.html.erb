@@ -260,7 +260,7 @@
 </div>
 
 <% if current_user&.admin? or current_user&.id == @submission.user_id %>
-  <div id="ce-message" class="panel panel-default<% unless @submission.result == "CE" or @submission.message.present? %> no-display<% end %>">
+  <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
     <div class="panel-heading">
         <h1 class="panel-title">Compilation Error Message</h1>
     </div>
@@ -355,7 +355,7 @@ function updateResult(data) {
   $('#verdict').text(verdict[data['result']]);
   $('#waiting-icon').toggleClass('no-display', !to_wait);
   $('#overall-result').attr('class', 'panel ' + (panel_class_map[data['result']] || 'panel-default'));
-  if (data['result'] == 'CE') $('#ce-message').removeClass('no-display');
+  if (['CE', 'CLE', 'ER'].includes(data['result'])) $('#ce-message').removeClass('no-display');
   if (no_task_verdicts.includes(data['result'])) {
     $('#subtask-results').addClass('no-display');
     $('#testdata-results').addClass('no-display');
