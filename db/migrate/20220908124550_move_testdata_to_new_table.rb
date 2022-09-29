@@ -1,8 +1,9 @@
 class MoveTestdataToNewTable < ActiveRecord::Migration[7.0]
   def up
-    Problem.all.each do |problem|
-      SampleTestdatum.create(problem_id: problem.id, input: problem.example_input, output: problem.example_output)
-    end
+    data = Problem.all.map { |problem|
+      {problem_id: problem.id, input: problem.example_input, output: problem.example_output}
+    }
+    SampleTestdatum.import(data)
 
     remove_column :problems, :example_input
     remove_column :problems, :example_output
@@ -11,17 +12,18 @@ class MoveTestdataToNewTable < ActiveRecord::Migration[7.0]
     add_column :problems, :example_input, :text, size: :medium
     add_column :problems, :example_output, :text, size: :medium
 
-    SampleTestdatum.all.each do |t|
-      problem = Problem.find(t.problem_id)
-      if problem.example_input or problem.example_output
-        next
-      end
-      problem.example_input = t.input
-      problem.example_output = t.output
-      problem.save
-    end
-
+    data = SampleTestdatum.order(id: :asc).all.group_by(&:problem_id).values.map { |t|
+      {
+        id: t[0].problem_id,
+        example_input: t[0].input,
+        example_output: t[0].output,
+        # dummy
+        interlib_type: -1,
+        specjudge_type: -1,
+        verdict_ignore_td_list: -1,
+      }
+    }
+    Problem.import(data, on_duplicate_key_update: [:example_input, :example_output], validate: false)
     SampleTestdatum.delete_all
-    execute("ALTER TABLE sample_testdata AUTO_INCREMENT=1")
   end
 end

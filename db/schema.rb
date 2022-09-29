@@ -214,7 +214,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_08_124550) do
     t.index ["visible_state"], name: "index_problems_on_visible_state"
   end
 
-  create_table "sample_testdata", charset: "utf8mb4", force: :cascade do |t|
+  create_table "sample_testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.text "input", size: :medium
     t.text "output", size: :medium
