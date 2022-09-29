@@ -145,30 +145,32 @@
   </div>
 </div>
 
-<div class="row">
-  <div class="col-md-6">
-    <div class="panel panel-default copy-group problem-copy-group">
-      <div class="panel-heading">
-        <h1 class="panel-title pull-left">Sample Input</h1>
-        <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+<% @problem.sample_testdata.each_with_index do |sample, index| %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="panel panel-default copy-group problem-copy-group">
+        <div class="panel-heading">
+          <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
+          <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+        </div>
+        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
+          <%= raw sample.input.gsub(/\n/, '<br/>') %>
+        </div>
       </div>
-      <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
-        <%= raw @problem.example_input.gsub(/\n/, '<br/>') %>
+    </div>
+    <div class="col-md-6">
+      <div class="panel panel-default copy-group problem-copy-group">
+        <div class="panel-heading">
+          <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
+          <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+        </div>
+        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
+          <%= raw sample.output.gsub(/\n/, '<br/>') %>
+        </div>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="panel panel-default copy-group problem-copy-group">
-      <div class="panel-heading">
-        <h1 class="panel-title pull-left">Sample Output</h1>
-        <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
-      </div>
-      <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
-        <%= raw @problem.example_output.gsub(/\n/, '<br/>') %>
-      </div>
-    </div>
-  </div>
-</div>
+<% end %>
 
 <div class="row">
   <div class="col-md-6">
