@@ -1,8 +1,24 @@
 class MoveTestdataToNewTable < ActiveRecord::Migration[7.0]
   def up
     data = Problem.all.map { |problem|
-      {problem_id: problem.id, input: problem.example_input, output: problem.example_output}
-    }
+      input = problem.example_input
+      output = problem.example_output
+      split_re = /[\r\n]*^.*?(?:[Ss]ample|輸.*範(?:例|&#63925;)|範例測試).*?(?:$|<[^>]+>)[\r\n]*/
+      inputs = input.split(split_re)
+      outputs = output.split(split_re)
+      if (input.empty? && output.empty?) || \
+          (input.match(/沒有|無/) && output.match(/沒有|無/) && input.count("\n") == 0 && output.count("\n") == 0)
+        []
+      elsif inputs.size <= 1 or inputs.size != outputs.size
+        {problem_id: problem.id, input: input, output: output}
+      else
+        inputs = inputs.drop(1)
+        outputs = outputs.drop(1)
+        inputs.zip(outputs).map {|x, y|
+          {problem_id: problem.id, input: x, output: y}
+        }
+      end
+    }.flatten
     SampleTestdatum.import(data)
 
     remove_column :problems, :example_input
