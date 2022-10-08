@@ -5,6 +5,7 @@ class SubmissionsController < ApplicationController
   before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
+  before_action :set_default_compiler, only: [:new, :edit]
   before_action :check_compiler, only: [:create, :update]
   before_action :set_show_detail, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
@@ -83,6 +84,7 @@ class SubmissionsController < ApplicationController
         user.update(last_submit_time: Time.now)
       end
     end
+    user.update(last_compiler_id: params[:submission][:compiler_id])
 
     if params[:problem_id].blank?
       redirect_to action: 'index'
@@ -242,6 +244,19 @@ class SubmissionsController < ApplicationController
     @compiler = Compiler.where.not(id: @problem.compilers.map{|x| x.id})
     @compiler = @compiler.where.not(id: @contest.compilers.map{|x| x.id}) if @contest
     @compiler = @compiler.order(order: :asc).to_a
+  end
+
+  def set_default_compiler
+    if @submission&.compiler_id
+      @default_compiler_id = @submission.compiler_id
+    else
+      last_compiler = current_user&.last_compiler_id
+      if @compiler.map(&:id).include?(last_compiler)
+        @default_compiler_id = last_compiler
+      else
+        @default_compiler_id = @compiler[0].id
+      end
+    end
   end
 
   def check_compiler
