@@ -75,13 +75,13 @@
       <div class="col-md-6">
         <div class="form-group">
           <%= t.label :input, "Sample Input", :class => "sample_input" %>
-          <%= t.link_to_remove "Remove this sample testdatum", :class => "btn btn-danger", :name => "testdatum_remove" %>
           <%= t.text_area :input, :class => 'form-control flat code-input', :rows => '7' %>
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
           <%= t.label :output, "Sample Output", :class => "sample_output" %>
+          <%= t.link_to_remove "Remove this sample testdatum", :class => "btn btn-danger pull-right", :name => "testdatum_remove" %>
           <%= t.text_area :output, :class => 'form-control flat code-input', :rows => '7' %>
         </div>
       </div>
