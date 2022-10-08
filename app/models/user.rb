@@ -33,6 +33,8 @@ class User < ApplicationRecord
   has_many :comments, :dependent => :destroy
   has_many :articles, :dependent => :destroy
 
+  belongs_to :last_compiler, class_name: 'Compiler', optional: true
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
