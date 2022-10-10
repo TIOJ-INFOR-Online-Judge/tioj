@@ -12,7 +12,11 @@ module Tioj
     config.load_defaults 7.0
     config.time_zone = "Taipei"
     config.site_name = "TIOJ INFOR Online Judge"
-    config.x.settings = config_for(:settings)
+    begin
+      config.x.settings = config_for(:settings)
+    rescue RuntimeError
+      config.x.settings = {}
+    end
     ActsAsTaggableOn.strict_case_match = true
 
     # Settings in config/environments/* take precedence over those specified here.
