@@ -109,14 +109,12 @@ git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git
 
 # Install gems
 cd "$WORKDIR/tioj"
+gem install passenger:'~> 6' -N
+PASSENGER_LOG=$(sudo mktemp -d)
+sudo chmod 755 $PASSENGER_LOG
+export rvmsudo_secure_path=1
+rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished"
 MAKEFLAGS='-j4' bundle install
-
-# Setup nginx
-rvmsudo_secure_path=1 rvmsudo passenger-install-nginx-module --auto --auto-download --languages ruby
-sudo sed -i "s/^.*nobody.*$/user $USER;/" /opt/nginx/conf/nginx.conf
-sudo sed -i 's/http {/\0\n    passenger_app_env production;/' /opt/nginx/conf/nginx.conf
-sudo sed -i "s|^[^#]*server_name.*localhost.*$|\0\n        passenger_enabled on;\n        root $(pwd)/public;|" /opt/nginx/conf/nginx.conf
-sudo sed -Ei "/^ *location \//, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.conf
 
 # Setup database
 cat <<EOF > config/database.yml
@@ -166,7 +164,7 @@ cd "$WORKDIR/tioj-judge"
 mkdir -p build
 cd build
 cmake -G Ninja ..
-ninja
+ninja -j $(($(nproc)-2))
 sudo ninja install
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
@@ -175,6 +173,20 @@ tioj_key = $FETCH_KEY
 parallel = 2
 max_submission_queue_size = 20
 EOF
+
+# Setup nginx
+cd "$WORKDIR/tioj"
+tail -f -n +1 $PASSENGER_LOG/log &
+TAIL_PID=$!
+until stat $PASSENGER_LOG/finished > /dev/null 2>&1; do
+  sleep 1
+done
+kill $TAIL_PID
+sudo rm -rf $PASSENGER_LOG
+sudo sed -i "s/^.*nobody.*$/user $USER;/" /opt/nginx/conf/nginx.conf
+sudo sed -i 's/http {/\0\n    passenger_app_env production;/' /opt/nginx/conf/nginx.conf
+sudo sed -i "s|^[^#]*server_name.*localhost.*$|\0\n        passenger_enabled on;\n        root $(pwd)/public;|" /opt/nginx/conf/nginx.conf
+sudo sed -Ei "/^ *location \//, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.conf
 
 # Setup systemctl
 cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
