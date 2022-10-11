@@ -31,8 +31,8 @@ production:\n\
   <<: *default\n\
   database: tioj_production"\
 > config/database.yml
-RUN cp config/settings.yml.example config/settings.yml
 
+RUN EDITOR=true rails credentials:edit
 RUN rails assets:precompile
 
 # Move public/ to public-tmp/ since we're going to override it with 'volumes';

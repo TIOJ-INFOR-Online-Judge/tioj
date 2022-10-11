@@ -1,4 +1,6 @@
 shared:
+  # Omit any section if the function is not needed
+
   # Password recovery settings
   mail_settings:
     smtp_settings: # SMTP server settings; it will be passed to config.action_mailer.smtp_settings

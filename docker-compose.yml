@@ -52,7 +52,7 @@ services:
       - /srv/tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
       - /srv/tioj/judge-testdata:/var/lib/tioj-judge/testdata
     tmpfs:
-      - /tmp
+      - /tmp:exec
     privileged: true
     network_mode: host
     pid: host
