@@ -1,22 +1,3 @@
-<p>
-  <strong>Title:</strong>
-  <%= @comment.title %>
-</p>
+<%= render partial: 'comments/show_comment', :locals => {:post => @post, :comment => @comment, :count => nil, :now_comment_path => @comment_path}  %>
 
-<p>
-  <strong>Content:</strong>
-  <%= @comment.content %>
-</p>
-
-<p>
-  <strong>User:</strong>
-  <%= @comment.user_id %>
-</p>
-
-<p>
-  <strong>Post:</strong>
-  <%= @comment.post_id %>
-</p>
-
-<%= link_to 'Edit', edit_comment_path(@comment) %> |
-<%= link_to 'Back', comments_path %>
+<%= link_to 'Back', @page_path, :class => "btn btn-default" %>

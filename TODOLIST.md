@@ -1,0 +1,26 @@
+## Future
+
+- [ ] Batch upload testdata
+- [ ] Testdata download for admin
+- [ ] Problem import & export
+    - [ ] Native format
+    - [ ] Polygon & Kattis & CMS support
+- [ ] Upload submission by file + non-UTF-8 code
+- [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
+- [ ] Pin
+- [ ] IOI-style scoring in contest (max of each subtask)
+- [ ] I/O interactive & output-only problems
+- [ ] Judge load balancing
+- [ ] Write basic tests
+- [ ] Enhance posts UI
+- [ ] Rewrite contest scoreboard refresh using ActionCable
+- [ ] Add more languages
+- [ ] Send compiler information from judge server
+- [ ] Per-language memory/time limit
+- [ ] Contest-only users + batch creation
+    - don't appear in rank, can only submit to contests
+- [ ] Role for problem setter
+    - can add problem, edit/rejudge their own problems and manage submissions in them, but nothing else
+- [ ] Teaming in contest
+- [ ] Post voting & contribution system
+- [ ] Notification system for problem issue reporting

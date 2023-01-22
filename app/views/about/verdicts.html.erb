@@ -1,0 +1,74 @@
+<h4 class="page-header">Verdicts</h4>
+
+<div class="well">
+
+<table style="border-collapse: unset; line-height: 1.55;" class="table">
+  <tr>
+    <th>Verdict</th>
+    <th class="text-nowrap">Full Name</th>
+    <th>Conditions</td>
+  </tr>
+  <tr class="success">
+    <td><span class="text-success">AC</span></td>
+    <td class="text-nowrap">Accepted</td>
+    <td>Your program outputted the correct answer and terminated normally.</td>
+  </tr>
+  <tr class="danger">
+    <td><span class="text-danger">WA</span></td>
+    <td class="text-nowrap">Wrong Answer</td>
+    <td>Your program didn't output the correct answer, but it terminated normally.</td>
+  </tr>
+  <tr class="info">
+    <td><span class="text-info">TLE</span></td>
+    <td class="text-nowrap">Time Limit Exceeded</td>
+    <td>Your program used too much CPU time or wall clock time.<br>The wall clock time limit is max(1.2 * TL, TL + 1s). Wall clock limit will not be triggered under normal circumstances, unless the judge server is under heavy load or your program paused by calling <code>sleep()</code>.</td>
+  </tr>
+  <tr class="mle">
+    <td><span class="text-mle">MLE</span></td>
+    <td class="text-nowrap">Memory Limit Exceeded</td>
+    <td>Your program used too much memory.<br>Program that used too much memory would not necessarily get an <span class="text-mle">MLE</span>; see <a href="/about/memory">Memory Accounting Types</a> for more details.</td>
+  </tr>
+  <tr class="ole">
+    <td><span class="text-ole">OLE</span></td>
+    <td class="text-nowrap">Output Limit Exceeded</td>
+    <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-danger">WA</span> because it can no longer write into stdout later.</td>
+  </tr>
+  <tr class="warning">
+    <td><span class="text-warning">RE</span></td>
+    <td class="text-nowrap">Runtime Error</td>
+    <td>Your program terminated by exiting with a non-zero status code.</td>
+  </tr>
+  <tr class="sig">
+    <td><span class="text-sig">SIG</span></td>
+    <td class="text-nowrap">Runtime Error (killed by signal)</td>
+    <td>Your program was killed by a signal.<br>Some common causes are invalid memory access (SIGSEGV, i.e. Segmentation Fault), division by zero (SIGFPE), uncaught exceptions in C++ (SIGABRT), and invalid instruction (SIGILL). Note that SIGXFSZ is excluded since it will be interpreted as <span class="text-ole">OLE</span>.</td>
+  </tr>
+  <tr class="ce">
+    <td><span class="text">CE</span></td>
+    <td class="text-nowrap">Compilation Error</td>
+    <td>Your program failed to compile.</td>
+  </tr>
+  <tr class="ce">
+    <td><span class="text">CLE</span></td>
+    <td class="text-nowrap">Compilation Limit Exceeded</td>
+    <td>Your program took too much time (&gt; 60 sec) or memory (&gt; 2 GiB) to compile.</td>
+  </tr>
+  <tr>
+    <td><span class="text">ER</span></td>
+    <td class="text-nowrap">Judge Compilation Error</td>
+    <td>This is caused by failed compilation of the special judge program. If you see this, please contact the problem setter.</td>
+  </tr>
+  <tr>
+    <td><span class="text">EE</span></td>
+    <td class="text-nowrap">Execution Error</td>
+    <td rowspan="2" style="vertical-align: middle;">These are caused by internal errors during the judging process. If you see them, please contact the site maintainer.</td>
+  </tr>
+  <tr>
+    <td><span class="text">JE</span></td>
+    <td class="text-nowrap">Judge Error</td>
+  </tr>
+</table>
+
+</div>
+
+<%= link_to 'Back', :back, :class => 'btn btn-xs btn-default' %>

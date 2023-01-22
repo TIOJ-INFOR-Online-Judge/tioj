@@ -2,13 +2,17 @@
 #
 # Table name: testdata
 #
-#  id          :integer          not null, primary key
-#  problem_id  :integer
-#  test_input  :string(255)
-#  test_output :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
-#  position    :integer
+#  id           :bigint           not null, primary key
+#  problem_id   :bigint
+#  test_input   :string(255)
+#  test_output  :string(255)
+#  created_at   :datetime
+#  updated_at   :datetime
+#  position     :integer
+#  time_limit   :integer          default(1000)
+#  vss_limit    :integer          default(65536)
+#  rss_limit    :integer
+#  output_limit :integer          default(65536)
 #
 
 require 'test_helper'

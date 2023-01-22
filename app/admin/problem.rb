@@ -1,6 +1,6 @@
 ActiveAdmin.register Problem do
   permit_params :name, :description, :source, :input, :output, :example_input, :example_output, :hint, :visible_state,
-      :problem_type, :sjcode, :interlib
+      :specjudge_type, :specjudge_compiler_id, :interlib_type, :sjcode, :interlib
 
   preserve_default_filters!
   remove_filter :contest_problem_joints
@@ -13,7 +13,10 @@ ActiveAdmin.register Problem do
   remove_filter :taggings
   filter :id
   filter :visible_state
-  filter :problem_type
+  filter :specjudge_type
+  filter :specjudge_compiler_id
+  filter :interlib_type
+  includes :specjudge_compiler
 
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

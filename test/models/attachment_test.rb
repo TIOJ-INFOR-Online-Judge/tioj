@@ -2,8 +2,8 @@
 #
 # Table name: attachments
 #
-#  id         :integer          not null, primary key
-#  article_id :integer
+#  id         :bigint           not null, primary key
+#  article_id :bigint
 #  path       :string(255)
 #  created_at :datetime
 #  updated_at :datetime

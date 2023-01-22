@@ -1,15 +1,19 @@
 <h4 class="page-header">Listing testdata of Problem #<%= @problem.id%>. <%= @problem.name %></h4>
 
 <%= link_to 'New Testdatum', new_problem_testdatum_path, :class => 'btn btn-success btn-sm' %>
+<%= link_to 'Batch Edit Testdata', batch_edit_problem_testdata_path, :class => 'btn btn-success btn-sm' %>
 
 <table class = "table table-hover table-striped table-condensed">
   <thead>
       <tr>
           <th>No.</th>
           <th>Input</th>
+          <th></th>
           <th>Output</th>
+          <th></th>
           <th>Time Limit</th>
-          <th>Memory Limit</th>
+          <th>Memory Limit (VSS)</th>
+          <th>Memory Limit (RSS)</th>
           <th>Output Limit</th>
           <th></th>
     </tr>
@@ -17,14 +21,17 @@
 
   <tbody >
   <% if @testdata.present? %>
-    <% @testdata.order(position: :asc).each_with_index do |testdatum, index| %>
+    <% @testdata.each_with_index do |testdatum, index| %>
       <tr>
         <td><%= index %></td>
-        <td><%= testdatum.test_input.blank? ? "Nil" : truncate(testdatum.test_input_identifier,length: 30) %></td>
-        <td><%= testdatum.test_output.blank? ? "Nil" : truncate(testdatum.test_output_identifier,length: 30) %></td>
-        <td><%= testdatum.limit.time.blank? ? "Nil" : testdatum.limit.time %></td>
-        <td><%= testdatum.limit.memory.blank? ? "Nil" : testdatum.limit.memory %></td>
-        <td><%= testdatum.limit.output.blank? ? "Nil" : testdatum.limit.output %></td>
+        <td><%= testdatum.test_input.blank? ? "Nil" : strip_uuid(testdatum.test_input_identifier) %></td>
+        <td><%= link_to 'Download', testdatum_path(testdatum, type: 'input'), :class => 'btn btn-success btn-xs' %></td>
+        <td><%= testdatum.test_output.blank? ? "Nil" : strip_uuid(testdatum.test_output_identifier) %></td>
+        <td><%= link_to 'Download', testdatum_path(testdatum, type: 'output'), :class => 'btn btn-success btn-xs' %></td>
+        <td><%= testdatum.time_limit %></td>
+        <td><%= testdatum.vss_limit || '-' %></td>
+        <td><%= testdatum.rss_limit || '-' %></td>
+        <td><%= testdatum.output_limit %></td>
         <td>
           <%= link_to 'Edit', edit_problem_testdatum_path(@problem, testdatum), :class => 'btn btn-info btn-xs' %>
           <%= link_to 'Destroy', problem_testdatum_path(@problem, testdatum), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>

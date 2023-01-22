@@ -1,18 +1,38 @@
-Tioj::Application.routes.draw do
+Rails.application.routes.draw do
+  resources :announcements
 
-  devise_for :users, :controllers => {:registrations => "registrations"}
+  devise_for :users, :controllers => {:registrations => "registrations", :passwords => "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   #resources :limits
   resources :problems do
-    resources :testdata
+    resources :testdata do
+      collection do
+        get 'batch_edit'
+        post 'batch_edit', to: 'testdata#batch_update'
+      end
+    end
     resources :submissions
-    resources :posts
+    resources :posts do
+      resources :comments
+    end
+
+    member do
+      post 'rejudge'
+      post 'delsub', to: 'problems#delete_submissions'
+      get 'ranklist'
+    end
   end
 
   resources :judge_servers
-  resources :submissions
-  resources :users
+
+  resources :submissions do
+    member do
+      post 'rejudge'
+    end
+  end
+
+  resources :users, constraints: { id: /[^\/]+/ }
   resources :posts do
     resources :comments
   end
@@ -23,37 +43,36 @@ Tioj::Application.routes.draw do
     resources :posts do
       resources :comments
     end
+
+    member do
+      post 'set_contest_task'
+      get 'dashboard'
+      get 'dashboard_update'
+    end
   end
   resources :contest_problem_joints
 
   resources :articles
+  resources :testdata, only: [:show]
+
+  resources :users do
+    member do
+      get 'changed_problems'
+      get 'changed_submissions'
+    end
+  end
+
+  get 'current_user/:path' => 'users#current', constraints: { path: /.*/ }
 
   get 'problems/tag/:tag' => 'problems#index', as: :problems_tag
-  get 'problems/:id/ranklist' => 'problems#ranklist', as: :problem_ranklist
 
-  get 'contests/:id/set_contest_task/:alter_to' => 'contests#set_contest_task', as: :set_contest_task
-  get 'contests/:id/dashboard' => 'contests#dashboard'
-  get 'contests/:id/dashboard_update' => 'contests#dashboard_update'
+  get 'about/verdicts' => 'about#verdicts'
+  get 'about/memory' => 'about#memory'
 
-  get 'submissions/:id/rejudge' => 'submissions#rejudge'
-  get 'problems/:problem_id/rejudge' => 'submissions#rejudge_problem', as: :problem_rejudge
-  get 'problems/:problem_id/delsub' => 'submissions#delete_problem_submission', as: :problem_delsub
-
-  get 'fetch/sjcode' => 'fetch#sjcode'
-  get 'fetch/code' => 'fetch#code'
-  get 'fetch/interlib' => 'fetch#interlib'
   get 'fetch/testdata' => 'fetch#testdata'
-  get 'fetch/submission' => 'fetch#submission'
-  get 'fetch/validating' => 'fetch#validating'
-  get 'fetch/write_result' => 'fetch#write_result'
-  post 'fetch/write_message' => 'fetch#write_message'
-  get 'fetch/testdata_limit' => 'fetch#testdata_limit'
-  get 'fetch/testdata_meta' => 'fetch#testdata_meta'
 
   mathjax 'mathjax'
 
-  get 'edit_announcement' => 'welcome#edit_announcement', as: :edit_announcement
-  post 'alter_announcement' => 'welcome#alter_announcement', as: :alter_announcement
   get 'about' => 'about#index', as: :about
 
   get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false, :id => /[0-9]+/
@@ -112,4 +131,6 @@ Tioj::Application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<%= render_page_title_tag %>
+<title><%= page_title yield(:title) %></title>
 <%= stylesheet_link_tag    "application", media: "all" %>
 <%= javascript_include_tag "application" %>
 <%= csrf_meta_tags %>
@@ -28,7 +28,7 @@ MathJax = ({
   <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#003365">
     <div class="container-fluid">
       <div class="navbar-header">
-        <%= link_to image_tag("banner_0.png", :alt => "TIOJ", :style => "padding-left: 15px;"), root_path, :class => "nav-brand" %>
+        <%= link_to image_tag("banner_0.png", :alt => "TIOJ", :style => "padding-left: 15px; padding-right: 20px;", :skip_pipeline => true), root_path, :class => "nav-brand" %>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -71,13 +71,15 @@ MathJax = ({
 
 <div class="container-fluid" id="page-content">
   <!--alert and notice-->
-  <% if (not @anno["name"].blank?) or (not @anno["message"].blank?) %>
+  <% if not @annos.empty? %>
     <div class="alert alert-info alert-dismissible" role="alert">
       <button type="button" class="close" data-dismiss="alert">
         <span aria-hidden="true">&times;</span>
         <span class="sr-only">Close</span>
       </button>
-      <strong><%= raw @anno["name"].to_s %></strong> <%= raw @anno["message"].to_s %>
+      <% @annos.each_with_index do |anno, index| %>
+        <strong><%= raw anno.title %></strong> <%= raw anno.body %><% if index != @annos.size - 1 %><br><% end %>
+      <% end %>
     </div>
   <% end %>
   <% if notice %>

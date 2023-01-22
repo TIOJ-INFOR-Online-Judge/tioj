@@ -1,14 +1,4 @@
 module SubmissionsHelper
-  def censored(s)
-    return false if user_signed_in? and current_user.admin?
-    return false if user_signed_in? and current_user.id == s.user_id
-    if s.contest && Time.now >= s.contest.start_time && Time.now <= s.contest.end_time
-      return true if not user_signed_in?
-      return true if user_signed_in? and current_user.id != s.user_id
-    end
-    return false
-  end
-
   def hsv_to_rgb(h, s, v)
     h, s, v = h.to_f/360, s.to_f/100, v.to_f/100
     h_i = (h*6).to_i
@@ -31,7 +21,10 @@ module SubmissionsHelper
     hsv_to_rgb(scale * 120, 100, 85 - 40 * scale)
   end
 
-  def score_str(x)
-    number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
+  def time_str(x)
+    ret = number_with_precision(x, precision: 1)
+    # pad by invisible digits to align decimal
+    prefix = '0' * [0, 6 - ret.length].max
+    raw("<span style=\"visibility: hidden;\">#{prefix}</span>" + ret)
   end
 end

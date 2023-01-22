@@ -1,3 +1,4 @@
+<% set_page_title @contest.title %>
 <h4 class='page-header'>
   Contest Name : <%= @contest.title %>
 </h4>
@@ -29,16 +30,7 @@
         <h1 class="panel-title">Contest Type</h1>
       </div>
       <div class="panel-body">
-        <% case @contest.contest_type %>
-        <% when 0 %>
-          gcj style (partial/dashboard)
-        <% when 1 %>
-          ioi style (partial/no dashboard)
-        <% when 2 %>
-          acm style (no partial/dashboard)
-        <% else %>
-          wtf
-        <% end %>
+        <%= contest_type_desc_map[@contest.contest_type] %>
       </div>
     </div>
   </div>
@@ -53,11 +45,14 @@
   </div>
 </div>
 
-<% if user_signed_in? and current_user.admin? %>
+<% if current_user&.admin %>
   <div style="margin-bottom:10px;">
-    <%= link_to "Set contest tasks to public", set_contest_task_path(@contest, "0"), :class => "btn btn-xs btn-inverse" %>
-    <%= link_to "Set contest tasks to only visible during contest", set_contest_task_path(@contest, "1"), :class => "btn btn-xs btn-inverse" %>
-    <%= link_to "Set contest tasks to invisible", set_contest_task_path(@contest, "2"), :class => "btn btn-xs btn-inverse" %>
+    <% Problem.visible_states.each do |name, val| %>
+      <%= form_with url: set_contest_task_contest_path(@contest), :html => {:style => 'display: inline;'} do |f| %>
+        <%= f.hidden_field :alter_to, :value => val %>
+        <%= f.submit "Set contest tasks to #{visible_state_desc_map[name.to_s]}", :class => 'btn btn-inverse btn-xs' %>
+      <% end %>
+    <% end %>
   </div>
 <% end %>
 
@@ -80,7 +75,7 @@
 <p>
   <%= link_to 'Dashboard', {:controller => :contests, :action => :dashboard, :id => @contest.id}, {:class => 'btn btn-xs btn-warning'} %>
   <%= link_to 'Submissions', contest_submissions_path(@contest), :class => 'btn btn-info btn-xs' %>
-  <% if user_signed_in? and current_user.admin? %>
+  <% if current_user&.admin %>
     <%= link_to 'Edit', edit_contest_path(@contest), :class => 'btn btn-info btn-xs' %>
   <% end %>
   <%= link_to 'Back to Contests List', contests_path, :class => 'btn btn-default btn-xs' %>

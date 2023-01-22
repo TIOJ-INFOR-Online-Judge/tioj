@@ -1,3 +1,4 @@
+<% set_page_title @article.title %>
 <h4 class="page-header"><%= @article.title %></h4>
 
 <div class="well">
@@ -22,6 +23,6 @@
 </p>
 
 <%= link_to 'Back to Bulletin', articles_path, :class => 'btn btn-xs btn-default' %>
-<% if user_signed_in? and current_user.admin? %>
+<% if current_user&.admin %>
   <%= link_to 'Edit', edit_article_path(@article), :class => 'btn btn-info btn-xs' %>
 <% end %>

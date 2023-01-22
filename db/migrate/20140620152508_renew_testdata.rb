@@ -1,4 +1,4 @@
-class RenewTestdata < ActiveRecord::Migration
+class RenewTestdata < ActiveRecord::Migration[4.2]
   def change
     drop_table :testdata
     create_table :testdata do |t|

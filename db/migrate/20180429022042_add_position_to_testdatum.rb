@@ -1,4 +1,4 @@
-class AddPositionToTestdatum < ActiveRecord::Migration
+class AddPositionToTestdatum < ActiveRecord::Migration[4.2]
   def change
     add_column :testdata, :position, :integer
     Problem.all.each do |problem|

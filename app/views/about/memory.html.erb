@@ -1,0 +1,132 @@
+<h4 class="page-header">Memory Accounting Types (RSS, VSS)</h4>
+
+<div class="well">
+
+  <p>
+  TIOJ now offers two types of memory statistics and memory limits: RSS and VSS.
+  These are two different aspects of memory usage of a process in Linux.
+  </p>
+
+  <h5>Definition</h5>
+
+  <p>
+  <strong>VSS</strong> (Virtual Memory Size, also abbreviated <strong>VSZ</strong>) is the total size of virtual memory space that the process has allocated from the Linux operating system. To put it simply, the allocated virtual memory space is the memory addresses that the process is allowed to read, write or execute without triggering a segmentation fault. Loading the program itself, loading shared libraries and successful calls to <code>mmap</code>/<code>sbrk</code> system calls (which are usually called by <code>malloc</code> or <code>new</code>) will increase VSS.
+  </p>
+
+  <p>
+  Meanwhile, <strong>RSS</strong> (Resident Set Size) is the total <strong>physical memory</strong> used by a process. An allocated memory page will be loaded into physical memory only when it is used (in case of program data or stack) or when it is written to. RSS also do not include swapped-out memory pages, though swapping can be ignored in TIOJ because it is always disabled.
+  </p>
+
+  <p>
+  Linux deal with memory in the units of pages (4 KiB in size); thus, RSS and VSS values will always be multiples of 4 KiB.
+  </p>
+
+  <p>
+  As an example, the following program will use approximately 200 MiB of VSS and only a little RSS:
+  </p>
+  <pre class="line-numbers"><code class="language-cpp"><%= <<-EOF
+#include <cstdlib>
+#include <cstring>
+#define SIZE (50*1024*1024) // 50 MiB
+
+// the program itself, bss section (zero-initialized)
+char a[SIZE];
+// the program itself, data section
+// this is meant to demonstrate that even the whole array is filled with data, it is not loaded initially
+// char b[SIZE] = {1} will have the same effect
+struct B {
+  char x[SIZE];
+  constexpr B() : x{} {
+    // this is calculated at compile time and the data is in the program itself, thus the program will be around 50 MiB in size
+    for (int i = 0; i < SIZE; i += 4096) x[i] = 1;
+  }
+} b;
+char *c, *d, *e;
+int x;
+
+int main() {
+  // uninitialized allocation
+  // calloc is aware of the fact that new pages from sbrk() are zero-initialized, so it would not write into those pages
+  c = new char[SIZE];
+  d = (char*)calloc(SIZE, 1);
+  // reading bss section won't load pages into physical memory
+  // reading data section, however, will load pages into physical memory; thus if you change a[i] to b.x[i], this will add 50 MiB to RSS
+  for (int i = 0; i < SIZE; i++) x += a[i];
+  // memset is aware of newly-allocated pages and avoids writing into them
+  // if you change d to c or just swap Line 23/24, this will add 50 MiB to RSS
+  memset(d, 0, SIZE);
+}
+EOF
+%></code></pre>
+  <p>
+  And the following program will use approximately 250 MiB of both VSS and RSS:
+  </p>
+  <pre class="line-numbers"><code class="language-cpp"><%= <<-EOF
+#include <cstdlib>
+#include <cstring>
+#include <vector>
+#define SIZE (50*1024*1024) // 50 MiB
+
+char a[SIZE];
+char *c, *d;
+
+void e() { // growing stack (moving stack pointer) itself will cause the stack space being loaded into physical memory
+  volatile char f[SIZE]; // use volatile to make sure compiler won't optimize this out
+  f[0] = 0;
+}
+
+int main() {
+  for (int i = 0; i < SIZE; i += 4096) a[i] = 0;
+  std::vector<char> b(SIZE);
+  c = (char*)malloc(SIZE);
+  d = new char[SIZE](); // value-initialization
+  memset(c, 0, SIZE); // if you swap this line with the previous line, c will NOT be accounted to RSS
+  e();
+}
+EOF
+%></code></pre>
+
+  <h5>Implementation</h5>
+
+  <p>
+  TIOJ limits VSS by <code>setrlimit</code>, and reports VSS usage using taskstats interface.<br>
+  TIOJ limits RSS by the memory subgroup of cgroups, and reports RSS usage using the <code>struct rusage</code> returned by <code>wait4</code>.
+  </p>
+
+  <p>
+  If a process hits the VSS limit, the operating system will refuse to give more virtual memory space to the process. Memory allocators such as <code>malloc</code> and <code>new</code> will detect it and return NULL pointer or throw a <code>std::bad_alloc</code> exception. Because the error is not a fatal error, the judge cannot detect <span class="text-mle">MLE</span> caused by VSS limit violation if the VSS limit is set to the intended limit.<br>
+  To partially mitigate this, TIOJ sets a slightly larger hard VSS limit than the indicated VSS limit, and checks if the final memory usage is larger than the indicated limit (before checking whether the program terminated normally).<br>
+  This method, however, has its limits, and false negatives are still possible. For example, if the program tries to allocate a large block of memory at once and fails because of VSS limitation, its VSS usage can stay below the indicated limit and get around <span class="text-mle">MLE</span> detection. In normal competitive programming code where we usually don't deal with allocation errors, this will usually end up causing <span class="text-sig">SIG</span> instead, because failed memory allocation could indirectly cause SIGABRT (by an uncaught <code>std::bad_alloc</code> exception) or SIGSEGV (if the program dereferences the NULL pointer returned by <code>malloc</code>).
+  Another possibility is that the bss and data sections alone cause the program itself to exceed the hard VSS limit, which will directly cause SIGSEGV and <span class="text-sig">SIG</span>.
+  </p>
+
+  <p>
+  On the other hand, the detection of <span class="text-mle">MLE</span> on RSS limit is reliable, because a process exceeding the RSS limit will be instantly killed by OOM killer. That is, if a program exceeds the RSS limit, it will always get an <span class="text-mle">MLE</span>. The hard RSS limit, however, are still set to be larger than the indicated limit by the output limit, since cgroups also accounts tmpfs (shmem) into a process' memory usage, and the output file is normally a file in tmpfs (unless strict mode is enabled).
+  </p>
+
+  <h5>Other notes</h5>
+
+  <ul>
+  <li>
+  By definition, VSS should be always greater or equal than RSS. However, the accounting is done by different methods in kernel, so it is possible the  reported VSS is smaller than the reported RSS.
+  </li>
+
+  <li>
+  Normally, VSS will be stable across different runs of the same program, while RSS will show some fluctuations. The indicated RSS value may be less than the real value if the program is killed because of RSS limit.
+  </li>
+
+  <li>
+  The memory limits of old TIOJ are VSS limits, and the reported memory usage values are RSS. All limits are migrated as-is.
+  </li>
+
+  <li>
+  Because Haskell uses a lot of VSS, TIOJ converts all VSS limits to RSS limits when judging Haskell submissions.
+  </li>
+  </ul>
+
+</div>
+
+<%= link_to 'Back', :back, :class => 'btn btn-xs btn-default' %>
+
+<%= javascript_include_tag         "/codehighlighter/prism.js" %>
+<%= stylesheet_link_tag         "/codehighlighter/prism.css" %>

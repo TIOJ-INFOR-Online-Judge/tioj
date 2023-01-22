@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
@@ -27,15 +27,18 @@
 #
 
 require 'file_size_validator'
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :submissions, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
   has_many :articles, :dependent => :destroy
+
+  belongs_to :last_compiler, class_name: 'Compiler', optional: true
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
@@ -53,6 +56,7 @@ class User < ActiveRecord::Base
       where(conditions).first
     end
   end
+
   validates_presence_of :username, :nickname
   validates :username,
     :uniqueness => {:case_sensitive => false},
@@ -67,57 +71,6 @@ class User < ActiveRecord::Base
   validates_length_of :username, :in => 3..20
   validates_length_of :motto, :maximum => 75
 
-  def ac_count
-    submits = self.submissions.select do |s|
-      s.result == "AC" && s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-    submits.count
-  end
-
-  def in_vain_count
-    submits = self.submissions.select do |s|
-      s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-    submits.count - self.ac_count
-  end
-
-  def ac_ratio
-    all = self.submissions.select do |s|
-      s.contest_id == nil
-    end
-    ac = all.select do |s|
-      s.result == "AC"
-    end
-    all = all.count
-    ac = ac.count
-    ratio = (100.0 * ac / all)
-    if ratio.nan?
-      ratio = 0.0
-    end
-    ratio
-  end
-
-  def uniq_submits_by_res(res="AC")
-    submits = self.submissions.select do |s|
-      s.result == res && s.contest_id == nil
-    end
-    submits = submits.uniq do |s|
-      s.problem_id
-    end
-  end
-
-  def prob_by_res(res="AC")
-    submits = self.uniq_submits_by_res(res)
-    submits = submits.collect do |s|
-      s.problem_id
-    end
-  end
   extend FriendlyId
   friendly_id :username
 end

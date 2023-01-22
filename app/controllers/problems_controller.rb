@@ -1,13 +1,31 @@
 class ProblemsController < ApplicationController
-  before_filter :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
-  before_filter :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
-  before_filter :set_contest, only: [:show]
-  before_filter :reduce_list, only: [:create, :update]
+  before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
+  before_action :set_contest, only: [:show]
+  before_action :set_testdata, only: [:show]
+  before_action :set_compiler, only: [:new, :edit]
+  before_action :reduce_list, only: [:create, :update]
+  before_action :check_visibility!, only: [:show, :ranklist]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
-    @submissions = @problem.submissions.where("contest_id is NULL AND result = ?", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").includes(:compiler)
-    set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name
+    @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
+        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
+        .includes(:compiler))
+    @display_score = @problem.specjudge_new? || @problem.verdict_ignore_td_list != ''
+  end
+
+  def delete_submissions
+    Submission.where(problem_id: params[:id]).destroy_all
+    redirect_back fallback_location: root_path
+  end
+
+  def rejudge
+    subs = Submission.where(problem_id: params[:id])
+    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
+    SubmissionTask.where(submission_id: subs.map(&:id)).delete_all
+    ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
+    redirect_back fallback_location: root_path
   end
 
   def index
@@ -15,50 +33,58 @@ class ProblemsController < ApplicationController
       redirect_to problem_path(params[:search_id])
       return
     end
-    @problems = Problem.select("problems.*, count(distinct case when s.result = 'AC' then s.user_id end) user_ac, count(distinct s.user_id) user_cnt, count(case when s.result = 'AC' then 1 end) sub_ac, count(s.id) sub_cnt, bit_or(s.result = 'AC' and s.user_id = %d) cur_user_ac, bit_or(s.user_id = %d) cur_user_tried" % ([current_user ? current_user.id : 0]*2)).joins("left join submissions s on s.problem_id = problems.id and s.contest_id is NULL").group("problems.id").includes(:tags)
+
+    # filtering
+    @problems = Problem.includes(:tags, :solution_tags)
     if not params[:search_name].blank?
-      @problems = @problems.where("name LIKE ?", "%%%s%%"%params[:search_name])
+      sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_name])
+      @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
     end
     if not params[:tag].blank?
       @problems = @problems.tagged_with(params[:tag])
     end
 
-    @problems = @problems.order("problems.id ASC").page(params[:page]).per(100)
-    set_page_title "Problems"
+    @problems = @problems.order(id: :asc).page(params[:page]).per(100)
+
+    problem_ids = @problems.map(&:id).to_a
+    query_user_id = current_user&.id || 0
+    attributes = [
+      :id,
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.user_id END) user_ac",
+      "COUNT(DISTINCT s.user_id) user_cnt",
+      "COUNT(CASE WHEN s.result = 'AC' THEN 1 END) sub_ac",
+      "COUNT(s.id) sub_cnt",
+      "BIT_OR(s.result = 'AC' AND s.user_id = %d) cur_user_ac" % query_user_id,
+      "BIT_OR(s.user_id = %d) cur_user_tried" % query_user_id,
+    ]
+    @attr_map = (Problem.select(*attributes)
+        .where(:id => problem_ids)
+        .joins("LEFT JOIN submissions s ON s.problem_id = problems.id AND s.contest_id IS NULL")
+        .group(:id)
+        .index_by(&:id))
   end
 
   def show
-    unless user_signed_in? && current_user.admin == true
-      if @problem.visible_state == 1
-        if params[:contest_id].blank?
-          redirect_to :back, :notice => 'Insufficient User Permissions.'
-          return
-        end
-        unless @contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time
-          redirect_to :back, :notice => 'Insufficient User Permissions.'
-          return
-        end
-      elsif @problem.visible_state == 2
-        redirect_to :back, :notice => 'Insufficient User Permissions.'
-        return
-      end
-    end
     @tdlist = inverse_td_list(@problem)
     #@contest_id = params[:contest_id]
-    set_page_title @problem.id.to_s + " - " + @problem.name
   end
 
   def new
     @problem = Problem.new
-    set_page_title "New problem"
+    1.times { @problem.sample_testdata.build }
+    @ban_compiler_ids = Set[]
   end
 
   def edit
-    set_page_title "Edit " + @problem.id.to_s + " - " + @problem.name
+    if @problem.sample_testdata.length == 0
+      1.times { @problem.sample_testdata.build }
+    end
+    @ban_compiler_ids = @problem.compilers.map(&:id).to_set
   end
 
   def create
-    @problem = Problem.new(problem_params)
+    params[:problem][:compiler_ids] ||= []
+    @problem = Problem.new(check_params())
     respond_to do |format|
       if @problem.save
         format.html { redirect_to @problem, notice: 'Problem was successfully created.' }
@@ -71,10 +97,12 @@ class ProblemsController < ApplicationController
   end
 
   def update
+    params[:problem][:compiler_ids] ||= []
     respond_to do |format|
-      @problem.attributes = problem_params
+      @problem.attributes = check_params()
       pre_ids = @problem.testdata_sets.collect(&:id)
       changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
+      changed ||= @problem.score_precision_changed?
       if @problem.save
         changed ||= pre_ids.sort != @problem.testdata_sets.collect(&:id).sort
         if changed
@@ -102,74 +130,130 @@ class ProblemsController < ApplicationController
   end
 
   private
-    def set_problem
-      @problem = Problem.find(params[:id])
-    end
 
-    def set_contest
-      @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
-    end
+  def set_problem
+    @problem = Problem.find(params[:id])
+  end
 
-    def reduce_list
-      unless problem_params[:testdata_sets_attributes]
-        return
-      end
+  def set_contest
+    @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
+  end
+
+  def set_testdata
+    @testdata = @problem.testdata
+    @has_rss = @testdata.any?{|x| x.rss_limit}
+    @has_vss = @testdata.any?{|x| x.vss_limit}
+  end
+
+  def set_compiler
+    @compiler = @contest ? Compiler.where.not(id: @contest.compilers.map{|x| x.id}) : Compiler.all
+    @compiler = @compiler.order(order: :asc).to_a
+  end
+
+  def reduce_list
+    if problem_params[:testdata_sets_attributes]
       problem_params[:testdata_sets_attributes].each do |x, y|
         params[:problem][:testdata_sets_attributes][x][:td_list] = \
-            reduce_td_list(y[:td_list], @problem.testdata.count)
+            reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
       end
     end
-
-    def recalc_score
-      logger.fatal 'meow'
-      num_tasks = @problem.testdata.count
-      td_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
-      @problem.submissions.select(:id).each_slice(256) do |s|
-        ids = s.map(&:id).to_a
-        arr = SubmissionTask.where(:submission_id => ids).
-            select(:submission_id, :position, :score).group_by(&:submission_id).map{|x, y|
-          sub_mp = y.map{|t| [t.position, t.score]}.to_h
-          score = td_map.map{|td, score|
-            td.size > 0 ? sub_mp.values_at(*td).map{|x| x ? x : 0}.min * score : 100 * score
-          }.sum / 100
-          score = [score, BigDecimal('1e+12') - 1].min.round(6)
-          '(%d, %s)' % [x, score.to_s]
-        }.join(',')
-        ActiveRecord::Base.connection.execute(
-            'INSERT INTO submissions (id, score) VALUES ' + arr +
-            ' ON DUPLICATE KEY UPDATE score = VALUES(score);')
-      end
-      logger.fatal 'meow'
+    if problem_params[:verdict_ignore_td_list]
+      params[:problem][:verdict_ignore_td_list] = \
+          reduce_td_list(problem_params[:verdict_ignore_td_list], @problem ? @problem.testdata.count : 0)
     end
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def problem_params
-      params.require(:problem).permit(
+  def recalc_score
+    num_tasks = @problem.testdata.count
+    tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+    @problem.submissions.select(:id).each_slice(256) do |s|
+      ids = s.map(&:id).to_a
+      arr = SubmissionTask.where(:submission_id => ids).
+          select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
+        td_map = y.map{|t| [t.position, t.score]}.to_h
+        score = tdset_map.map{|td, td_score|
+          ((td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score / 100).round(@problem.score_precision)
+        }.sum
+        max_score = BigDecimal('1e+12') - 1
+        score = score.clamp(-max_score, max_score).round(6)
+        # compiler_id is only there to prevent SQL error; it will not be used
+        {id: x, score: score.to_s, compiler_id: 0}
+      }
+      Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
+    end
+  end
+
+  def check_visibility!
+    unless current_user&.admin
+      if @problem.visible_contest?
+        if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time)
+          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        end
+      elsif @problem.visible_invisible?
+        redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+      end
+    end
+  end
+
+  def check_params
+    params = problem_params.clone
+    if params[:specjudge_type] != 'none' and not params[:specjudge_compiler_id] and not @problem&.specjudge_compiler_id
+      params[:specjudge_compiler_id] = Compiler.order(order: :asc).first.id
+    end
+    if params[:specjudge_type] == 'none'
+      params[:judge_between_stages] = false
+    end
+    params
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def problem_params
+    params.require(:problem).permit(
+      :id,
+      :name,
+      :description,
+      :input,
+      :output,
+      :example_input,
+      :example_output,
+      :hint,
+      :source,
+      :limit,
+      :page,
+      :visible_state,
+      :tag_list,
+      :solution_tag_list,
+      :discussion_visibility,
+      :score_precision,
+      :verdict_ignore_td_list,
+      :num_stages,
+      :specjudge_type,
+      :specjudge_compiler_id,
+      :judge_between_stages,
+      :default_scoring_args,
+      :interlib_type,
+      :sjcode,
+      :interlib,
+      :interlib_impl,
+      :strict_mode,
+      :old_pid,
+      sample_testdata_attributes:
+      [
         :id,
-        :name,
-        :description,
+        :problem_id,
         :input,
         :output,
-        :example_input,
-        :example_output,
-        :hint,
-        :source,
-        :limit,
-        :page,
-        :visible_state,
-        :tag_list,
-        :problem_type,
-        :sjcode,
-        :interlib,
-        :old_pid,
-        testdata_sets_attributes:
-        [
-          :id,
-          :td_list,
-          :constraints,
-          :score,
-          :_destroy
-        ]
-      )
-    end
+        :_destroy
+      ],
+      compiler_ids: [],
+      testdata_sets_attributes:
+      [
+        :id,
+        :td_list,
+        :constraints,
+        :score,
+        :_destroy
+      ]
+    )
+  end
 end

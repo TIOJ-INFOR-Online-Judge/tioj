@@ -1,4 +1,4 @@
-class AddIndexToVariousForiegnKeys < ActiveRecord::Migration
+class AddIndexToVariousForiegnKeys < ActiveRecord::Migration[4.2]
   def change
     add_index :articles, [:category, :pinned, :era]
     add_index :attachments, [:article_id]

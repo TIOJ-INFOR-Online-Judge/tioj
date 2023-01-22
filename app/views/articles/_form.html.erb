@@ -1,3 +1,9 @@
+<% if @article.persisted? %>
+  <% set_page_title "Edit - " + @article.title %>
+<% else %>
+  <% set_page_title "New article" %>
+<% end %>
+
 <%= nested_form_for(@article) do |f| %>
   <% if @article.errors.any? %>
     <div id="error_explanation">

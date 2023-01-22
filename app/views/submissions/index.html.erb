@@ -1,3 +1,19 @@
+<% set_page_title "Submissions" %>
+
+<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% verdict_class_map = {
+  "AC" => "text-success",
+  "WA" => "text-danger",
+  "TLE" => "text-info",
+  "MLE" => "text-mle",
+  "OLE" => "text-ole",
+  "RE" => "text-warning",
+  "SIG" => "text-sig",
+  "queued" => "text-muted",
+} %>
+<% verdict_class_map.default = '' %>
+<% waiting_submissions = [] %>
+
 <h4 class="page-header">
   Submissions
   <% if @problem %>
@@ -26,21 +42,23 @@
     <input id="filter_username" name="filter_username" class="form-control input-sm flat" type="text" placeholder="Enter Username">
   </div>
   <div class="form-group">
-    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" type="number" min="1" placeholder="Enter Problem ID">
+    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
   <div class="form-group">
     <select id="filter_status" name="filter_status[]" class="selectpicker" multiple title="Select Result">
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
       <option value="TLE">Time Limit Exceeded</option>
-      <option value="MLE">Segmentation Fault</option>
+      <option value="MLE">Memory Limit Exceeded</option>
+      <option value="OLE">Output Limit Exceeded</option>
       <option value="RE">Runtime Error</option>
+      <option value="SIG">Runtime Error (signal)</option>
       <option value="CE">Compilation Error</option>
     </select>
   </div>
   <div class="form-group">
     <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple="multiple" title="Select Compiler">
-      <% Compiler.all.each do |x| %>
+      <% Compiler.order(order: :asc).all.each do |x| %>
         <option value="<%= x.id %>"><%= x.name %></option>
       <% end %>
     </select>
@@ -66,7 +84,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Code Length</th>
       <th>Score</th>
       <th>Submit Time</th>
-      <% if user_signed_in? && current_user.admin == true %>
+      <% if current_user&.admin %>
          <th></th>
       <% end %>
     </tr>
@@ -74,18 +92,7 @@ $("button:not([type='submit'])").attr("type", "button");
   <tbody>
     <% @submissions.each do |submission| %>
       <tr>
-      <% if censored(submission) %>
-        <td></td>
-        <td></td>
-        <td><code>censored</code></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      <% else %>
+        <% waiting_submissions.append(submission.id) if waiting_verdicts.include?(submission.result) %>
         <% if submission.contest_id.blank? %>
           <td><%= link_to submission.id, submission_path(submission) %></td>
           <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
@@ -94,38 +101,44 @@ $("button:not([type='submit'])").attr("type", "button");
           <td><%= link_to submission.problem_id, contest_problem_path(submission.contest_id, submission.problem) %></td>
         <% end %>
         <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
-        <td><%= submission.total_time.to_i %></td>
-        <td><%= submission.total_memory.to_i %></td>
-        <% case submission.result %>
-          <% when "WA" %>
-            <td class="text-danger">WA</td>
-          <% when "TLE" %>
-            <td class="text-info">TLE</td>
-          <% when "MLE" %>
-            <td class="text-warning">MLE</td>
-          <% when "RE" %>
-            <td class="text-warning">RE</td>
-          <% when "AC" %>
-            <td class="text-success">AC</td>
-          <% when "queued" %>
-            <td class="text-muted">queued</td>
-          <% else %>
-            <td><%= submission.result %></td>
-        <% end %>
-        <td><%= compiler_id_name(submission.compiler.id) %></td>
+        <td id="time-<%= submission.id %>"><%= submission.total_time.to_i %></td>
+        <td id="memory-<%= submission.id %>"><%= submission.total_memory.to_i %></td>
+        <td id="verdict-<%= submission.id %>" class="<%= verdict_class_map[submission.result] %>"><%= submission.result %></td>
+        <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code.bytesize) %></td>
-        <td><%= sprintf("%g", submission.score) %></td>
+        <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
-        <% if user_signed_in? && current_user.admin == true %>
+        <% if current_user&.admin %>
           <td>
-            <%= link_to 'Rejudge', {:controller => :submissions, :action => :rejudge, :id => submission.id} , :class => 'btn btn-xs btn-primary' %>
+            <%= form_with url: rejudge_submission_path(submission) do |f| %>
+              <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+            <% end %>
           </td>
         <% end %>
-      <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
 <%= paginate @submissions %>
 
+<% if not waiting_submissions.empty? %>
+<script>
+var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
+function score_str(str) {
+  return String(str).replace(/\.0$/, '');
+}
+
+function updateResult(data) {
+  var id = data['id'];
+  $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
+  if (data['total_time']) $('#time-' + id).text(data['total_time']);
+  if (data['total_memory']) $('#memory-' + id).text(data['total_memory']);
+  if ('score' in data) $('#score-' + id).text(score_str(data['score']));
+}
+
+$(document).ready(function() {
+  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateResult);
+});
+</script>
+<% end %>

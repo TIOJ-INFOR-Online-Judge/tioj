@@ -1,3 +1,8 @@
+<% if @submission.persisted? %>
+  <% set_page_title "Edit submission - " + @submission.id.to_s %>
+<% else %>
+  <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
+<% end %>
 <%= form_for [@problem, @submission] do |f| %>
   <% if @submission.errors.any? %>
     <div id="error_explanation">

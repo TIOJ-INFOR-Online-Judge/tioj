@@ -1,7 +1,12 @@
 class PostsController < ApplicationController
+  include PostFilteringConcern
+
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :set_posts, :check_contest
+  before_action :set_posts, :check_contest_and_problem
+  before_action :check_post_create, only: [:new, :create]
+  before_action :set_post_types, only: [:new, :create, :edit, :update]
   before_action :check_user!, only: [:edit, :update, :destroy]
+  before_action :check_params!, only: [:create, :update]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   # GET /posts
@@ -9,11 +14,11 @@ class PostsController < ApplicationController
   def index
     @posts = @posts.order("updated_at DESC").page(params[:page]).includes(:user).preload(comments: :user)
     if @contest
-        @title = "Q & A"
-        set_page_title "Q & A"
+      @title = "Q & A"
+    elsif @problem
+      @title = "Discuss - #{@problem.id}"
     else
-        @title = "Discuss"
-        set_page_title = "Discuss"
+      @title = "Discuss"
     end
   end
 
@@ -21,18 +26,15 @@ class PostsController < ApplicationController
   # GET /posts/1.json
   def show
     @post = @posts.find(params[:id])
-    set_page_title "Discuss - " + @post.id.to_s
   end
 
   # GET /posts/new
   def new
     @post = @posts.build
-    set_page_title "New post"
   end
 
   # GET /posts/1/edit
   def edit
-    set_page_title "Edit post - " + @post.id.to_s
   end
 
   # POST /posts
@@ -40,12 +42,7 @@ class PostsController < ApplicationController
   def create
     @post = @posts.build(post_params)
     @post.user_id = current_user.id
-    if params[:contest_id]
-      @post.contest_id = @contest.id
-    end
-    if @contest and not current_user.admin?
-      @post.global_visible = false
-    end
+    @post.postable = @postable
 
     respond_to do |format|
       if @post.save
@@ -78,46 +75,59 @@ class PostsController < ApplicationController
     @post.destroy
     respond_to do |format|
       format.json { head :no_content }
-      format.html { redirect_to @page_url }
+      format.html { redirect_to @page_path }
     end
   end
 
   private
-  def check_contest
-    unless user_signed_in? and current_user.admin?
-      if @contest == nil and Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
-        redirect_to root_path, :alert => "No discussion during contest."
-        return
-      end
-    end
+
+  def check_post_create
+    check_problem_allow_create
   end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_posts
-    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
-    @problem = Problem.find(params[:problem_id]) if params[:problem_id]
+    filter_posts
+    @posts = @posts.order(updated_at: :desc)
+  end
+
+  def set_post_types
     if @contest
-      @posts = Post.where('contest_id = ?', params[:contest_id])
+      @post_types = [['discuss', nil]]
     else
-      @posts = Post.where('contest_id is NULL')
-    end
-    if user_signed_in?
-      unless current_user.admin?
-        @posts = @posts.where('user_id = ? OR global_visible', current_user.id)
+      @post_types = Post.post_types.keys
+      @post_types.delete('solution') unless @problem && current_user&.admin?
+      if @problem
+        desc = {
+          "discuss" => "Normal discussion",
+          "solution" => "Solution (pinned)",
+          "issue" => "Issue report (also shown on global discuss page)",
+        }
+      else
+        desc = {
+          "discuss" => "Normal discussion",
+          "issue" => "Issue report",
+        }
       end
-    else
-      @posts = @posts.where('global_visible')
+      @post_types = @post_types.map {|x| [desc[x], x]}
     end
-    @posts = @problem ? @posts.where('problem_id = ?', params[:problem_id]) : @posts
-    @page_path = @contest ? contest_posts_path(@contest) : posts_path
-    @page_url = @contest ? contest_posts_url(@contest) : posts_url
   end
 
   def check_user!
     @post = @posts.find(params[:id])
-    if not user_signed_in? or (not current_user.admin? and (current_user.id != @post.user_id or @contest))
+    unless current_user&.admin? or (current_user&.id == @post.user_id and not @contest)
       flash[:alert] = 'Insufficient User Permissions.'
-      redirect_to action:'index'
+      redirect_to action: 'index'
+      return
+    end
+  end
+
+  def check_params!
+    return if current_user&.admin?
+    params[:post][:global_visible] = '0' if @contest
+    if not @post_types.map{|x| x[1]}.include?(params[:post][:post_type])
+      flash[:alert] = 'Insufficient User Permissions.'
+      redirect_to action: 'index'
       return
     end
   end
@@ -129,7 +139,9 @@ class PostsController < ApplicationController
       :content,
       :user_id,
       :problem_id,
+      :post_type,
       :global_visible,
+      :user_visible,
       :page,
       comments_attributes: [
         :id,

@@ -1,4 +1,4 @@
-class CreateBanCompilers < ActiveRecord::Migration
+class CreateBanCompilers < ActiveRecord::Migration[4.2]
   def up
     create_table :ban_compilers do |t|
       t.references :contest, foreign_key: true

@@ -1,5 +1,10 @@
 class AboutController < ApplicationController
   def index
-    set_page_title "About"
+  end
+
+  def verdicts
+  end
+
+  def memory
   end
 end

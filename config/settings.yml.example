@@ -1,0 +1,20 @@
+shared:
+  # Omit any section if the function is not needed
+
+  # Password recovery settings
+  mail_settings:
+    smtp_settings: # SMTP server settings; it will be passed to config.action_mailer.smtp_settings
+      address: smtp.example.com
+      port: 587
+      user_name: tioj@example.com
+      password: some_password
+      enable_starttls_auto: true
+    url_options:
+      host: https://tioj.example.com # the URL of the website, used to generate the link in the email
+    sender: tioj.example.com # email sender
+
+  # Sentry settings
+  sentry_dsn: https://xxxxxxx@xxxx.ingest.sentry.io/xxxx # copy from your sentry project
+  sentry_sample_rate:
+    normal: 0.002
+    cable: 0.001

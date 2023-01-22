@@ -1,0 +1,20 @@
+
+.fancy-checkbox input[type="checkbox"] {
+  display: none;
+}
+.fancy-checkbox input[type="checkbox"] + .btn-group > label span {
+  height: 10px;
+  width: 10px;
+}
+.fancy-checkbox input[type="checkbox"] + .btn-group > label span:first-child { 
+  display: none;
+}
+.fancy-checkbox input[type="checkbox"] + .btn-group > label span:last-child {
+  display: inline-block;
+}
+.fancy-checkbox input[type="checkbox"]:checked + .btn-group > label span:first-child {
+  display: inline-block;
+}
+.fancy-checkbox input[type="checkbox"]:checked + .btn-group > label span:last-child {
+  display: none;
+}

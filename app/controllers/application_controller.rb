@@ -2,45 +2,51 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :store_location
-  before_filter :set_verdict_hash
-  before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :set_anno
+  before_action :store_location
+  before_action :set_verdict_hash
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_anno
+  mattr_accessor :verdict
+  mattr_accessor :v2i
+  mattr_accessor :i2v
+
+  @@verdict = {
+    "AC" => "Accepted",
+    "WA" => "Wrong Answer",
+    "TLE" => "Time Limit Exceeded",
+    "MLE" => "Memory Limit Exceeded",
+    "OLE" => "Output Limit Exceeded",
+    "RE" => "Runtime Error",
+    "SIG" => "Runtime Error (killed by signal)",
+    "EE" => "Execution Error",
+    "CE" => "Compilation Error",
+    "CLE" => "Compilation Limit Exceeded",
+    "ER" => "Judge Compilation Error",
+    "JE" => "Judge Error",
+    "queued" => "Waiting for judge server",
+    "received" => "Queued in judge server",
+    "Validating" => "Validating",
+  }
+  @@v2i = {
+    "AC" => 0,
+    "WA" => 1,
+    "TLE" => 2,
+    "MLE" => 3,
+    "OLE" => 4,
+    "RE" => 5,
+    "SIG" => 6,
+    "EE" => 7,
+    "CE" => 8,
+    "CLE" => 9,
+    "ER" => 10,
+    "JE" => 11,
+  }
+  @@i2v = @@v2i.map{|x, y| [y, x]}.to_h
 
   def set_verdict_hash
-    @verdict = {"AC" => "Accepted",
-                "WA" => "Wrong Answer",
-                "TLE" => "Time Limit Exceeded",
-                "MLE" => "Segmentation Fault",
-                "OLE" => "Output Limit Exceeded",
-                "RE" => "Runtime Error",
-                "SIG" => "Runtime Error (exited with signal)",
-                "CE" => "Compilation Error",
-                "CO" => "Compilation Timed Out",
-                "ER" => "WTF!"
-    }
-    @v2i = {"AC" => 0,
-            "WA" => 1,
-            "TLE" => 2,
-            "MLE" => 3,
-            "OLE" => 4,
-            "RE" => 5,
-            "SIG" => 6,
-            "CE" => 7,
-            "CO" => 8,
-            "ER" => 9
-    }
-    @i2v = {0 => "AC",
-            1 => "WA",
-            2 => "TLE",
-            3 => "MLE",
-            4 => "OLE",
-            5 => "RE",
-            6 => "SIG",
-            7 => "CE",
-            8 => "CO",
-            9 => "ER"
-    }
+    @verdict = @@verdict
+    @v2i = @@v2i
+    @i2v = @@i2v
   end
 
   def store_location
@@ -87,19 +93,28 @@ protected
   end
 
   def set_anno
-    require "json"
-    @anno = JSON.parse(File.read("public/announcement/anno"))
+    @annos = Announcement.order(:id).all.to_a
   end
 
-  def get_sorted_user
-    User.select("users.*, count(distinct case when s.result='AC' then s.problem_id end) ac, ifnull(sum(s.result='AC'), 0) acsub,  count(s.id) sub, sum(s.result='AC') / count(s.id) acratio").joins("left join submissions s on s.user_id = users.id and s.contest_id is NULL").group("users.id").order('ac desc, acratio desc, sub desc, users.id').to_a
+  def get_sorted_user(limit = nil)
+    attributes = [
+      "users.*",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.problem_id END) ac",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) acsub",
+      "COUNT(s.id) sub",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) / COUNT(s.id) acratio",
+    ]
+    query = User.select(*attributes)
+        .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
+        .group(:id).order('ac DESC', 'acratio DESC', 'sub DESC', :id)
+    if limit
+      query = query.limit(limit)
+    end
+    query.to_a
   end
 
   def td_list_to_arr(str, sz)
-    str.split(',').map{|x|
-      t = x.split('-')
-      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
-    }.flatten.sort.uniq
+    ApplicationController.td_list_to_arr(str, sz)
   end
 
   def reduce_td_list(str, sz)
@@ -114,5 +129,39 @@ protected
     sz = prob.testdata.count
     prob.testdata_sets.map.with_index{|x, i| td_list_to_arr(x.td_list, sz).map{|y| [y, i]}}
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
+  end
+
+  def shellsplit_safe(line)
+    ApplicationController.shellsplit_safe(line)
+  end
+
+  def raise_not_found
+    raise ActionController::RoutingError.new('')
+  end
+
+  public
+
+  def self.td_list_to_arr(str, sz)
+    str.split(',').map{|x|
+      t = x.split('-')
+      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
+    }.flatten.sort.uniq
+  end
+
+  def self.shellsplit_safe(line)
+    # adapted from shellwords library
+    return [] if not line
+    words = []
+    field = String.new
+    line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m) do
+      |word, sq, dq, esc, garbage, sep|
+      p [word, sq, dq, esc, garbage, sep]
+      field << (word || sq || (dq && dq.gsub(/\\([$`"\\\n])/, '\\1')) || esc.gsub(/\\(.)/, '\\1')) if not garbage
+      if sep
+        words << field
+        field = String.new
+      end
+    end
+    words
   end
 end

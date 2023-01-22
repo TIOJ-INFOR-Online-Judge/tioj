@@ -2,16 +2,17 @@
 #
 # Table name: comments
 #
-#  id         :integer          not null, primary key
-#  title      :string(255)
-#  content    :text(65535)
-#  user_id    :integer
-#  post_id    :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id           :bigint           not null, primary key
+#  title        :string(255)
+#  content      :text(16777215)
+#  user_id      :bigint
+#  post_id      :bigint
+#  created_at   :datetime
+#  updated_at   :datetime
+#  user_visible :boolean          default(FALSE)
 #
 
-class Comment < ActiveRecord::Base
+class Comment < ApplicationRecord
   belongs_to :user
   belongs_to :post
 

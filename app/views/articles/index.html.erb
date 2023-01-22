@@ -1,12 +1,12 @@
+<% set_page_title "Bulletin - " + @era %>
 <h4 class="page-header">Bulletin <small>#<%= @era %></small></h4>
 
-
 <p>
-  <%= select_tag :era_select, options_for_select(Article.distinct.order(era: :desc).pluck(:era).map{ |x| [x,x] }, @era), :class => "form-control" %>
+  <%= select_tag :era_select, options_for_select(@era_list.map{ |x| [x,x] }, @era), :class => "form-control" %>
 </p>
 
 
-<% if user_signed_in? && current_user.admin == true %>
+<% if current_user&.admin %>
   <p>
   <div class="row">
     <div class="col-md-2">

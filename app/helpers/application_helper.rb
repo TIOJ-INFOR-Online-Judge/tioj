@@ -52,4 +52,57 @@ module ApplicationHelper
   def rejudge_glyph
     return raw '<span class="glyphicon glyphicon-repeat"></span>'
   end
+
+  def verdict_text(x)
+    class_map = {
+      "AC" => "text-success",
+      "WA" => "text-danger",
+      "TLE" => "text-info",
+      "MLE" => "text-mle",
+      "OLE" => "text-ole",
+      "RE" => "text-warning",
+      "SIG" => "text-sig",
+      "queued" => "text-muted",
+    }
+    if class_map[x]
+      return raw '<span class="' + class_map[x] + '">' + x + '</span>'
+    else
+      return x
+    end
+  end
+
+  def help_icon(x)
+    raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+  end
+
+  def help_collapse_toggle(x, target)
+    raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
+  end
+
+  def score_str(x)
+    number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
+  end
+
+  def visible_state_desc_map
+    {
+      "public" => "public",
+      "contest" => "only visible during contest",
+      "invisible" => "invisible",
+    }
+  end
+
+  def page_title(title)
+    title.empty? ? Rails.application.config.site_name : title
+  end
+
+  def set_page_title(title, site_name = nil)
+    site_name ||= Rails.application.config.site_name
+    if params[:page]
+      @page_title = "#{title} - Page #{params[:page]}"
+    else
+      @page_title = title
+    end
+    @page_title = "#{@page_title} | #{site_name}"
+    content_for :title, @page_title
+  end
 end

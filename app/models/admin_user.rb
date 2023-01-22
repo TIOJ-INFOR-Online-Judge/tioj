@@ -2,7 +2,7 @@
 #
 # Table name: admin_users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  email                  :string(255)      default(""), not null
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
@@ -18,7 +18,7 @@
 #  username               :string(255)
 #
 
-class AdminUser < ActiveRecord::Base
+class AdminUser < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable,

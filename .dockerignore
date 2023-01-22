@@ -1,0 +1,40 @@
+# From .gitignore
+/tempioj
+/sql\ dump
+**/*.swp
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore the default SQLite database.
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp
+
+# Ignore all the testdata
+/td
+/public/*
+/public-tmp
+!/public/codehighlighter
+!/public/fonts
+!/public/images
+!/public/robots.txt
+
+passenger.*.pid.lock
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key
+/config/database.yml
+/config/settings.yml
+/config/credentials.yml.enc
+
+.env
+
+# dockerignore specific
+README.md
+Dockerfile
+docker-compose.yml
+.git

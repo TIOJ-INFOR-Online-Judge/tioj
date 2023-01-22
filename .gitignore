@@ -6,9 +6,7 @@
 
 /tempioj
 /sql\ dump
-
-# Ignore announcements.
-/public/announcement/anno
+*.swp
 
 # Ignore bundler config.
 /.bundle
@@ -21,32 +19,21 @@
 /log/*
 /tmp
 
-# Ignore secret token file
-/config/initializers/secret_token.rb
-/config/initializers/fetch_key.rb
-
 # Ignore all the testdata
 /td
-/public/uploads
-/public/pmisc
-/public/pimgs
-/public/pcontest
-/public/STL
-/public/cppref
-/public/INFOR
-/public/test
+/public/*
+/public-tmp
+!/public/codehighlighter
+!/public/fonts
+!/public/images
+!/public/robots.txt
 
-# Ignore binaries
-/bin
+passenger.*.pid.lock
 
+# Ignore master key for decrypting credentials and more.
+/config/master.key
 /config/database.yml
-/public/assets
-/app/views/problems/._form.html.erb.swp
-/config/config.yml
-/config/secrets.yml
+/config/settings.yml
+/config/credentials.yml.enc
 
-
-# Ignore Docker stuffs
-Dockerfile
-docker-compose.yml
-*.swp
+.env

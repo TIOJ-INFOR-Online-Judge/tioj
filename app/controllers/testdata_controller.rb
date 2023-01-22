@@ -1,21 +1,29 @@
 class TestdataController < ApplicationController
   before_action :authenticate_admin!
-  before_action :set_problem
-  before_action :set_testdatum, only: [:edit, :update, :destroy]
+  before_action :set_problem, except: [:show]
+  before_action :set_testdatum, only: [:show, :edit, :update, :destroy]
+  before_action :set_testdata, only: [:batch_edit, :batch_update]
+  helper_method :strip_uuid
 
   def index
-    @testdata = @problem.testdata.order(position: :asc).includes(:limit)
+    @testdata = @problem.testdata
   end
 
   def new
     @testdatum = @problem.testdata.build
-    @testdatum.build_limit
   end
 
-  def edit
-    if not @testdatum.limit
-      @testdatum.build_limit
+  def show
+    if params[:type] == 'input'
+      path = @testdatum.test_input
+      name = @testdatum.test_input_identifier
+    elsif params[:type] == 'output'
+      path = @testdatum.test_output
+      name = @testdatum.test_output_identifier
+    else
+      raise_not_found
     end
+    send_file path.to_s, filename: strip_uuid(name)
   end
 
   def create
@@ -32,6 +40,9 @@ class TestdataController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def update
     respond_to do |format|
       if @testdatum.update(testdatum_params)
@@ -40,6 +51,52 @@ class TestdataController < ApplicationController
       else
         format.html { render action: 'edit' }
         format.json { render json: @testdatum.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def batch_edit
+  end
+
+  def batch_update
+    params = batch_update_params
+    prev = {}
+    params_arr = @testdata.map.with_index do |td, index|
+      now = params[:td][td.id.to_s]
+      cur = now.except(:form_same_as_above)
+      if index == 0 or now[:form_same_as_above].to_i == 0
+        prev = cur
+      end
+      prev[:form_delete] = cur[:form_delete]
+      [td.id, prev.clone]
+    end
+    orig_order_mp = @testdata.map(&:id).map.with_index.to_h
+    to_delete = params_arr.filter{|x| x[1][:form_delete].to_i != 0}.map{|x| x[0]}
+    params_arr = params_arr.filter{|x| x[1][:form_delete].to_i == 0}.sort_by{|x|
+      [x[1][:position].to_i, orig_order_mp[x[0]]]
+    }.map.with_index{|x, index|
+      x[1][:position] = index
+      [x[0], x[1]]
+    }.to_h
+
+    begin
+      Testdatum.acts_as_list_no_update do
+        Testdatum.transaction do
+          td_map = @testdata.index_by(&:id)
+          params_arr.each do |id, x|
+            td_map[id].update!(x)
+          end
+          Testdatum.where(id: to_delete).delete_all
+        end
+      end
+      respond_to do |format|
+        format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdata was successfully updated.' }
+        format.json { head :no_content }
+      end
+    rescue ActiveRecord::RecordInvalid => invalid
+      respond_to do |format|
+        format.html { render action: 'batch_edit' }
+        format.json { render json: invalid.record.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -61,21 +118,32 @@ class TestdataController < ApplicationController
     @testdatum = Testdatum.find(params[:id])
   end
 
+  def set_testdata
+    @testdata = @problem.testdata
+  end
+
   def set_problem
     @problem = Problem.find(params[:problem_id])
   end
 
+  def strip_uuid(x)
+    x[0...-37]
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def testdatum_params
-    params.require(:testdatum).permit(:problem_id, :test_input, :test_output,
-      limit_attributes:
-        [
-          :id,
-          :time,
-          :memory,
-          :output,
-          :problem_id,
-          :testdatum_id
-     ])
+    params.require(:testdatum).permit(
+      :problem_id,
+      :test_input,
+      :test_output,
+      :time_limit,
+      :rss_limit,
+      :vss_limit,
+      :output_limit,
+    )
+  end
+
+  def batch_update_params
+    params.permit(td: [:time_limit, :vss_limit, :rss_limit, :output_limit, :position, :form_same_as_above, :form_delete])
   end
 end

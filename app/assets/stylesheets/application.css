@@ -8,12 +8,15 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require bootstrap
- *= require flat-ui
+ *= require bootstrap_import
  *= require_tree .
  *= require_self
  *= require custom_styles
- *= require jquery-tablesorter/theme.default
+ *
+ * Somehow the ".default" in theme.default is stripped by sprocket 4 asset finding logic.
+ * We add another .default to as an dirty hack to make it find the correct asset.
+ *
+ *= require jquery-tablesorter/theme.blue
  *= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
  *= require animate
  */

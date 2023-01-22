@@ -3,7 +3,6 @@ ActiveAdmin.register Testdatum do
 
   preserve_default_filters!
   remove_filter :problem
-  remove_filter :limit
   filter :id
   filter :problem_id
 

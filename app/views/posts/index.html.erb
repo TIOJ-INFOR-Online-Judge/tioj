@@ -1,31 +1,30 @@
+<% set_page_title @title %>
 <% if @problem %>
   <h4 class="page-header">Discuss <small>Problem #<%= @problem.id %></small></h4>
 <% else %>
   <h4 class="page-header"><%= @title %></h4>
 <% end %>
 
+<% if @problem %>
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-md-2">
+    <%= link_to 'Back to Problem', problem_path(@problem), :class => 'btn btn-default btn-xs btn-block' %>
+  </div>
+</div>
+<% end %>
+
 <div class="actions">
-  <% if user_signed_in? %>
-    <% if @contest != nil %>
+  <% if user_signed_in? and (current_user.admin? or not @problem or @problem.discussion_enabled?) %>
+    <% if @contest %>
       <% if current_user.admin? %>
-        <% if @problem != nil %>
-          <%= link_to "New Announcement", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
-        <% else %>
-          <%= link_to "New Announcement", new_contest_post_path(@contest), :class => "btn btn-default"%>
-        <% end %>
+        <%= link_to "New Announcement", new_contest_post_path(@contest), :class => "btn btn-success"%>
       <% else %>
-        <% if @problem != nil %>
-          <%= link_to "New Question", new_contest_problem_post_path(@contest, @problem), :class => "btn btn-default" %>
-        <% else %>
-          <%= link_to "New Question", new_contest_post_path(@contest), :class => "btn btn-default"%>
-        <% end %>
+        <%= link_to "New Question", new_contest_post_path(@contest), :class => "btn btn-success"%>
       <% end %>
+    <% elsif @problem %>
+      <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-success" %>
     <% else %>
-      <% if @problem != nil %>
-        <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-default" %>
-      <% else %>
-        <%= link_to "New Post", new_post_path, :class => "btn btn-default"%>
-      <% end %>
+      <%= link_to "New Post", new_post_path, :class => "btn btn-success"%>
     <% end %>
   <% end %>
 </div>
@@ -33,87 +32,9 @@
 <%= paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
-    <% poster = post.user %>
-    <div class="post well">
-    <div class="post_title">
-      <h3 class="post_title"><%= post.title %></h3>
-      <% if post.problem_id != nil %>
-        <small class="title_problem_id"> Problem #<%= post.problem_id %></small>
-			<% end %>
+    <div class="post well<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
+      <%= render partial: 'show_post', :locals => {:post => post}  %>
     </div>
-    </br >
-    <div class="post_content">
-      <%= markdown_no_html(post.content) %>
-
-      <% if !(user_signed_in? and current_user.admin?) %>
-        Created At:  <%= post.created_at.to_s(:clean) %>
-      <% elsif poster == nil %>
-        deleted account - Created At:  <%= post.created_at.to_s(:clean) %>
-      <% else %>
-        <%= link_to poster.username, user_path(poster) %> - Created At:  <%= post.created_at.to_s(:clean) %>
-      <% end %>
-			&nbsp;
-			<% if post.global_visible %>
-				(public post)
-			<% else %>
-				(private post)
-			<% end %>
-    </div>
-    <% if user_signed_in? and (current_user.admin? or (current_user.id == post.user_id and not @contest)) %>
-      <% if @contest %>
-        <%= link_to "Edit Post", edit_contest_post_path(@contest, post), :class=>'btn btn-primary btn-xs'%>
-        <%= link_to "Delete Post", contest_post_path(@contest, post), method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
-      <% else %>
-        <%= link_to "Edit Post", edit_post_path(post), :class=>'btn btn-primary btn-xs'%>
-        <%= link_to "Delete Post", post, method: :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
-      <% end %>
-    <% end %>
-    <% if post.comments.present? %>
-      <div class="comments">
-      <h5>Comments: </h5>
-      <% comments = post.comments %>
-      <% count = 0;%>
-      <% comments.each do |comment| %>
-        <% count += 1 %>
-      <% commenter = comment.user %>
-      <div class="comment well well-lg">
-        <h4 class="comment_title">
-          #<%=count %> <%= comment.title %>
-      </h4>
-        <div class="comment_content" >
-          <%= markdown_no_html(comment.content) %>
-          <% if !(user_signed_in? and current_user.admin?) %>
-            Created At:  <%= comment.created_at.to_s(:clean) %>
-          <% elsif commenter == nil %>
-            deleted account - Created At:  <%= comment.created_at.to_s(:clean) %>
-          <% else %>
-            <%= link_to commenter.username, user_path(commenter) %> - Created At:  <%= comment.created_at.to_s(:clean) %>
-          <% end %>
-        </div>
-        <% if user_signed_in? and (current_user.admin? or (current_user.id == comment.user_id and not @contest)) %>
-          <% if @contest %>
-            <%= link_to "Edit", edit_contest_post_comment_path(@contest, post, comment), :class=>'btn btn-primary btn-xs' %>
-            <%= link_to "Delete", contest_post_comment_path(@contest, post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
-          <% else %>
-            <%= link_to "Edit", edit_post_comment_path(post, comment), :class=>'btn btn-primary btn-xs' %>
-            <%= link_to "Delete", post_comment_path(post, comment), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
-          <% end %>
-        <% end %>
-      </div> <!--comment -->
-    <% end %><!-- comments.each -->
-    </div> <!-- comments -->
-  <% end %> <!-- if post.comments -->
-  <% if user_signed_in? and (current_user.admin? or not @contest) %>
-    <div class="new_comment" style="display:inline">
-      <button class="new_comment btn btn-info btn-xs">New Comment</button>
-      <br /> <br />
-      <div class="new_comment_form">
-        <%= render partial: 'comment_form', :locals => {:post => post, :contest => @contest}  %>
-      </div> <!-- new_comment_form -->
-    </div> <!-- new_comment -->
   <% end %>
-  </div> <!-- post -->
-  <br />
-<% end %>
 </div> <!-- posts div -->
 <%= paginate @posts%>

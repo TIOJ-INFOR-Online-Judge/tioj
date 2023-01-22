@@ -1,25 +1,18 @@
 class ContestsController < ApplicationController
-  before_filter :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
-  before_filter :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
-  before_filter :check_started!, only: [:dashboard]
-  before_filter :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
-  before_filter :calculate_ranking, only: [:dashboard, :dashboard_update]
+  before_action :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
+  before_action :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
+  before_action :check_started!, only: [:dashboard]
+  before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
+  before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
   layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
   helper_method :is_started?
 
   def set_contest_task
     redirect_to contest_path(@contest)
-    case params[:alter_to].to_i
-      when 0
-        flash[:notice] = "Contest tasks set to public."
-      when 1
-        flash[:notice] = "Contest tasks set to only visible during contest."
-      when 2
-        flash[:notice] = "Contest tasks set to invisible."
-      else
-        return
-    end
-    @tasks.map{|a| a.update(:visible_state => params[:alter_to].to_i)}
+    alter_to = params[:alter_to].to_i
+    name = Problem.visible_states.key(alter_to)
+    flash[:notice] = "Contest tasks set to #{helpers.visible_state_desc_map[name]}."
+    @tasks.map{|a| a.update(:visible_state => alter_to)}
   end
 
   def calculate_ranking
@@ -28,7 +21,7 @@ class ContestsController < ApplicationController
     end
 
     c_submissions = nil
-    if @contest.contest_type == 1 and Time.now >= @contest.start_time and Time.now <= @contest.end_time
+    if @contest.type_ioi? and Time.now >= @contest.start_time and Time.now <= @contest.end_time
       authenticate_user!
       if not current_user.admin?
         c_submissions = @contest.submissions.where("user_id = ?", current_user.id)
@@ -45,7 +38,7 @@ class ContestsController < ApplicationController
       prv = nil
       a.map do |n|
         run += 1
-        next id if prv and func[n] == func[prv]
+        next id if prv && func[n] == func[prv]
         prv = n.clone
         id += run
         run = 0
@@ -55,68 +48,73 @@ class ContestsController < ApplicationController
     @contest_submissions = c_submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
     @submissions = @contest_submissions.group_by(&:problem_id)
     @participants = User.find(@contest_submissions.map(&:user_id).uniq)
+    # array of submissions grouped by problems
     @submissions = @tasks.map{|x| @submissions[x.id] or []}
-    first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
     @scores = []
-    if @contest.contest_type == 2
-      unless user_signed_in? and current_user.admin?
-        freeze_start = @contest.end_time - @contest.freeze_time * 60
-      else
-        freeze_start = @contest.end_time
-      end
+    freeze_start = current_user&.admin? ? @contest.end_time : @contest.freeze_after
+    waiting_verdicts = ['queued', 'received', 'Validating']
+    if @contest.type_acm?
+      uncounted = ['CE', 'ER', 'CLE', 'JE'] + waiting_verdicts
+      first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
       @participants.each do |u|
-        t = []
-        total_attm = 0
+        results = []
+        total_attempts = 0
         total_solv = 0
         last_ac = 0
         penalty = 0
         @submissions.zip(first_solved).each do |sub, firstsolve|
-          succ = sub.select{|a| a.user_id == u.id and a.result == 'AC' and a.created_at < freeze_start}.min_by{|a| a.id}
-          if succ
-            attm = sub.select{|a| a.user_id == u.id and a.id < succ.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
-            tm = (succ.created_at - @contest.start_time).to_i / 60
-            last_ac = [last_ac, tm].max
-            t << [attm + 1, tm, succ.id == firstsolve, 0]
+          user_sub = sub.select{|s| s.user_id == u.id}
+          first_ac = user_sub.select{|s| s.result == 'AC' and s.created_at < freeze_start}.min_by{|s| s.id}
+          if first_ac
+            attempts = user_sub.select{|s| s.id < first_ac.id and not s.result.in?(uncounted) and s.created_at < freeze_start}.size
+            ac_time = (first_ac.created_at - @contest.start_time).to_i / 60
+            last_ac = [last_ac, ac_time].max
+            results << [attempts + 1, ac_time, first_ac.id == firstsolve, 0]
             total_solv += 1
-            total_attm += attm + 1
-            penalty += attm * 20
+            total_attempts += attempts + 1
+            penalty += attempts * 20
           else
-            attm = sub.select{|a| a.user_id == u.id and not a.result.in? (['CE', 'ER', 'queued', 'Validating']) and a.created_at < freeze_start}.size
-            pend = sub.select{|a| a.user_id == u.id and (a.result.in? (['queued', 'Validating']) or a.created_at >= freeze_start)}.size
-            t << [attm, -1, false, pend]
-            total_attm += attm
+            attempts = user_sub.select{|s| not s.result.in?(uncounted) and s.created_at < freeze_start}.size
+            pend = user_sub.select{|s| s.result.in?(waiting_verdicts) or s.created_at >= freeze_start}.size
+            results << [attempts, -1, false, pend]
+            total_attempts += attempts
           end
         end
-        @scores << [u, total_attm, total_solv, t, t.map{|a| a[1] == -1 ? 0 : a[1]}.sum + penalty, last_ac]
+        penalty += results.sum{|a| a[1] == -1 ? 0 : a[1]}
+        @scores << [u, total_attempts, total_solv, results, penalty, last_ac]
       end
       @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
-      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
-        flash.now[:notice] = "Scoreboard is now frozen."
-      end
     else
       @participants.each do |u|
-        t = []
+        results = []
         @submissions.each do |sub|
-          if sub.select{|a| a.user_id == u.id}.empty?
-            t << 0
+          user_sub = sub.select{|s| s.user_id == u.id}
+          if user_sub.empty?
+            results << [0, 0]
           else
-            t << sub.select{|a| a.user_id == u.id}.max_by{|a| a.score}.score
+            has_ac = user_sub.any?{|s| s.result == 'AC' and s.created_at < freeze_start}
+            pending_count = user_sub.count{|s| s.result.in?(waiting_verdicts) or s.created_at >= freeze_start}
+            pending = has_ac ? 0 : pending_count
+            max_score = user_sub.select{|s| s.created_at < freeze_start}.max_by{|a| a.score}&.score || 0
+            results << [max_score, pending]
           end
         end
-        @scores << [u, t, t.sum]
+        @scores << [u, results, results.sum{|a| a[0]}]
       end
-      @scores = @scores.sort_by{|a| -a[2]}
+      @scores.sort_by!{|a| -a[2]}
       @scores = @scores.zip(Rank(@scores){|a| a[2]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     end
+    if not current_user&.admin? and Time.now >= freeze_start and @contest.freeze_minutes != 0
+      flash.now[:notice] = "Scoreboard is now frozen."
+    end
   end
 
   def dashboard
-    set_page_title ("Dashboard - " + @contest.title)
   end
 
   def dashboard_update
@@ -127,21 +125,19 @@ class ContestsController < ApplicationController
 
   def index
     @contests = Contest.order("id DESC").page(params[:page])
-    set_page_title "Contests"
   end
 
   def show
-    set_page_title @contest.title
   end
 
   def new
     @contest = Contest.new
     1.times { @contest.contest_problem_joints.build }
-    set_page_title "New contest"
+    @ban_compiler_ids = Set[]
   end
 
   def edit
-    set_page_title ("Edit contest - " + @contest.title)
+    @ban_compiler_ids = @contest.compilers.map(&:id).to_set
   end
 
   def create
@@ -202,15 +198,15 @@ class ContestsController < ApplicationController
       end
       return false
     end
-	if contest_params[:contest_problem_joints_attributes].nil?
+    if contest_params[:contest_problem_joints_attributes].nil?
       return true
-	end
-    ret = contest_params[:contest_problem_joints_attributes].map { |key, val| l_check(val) }
+    end
+    ret = contest_params[:contest_problem_joints_attributes].to_unsafe_h.map { |key, val| l_check(val) }
     return !ret.any?
   end
 
   def is_started?
-    Time.now >= @contest.start_time or (user_signed_in? and current_user.admin?)
+    Time.now >= @contest.start_time or current_user&.admin?
   end
 
   def check_started!
@@ -232,8 +228,10 @@ class ContestsController < ApplicationController
       :contest_type,
       :cd_time,
       :disable_discussion,
-      :freeze_time,
-	  :show_detail_result,
+      :freeze_minutes,
+      :show_detail_result,
+      :hide_old_submission,
+      :user_whitelist,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,

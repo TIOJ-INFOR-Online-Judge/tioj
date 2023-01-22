@@ -2,15 +2,22 @@
 #
 # Table name: submission_tasks
 #
-#  id            :integer          not null, primary key
-#  submission_id :integer
+#  id            :bigint           not null, primary key
+#  submission_id :bigint
 #  position      :integer
 #  result        :string(255)
-#  time          :integer
-#  memory        :integer
+#  time          :decimal(12, 3)
+#  rss           :integer
 #  score         :decimal(18, 6)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  vss           :integer
+#  old_result    :string(255)
+#  old_score     :decimal(18, 6)
+#  old_time      :decimal(12, 3)
+#  old_memory    :integer
+#  message_type  :string(255)
+#  message       :text(16777215)
 #
 
 require 'test_helper'

@@ -1,9 +1,30 @@
-<% if censored(@submission) %>
-  <h4 class="page-header">Results of submission #<code>censored</code></h4>
-  <code>censored</code>
-<% else %>
-
+<% set_page_title "Submission - " + @submission.id.to_s %>
 <h4 class="page-header">Results of submission #<%= @submission.id %></h4>
+
+<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% will_update = waiting_verdicts.include?(@submission.result) %>
+<% panel_class_map = {
+  'WA' => 'panel-danger',
+  'TLE' => 'panel-info',
+  'MLE' => 'panel-mle',
+  'OLE' => 'panel-ole',
+  'RE' => 'panel-warning',
+  'SIG' => 'panel-sig',
+  'AC' => 'panel-success',
+  'CE' => 'panel-ce',
+  'CLE' => 'panel-ce',
+} %>
+<% panel_class_map.default = 'panel-default' %>
+<% row_class_map = {
+  'WA' => 'danger',
+  'AC' => 'success',
+  'TLE' => 'info',
+  'RE' => 'warning',
+  'MLE' => 'mle',
+  'SIG' => 'sig',
+  'OLE' => 'ole',
+} %>
+<% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
 
 <p>
 <% if @contest.blank? %>
@@ -11,8 +32,10 @@
 <% else %>
   <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
 <% end %>
-<% if user_signed_in? and current_user.admin? %>
-  <%= link_to 'Rejudge', { :controller => :submissions, :action => :rejudge, :id => @submission.id }, :class => 'btn btn-xs btn-primary' %>
+<% if current_user&.admin? %>
+  <%= form_with url: rejudge_submission_path(@submission), :html => {:style => 'display: inline;'} do |f| %>
+    <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+  <% end %>
   <% if @contest.blank? %>
     <%= link_to 'Edit', edit_submission_path(@submission), :class => 'btn btn-info btn-xs' %>
   <% else %>
@@ -21,20 +44,7 @@
   <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
 <% end %>
 </p>
-<% case @submission.result %>
-  <% when "WA" %>
-    <div class="panel panel-danger">
-  <% when "TLE" %>
-    <div class="panel panel-info">
-  <% when "MLE" %>
-    <div class="panel panel-warning">
-  <% when "RE" %>
-    <div class="panel panel-warning">
-  <% when "AC" %>
-    <div class="panel panel-success">
-  <% else %>
-    <div class="panel panel-default">
-<% end %>
+<div id="overall-result" class="panel <%= panel_class_map[@submission.result] %>">
   <div class="panel-heading">
   <div class="row">
     <div class="col-md-3">
@@ -44,10 +54,10 @@
       <h1 class="panel-title">Total Time (ms)</h1>
     </div>
     <div class="col-md-2">
-      <h1 class="panel-title">Max Memory (KiB)</h1>
+      <h1 class="panel-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h1>
     </div>
     <div class="col-md-3">
-      <h1 class="panel-title">Verdict</h1>
+      <h1 class="panel-title">Verdict <%= help_icon '/about/verdicts' %></h1>
     </div>
     <div class="col-md-2">
       <h1 class="panel-title">Score</h1>
@@ -63,24 +73,27 @@
         <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_problem_path(@submission.contest_id, @submission.problem) %>
       <% end %>
     </div>
-    <div class="col-md-2">
+    <div id="total-time" class="col-md-2">
       <%= @submission.total_time.to_i %>
     </div>
-    <div class="col-md-2">
+    <div id="total-memory" class="col-md-2">
       <%= @submission.total_memory.to_i %>
     </div>
     <div class="col-md-3">
-      <%= @verdict[@submission.result] %>
+      <span id="verdict"><%= @verdict[@submission.result] %></span>
+      <% if will_update %>
+        <img id="waiting-icon" src="/images/icons/svg/waiting.svg" style="width:20px;">
+      <% end %>
     </div>
-    <div class="col-md-2">
+    <div id="total-score" class="col-md-2">
       <%= score_str(@submission.score) %>
     </div>
   </div>
   </div>
 </div>
 
-<% unless @submission.result == 'CE' or @submission.result == 'ER' %>
-  <div class="panel panel-default">
+<% unless no_task_verdicts.include? @submission.result %>
+  <div id="subtask-results" class="panel panel-default">
     <div class="panel-heading" data-toggle="collapse" href="#collapseSubtask">
       <h1 class="panel-title">
         Subtask Results
@@ -93,7 +106,6 @@
         <% num_tasks = problem.testdata.count %>
         <% testsets = problem.testdata_sets.order(id: :asc) %>
         <% show_cons = testsets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
-        <% result = @submission.submission_tasks.order(position: :asc).pluck(:score) %>
         <thead>
           <tr>
             <th width="15%">Subtask no.</th>
@@ -115,24 +127,19 @@
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
               <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% lst = result.values_at(*lst) %>
-              <% if lst.nil? or lst.all?{|x| x.nil?} %>
-                <td></td>
-              <% else %>
-                <td style="padding-top:2px;padding-bottom:2px">
-                  <% if lst.any?{|x| x.nil?} %>
-                    <span class="subtask-display" style="background-color:#808080;">
-                      <%= '? / %s' % score_str(s.score) %>
-                    </span>
-                  <% else %>
-                    <% p = lst.size > 0 ? lst.min / 100 : 1 %>
-                    <% score = (p * s.score).round(6) %>
-                    <span class="subtask-display" style="background-color:<%= color_map(p) %>;">
-                      <%= '%s / %s' % [score_str(score), score_str(s.score)] %>
-                    </span>
-                  <% end %>
-                </td>
-              <% end %>
+              <% lst = @_result.transform_values{|i| i.score}.values_at(*lst) %>
+              <td style="padding-top:2px;padding-bottom:2px">
+                <% bg_color, score = '#808080', '?' %>
+                <% unless lst.nil? or lst.any?{|x| x.nil?} %>
+                  <% p = lst.size > 0 ? lst.min / 100 : 1 %>
+                  <% bg_color = color_map(p) %>
+                  <% score = (p * s.score).round(@problem.score_precision) %>
+                  <% score = score_str(score) %>
+                <% end %>
+                <span id="subtask-score-bg-<%= i %>" class="subtask-display" style="background-color:<%= bg_color %>;">
+                  <span id="subtask-score-<%= i %>"><%= score %></span><%= ' / ' + score_str(s.score) %>
+                </span>
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -140,74 +147,93 @@
     </div>
   </div>
 
-  <% if @contest.blank? or @contest.show_detail_result? or Time.now > @contest.end_time or (user_signed_in? and current_user.admin?) %>
-    <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
-        <h1 class="panel-title">
-          Testdata Results
-          <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
-        </h1>
-      </div>
+  <div id="testdata-results" class="panel panel-default">
+    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
+      <h1 class="panel-title">
+        Testdata Results
+        <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+      </h1>
+    </div>
+    <% if @show_detail %>
       <div class="collapse in" id="collapseTestdata">
-        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
         <table class="table table-condensed">
           <thead>
             <tr>
               <th>Testdata no.</th>
               <th>Subtasks</th>
               <th>Time (ms)</th>
-              <th>Memory (KiB)</th>
-              <th>Verdict</th>
+              <% if @has_vss %>
+                <th>Memory (VSS, KiB) <%= help_icon '/about/memory' %></th>
+              <% end %>
+              <th>Memory (RSS, KiB) <%= help_icon '/about/memory' %></th>
+              <th>Verdict <%= help_icon '/about/verdicts' %></th>
               <th>Score</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             <% Range.new(0, @submission.problem.testdata.size - 1).each do |i| %>
               <% task = @_result[i] %>
-              <% if task then %>
-                <% if styleclass_map[task[0]] %>
-                  <tr class="<%= styleclass_map[task[0]] %>">
-                <% else %>
-                  <tr>
-                <% end %>
-                  <td><%= i %></td>
-                  <td>
-                    <% if @invtdlist[i] %>
-                      <% @invtdlist[i].each do |x| %>
-                        <span class="subtask-icon"><%= x + 1 %></span>
-                      <% end %>
-                    <% end %>
-                  </td>
-                  <td><%= task[1] %></td>
-                  <td><%= task[2] %></td>
-                  <td><%= @verdict[task[0]] %></td>
-                  <td><%= score_str(task[3]) %></td>
-                </tr>
+              <% tr_attr = {id: "td-row-#{i}"} %>
+              <% tr_attr[:class] = row_class_map[task.result] if task and row_class_map[task.result] %>
+              <% collapse_id = "td-message-row-#{i}" %>
+              <% tr_attr.merge!({data: {toggle: "collapse"}, href: "##{collapse_id}"}) %>
+              <% if tr_attr[:class] %>
+                <% tr_attr[:class] += " panel-heading" %>
               <% else %>
-                <tr>
-                  <td><%= i %></td>
-                  <td></td> <td></td> <td></td> <td></td> <td></td>
-                </tr>
+                <% tr_attr[:class] = "panel-heading" %>
               <% end %>
-            <% end %>
+              <%= tag.tr(**tr_attr) do %>
+                <td><%= i %></td>
+                <td>
+                  <% if @invtdlist[i] %>
+                    <% @invtdlist[i].each do |x| %>
+                      <span class="subtask-icon"><%= x + 1 %></span>
+                    <% end %>
+                  <% end %>
+                </td>
+                <% if task then %>
+                  <td id="td-time-<%= i %>"><%= time_str(task.time) %></td>
+                  <% if @has_vss %>
+                    <td id="td-vss-<%= i %>"><%= task.vss || '-' %></td>
+                  <% end %>
+                  <td id="td-rss-<%= i %>"><%= task.rss %></td>
+                  <td id="td-verdict-<%= i %>"><%= @verdict[task.result] %></td>
+                  <td id="td-score-<%= i %>"><%= score_str(task.score) %></td>
+                <% else %>
+                  <td id="td-time-<%= i %>"></td>
+                  <% if @has_vss %>
+                    <td id="td-vss-<%= i %>"></td>
+                  <% end %>
+                  <td id="td-rss-<%= i %>"></td>
+                  <td id="td-verdict-<%= i %>"></td>
+                  <td id="td-score-<%= i %>"></td>
+                <% end %>
+                <td>
+                  <i class="indicator glyphicon glyphicon-chevron-down<% unless task&.message_type %> no-display<% end %>"></i>
+                </td>
+              <% end %> <%# tr %>
+              <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type %> no-display<% end %>" id="<%= collapse_id %>">
+                <td id="td-message-<%= i %>" colspan="<%= @has_vss ? 8 : 7 %>">
+                  <% if task&.message_type %>
+                    <% if task.message_type == "html" %>
+                      <%= raw task.message %>
+                    <% else %>
+                      <pre class="pre-scrollable" style="margin: 0;"><code class=""><%= task.message %></code></pre>
+                    <% end %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %> <%# Range.new %>
           </tbody>
         </table>
       </div>
-    </div>
-  <% else %>
-    <div class="panel panel-default">
-      <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
-        <h1 class="panel-title">
-          Testdata Results
-          <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
-        </h1>
-      </div>
+    <% else %>
       <div class="collapse in" id="collapseTestdata">
-        <% styleclass_map = {'WA' => 'danger', 'AC' => 'success', 'TLE' => 'info', 'RE' => 'warning', 'MLE' => 'warning'} %>
-		&nbsp; Individual testdata result is hidden during contest.
-	  </div>
-	</div>
-  <% end %>
+        &nbsp; Individual testdata result is hidden during contest.
+      </div>
+    <% end %> <%# if @show_detail %>
+  </div>
 <% end %>
 
 <div class="well well-sm">
@@ -233,29 +259,131 @@
   </div>
 </div>
 
-<% if user_signed_in? and ( current_user.admin? or current_user.id == @submission.user_id ) %>
-  <% if @submission.result == "CE" or @submission.message.present? %>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-         <h1 class="panel-title">Compilation Error Message</h1>
-      </div>
-      <div class="panel-body">
-        <% if @submission.message.present? %>
-          <pre class="pre-scrollable"><code class=""><%= @submission.message %></code></pre>
-        <% else %>
-          Sorry, no compilation error message available.
-        <% end %>
-      </div>
+<% if current_user&.admin? or current_user&.id == @submission.user_id %>
+  <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
+    <div class="panel-heading">
+        <h1 class="panel-title">Compilation Error Message</h1>
     </div>
-  <% end %>
-	<pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code %></code></pre> 
-	<!-- <button type="button" id="copy_btn" class="btn btn-info btn-xs" style="float:right"> copy code </button> -->
-	<!-- <script> init_code_copy_script() </script> -->
+    <div class="panel-body">
+      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> no-display<% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
+      <span id="ce-message-none" <% if @submission.message.present? %>class="no-display"<% end %>>
+        Sorry, no compilation error message available.
+      </span>
+    </div>
+  </div>
+  <pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code %></code></pre> 
+  <!-- <button type="button" id="copy_btn" class="btn btn-info btn-xs" style="float:right"> copy code </button> -->
+  <!-- <script> init_code_copy_script() </script> -->
+<% end %>
+
+<% if will_update %>
+<script>
+var verdict = <%= raw(@verdict.to_json) %>;
+var no_task_verdicts = <%= raw(no_task_verdicts.to_json) %>;
+var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
+var panel_class_map = <%= raw(panel_class_map.to_json) %>;
+var row_class_map = <%= raw(row_class_map.to_json) %>;
+
+function hsv_to_rgb(h, s, v) {
+  h /= 360; s /= 100; v /= 100;
+  var h_i = Math.floor(h*6);
+  var f = h*6 - h_i;
+  var p = v * (1 - s);
+  var q = v * (1 - f*s);
+  var t = v * (1 - (1 - f) * s);
+  var r = 0, b = 0, g = 0;
+  if (h_i == 0) r=v, g=t, b=p;
+  if (h_i == 1) r=q, g=v, b=p;
+  if (h_i == 2) r=p, g=v, b=t;
+  if (h_i == 3) r=p, g=q, b=v;
+  if (h_i == 4) r=t, g=p, b=v;
+  if (h_i == 5) r=v, g=p, b=q;
+  r = Math.floor(r*255).toString(16).padStart(2, '0');
+  g = Math.floor(g*255).toString(16).padStart(2, '0');
+  b = Math.floor(b*255).toString(16).padStart(2, '0');
+  return '#' + r + g + b;
+}
+
+function color_map(scale) {
+  scale = scale < 0 ? 0 : scale > 1 ? 1 : scale;
+  scale = scale < 0.5 ? 0.5 - 2 * (0.5 - scale) ** 2 : 0.5 + 2 * (scale - 0.5) ** 2;
+  return hsv_to_rgb(scale * 120, 100, 85 - 40 * scale);
+}
+
+function score_str(str) {
+  return String(str).replace(/\.0$/, '');
+}
+
+function time_str(str) {
+  str = parseFloat(str).toFixed(1)
+  pad = 6 - str.length;
+  if (pad > 0) str = '<span style="visibility: hidden;">' + '0'.repeat(pad) + '</span>' + str;
+  return str;
+}
+
+function updateTask(data) {
+  for (var td_set of data['td_set_scores']) {
+    var pos = td_set['position'];
+    if (td_set['finished']) {
+      $('#subtask-score-bg-' + pos).css('background-color', color_map(td_set['ratio']));
+      $('#subtask-score-' + pos).text(score_str(td_set['score']));
+    }
+  }
+  for (var td of data['tasks']) {
+    var pos = td['position'];
+    $('#td-time-' + pos).html(time_str(td['time']));
+    $('#td-vss-' + pos).text(td['vss']);
+    $('#td-rss-' + pos).text(td['rss']);
+    $('#td-score-' + pos).text(score_str(td['score']));
+    $('#td-verdict-' + pos).text(verdict[td['result']]);
+    if (row_class_map[td['result']]) $('#td-row-' + pos).addClass(row_class_map[td['result']]);
+    if (td['message_type'] && td['message']) {
+      $('#td-message-row-' + pos).removeClass('no-display');
+      $('#td-row-' + pos + ' .indicator').removeClass('no-display');
+      if (td['message_type'] == 'html') {
+        $('#td-message-' + pos).html(td['message']);
+      } else {
+        $('#td-message-' + pos).html('<pre class="pre-scrollable" style="margin: 0;"><code class=""></code></pre>');
+        $('#td-message-' + pos + ' code').text(td['message']);
+      }
+    }
+  }
+}
+
+function updateResult(data) {
+  var to_wait = waiting_verdicts.includes(data['result']);
+  $('#verdict').text(verdict[data['result']]);
+  $('#waiting-icon').toggleClass('no-display', !to_wait);
+  $('#overall-result').attr('class', 'panel ' + (panel_class_map[data['result']] || 'panel-default'));
+  if (['CE', 'CLE', 'ER'].includes(data['result'])) $('#ce-message').removeClass('no-display');
+  if (no_task_verdicts.includes(data['result'])) {
+    $('#subtask-results').addClass('no-display');
+    $('#testdata-results').addClass('no-display');
+  }
+  if (data['message']) {
+    $('#ce-message-content').removeClass('no-display');
+    $('#ce-message-none').addClass('no-display');
+    $('#ce-message-content code').text(data['message']);
+  }
+  if (data['total_time']) $('#total-time').text(data['total_time'])
+  if (data['total_memory']) $('#total-memory').text(data['total_memory'])
+  if ('score' in data) $('#total-score').text(score_str(data['score']));
+  if (!to_wait) App.cable.disconnect();
+}
+
+$(document).ready(function() {
+  subscribeSubmission(<%= @submission.id %>, function(data) {
+    if ('result' in data) {
+      updateResult(data);
+    } else {
+      updateTask(data);
+    }
+  });
+});
+</script>
 <% end %>
 
 <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs' %>
-
-<% end %>
 
 <%= javascript_include_tag         "/codehighlighter/prism.js" %>
 <%= stylesheet_link_tag         "/codehighlighter/prism.css" %>

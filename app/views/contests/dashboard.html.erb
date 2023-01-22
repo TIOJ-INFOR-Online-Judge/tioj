@@ -1,3 +1,4 @@
+<% set_page_title "Dashboard - " + @contest.title %>
 <h4 class="page-header">
   Dashboard <small><%= @contest.title %></small>
 </h4>
@@ -35,7 +36,7 @@
       <% @tasks.each_with_index do |task, index| %>
         <th><%= link_to ('p' + (65+index).chr), contest_problem_path(@contest, task) %></th>
       <% end %>
-      <% if @contest.contest_type == 2 %>
+      <% if @contest.type_acm? %>
         <th>Solv</th>
         <th>Penalty</th>
       <% else %>

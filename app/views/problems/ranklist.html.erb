@@ -1,3 +1,4 @@
+<% set_page_title "Ranklist - " + @problem.id.to_s + " - " + @problem.name %>
 <h4 class="page-header">Ranklist <small>Problem #<%= @problem.id %></small></h4>
 
 <div class="row">
@@ -55,6 +56,14 @@ th {
       <th>#</th>
       <th></th>
       <th>Submitter</th>
+      <% if @display_score %>
+        <th>
+          Score
+          <span class="glyphicon glyphicon-sort icon-non"></span>
+          <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
+          <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        </th>
+      <% end %>
       <th>
         Time (ms)
         <span class="glyphicon glyphicon-sort icon-non"></span>
@@ -105,9 +114,12 @@ th {
         <td><%= link_to submission.id, submission_path(submission) %></td>
         <td><%= link_to image_tag(now_user.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(submission.user_id) %></td>
         <td><%= link_to now_user.nickname, user_path(submission.user_id) %></td>
+        <% if @display_score %>
+          <td><%= score_str(submission.score) %></td>
+        <% end %>
         <td><%= submission.total_time %></td>
         <td><%= submission.total_memory %></td>
-        <td><%= compiler_id_name(submission.compiler.id) %></td>
+        <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code.bytesize) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
       </tr>
@@ -157,7 +169,7 @@ $(document).ready(function()
                 1: { sorter: false},
                 2: { sorter: false},
                 3: { sorter: false},
-                7: { sorter: 'file-size'}
+                <%= @display_score ? 8 : 7 %>: { sorter: 'file-size'}
             },
             theme: 'meow' // non-existent theme
         }).tablesorterPager({

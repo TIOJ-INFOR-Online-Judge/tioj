@@ -2,31 +2,28 @@
 #
 # Table name: posts
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  title          :string(255)
-#  content        :text(65535)
-#  user_id        :integer
-#  problem_id     :integer
+#  content        :text(16777215)
+#  user_id        :bigint
 #  created_at     :datetime
 #  updated_at     :datetime
-#  contest_id     :integer
 #  global_visible :boolean          default(TRUE), not null
+#  postable_type  :string(255)
+#  postable_id    :bigint
+#  post_type      :integer          default("discuss")
+#  user_visible   :boolean          default(FALSE)
 #
 
-class Post < ActiveRecord::Base
+class Post < ApplicationRecord
+  enum :post_type, {discuss: 0, solution: 1, issue: 2}, prefix: :type
+
   belongs_to :user
-  belongs_to :problem
-  belongs_to :contest
+  belongs_to :postable, optional: true, polymorphic: true
   has_many :comments, dependent: :destroy
 
   validates_length_of :title, :in => 0..30
-  validates_length_of :content, :in => 0..3000
-
-  def problem_or_contest?
-    if not problem.nil? and not contest.nil?
-      errors.add(:base, 'Posts cannot belong to both problems and contests')
-    end
-  end
+  validates_length_of :content, :in => 0..65536
 
   accepts_nested_attributes_for :comments
 end
