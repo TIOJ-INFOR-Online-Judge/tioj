@@ -1,21 +1,18 @@
 <% @scores.each_with_index do |s, index| %>
-<% case s[2] %>
-<% when @color[0] %>
-<tr class="warning">
-<% when @color[1] %>
-<tr class="success">
-<% when @color[2] %>
-<tr class="info">
-<% else %>
-<tr>
-<% end %>
-<td><%= s[-1] %></td>
+  <% case s[2] %>
+  <% when @color[0] %>
+    <tr class="warning">
+  <% when @color[1] %>
+    <tr class="success">
+  <% when @color[2] %>
+    <tr class="info">
+  <% else %>
+    <tr>
+  <% end %>
+    <td><%= s[-1] %></td>
     <td><%= link_to image_tag(s[0].avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(s[0]) %></td>
     <td><%= link_to s[0].username, user_path(s[0]) %></td>
     <td><%= s[0].nickname %></td>
-    <% if user_signed_in? and current_user.admin? %>
-    <td><%= User.find(s[0]).name %></td>
-    <% end %>
     <% if @contest.contest_type == 2 %>
       <% s[3].each do |t|%>
         <td>

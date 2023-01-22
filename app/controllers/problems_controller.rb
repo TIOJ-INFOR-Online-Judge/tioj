@@ -1,5 +1,4 @@
 class ProblemsController < ApplicationController
-  before_filter :authenticate_user!
   before_filter :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_filter :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_filter :set_contest, only: [:show]
