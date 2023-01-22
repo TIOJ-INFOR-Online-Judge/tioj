@@ -43,7 +43,7 @@ MathJax = ({
           <li><%= link_to "Submissions", submissions_path %></li>
           <li><%= link_to "Contests", contests_path %></li>
           <li><%= link_to "Discuss", posts_path %></li>
-          <li><%= link_to "About", about_path %></li>
+          <li><%= link_to "About", about_url %></li>
           <li><%= link_to "Rank", users_path %></li>
           <% if current_user %>
             <li><%= link_to(current_user.username, user_path(current_user)) %></li>
@@ -61,7 +61,7 @@ MathJax = ({
             <% end %>
           <% else %>
             <li><%= link_to('Sign in', new_session_path(:user)) %> </li>
-			<!-- <li><%= link_to('Sign up', new_registration_path(:user)) %></li> -->
+            <li><%= link_to('Sign up', new_registration_path(:user)) %></li>
           <% end %>
         </ul>
       </div><!-- /.navbar-collapse -->

@@ -1,6 +1,6 @@
 module ProblemsHelper
   def topcoder(problem)
-    submission = problem.submissions.select("user_id").where("contest_id is NULL AND result = ? ", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").order("id ASC").first
+    submission = problem.submissions.select("user_id").where("contest_id is NULL AND result = ? ", "AC").order("total_time ASC").order("total_memory ASC").order("LENGTH(code) ASC").first
     return User.find_by_id(submission.user_id) if submission
     return nil if submission.blank?
   end
@@ -16,7 +16,7 @@ module ProblemsHelper
 
   def topcoders(problems)
     problem_ids = problems.map(&:id)
-    lst = Problem.select("problems.id, (select user_id from submissions where problem_id = problems.id and (contest_id is null and result = 'AC') order by total_time asc, total_memory asc, length(code) asc, id asc limit 1) topcoder").where(id: problem_ids).to_a
+    lst = Problem.select("problems.id, (select user_id from submissions where problem_id = problems.id and (contest_id is null and result = 'AC') order by total_time asc, total_memory asc, length(code) asc limit 1) topcoder").where(id: problem_ids).to_a
     topcoders = Hash[User.where(id: lst.map(&:topcoder).compact.uniq).to_a.collect { |user| [user.id, user] }]
     topcoders_mp = Hash[lst.collect { |prob| [prob.id, prob.topcoder ? topcoders[prob.topcoder] : nil] }]
     return topcoders_mp

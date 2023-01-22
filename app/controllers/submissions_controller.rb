@@ -70,11 +70,7 @@ class SubmissionsController < ApplicationController
         end
         contest = Contest.find(params[:contest_id])
         unless contest.problem_ids.include?(@problem.id) and Time.now >= contest.start_time and Time.now <= contest.end_time
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+          redirect_to problem_path(@problem), notice: 'Contest ended, cannot submit.'
           return
         end
       end
@@ -113,11 +109,7 @@ class SubmissionsController < ApplicationController
         end
         contest = Contest.find(params[:contest_id])
         unless contest.problem_ids.include?(@problem.id) and Time.now >= contest.start_time and Time.now <= contest.end_time
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+          redirect_to problem_path(@problem), notice: 'Contest ended, cannot submit.'
           return
         end
       end
