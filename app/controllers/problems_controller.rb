@@ -1,4 +1,5 @@
 class ProblemsController < ApplicationController
+  before_action :authenticate_user!
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
   before_action :set_contest, only: [:show]
