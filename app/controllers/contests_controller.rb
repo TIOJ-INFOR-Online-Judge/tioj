@@ -88,9 +88,7 @@ class ContestsController < ApplicationController
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     elsif @contest.type_ioicamp?
-      unless user_signed_in? and current_user.admin?
-        freeze_start = @contest.end_time - @contest.freeze_minute
-      else
+      if user_signed_in? and current_user.admin?
         freeze_start = @contest.end_time
       end
       @participants.each do |u|
@@ -120,7 +118,7 @@ class ContestsController < ApplicationController
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
-      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_time != 0
+      if not (user_signed_in? and current_user.admin?) and Time.now >= freeze_start and @contest.freeze_minutes != 0
         flash.now[:notice] = "Scoreboard is now frozen."
       end
     else # type_ioi contest
