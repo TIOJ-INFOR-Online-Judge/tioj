@@ -91,6 +91,7 @@ class ContestsController < ApplicationController
       if user_signed_in? and current_user.admin?
         freeze_start = @contest.end_time
       end
+      first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
       @participants.each do |u|
         t = []
         total_score = 0
