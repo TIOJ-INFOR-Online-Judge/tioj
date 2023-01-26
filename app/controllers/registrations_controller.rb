@@ -22,4 +22,8 @@ class RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  def destroy
+    redirect_to root_path, alert: "Please do not delete your account."
+  end
+
 end
