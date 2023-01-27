@@ -50,7 +50,7 @@
           <span>
           <% end %>
             <% if t[:score] > 0 %>
-              <strong><%= t[:score].round.to_s %></strong>
+              <strong><%= score_str(t[:score]) %></strong>
             <% else %>
               -
             <% end %>
@@ -83,7 +83,7 @@
             </span>
         </td>
       <% end %>
-      <td><%= s[2].round.to_s %></td>
+      <td><%= score_str(s[2]) %></td>
       <td><%= s[4] %></td>
     <% else %>
       <% s[1].each do |t|%>
