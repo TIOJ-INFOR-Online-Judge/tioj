@@ -22,6 +22,7 @@ services:
       - SMTP_ADDRESS
       - MAIL_HOSTNAME
       - MAIL_SENDER
+      - ALLOW_REGISTER
     volumes:
       - /srv/tioj/web-td:/tioj/td
       - /srv/tioj/web-log:/tioj/log
