@@ -88,10 +88,6 @@ class ContestsController < ApplicationController
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
     elsif @contest.type_ioicamp?
-      if user_signed_in? and current_user.admin?
-        freeze_start = @contest.end_time
-      end
-
       uncounted = ['CE', 'ER', 'CLE', 'JE'] + waiting_verdicts
 
       high_score = @submissions.map{|sub| sub.select{|a| a.score > 0 and a.created_at < freeze_start}.max_by(&:score)} \
