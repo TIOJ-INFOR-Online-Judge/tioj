@@ -1,3 +1,32 @@
+TIOJ: IOIC variant
+==
+
+## features
+
+因為 TIOJ 升級到 v2，在 merge 的途中順便把 ioicamp judge 的 feature 重新整理一遍（大部分 code 都是從舊的 commit 抓來的）
+
+https://github.com/ioicamp/tioj/pulls
+
+### 共同需求
+
+- [X] 禁止註冊 [PR#24](https://github.com/ioicamp/tioj/commit/f9a13ec740d1f16791162338332f928ae312fba8) [PR#29](https://github.com/ioicamp/tioj/commit/effec6456dd36c6f976cccb52a25a277573951b3) \
+    comment: 可以用環境變數 `ALLOW_REGISTER=allow` 來允許註冊
+- [X] 禁止刪除帳號 [PR#25](https://github.com/ioicamp/tioj/commit/979e37bbcdba854c39aebc0c54ab53702c6d526b)
+- [X] 讓 admin 可以在記分板上看到名字 [PR#27](https://github.com/ioicamp/tioj/commit/6efa6fba7b249a9c808a66ff87a0e1f4b6599d97)
+- [X] 要登入才能看題目 [PR#26](https://github.com/ioicamp/tioj/commit/6916bcb879097255e3cd5183f90ceab2bd1c3515) \
+    comment: 這個 feature 好像只是用來防止有人沒把題目開成 invisible?
+- [ ] IOIC type 的 contest（IOI type 和 ACM type 的混合） (PR#28)
+- [X] user_whitelist（限制特定 regex 的人才能加進 contest） \
+    comment: 好像本來就在 upstream 上
+- [X] About page
+- [ ] https://github.com/TIOJ-INFOR-Online-Judge/tioj/commit/a75130e74f3f628a8bb276587151f9e6d0d0aa23 \
+    comment: 好像已經不存在 `.form-group > select` 的元素了(?)
+
+### 每屆都會改的
+
+- 換 banner, favicon
+- 換 config.site_name
+
 [TIOJ INFOR Online Judge](http://tioj.ck.tp.edu.tw/)
 ==
 
