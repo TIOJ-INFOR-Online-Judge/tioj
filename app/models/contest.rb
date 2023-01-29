@@ -19,7 +19,7 @@
 #
 
 class Contest < ApplicationRecord
-  enum :contest_type, {gcj: 0, ioi: 1, acm: 2}, prefix: :type
+  enum :contest_type, {gcj: 0, ioi: 1, acm: 2, ioicamp: 3}, prefix: :type
 
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints

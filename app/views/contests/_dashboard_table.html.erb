@@ -40,6 +40,54 @@
       <% end %>
       <td><%= s[2].to_s %></td>
       <td><%= s[4] %></td>
+    <% elsif @contest.type_ioicamp? %>
+      <% s[3].each do |t|%>
+        <td class="display-switch-score">
+          <% if t[:first] %>
+          <span style="color:#008000;">
+          <% elsif t[:score] > 0 %>
+          <span class="text-success">
+          <% elsif t[:total_attm] > 0 %>
+          <span class="text-danger">
+          <% else %>
+          <span>
+          <% end %>
+            <% if t[:score] > 0 %>
+              <strong><%= score_str(t[:score]) %></strong>
+            <% else %>
+              -
+            <% end %>
+          </span>
+          <% if t[:total_attm] > 0 or t[:pending_attm] > 0 %>
+            <small><strong>
+                /<%= t[:total_attm].to_s %>
+              <% if t[:pending_attm] > 0 %>
+                <span style="color:#888;">+<%= t[:pending_attm].to_s %></span>
+              <% end %>
+            </strong></small>
+          <% end %>
+        </td>
+        <td class="display-switch-penalty">
+          <span>
+            <% if t[:score] > 0 %>
+              <% if t[:penalty_attm] > 0 %>
+              <span class="text-danger">
+              <% else %>
+              <span>
+              <% end %>
+                <strong>
+                  <%= t[:penalty_attm].to_s %>
+                </strong>
+              </span>
+              /<small style="color:#888;"><strong><%= t[:tm] == -1 ? "-" : t[:tm].to_s %></strong></small>
+            <% else %>
+              -
+            <% end %>
+            </span>
+        </td>
+      <% end %>
+      <td><%= score_str(s[2]) %></td>
+      <td><%= s[4] %></td>
     <% else %>
       <% s[1].each do |t|%>
         <td>

@@ -87,7 +87,51 @@ class ContestsController < ApplicationController
       @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
       @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
       @color << 0
-    else
+    elsif @contest.type_ioicamp?
+      uncounted = ['CE', 'ER', 'CLE', 'JE'] + waiting_verdicts
+
+      high_score = @submissions.map{|sub| sub.select{|a| a.score > 0 and a.created_at < freeze_start}.max_by(&:score)} \
+                               .map{|a| a ? a.score : -1}
+      first_high_score = @submissions.zip(high_score) \
+                                     .map{|sub, score| sub.select{|a| a.score == score}.min_by(&:id)} \
+                                     .map{|a| a ? a.id : -1}
+      @participants.each do |u|
+        t = []
+        total_score = 0
+        total_penalty = 0
+        last_update = 0
+        @submissions.zip(first_high_score).each do |sub, first_high_score_id|
+          user_sub = sub.select{|s| s.user_id == u.id}
+          succ = user_sub.select{|a| a.score > 0 and a.created_at < freeze_start} \
+                    .max_by{|a| [a.score, -a.id]}
+          if succ # has >0 solution
+            penalty_attm = user_sub.select{|a| a.id < succ.id and not a.result.in? (uncounted) and a.created_at < freeze_start}.size
+            if succ.result == 'AC'
+              total_attm = penalty_attm + 1
+            else
+              total_attm = user_sub.select{|a| (not a.result.in?(uncounted) and a.created_at < freeze_start)}.size
+            end
+            pending_attm = user_sub.select{|a| (a.result.in?(waiting_verdicts) or a.created_at >= freeze_start)}.size
+            tm = (succ.created_at - @contest.start_time).to_i / 60
+            last_update = [last_update, tm].max
+            t << {total_attm: total_attm, penalty_attm: penalty_attm, pending_attm: pending_attm, \
+                  tm: tm, first: succ.id == first_high_score_id, score: succ.score, AC: succ.result == 'AC'}
+            total_score += succ.score
+            total_penalty += penalty_attm * 20 + tm
+          else
+            total_attm = user_sub.select{|a| (not a.result.in?(uncounted) and a.created_at < freeze_start)}.size
+            pending_attm = user_sub.select{|a| (a.result.in?(waiting_verdicts) or a.created_at >= freeze_start)}.size
+            t << {total_attm: total_attm, penalty_attm: 0, pending_attm: pending_attm, \
+                  tm: -1, first: false, score: 0, AC: false}
+          end
+        end
+        @scores << [u, 0, total_score, t, total_penalty, last_update]
+      end
+      @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
+      @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
+      @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
+      @color << 0
+    else # type_ioi contest
       @participants.each do |u|
         results = []
         @submissions.each do |sub|
