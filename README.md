@@ -15,12 +15,14 @@ https://github.com/ioicamp/tioj/pulls
 - [X] 讓 admin 可以在記分板上看到名字 [PR#27](https://github.com/ioicamp/tioj/commit/6efa6fba7b249a9c808a66ff87a0e1f4b6599d97)
 - [X] 要登入才能看題目 [PR#26](https://github.com/ioicamp/tioj/commit/6916bcb879097255e3cd5183f90ceab2bd1c3515) \
     comment: 這個 feature 好像只是用來防止有人沒把題目開成 invisible?
-- [ ] IOIC type 的 contest（IOI type 和 ACM type 的混合） (PR#28)
+- [X] IOIC type 的 contest（IOI type 和 ACM type 的混合） (PR#28)
 - [X] user_whitelist（限制特定 regex 的人才能加進 contest） \
     comment: 好像本來就在 upstream 上
 - [X] About page
 - [ ] https://github.com/TIOJ-INFOR-Online-Judge/tioj/commit/a75130e74f3f628a8bb276587151f9e6d0d0aa23 \
     comment: 好像已經不存在 `.form-group > select` 的元素了(?)
+- [ ] Translated verdict
+- [X] Add dashboard.json endpoint (氣球機 discord bot)
 
 ### 每屆都會改的
 
