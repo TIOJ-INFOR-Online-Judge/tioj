@@ -10,7 +10,9 @@ https://github.com/ioicamp/tioj/pulls
 ### 共同需求
 
 - [X] 禁止註冊 [PR#24](https://github.com/ioicamp/tioj/commit/f9a13ec740d1f16791162338332f928ae312fba8) [PR#29](https://github.com/ioicamp/tioj/commit/effec6456dd36c6f976cccb52a25a277573951b3) \
-    comment: 可以用環境變數 `ALLOW_REGISTER=allow` 來允許註冊
+    comment: 可以用環境變數 `ALLOW_REGISTER=allow` 來允許註冊 \
+    或者是用 `ALLOW_REGISTER=token_XXXXXXXXXXXXX` 讓擁有 token 的人可以註冊 \
+    （前端依然會把按鈕藏起來，要自己 POST request 包含 register_token）
 - [X] 禁止刪除帳號 [PR#25](https://github.com/ioicamp/tioj/commit/979e37bbcdba854c39aebc0c54ab53702c6d526b)
 - [X] 讓 admin 可以在記分板上看到名字 [PR#27](https://github.com/ioicamp/tioj/commit/6efa6fba7b249a9c808a66ff87a0e1f4b6599d97)
 - [X] 要登入才能看題目 [PR#26](https://github.com/ioicamp/tioj/commit/6916bcb879097255e3cd5183f90ceab2bd1c3515) \
