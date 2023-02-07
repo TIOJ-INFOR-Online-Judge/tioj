@@ -3,7 +3,12 @@ Rails.application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "registrations", :passwords => "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
+
+  scope 'admin' do
+    resources :users, controller: 'admin/users', constraints: { id: /[^\/]+/ }
+  end
   ActiveAdmin.routes(self)
+
   #resources :limits
   resources :problems do
     resources :testdata do
