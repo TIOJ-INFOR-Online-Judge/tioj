@@ -45,7 +45,7 @@
     <td class="text-nowrap">Output Limit Exceeded</td>
     <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-danger">WA</span> because it can no longer write into stdout later.
       <br>
-      你的程式使得任何檔案超出了輸出限制（包含標準輸出(stdout)）。<br>前述限制是每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會在寫入時以磁碟空間不足的原因失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出(stderr)，你可能會因為此後對標準輸出(stdout)的寫入失敗而得到 <span class="text-danger">WA</span>。
+      你的程式使得任何檔案超出了輸出限制（包含標準輸出 (stdout)）。<br>前述限制是每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會在寫入時以磁碟空間不足的原因失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後對標準輸出 (stdout) 的寫入失敗而得到 <span class="text-danger">WA</span>。
     </td>
   </tr>
   <tr class="warning">
@@ -61,7 +61,7 @@
     <td class="text-nowrap">Runtime Error (killed by signal)</td>
     <td>Your program was killed by a signal.<br>Some common causes are invalid memory access (SIGSEGV, i.e. Segmentation Fault), division by zero (SIGFPE), uncaught exceptions in C++ (SIGABRT), and invalid instruction (SIGILL). Note that SIGXFSZ is excluded since it will be interpreted as <span class="text-ole">OLE</span>.
       <br>
-      你的程式被 <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a> 強制中止了。<br>常見的原因包括違規記憶體存取（SIGSEGV, i.e. Segmentation Fault）、除數為 0（SIGFPE）、非法指令(instruction)（SIGILL），或是你有 exception 沒有 catch 到（SIGABRT）。SIGXFSZ 將會視為 OLE 而不算進此項。
+      你的程式被 <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a> 強制中止了。<br>常見的原因包括違規記憶體存取（SIGSEGV, i.e. Segmentation Fault）、除數為 0（SIGFPE）、非法指令 (instruction)（SIGILL），或是你有 exception 沒有 catch 到（SIGABRT）。SIGXFSZ 將會視為 OLE 而不算進此項。
     </td>
   </tr>
   <tr class="ce">
