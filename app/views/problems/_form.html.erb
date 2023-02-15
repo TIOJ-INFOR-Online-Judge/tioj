@@ -5,16 +5,7 @@
 <% end %>
 
 <%= nested_form_for @problem, :html => {:class => 'form', :id => 'problem-form'} do |f| %>
-  <% if @problem.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@problem.errors.count, "error") %> prohibited this problem from being saved:</h2>
-      <ul>
-        <% @problem.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @problem.errors, item: 'problem'} %>
 
   <div class="row">
     <div class="col-md-12">

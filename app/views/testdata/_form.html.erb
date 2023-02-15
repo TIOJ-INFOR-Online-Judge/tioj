@@ -1,14 +1,5 @@
 <%= form_for [@problem, @testdatum], :html => {:multipart => true} do |f| %>
-  <% if @testdatum.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@testdatum.errors.count, "error") %> prohibited this testdatum from being saved:</h2>
-      <ul>
-        <% @testdatum.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
   <div class="form-group">
     <%= f.label :test_input, "input testdata" %><br>

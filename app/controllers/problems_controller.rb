@@ -85,6 +85,7 @@ class ProblemsController < ApplicationController
   def create
     params[:problem][:compiler_ids] ||= []
     @problem = Problem.new(check_params())
+    @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       if @problem.save
         format.html { redirect_to @problem, notice: 'Problem was successfully created.' }
@@ -98,6 +99,7 @@ class ProblemsController < ApplicationController
 
   def update
     params[:problem][:compiler_ids] ||= []
+    @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       @problem.attributes = check_params()
       pre_ids = @problem.testdata_sets.collect(&:id)

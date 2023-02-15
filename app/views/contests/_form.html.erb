@@ -5,17 +5,7 @@
 <% end %>
 
 <%= nested_form_for(@contest) do |f| %>
-  <% if @contest.errors.any? %>
-    <div id="error_explanation">
-    <h2><%= pluralize(@contest.errors.count, "error") %> prohibited this contest from being saved:</h2>
-
-    <ul>
-      <% @contest.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @contest.errors, item: 'contest'} %>
 
   <div class="form-group">
     <%= f.label :title %>

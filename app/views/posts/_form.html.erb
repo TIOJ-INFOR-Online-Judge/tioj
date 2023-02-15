@@ -8,16 +8,7 @@
 
 <% form_target = @postable ? [@postable, @post] : @post %>
 <%= form_for form_target do |f| %>
-  <% if @post.errors.any? %>
-    <div id="error_explanation">
-      <h4><%= pluralize(@post.errors.count, "error") %> prohibited this problem from being saved:</h4>
-      <ul>
-        <% @post.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @post.errors, item: 'post'} %>
 
   <div class="form-group">
     <%= f.label :title, "Title:" %> <br />
