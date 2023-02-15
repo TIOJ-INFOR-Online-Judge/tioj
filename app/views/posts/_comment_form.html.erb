@@ -4,16 +4,16 @@
 <% else %>
   <% form_target = [post, comment] %>
 <% end %>
+<h5>New comment</h5>
 <%= form_for form_target do |f| %>
-  <div class="field">
+  <div class="form-group">
     <%= f.label :title, 'Title: ' %>
-    <%= f.text_field :title %>
+    <%= f.text_field :title, :class=> 'form-control' %>
   </div>
-  <div class="field">
+  <div class="form-group">
     <%= f.label :content, raw('Content: (All characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %><br>
-    <%= f.text_area :content %>
+    <%= f.text_area :content, :class=> 'form-control' %>
   </div>
-  <br />
   <div class="submit_comment" >
     <%= f.submit "Create Comment", :class => "btn btn-primary btn-xs" %>
   </div>

@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     end
     resources :submissions
     resources :posts do
-      resources :comments
+      resources :comments, except: [:index]
     end
 
     member do
@@ -39,14 +39,14 @@ Rails.application.routes.draw do
 
   resources :users, constraints: { id: /[^\/]+/ }
   resources :posts do
-    resources :comments
+    resources :comments, except: [:index]
   end
 
   resources :contests do
     resources :submissions
     resources :problems
     resources :posts do
-      resources :comments
+      resources :comments, except: [:index]
     end
 
     member do

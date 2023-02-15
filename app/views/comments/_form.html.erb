@@ -3,28 +3,26 @@
   <% form_target = [@contest] + form_target %>
 <% end %>
 <%= form_for form_target do |f| %>
-    <% if @post.errors.any? %>
+  <% if @post.errors.any? %>
     <div id="error_explanation">
-    <h2><%= pluralize(@post.errors.count, "error") %> prohibited this problem from being saved:</h2>
-
-    <ul>
+      <h4><%= pluralize(@post.errors.count, "error") %> prohibited this problem from being saved:</h4>
+      <ul>
         <% @post.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-    <% end %>
-    </ul>
-</div>
+          <li><%= msg %></li>
         <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-<div class="field">
-    <%= f.label :title, "Title:"%> <br />
-    <%= f.text_field :title %>
-</div>
-<div class="field">
+  <div class="form-group">
+    <%= f.label :title, "Title:" %><br />
+    <%= f.text_field :title, :class=> 'form-control', :placeholder=>'Title' %>
+  </div>
+  <div class="form-group">
     <%= f.label :content, "Content:" %> <br />
-    <%= f.text_area :content %>
-</div>
-<div class="actions">
-    <%= f.submit %>
-</div>
-        <% end %>
-
+    <%= f.text_area :content, :class=> 'form-control', :placeholder=>'Content' %>
+  </div>
+  <div class="actions">
+    <%= f.submit :class=>"btn btn-primary" %>
+  </div>
+<% end %>
