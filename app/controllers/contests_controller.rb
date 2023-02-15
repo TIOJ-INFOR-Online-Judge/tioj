@@ -143,8 +143,9 @@ class ContestsController < ApplicationController
   def create
     params[:contest][:compiler_ids] ||= []
     @contest = Contest.new(contest_params)
+    @ban_compiler_ids = params[:contest][:compiler_ids].map{|x| x.to_i}.to_set
     respond_to do |format|
-      if !check_tasks?
+      if !tasks_valid?
         format.html { render action: 'new' }
         format.json { render json: @contest.errors, status: :unprocessable_entity }
       elsif @contest.save
@@ -159,9 +160,10 @@ class ContestsController < ApplicationController
 
   def update
     params[:contest][:compiler_ids] ||= []
+    @ban_compiler_ids = params[:contest][:compiler_ids].map{|x| x.to_i}.to_set
     respond_to do |format|
-      if !check_tasks?
-        format.html { render action: 'new' }
+      if !tasks_valid?
+        format.html { render action: 'edit' }
         format.json { render json: @contest.errors, status: :unprocessable_entity }
       elsif @contest.update(contest_params)
         format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
@@ -190,19 +192,25 @@ class ContestsController < ApplicationController
     @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
   end
 
-  def check_tasks?
-    def l_check(val)
-      unless Problem.exists?(val['problem_id'].to_i)
-        @contest.errors.add(:problems, val['problem_id'] + ' does not exist')
-        return true
-      end
+  def tasks_valid?
+    problem_params = contest_params[:contest_problem_joints_attributes]&.values
+    return true if problem_params.nil?
+    problems = problem_params.map { |val| Integer(val['problem_id'], exception: false) }
+    if problems.any?{ |e| e.nil? }
+      @contest.errors.add(:problems, '- Invalid problem')
       return false
     end
-    if contest_params[:contest_problem_joints_attributes].nil?
-      return true
+    if problems.size != problems.to_set.size
+      @contest.errors.add(:problems, '- Duplicate problems')
+      return false
     end
-    ret = contest_params[:contest_problem_joints_attributes].to_unsafe_h.map { |key, val| l_check(val) }
-    return !ret.any?
+    valid_problems = Problem.where(id: problems).pluck(:id)
+    if problems.size != valid_problems.size
+      invalid_problems = problems - valid_problems
+      @contest.errors.add(:problems, 'not exist: ' + invalid_problems.join(', '))
+      return false
+    end
+    return true
   end
 
   def is_started?
