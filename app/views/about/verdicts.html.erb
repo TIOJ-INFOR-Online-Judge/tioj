@@ -13,7 +13,7 @@
     <td class="text-nowrap">Accepted</td>
     <td>Your program outputted the correct answer and terminated normally.
       <br>
-      你完全答對了。
+      你的程式輸出了正確答案且正常結束。
     </td>
   </tr>
   <tr class="danger">
@@ -21,7 +21,7 @@
     <td class="text-nowrap">Wrong Answer</td>
     <td>Your program didn't output the correct answer, but it terminated normally.
       <br>
-      你答錯了。
+      你的程式輸出了錯誤的答案，但是有正常結束。
     </td>
   </tr>
   <tr class="info">
@@ -29,7 +29,8 @@
     <td class="text-nowrap">Time Limit Exceeded</td>
     <td>Your program used too much CPU time or wall clock time.<br>The wall clock time limit is max(1.2 * TL, TL + 1s). Wall clock limit will not be triggered under normal circumstances, unless the judge server is under heavy load or your program paused by calling <code>sleep()</code>.
       <br>
-      	你的程式花太多時間了。
+      你的程式花了太多時間執行（CPU time 或實際執行時間）。<br>
+      實際執行時間的限制是 max(1.2 * TL, TL + 1s)。這個限制通常不會用到，除非評測系統過載，或者你的程式因為呼叫 <code>sleep()</code> 等函數而暫停。
     </td>
   </tr>
   <tr class="mle">
@@ -37,7 +38,7 @@
     <td class="text-nowrap">Memory Limit Exceeded</td>
     <td>Your program used too much memory.<br>Program that used too much memory would not necessarily get an <span class="text-mle">MLE</span>; see <a href="/about/memory">Memory Accounting Types</a> for more details.
       <br>
-      你的程式用了太多記憶體。請見 <a href="/about/memory">相關頁面</a>。
+      你的程式用了太多記憶體。<br>注意並不是所有用了太多記憶體的程式都會得到 <span class="text-mle">MLE</span>，詳請請見<a href="/about/memory">相關頁面</a>。
     </td>
   </tr>
   <tr class="ole">
@@ -45,23 +46,23 @@
     <td class="text-nowrap">Output Limit Exceeded</td>
     <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-danger">WA</span> because it can no longer write into stdout later.
       <br>
-      你的程式使得任何檔案超出了輸出限制（包含標準輸出 (stdout)）。<br>前述限制是每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會在寫入時以磁碟空間不足的原因失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後對標準輸出 (stdout) 的寫入失敗而得到 <span class="text-danger">WA</span>。
+      你的程式使得任何檔案（包含標準輸出 (stdout)）的大小超出 Output Limit。<br>前述限制是對每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會因磁碟空間不足而寫入失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後沒辦法寫入標準輸出 (stdout) 而得到 <span class="text-danger">WA</span>。
     </td>
   </tr>
   <tr class="warning">
     <td><span class="text-warning">RE</span></td>
     <td class="text-nowrap">Runtime Error</td>
-    <td>Your program terminated by exiting with a non-zero status code.
+    <td>Your program terminated by exiting with a non-zero <a href="https://en.wikipedia.org/wiki/Exit_status">status code</a>.
       <br>
-      你的程式異常中止，回傳值不為 0。
+      你的程式的 <a href="https://en.wikipedia.org/wiki/Exit_status">exit status</a> 不為 0。
     </td>
   </tr>
   <tr class="sig">
     <td><span class="text-sig">SIG</span></td>
     <td class="text-nowrap">Runtime Error (killed by signal)</td>
-    <td>Your program was killed by a signal.<br>Some common causes are invalid memory access (SIGSEGV, i.e. Segmentation Fault), division by zero (SIGFPE), uncaught exceptions in C++ (SIGABRT), and invalid instruction (SIGILL). Note that SIGXFSZ is excluded since it will be interpreted as <span class="text-ole">OLE</span>.
+    <td>Your program was killed by a <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a>.<br>Some common causes are invalid memory access (SIGSEGV, i.e. Segmentation Fault), division by zero (SIGFPE), uncaught exceptions in C++ (SIGABRT), and invalid instruction (SIGILL). Note that SIGXFSZ is excluded since it will be interpreted as <span class="text-ole">OLE</span>.
       <br>
-      你的程式被 <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a> 強制中止了。<br>常見的原因包括違規記憶體存取（SIGSEGV, i.e. Segmentation Fault）、除數為 0（SIGFPE）、非法指令 (instruction)（SIGILL），或是你有 exception 沒有 catch 到（SIGABRT）。SIGXFSZ 將會視為 OLE 而不算進此項。
+      你的程式被 <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a> 強制中止了。<br>常見的原因包括違規記憶體存取（SIGSEGV，也就是 Segmentation Fault）、除以零（SIGFPE）、非法指令 (instruction)（SIGILL），或是你有 exception 沒有 catch 到（SIGABRT）。SIGXFSZ 將會視為 <span class="text-ole">OLE</span> 而不算進此項。
     </td>
   </tr>
   <tr class="ce">
@@ -69,7 +70,7 @@
     <td class="text-nowrap">Compilation Error</td>
     <td>Your program failed to compile.
       <br>
-      自己編譯通過了再傳上來，OK？
+      你的程式編譯失敗。
     </td>
   </tr>
   <tr class="ce">
@@ -77,7 +78,7 @@
     <td class="text-nowrap">Compilation Limit Exceeded</td>
     <td>Your program took too much time (&gt; 60 sec) or memory (&gt; 2 GiB) to compile.
       <br>
-      編譯超時，或者編譯時使用了太多記憶體。
+      編譯超時（超過 60 秒），或者編譯時使用了太多記憶體（超過 2 GiB）。
     </td>
   </tr>
   <tr>
@@ -85,7 +86,7 @@
     <td class="text-nowrap">Judge Compilation Error</td>
     <td>This is caused by failed compilation of the special judge program. If you see this, please contact the problem setter.
       <br>
-      題目出爛了，趕快通知我們。
+      Special judge 編譯失敗，趕快通知出題者。
     </td>
   </tr>
   <tr>
