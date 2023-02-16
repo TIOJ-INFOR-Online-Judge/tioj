@@ -25,9 +25,13 @@
       <tr>
         <td><%= index %></td>
         <td><%= testdatum.test_input.blank? ? "Nil" : strip_uuid(testdatum.test_input_identifier) %></td>
-        <td><%= link_to 'Download', testdatum_path(testdatum, type: 'input'), :class => 'btn btn-success btn-xs' %></td>
+        <td style="text-align: right;">
+          <%= link_to 'Download' + (testdatum.input_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'input'), :class => 'btn btn-success btn-xs' %>
+        </td>
         <td><%= testdatum.test_output.blank? ? "Nil" : strip_uuid(testdatum.test_output_identifier) %></td>
-        <td><%= link_to 'Download', testdatum_path(testdatum, type: 'output'), :class => 'btn btn-success btn-xs' %></td>
+        <td style="text-align: right;">
+          <%= link_to 'Download' + (testdatum.output_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'output'), :class => 'btn btn-success btn-xs' %>
+        </td>
         <td><%= testdatum.time_limit %></td>
         <td><%= testdatum.vss_limit || '-' %></td>
         <td><%= testdatum.rss_limit || '-' %></td>

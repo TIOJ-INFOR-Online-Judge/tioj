@@ -90,6 +90,9 @@ gem 'net-http'
 # Redis for Action Cable
 gem 'redis', '~> 4'
 
+# Upload compression
+gem 'zstd-ruby'
+
 # Sentry for monitoring
 gem 'sentry-ruby'
 gem 'sentry-rails'

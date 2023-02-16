@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_16_141828) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -314,6 +314,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.integer "vss_limit", default: 65536
     t.integer "rss_limit"
     t.integer "output_limit", default: 65536
+    t.boolean "input_compressed", default: false
+    t.boolean "output_compressed", default: false
   end
 
   create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

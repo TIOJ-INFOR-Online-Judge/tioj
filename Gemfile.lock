@@ -385,6 +385,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.6.6)
+    zstd-ruby (1.5.4.0)
 
 PLATFORMS
   ruby
@@ -433,6 +434,7 @@ DEPENDENCIES
   sprockets (~> 4)
   tzinfo-data
   uglifier
+  zstd-ruby
 
 BUNDLED WITH
    2.3.17
