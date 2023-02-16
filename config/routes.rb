@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
 
   scope 'admin' do
-    resources :users, controller: 'admin/users', constraints: { id: /[^\/]+/ }
+    resources :users, controller: 'admin/users', as: 'admin_users', constraints: { id: /[^\/]+/ }
   end
   ActiveAdmin.routes(self)
 
