@@ -1,12 +1,15 @@
-## Future
-
 - [ ] Batch upload testdata
-- [ ] Testdata download for admin
+- [x] Testdata download for admin
+- [ ] Testdata compression (#19)
+- [ ] User-specified compilation flags (special judge / user program) (#25)
+- [ ] Disable sign up in settings
+- [ ] Pre-contest notice & UI color
+- [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
     - [ ] Native format
     - [ ] Polygon & Kattis & CMS support
 - [ ] Upload submission by file + non-UTF-8 code
-- [ ] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
+- [x] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Pin
 - [ ] IOI-style scoring in contest (max of each subtask)
 - [ ] I/O interactive & output-only problems
@@ -16,7 +19,7 @@
 - [ ] Rewrite contest scoreboard refresh using ActionCable
 - [ ] Add more languages
 - [ ] Send compiler information from judge server
-- [ ] Per-language memory/time limit
+- [ ] Per-language memory/time limit / interactive lib
 - [ ] Contest-only users + batch creation
     - don't appear in rank, can only submit to contests
 - [ ] Role for problem setter
