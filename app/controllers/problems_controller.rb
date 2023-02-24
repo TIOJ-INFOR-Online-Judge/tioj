@@ -238,6 +238,7 @@ class ProblemsController < ApplicationController
       :interlib,
       :interlib_impl,
       :strict_mode,
+      :skip_group,
       :old_pid,
       sample_testdata_attributes:
       [

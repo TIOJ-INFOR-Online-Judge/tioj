@@ -293,6 +293,11 @@
   <% end %>
 
   <div class="form-group">
+    <%= f.label :skip_group do %>
+      <%= f.check_box :skip_group %>
+      Skip the remaining testdata in the task if any of the testdata got non-AC
+    <% end %>
+    <br>
     <%= f.label :strict_mode do %>
       <%= f.check_box :strict_mode %>
       Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>

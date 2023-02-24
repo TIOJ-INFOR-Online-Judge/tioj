@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_141828) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_17_111359) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -155,6 +155,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_141828) do
     t.boolean "show_detail_result", default: true, null: false
     t.boolean "hide_old_submission", default: false, null: false
     t.text "user_whitelist"
+    t.boolean "skip_group", default: false
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
@@ -209,6 +210,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_141828) do
     t.boolean "judge_between_stages", default: false
     t.string "default_scoring_args"
     t.boolean "strict_mode", default: false
+    t.boolean "skip_group", default: false
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"

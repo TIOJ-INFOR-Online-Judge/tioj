@@ -73,6 +73,11 @@
       Show detailed result of each testdata
     <% end %>
     <br>
+    <%= f.label :skip_group do %>
+      <%= f.check_box :skip_group %>
+      Skip the remaining testdata in the task if any of the testdata got non-AC
+    <% end %>
+    <br>
     <%= f.label :hide_old_submission do %>
       <%= f.check_box :hide_old_submission %>
       Hide old submissions in contest problems
