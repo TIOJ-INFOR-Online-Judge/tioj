@@ -5,7 +5,7 @@ class TestdataController < ApplicationController
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
   
-  COMPRESS_THRESHOLD = 16 * 1024
+  COMPRESS_THRESHOLD = 128 * 1024
 
   def index
     @testdata = @problem.testdata
@@ -139,7 +139,7 @@ class TestdataController < ApplicationController
   def compress_file(f)
     Tempfile.create(binmode: true) do |tmpfile|
       File.open(f.path, 'rb') do |origfile|
-        stream = Zstd::StreamingCompress.new
+        stream = Zstd::StreamingCompress.new(10)
         while (buffer = origfile.read(1024 * 1024)) do
           tmpfile.write(stream.compress(buffer))
         end
@@ -175,7 +175,6 @@ class TestdataController < ApplicationController
       :vss_limit,
       :output_limit,
     )
-    logger.fatal new_params
     if new_params[:test_input]
       new_params[:input_compressed] = false
       if new_params[:test_input].size >= COMPRESS_THRESHOLD

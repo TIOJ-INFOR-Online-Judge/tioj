@@ -122,6 +122,8 @@ class FetchChannel < ApplicationCable::Channel
           time: t.time_limit * 1000, # us
           vss: t.vss_limit || 0,
           rss: t.rss_limit || 0,
+          input_compressed: t.input_compressed,
+          output_compressed: t.output_compressed,
           output: t.output_limit,
           verdict_ignore: verdict_ignore_set.include?(index),
         }
