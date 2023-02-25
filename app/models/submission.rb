@@ -44,4 +44,19 @@ class Submission < ApplicationRecord
     end
     true
   end
+
+  def calc_td_set_scores
+    score_map = submission_tasks.map { |t| [t.position, t.score] }.to_h
+    num_tasks = problem.testdata.count
+    skip_group = problem.skip_group || contest&.skip_group || false
+    problem.testdata_sets.order(id: :asc).map.with_index{|s, index|
+      lst = s.td_list_arr(num_tasks)
+      set_result = score_map.values_at(*lst)
+      finished = skip_group ? set_result.any? : set_result.all?
+      set_result = set_result.reject(&:nil?)
+      ratio = finished ? (lst.size > 0 ? set_result.min.to_f / 100 : 1.0) : 0.0
+      set_score = finished ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
+      {score: set_score, ratio: ratio, position: index, finished: finished}
+    }
+  end
 end

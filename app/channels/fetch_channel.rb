@@ -88,7 +88,7 @@ class FetchChannel < ApplicationCable::Channel
     problem = submission.problem
     user = submission.user
     td_count = problem.testdata.count
-    verdict_ignore_set = ApplicationController.td_list_to_arr(problem.verdict_ignore_td_list, td_count)
+    verdict_ignore_set = TestdataSet.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
     priority = (is_old ? -200000000 + 2 * submission.id : (submission.contest ? 100000000 : 0)) - submission.id
     data = {
       submission_id: submission.id,
@@ -97,6 +97,7 @@ class FetchChannel < ApplicationCable::Channel
       compiler: submission.compiler.name,
       time: submission.created_at.to_i * 1000000 + submission.created_at.usec,
       code: submission.code.to_s,
+      skip_group: problem.skip_group || submission.contest&.skip_group || true,
       user: {
         id: user.id,
         name: user.username,
@@ -130,7 +131,7 @@ class FetchChannel < ApplicationCable::Channel
       },
       tasks: problem.testdata_sets.map { |s|
         {
-          positions: ApplicationController.td_list_to_arr(s.td_list, td_count),
+          positions: s.td_list_arr(td_count),
           score: (s.score * BigDecimal('1e+6')).to_i,
         }
       },
@@ -159,7 +160,7 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    td_set_scores = calc_td_set_scores(submission)
+    td_set_scores = submission.calc_td_set_scores
     score = td_set_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)

@@ -119,6 +119,7 @@
           </tr>
         </thead>
         <tbody>
+          <% task_results = @submission.calc_td_set_scores.index_by{|x| x[:position]} %>
           <% testsets.order(id: :asc).each_with_index do |s, i| %>
             <tr>
               <td><%= i + 1 %></td>
@@ -126,15 +127,12 @@
               <% if show_cons %>
                 <td><%= markdown_no_p(s.constraints) %></td>
               <% end %>
-              <% lst = td_list_to_arr(s.td_list, num_tasks) %>
-              <% lst = @_result.transform_values{|i| i.score}.values_at(*lst) %>
+              <% td_result = task_results[i] %>
               <td style="padding-top:2px;padding-bottom:2px">
                 <% bg_color, score = '#808080', '?' %>
-                <% unless lst.nil? or lst.any?{|x| x.nil?} %>
-                  <% p = lst.size > 0 ? lst.min / 100 : 1 %>
-                  <% bg_color = color_map(p) %>
-                  <% score = (p * s.score).round(@problem.score_precision) %>
-                  <% score = score_str(score) %>
+                <% if td_result[:finished] %>
+                  <% bg_color = color_map(td_result[:ratio]) %>
+                  <% score = score_str(td_result[:score]) %>
                 <% end %>
                 <span id="subtask-score-bg-<%= i %>" class="subtask-display" style="background-color:<%= bg_color %>;">
                   <span id="subtask-score-<%= i %>"><%= score %></span><%= ' / ' + score_str(s.score) %>

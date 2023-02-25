@@ -167,7 +167,7 @@ class ProblemsController < ApplicationController
 
   def recalc_score
     num_tasks = @problem.testdata.count
-    tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+    tdset_map = @problem.testdata_sets.map{|s| [s.td_list_arr(num_tasks), s.score]}
     @problem.submissions.select(:id).each_slice(256) do |s|
       ids = s.map(&:id).to_a
       arr = SubmissionTask.where(:submission_id => ids).

@@ -13,4 +13,15 @@
 
 class TestdataSet < ApplicationRecord
   belongs_to :problem
+
+  def self.td_list_str_to_arr(str, sz)
+    str.split(',').map{|x|
+      t = x.split('-')
+      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
+    }.flatten.sort.uniq
+  end
+
+  def td_list_arr(sz)
+    self.class.td_list_str_to_arr(td_list, sz)
+  end
 end

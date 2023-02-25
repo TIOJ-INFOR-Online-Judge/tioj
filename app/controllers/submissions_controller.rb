@@ -9,7 +9,6 @@ class SubmissionsController < ApplicationController
   before_action :check_compiler, only: [:create, :update]
   before_action :set_show_detail, only: [:show]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
-  helper_method :td_list_to_arr
 
   def rejudge
     @submission.submission_tasks.destroy_all

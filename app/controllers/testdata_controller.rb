@@ -139,7 +139,7 @@ class TestdataController < ApplicationController
   def compress_file(f)
     Tempfile.create(binmode: true) do |tmpfile|
       File.open(f.path, 'rb') do |origfile|
-        stream = Zstd::StreamingCompress.new(10)
+        stream = Zstd::StreamingCompress.new(7)
         while (buffer = origfile.read(1024 * 1024)) do
           tmpfile.write(stream.compress(buffer))
         end
