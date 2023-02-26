@@ -189,8 +189,8 @@ done
 kill $TAIL_PID
 sudo sed -i "s/^.*nobody.*$/user $USER;/" /opt/nginx/conf/nginx.conf
 sudo sed -i 's/http {/\0\n    passenger_app_env production;/' /opt/nginx/conf/nginx.conf
-sudo sed -i "s|^[^#]*server_name.*localhost.*$|\0\n        passenger_enabled on;\n        root $(pwd)/public;|" /opt/nginx/conf/nginx.conf
-sudo sed -Ei "/^ *location \//, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.conf
+sudo sed -i "s|^[^#]*server_name.*localhost.*$|\0\n        passenger_enabled on;\n        root $(pwd)/public;\n        client_max_body_size 256M;\n        location /cable {\n            passenger_app_group_name cable;\n            passenger_force_max_concurrent_requests_per_process 0;\n        }\n|" /opt/nginx/conf/nginx.conf
+sudo sed -Ei "/^ *location \/[^a-z]/, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.conf
 
 # Setup systemctl
 cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
