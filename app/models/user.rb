@@ -50,7 +50,11 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  if Rails.configuration.x.settings.dig(:disable_registration)
+    devise :database_authenticatable, :rememberable, :trackable, :validatable
+  else
+    devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  end
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
 
   mount_uploader :avatar, AvatarUploader

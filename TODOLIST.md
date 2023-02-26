@@ -1,8 +1,8 @@
 - [ ] Batch upload testdata
 - [x] Testdata download for admin
-- [ ] Testdata compression (#19)
+- [x] Testdata compression (#19)
 - [ ] User-specified compilation flags (special judge / user program) (#25)
-- [ ] Disable sign up in settings
+- [x] Disable sign up in settings
 - [ ] Pre-contest notice & UI color
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
