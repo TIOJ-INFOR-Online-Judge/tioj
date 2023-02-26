@@ -15,6 +15,9 @@ module Tioj
     config.site_name = "TIOJ INFOR Online Judge"
     begin
       config.x.settings = config_for(:settings)
+      if !config.x.settings
+        config.x.settings = {}
+      end
     rescue RuntimeError
       config.x.settings = {}
     end
