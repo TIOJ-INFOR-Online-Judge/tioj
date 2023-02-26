@@ -15,10 +15,12 @@ gem 'sass-rails'
 gem 'bootstrap-sass', '~> 3'
 gem 'popper_js'
 gem 'sprockets', '~> 4'
-# user
+
+# User
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'
+
 # Use Redcarpet to render Markdown
 gem 'redcarpet'
 
@@ -28,10 +30,10 @@ gem 'uglifier'
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails'
 
-# use Kaminari to paginate
+# Pagination
 gem 'kaminari'
 
-# Use jquery as the JavaScript library
+# JavaScript library
 gem 'jquery-rails'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -41,17 +43,22 @@ gem 'jquery-rails'
 gem 'json'
 gem 'jbuilder'
 
-# nested form: https://github.com/ryanb/nested_form
+# Nested form: https://github.com/ryanb/nested_form
 gem 'nested_form'
 
+# Upload
 # carrierwave, upload handler: https://github.com/carrierwaveuploader/carrierwave
 gem 'carrierwave'
 gem 'mini_magick'
+# compression
+gem 'zstd-ruby'
+# progress bar
+gem 'jquery-fileupload-rails'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
 
-# tagging feature: https://github.com/mbleigh/acts-as-taggable-on
+# Tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
 
 # Active Admin, db admin tool: https://github.com/gregbell/active_admin
@@ -89,9 +96,6 @@ gem 'net-http'
 
 # Redis for Action Cable
 gem 'redis', '~> 4'
-
-# Upload compression
-gem 'zstd-ruby'
 
 # Sentry for monitoring
 gem 'sentry-ruby'

@@ -32,4 +32,8 @@
 //= require jquery-tablesorter
 //= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
 //= require jquery-tablesorter/beta-testing/pager-custom-controls
+
+//= require jquery-fileupload/basic
+//= require jquery-fileupload/vendor/tmpl
+
 //= require_self
