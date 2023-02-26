@@ -29,6 +29,16 @@
 #  skip_group             :boolean          default(FALSE)
 #  ranklist_display_score :boolean          default(FALSE)
 #
+# Indexes
+#
+#  index_problems_on_name                   (name)
+#  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
+#  index_problems_on_visible_state          (visible_state)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (specjudge_compiler_id => compilers.id)
+#
 
 class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible

@@ -9,6 +9,16 @@
 #  with_compiler_type :string(255)
 #  with_compiler_id   :bigint
 #
+# Indexes
+#
+#  fk_rails_6b2cbab705                                             (compiler_id)
+#  index_ban_compiler_unique                                       (with_compiler_type,with_compiler_id,compiler_id) UNIQUE
+#  index_ban_compilers_on_with_compiler_type_and_with_compiler_id  (with_compiler_type,with_compiler_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (compiler_id => compilers.id)
+#
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 

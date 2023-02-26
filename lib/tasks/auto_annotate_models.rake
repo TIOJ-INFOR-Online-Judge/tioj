@@ -47,7 +47,7 @@ if Rails.env.development?
       'sort'                        => 'false',
       'force'                       => 'false',
       'frozen'                      => 'false',
-      'classified_sort'             => 'true',
+      'classified_sort'             => 'false',
       'trace'                       => 'false',
       'wrapper_open'                => nil,
       'wrapper_close'               => nil,

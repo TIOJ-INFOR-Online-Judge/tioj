@@ -9,6 +9,10 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_sample_testdata_on_problem_id  (problem_id)
+#
 
 class SampleTestdatum < ActiveRecord::Base
   default_scope { order('id ASC') }

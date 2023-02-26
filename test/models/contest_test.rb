@@ -18,6 +18,10 @@
 #  user_whitelist      :text(65535)
 #  skip_group          :boolean          default(FALSE)
 #
+# Indexes
+#
+#  index_contests_on_start_time_and_end_time  (start_time,end_time)
+#
 
 require 'test_helper'
 

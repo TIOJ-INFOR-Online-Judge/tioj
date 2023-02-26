@@ -19,6 +19,11 @@
 #  message_type  :string(255)
 #  message       :text(16777215)
 #
+# Indexes
+#
+#  index_submission_tasks_on_submission_id               (submission_id)
+#  index_submission_tasks_on_submission_id_and_position  (submission_id,position) UNIQUE
+#
 
 require 'test_helper'
 

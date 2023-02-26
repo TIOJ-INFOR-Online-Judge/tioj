@@ -10,6 +10,10 @@
 #  td_list     :string(255)      not null
 #  constraints :text(16777215)
 #
+# Indexes
+#
+#  index_testdata_sets_on_problem_id  (problem_id)
+#
 
 class TestdataSet < ApplicationRecord
   belongs_to :problem

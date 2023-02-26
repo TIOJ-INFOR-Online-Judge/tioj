@@ -26,6 +26,18 @@
 #  last_submit_time       :datetime
 #  last_compiler_id       :bigint
 #
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_last_compiler_id      (last_compiler_id)
+#  index_users_on_nickname              (nickname) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_username              (username) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (last_compiler_id => compilers.id)
+#
 
 require 'file_size_validator'
 class User < ApplicationRecord

@@ -17,6 +17,12 @@
 #  updated_at             :datetime
 #  username               :string(255)
 #
+# Indexes
+#
+#  index_admin_users_on_email                 (email) UNIQUE
+#  index_admin_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_admin_users_on_username              (username) UNIQUE
+#
 
 class AdminUser < ApplicationRecord
   # Include default devise modules. Others available are:
