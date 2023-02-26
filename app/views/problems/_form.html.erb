@@ -148,16 +148,13 @@
   </div>
 
   <% if @problem.specjudge_type and not @problem.specjudge_none? %>
-    <% if @problem.specjudge_new? %>
     <div class="row">
       <div class="col-md-8">
-    <% end %>
         <div class="form-group">
           <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
           <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
               {}, {:class => 'form-control flat'} %>
         </div>
-    <% if @problem.specjudge_new? %>
       </div>
       <div class="col-md-4">
         <div class="form-group">
@@ -166,7 +163,6 @@
         </div>
       </div>
     </div>
-    <% end %>
     <div class="form-group">
       <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
       <div class="collapse" id="sjDescription" style="height: auto;">
@@ -180,13 +176,16 @@
                 <code>argv[3]</code>: path to testdata output (answer)<br>
                 <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
                 <code>argv[5]</code>: path to source code<br>
-                <code>argv[6]</code>: <code>current_stage</code><br>
+                <code>argv[6]</code>: current stage number<br>
               </div>
-              <div style="line-height: 1.4;">
-                <br>
-                If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
-                <br><br>
-              </div>
+              Notes:
+              <ul style="line-height: 1.4;">
+                <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
+                <li>
+                  If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
+                  <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
+                </li>
+              </ul>
             <% elsif @problem.specjudge_new? %>
               This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
               The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
@@ -293,6 +292,11 @@
   <% end %>
 
   <div class="form-group">
+    <%= f.label :ranklist_display_score do %>
+      <%= f.check_box :ranklist_display_score %>
+      Display score in ranklist
+    <% end %>
+    <br>
     <%= f.label :skip_group do %>
       <%= f.check_box :skip_group %>
       Skip the remaining testdata in the task if any of the testdata got non-AC

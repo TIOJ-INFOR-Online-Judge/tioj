@@ -12,7 +12,6 @@ class ProblemsController < ApplicationController
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
         .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
         .includes(:compiler))
-    @display_score = @problem.specjudge_new? || @problem.verdict_ignore_td_list != ''
   end
 
   def delete_submissions
@@ -237,6 +236,7 @@ class ProblemsController < ApplicationController
       :sjcode,
       :interlib,
       :interlib_impl,
+      :ranklist_display_score,
       :strict_mode,
       :skip_group,
       :old_pid,

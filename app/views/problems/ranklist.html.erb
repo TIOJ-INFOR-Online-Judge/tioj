@@ -56,7 +56,7 @@ th {
       <th>#</th>
       <th></th>
       <th>Submitter</th>
-      <% if @display_score %>
+      <% if @problem.ranklist_display_score %>
         <th>
           Score
           <span class="glyphicon glyphicon-sort icon-non"></span>
@@ -114,7 +114,7 @@ th {
         <td><%= link_to submission.id, submission_path(submission) %></td>
         <td><%= link_to image_tag(now_user.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(submission.user_id) %></td>
         <td><%= link_to now_user.nickname, user_path(submission.user_id) %></td>
-        <% if @display_score %>
+        <% if @problem.ranklist_display_score %>
           <td><%= score_str(submission.score) %></td>
         <% end %>
         <td><%= submission.total_time %></td>
@@ -169,7 +169,7 @@ $(document).ready(function()
                 1: { sorter: false},
                 2: { sorter: false},
                 3: { sorter: false},
-                <%= @display_score ? 8 : 7 %>: { sorter: 'file-size'}
+                <%= @problem.ranklist_display_score ? 8 : 7 %>: { sorter: 'file-size'}
             },
             theme: 'meow' // non-existent theme
         }).tablesorterPager({
