@@ -97,7 +97,7 @@ class FetchChannel < ApplicationCable::Channel
       compiler: submission.compiler.name,
       time: submission.created_at.to_i * 1000000 + submission.created_at.usec,
       code: submission.code.to_s,
-      skip_group: problem.skip_group || submission.contest&.skip_group || true,
+      skip_group: problem.skip_group || submission.contest&.skip_group || false,
       user: {
         id: user.id,
         name: user.username,
