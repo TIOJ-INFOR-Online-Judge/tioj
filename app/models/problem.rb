@@ -26,6 +26,7 @@
 #  judge_between_stages   :boolean          default(FALSE)
 #  default_scoring_args   :string(255)
 #  strict_mode            :boolean          default(FALSE)
+#  skip_group             :boolean          default(FALSE)
 #
 
 class Problem < ApplicationRecord

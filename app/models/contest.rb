@@ -16,6 +16,7 @@
 #  show_detail_result  :boolean          default(TRUE), not null
 #  hide_old_submission :boolean          default(FALSE), not null
 #  user_whitelist      :text(65535)
+#  skip_group          :boolean          default(FALSE)
 #
 
 class Contest < ApplicationRecord

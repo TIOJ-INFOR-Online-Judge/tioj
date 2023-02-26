@@ -10,8 +10,6 @@
 #  updated_at             :datetime
 #  input                  :text(16777215)
 #  output                 :text(16777215)
-#  example_input          :text(16777215)
-#  example_output         :text(16777215)
 #  hint                   :text(16777215)
 #  visible_state          :integer          default("public")
 #  sjcode                 :text(4294967295)
@@ -28,6 +26,7 @@
 #  judge_between_stages   :boolean          default(FALSE)
 #  default_scoring_args   :string(255)
 #  strict_mode            :boolean          default(FALSE)
+#  skip_group             :boolean          default(FALSE)
 #
 
 require 'test_helper'

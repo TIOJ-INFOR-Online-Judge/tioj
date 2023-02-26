@@ -24,6 +24,7 @@
 #  gradyear               :integer
 #  name                   :string(255)
 #  last_submit_time       :datetime
+#  last_compiler_id       :bigint
 #
 
 require 'test_helper'
