@@ -27,7 +27,13 @@ module ApplicationCable
       # connect and disconnect may be called in different thread simutaneously, thus use a mutex to prevent races
       @mutex.synchronize do
         if self.judge_server
-          self.judge_server.update(online: false)
+          begin
+            self.judge_server.update(online: false)
+          rescue ActiveRecord::StatementInvalid => e
+            # This happens once in a while when the server restarts;
+            #  disconnect the connection pool to prevent the server being stuck by ~1min because of stale connections
+            ActiveRecord::Base.connection_pool.disconnect
+          end
         end
         @disconnected = true
       end

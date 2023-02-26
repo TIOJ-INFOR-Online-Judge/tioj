@@ -1,5 +1,3 @@
 {
-  "unlimited_concurrency_paths": [
-    "/cable"
-  ]
+  "nginx_config_template": "config/nginx.conf.erb"
 }
