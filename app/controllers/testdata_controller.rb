@@ -148,8 +148,13 @@ class TestdataController < ApplicationController
       tmpfile.flush
       nsize = tmpfile.size
       tmpfile.close
-      File.rename tmpfile.path, f.path if nsize < f.size
+      logger.fatal [nsize, f.size]
+      if nsize < f.size
+        File.rename tmpfile.path, f.path
+        return true
+      end
     end
+    false
   end
 
   def decompress_file(f)
@@ -178,15 +183,13 @@ class TestdataController < ApplicationController
     if new_params[:test_input]
       new_params[:input_compressed] = false
       if new_params[:test_input].size >= COMPRESS_THRESHOLD
-        compress_file new_params[:test_input]
-        new_params[:input_compressed] = true
+        new_params[:input_compressed] = compress_file(new_params[:test_input])
       end
     end
     if new_params[:test_output]
       new_params[:output_compressed] = false
       if new_params[:test_output].size >= COMPRESS_THRESHOLD
-        compress_file new_params[:test_output]
-        new_params[:output_compressed] = true
+        new_params[:output_compressed] = compress_file(new_params[:test_output])
       end
     end
     new_params
