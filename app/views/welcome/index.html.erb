@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-lg-12">
     <% if current_user&.admin %>
       <div>
         <%= link_to "Alter Announcement", announcements_path, :class => "btn btn-info btn-xs" %>
@@ -10,7 +10,7 @@
       <%= render 'articles/table', :articles => @bulletins %>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-lg-6">
     <div class="well well-lg">
       <h5>Recent Contests<small class="pull-right"><%= link_to "Show all", contests_path %></small></h5>
       <table class="table table-hover table-striped">
@@ -24,21 +24,27 @@
           </tr>
         </thead>
         <tbody>
-          <% @contests.each do |f| %>
+          <% @contests.each do |contest| %>
             <tr>
-              <td><%= f.title %></td>
-              <% if user_signed_in? %>
-                <td><%= link_to 'Participate', f, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
-              <% end %>
-              <% if Time.now > f.end_time %>
-                <td>Ended</td>
-                <td><%= distance_of_time_in_words_to_now(f.end_time) + " ago" %></td>
-              <% elsif Time.now > f.start_time %>
-                <td>Ready</td>
-                <td>Now</td>
+              <% if contest.is_running? %>
+                <td><strong><%= contest.title %></strong></td>
+                <td style="text-align: right;"><%= link_to 'Participate', contest, :class => 'btn btn-xs btn-danger', :target => '_blank' %></td>
               <% else %>
-                <td>Not yet</td>
-                <td><%= distance_of_time_in_words_to_now(f.start_time) %></td>
+                <td><%= contest.title %></td>
+                <td style="text-align: right;"><%= link_to 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
+              <% end %>
+              <% if Time.now >= contest.end_time %>
+                <td style="white-space: nowrap;">Ended</td>
+                <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
+              <% elsif contest.is_started? %>
+                <td style="white-space: nowrap;"><strong>Ready</strong></td>
+                <td style="white-space: nowrap;"><strong>Now</strong></td>
+              <% elsif Time.now >= contest.start_time - 1.days %>
+                <td class="text-info" style="white-space: nowrap;">Upcoming</td>
+                <td class="text-danger" style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
+              <% else %>
+                <td class="text-info" style="white-space: nowrap;">Not yet</td>
+                <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
               <% end %>
             </tr>
           <% end %>
@@ -46,7 +52,7 @@
       </table>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-lg-6">
     <div class="well well-lg">
       <h5>Ranked Coders<small class="pull-right"><%= link_to "Show all", users_path %></small></h5>
       <table class="table table-hover table-striped">

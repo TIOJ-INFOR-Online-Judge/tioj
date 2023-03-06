@@ -5,7 +5,6 @@ class ContestsController < ApplicationController
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
   layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
-  helper_method :is_started?
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -213,12 +212,8 @@ class ContestsController < ApplicationController
     return true
   end
 
-  def is_started?
-    Time.now >= @contest.start_time
-  end
-
   def check_started!
-    unless is_started? || current_user&.admin?
+    unless @contest.is_started? || current_user&.admin?
       flash[:notice] = 'Contest has not yet started.'
       redirect_to @contest
       return

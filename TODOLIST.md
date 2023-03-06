@@ -3,7 +3,7 @@
 - [x] Testdata compression (#19)
 - [ ] User-specified compilation flags (special judge / user program) (#25)
 - [x] Disable sign up in settings
-- [ ] Pre-contest notice & UI color
+- [x] Pre-contest notice & UI color
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
     - [ ] Native format

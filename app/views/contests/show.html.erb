@@ -47,7 +47,7 @@
   </div>
 </div>
 
-<% if not is_started? %>
+<% if not @contest.is_started? %>
   <div class="panel panel-default">
     <div class="panel-heading">
       <h1 class="panel-title">Description</h1>
@@ -58,10 +58,10 @@
   </div>
 <% end %>
 
-<% if is_started? || current_user&.admin %>
+<% if @contest.is_started? || current_user&.admin %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <% if !is_started? %>
+      <% if !@contest.is_started? %>
         <h1 class="panel-title">Description during contest (preview)</h1>
       <% else %>
         <h1 class="panel-title">Description</h1>
@@ -89,7 +89,7 @@
     <h1 class="panel-title">Tasks</h1>
   </div>
   <div class="panel-body">
-    <% if is_started? || current_user&.admin? %>
+    <% if @contest.is_started? || current_user&.admin? %>
       <% @tasks.each_with_index do |task, index| %>
         <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
         <br>

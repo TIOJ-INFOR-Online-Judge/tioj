@@ -47,4 +47,12 @@ class Contest < ApplicationRecord
   def freeze_after
     end_time - freeze_minutes * 60
   end
+
+  def is_started?
+    Time.now >= start_time
+  end
+
+  def is_running?
+    Time.now >= start_time && end_time > Time.now
+  end
 end
