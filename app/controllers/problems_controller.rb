@@ -1,17 +1,27 @@
 class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old]
   before_action :set_contest, only: [:show]
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
-  before_action :check_visibility!, only: [:show, :ranklist]
+  before_action :check_visibility!, only: [:show, :ranklist, :ranklist_old]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
+    # avoid additional COUNT(*) query by to_a
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
         .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
-        .includes(:compiler))
+        .includes(:compiler).preload(:user)).to_a
+    @ranklist_old = false
+  end
+
+  def ranklist_old
+    @submissions = (@problem.submissions.joins(:old_submission).where(old_submission: {result: 'AC'})
+        .order("old_submission.score DESC, old_submission.time ASC, old_submission.memory ASC, LENGTH(code) ASC").order(id: :asc)
+        .includes(:old_submission, :compiler).preload(:user)).to_a
+    @ranklist_old = true
+    render :ranklist
   end
 
   def delete_submissions

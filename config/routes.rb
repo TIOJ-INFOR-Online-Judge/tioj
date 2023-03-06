@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       post 'rejudge'
       post 'delsub', to: 'problems#delete_submissions'
       get 'ranklist'
+      get 'ranklist_old'
     end
   end
 
