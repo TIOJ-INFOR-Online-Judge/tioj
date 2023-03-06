@@ -36,14 +36,31 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Description</h1>
+<% if not is_started? %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">Description</h1>
+    </div>
+    <div class="panel-body">
+      <%= markdown(@contest.description_before_contest) %>
+    </div>
   </div>
-  <div class="panel-body">
-    <%= markdown(@contest.description) %>
+<% end %>
+
+<% if is_started? || current_user&.admin %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <% if !is_started? %>
+        <h1 class="panel-title">Description during contest (preview)</h1>
+      <% else %>
+        <h1 class="panel-title">Description</h1>
+      <% end %>
+    </div>
+    <div class="panel-body">
+      <%= markdown(@contest.description) %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <% if current_user&.admin %>
   <div style="margin-bottom:10px;">
@@ -61,7 +78,7 @@
     <h1 class="panel-title">Tasks</h1>
   </div>
   <div class="panel-body">
-    <% if is_started? %>
+    <% if is_started? || current_user&.admin? %>
       <% @tasks.each_with_index do |task, index| %>
         <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
         <br>

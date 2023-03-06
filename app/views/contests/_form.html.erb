@@ -43,8 +43,13 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :description, 'Description (it will be publicly available before contest)' %>
+    <%= f.label :description, 'Description (only available after the contest is started)' %>
     <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description_before_contest, 'Before-contest description (publicly available before contest)' %>
+    <%= f.text_area :description_before_contest, :class => 'form-control flat', :rows => "9" %>
   </div>
 
   <div class="form-group">

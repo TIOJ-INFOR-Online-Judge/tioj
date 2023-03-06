@@ -214,11 +214,11 @@ class ContestsController < ApplicationController
   end
 
   def is_started?
-    Time.now >= @contest.start_time or current_user&.admin?
+    Time.now >= @contest.start_time
   end
 
   def check_started!
-    unless is_started?
+    unless is_started? || current_user&.admin?
       flash[:notice] = 'Contest has not yet started.'
       redirect_to @contest
       return
@@ -231,6 +231,7 @@ class ContestsController < ApplicationController
       :id,
       :title,
       :description,
+      :description_before_contest,
       :start_time,
       :end_time,
       :contest_type,
