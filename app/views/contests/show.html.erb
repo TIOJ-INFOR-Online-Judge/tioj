@@ -1,4 +1,15 @@
 <% set_page_title @contest.title %>
+
+<% if current_user&.admin %>
+  <div class="row">
+    <div class="col-md-12">
+      <div>
+        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), :class => "btn btn-info btn-xs" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <h4 class='page-header'>
   Contest Name : <%= @contest.title %>
 </h4>

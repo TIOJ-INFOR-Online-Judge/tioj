@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_074516) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_080530) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -77,6 +77,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_074516) do
     t.string "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "contest_id"
+    t.index ["contest_id"], name: "index_announcements_on_contest_id"
   end
 
   create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -365,6 +367,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_074516) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "submissions", "compilers"

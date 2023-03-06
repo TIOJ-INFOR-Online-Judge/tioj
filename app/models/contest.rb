@@ -35,6 +35,8 @@ class Contest < ApplicationRecord
   has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
   has_many :compilers, :through => :ban_compilers, :as => :with_compiler
 
+  has_many :announcements, :dependent => :destroy
+
   validates :start_time, :presence => true
   validates :end_time, :presence => true
   validates_numericality_of :freeze_minutes, :greater_than_or_equal_to => 0

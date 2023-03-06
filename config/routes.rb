@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   end
   ActiveAdmin.routes(self)
 
-  #resources :limits
   resources :problems do
     resources :testdata do
       collection do
@@ -44,6 +43,7 @@ Rails.application.routes.draw do
   resources :contests do
     resources :submissions
     resources :problems
+    resources :announcements
     resources :posts do
       resources :comments, except: [:index]
     end

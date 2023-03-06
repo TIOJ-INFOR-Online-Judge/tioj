@@ -148,7 +148,6 @@ class TestdataController < ApplicationController
       tmpfile.flush
       nsize = tmpfile.size
       tmpfile.close
-      logger.fatal [nsize, f.size]
       if nsize < f.size
         File.rename tmpfile.path, f.path
         return true

@@ -93,7 +93,9 @@ protected
   end
 
   def set_anno
-    @annos = Announcement.order(:id).all.to_a
+    contest_param = controller_name == 'contests' ? params[:id] : params[:contest_id]
+    contest_id = contest_param && contest_param.to_i
+    @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
   end
 
   def get_sorted_user(limit = nil)
