@@ -1,13 +1,14 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_admin!, except: [:index, :show, :create, :new, :verdict]
+  before_action :authenticate_admin!, except: [:index, :show, :show_old, :create, :new, :verdict]
   before_action :set_contest_problem_by_param, only: [:new, :create, :index]
   before_action :set_submissions, only: [:index]
-  before_action :set_submission, only: [:rejudge, :show, :edit, :update, :destroy]
+  before_action :set_submission, only: [:rejudge, :show, :show_old, :edit, :update, :destroy]
+  before_action :check_old, only: [:show_old]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :set_default_compiler, only: [:new, :edit]
   before_action :check_compiler, only: [:create, :update]
-  before_action :set_show_detail, only: [:show]
+  before_action :set_show_attrs, only: [:show, :show_old]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
@@ -36,8 +37,14 @@ class SubmissionsController < ApplicationController
     end
     @_result = @submission.submission_tasks.index_by(&:position)
     @has_vss = @_result.empty? || @_result.values.any?{|x| x.vss}
-    @tdlist = @submission.problem.testdata_sets
-    @invtdlist = inverse_td_list(@submission.problem)
+    @show_old = false
+  end
+
+  def show_old
+    @_result = @submission.old_submission.old_submission_tasks.index_by(&:position)
+    @has_vss = false
+    @show_old = true
+    render :show
   end
 
   def new
@@ -234,8 +241,14 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def set_show_detail
+  def check_old
+    raise_not_found unless @submission.old_submission
+  end
+
+  def set_show_attrs
     @show_detail = current_user&.admin? || @contest.blank? || @contest.show_detail_result? || Time.now > @contest.end_time
+    @tdlist = @submission.problem.testdata_sets
+    @invtdlist = inverse_td_list(@submission.problem)
   end
 
   def set_compiler

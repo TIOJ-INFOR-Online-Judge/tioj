@@ -1,8 +1,12 @@
 <% set_page_title "Submission - " + @submission.id.to_s %>
-<h4 class="page-header">Results of submission #<%= @submission.id %></h4>
+<% if @show_old %>
+  <h4 class="page-header">Old results of submission #<%= @submission.id %></h4>
+<% else %>
+  <h4 class="page-header">Results of submission #<%= @submission.id %></h4>
+<% end %>
 
 <% waiting_verdicts = ['Validating', 'queued', 'received'] %>
-<% will_update = waiting_verdicts.include?(@submission.result) %>
+<% will_update = !@show_old && waiting_verdicts.include?(@submission.result) %>
 <% panel_class_map = {
   'WA' => 'panel-danger',
   'TLE' => 'panel-info',
@@ -32,7 +36,14 @@
 <% else %>
   <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
 <% end %>
-<% if current_user&.admin? %>
+<% if Rails.configuration.x.settings.dig(:old_submission_views) and @submission.old_submission %>
+  <% if @show_old %>
+    <%= link_to 'View New Results', submission_path(@submission), :class => 'btn btn-default btn-xs' %>
+  <% else %>
+    <%= link_to 'View Old Results', old_submission_path(@submission), :class => 'btn btn-default btn-xs' %>
+  <% end %>
+<% end %>
+<% if current_user&.admin? && !@show_old %>
   <%= form_with url: rejudge_submission_path(@submission), :html => {:style => 'display: inline;'} do |f| %>
     <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
   <% end %>
@@ -44,7 +55,8 @@
   <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
 <% end %>
 </p>
-<div id="overall-result" class="panel <%= panel_class_map[@submission.result] %>">
+<% infor_obj = @show_old ? @submission.old_submission : @submission %>
+<div id="overall-result" class="panel <%= panel_class_map[infor_obj.result] %>">
   <div class="panel-heading">
   <div class="row">
     <div class="col-md-3">
@@ -65,30 +77,30 @@
   </div>
   </div>
   <div class="panel-body">
-  <div class="row">
-    <div class="col-md-3">
-      <% if @submission.contest_id.blank? %>
-        <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, problem_path(@submission.problem) %>
-      <% else %>
-        <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_problem_path(@submission.contest_id, @submission.problem) %>
-      <% end %>
+    <div class="row">
+      <div class="col-md-3">
+        <% if @submission.contest_id.blank? %>
+          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, problem_path(@submission.problem) %>
+        <% else %>
+          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_problem_path(@submission.contest_id, @submission.problem) %>
+        <% end %>
+      </div>
+      <div id="total-time" class="col-md-2">
+        <%= infor_obj.total_time.to_i %>
+      </div>
+      <div id="total-memory" class="col-md-2">
+        <%= infor_obj.total_memory.to_i %>
+      </div>
+      <div class="col-md-3">
+        <span id="verdict"><%= @verdict[infor_obj.result] %></span>
+        <% if will_update %>
+          <img id="waiting-icon" src="/images/icons/svg/waiting.svg" style="width:20px;">
+        <% end %>
+      </div>
+      <div id="total-score" class="col-md-2">
+        <%= score_str(infor_obj.score) %>
+      </div>
     </div>
-    <div id="total-time" class="col-md-2">
-      <%= @submission.total_time.to_i %>
-    </div>
-    <div id="total-memory" class="col-md-2">
-      <%= @submission.total_memory.to_i %>
-    </div>
-    <div class="col-md-3">
-      <span id="verdict"><%= @verdict[@submission.result] %></span>
-      <% if will_update %>
-        <img id="waiting-icon" src="/images/icons/svg/waiting.svg" style="width:20px;">
-      <% end %>
-    </div>
-    <div id="total-score" class="col-md-2">
-      <%= score_str(@submission.score) %>
-    </div>
-  </div>
   </div>
 </div>
 
@@ -119,7 +131,8 @@
           </tr>
         </thead>
         <tbody>
-          <% task_results = @submission.calc_td_set_scores.index_by{|x| x[:position]} %>
+          <% td_set_obj = @show_old ? @submission.old_submission : @submission %>
+          <% task_results = td_set_obj.calc_td_set_scores.index_by{|x| x[:position]} %>
           <% testsets.order(id: :asc).each_with_index do |s, i| %>
             <tr>
               <td><%= i + 1 %></td>

@@ -18,7 +18,7 @@ class ProblemsController < ApplicationController
 
   def ranklist_old
     @submissions = (@problem.submissions.joins(:old_submission).where(old_submission: {result: 'AC'})
-        .order("old_submission.score DESC, old_submission.time ASC, old_submission.memory ASC, LENGTH(code) ASC").order(id: :asc)
+        .order("old_submission.score DESC, old_submission.total_time ASC, old_submission.total_memory ASC, LENGTH(code) ASC").order(id: :asc)
         .includes(:old_submission, :compiler).preload(:user)).to_a
     @ranklist_old = true
     render :ranklist

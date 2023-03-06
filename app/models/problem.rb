@@ -49,6 +49,7 @@ class Problem < ApplicationRecord
   acts_as_taggable_on :tags, :solution_tags
 
   has_many :submissions, :dependent => :destroy
+  has_many :old_submissions, :dependent => :destroy
 
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :contests, :through => :contest_problem_joints

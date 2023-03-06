@@ -25,7 +25,7 @@ Rails.application.routes.draw do
       post 'rejudge'
       post 'delsub', to: 'problems#delete_submissions'
       get 'ranklist'
-      get 'ranklist_old'
+      get 'ranklist_old' if Rails.configuration.x.settings.dig(:old_submission_views)
     end
   end
 
@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :submissions do
     member do
       post 'rejudge'
+      get 'old', to: 'submissions#show_old' if Rails.configuration.x.settings.dig(:old_submission_views)
     end
   end
 
@@ -61,9 +62,11 @@ Rails.application.routes.draw do
   resources :testdata, only: [:show]
 
   resources :users, constraints: { id: /[^\/]+/ }, defaults: { format: :html }, format: false do
-    member do
-      get 'changed_problems'
-      get 'changed_submissions'
+    if Rails.configuration.x.settings.dig(:old_submission_views)
+      member do
+        get 'changed_problems'
+        get 'changed_submissions'
+      end
     end
   end
 

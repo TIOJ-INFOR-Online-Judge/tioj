@@ -22,3 +22,6 @@ shared:
   # Sign up settings (default: false)
   disable_registration: false
   unicode_username: false
+
+  # Old submission views (default: false)
+  old_submission_views: false

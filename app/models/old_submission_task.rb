@@ -8,7 +8,7 @@
 #  result            :string(255)
 #  score             :decimal(18, 6)
 #  time              :integer
-#  memory            :integer
+#  rss               :integer
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #
@@ -19,4 +19,8 @@
 
 class OldSubmissionTask < ApplicationRecord
   belongs_to :old_submission
+
+  def message_type
+    nil
+  end
 end

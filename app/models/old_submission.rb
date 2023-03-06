@@ -7,8 +7,8 @@
 #  problem_id    :bigint
 #  result        :string(255)
 #  score         :decimal(18, 6)
-#  time          :integer
-#  memory        :integer
+#  total_time    :integer
+#  total_memory  :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #
@@ -17,7 +17,7 @@
 #  index_old_submissions_on_problem_id             (problem_id)
 #  index_old_submissions_on_problem_id_and_result  (problem_id,result)
 #  index_old_submissions_on_submission_id          (submission_id) UNIQUE
-#  index_old_submissions_topcoder                  (problem_id,result,score DESC,time,memory)
+#  index_old_submissions_topcoder                  (problem_id,result,score DESC,total_time,total_memory)
 #
 
 class OldSubmission < ApplicationRecord

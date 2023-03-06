@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_110102) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -177,7 +177,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_110102) do
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
     t.integer "time"
-    t.integer "memory"
+    t.integer "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["old_submission_id"], name: "index_old_submission_tasks_on_old_submission_id"
@@ -188,11 +188,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_110102) do
     t.bigint "problem_id"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "time"
-    t.integer "memory"
+    t.integer "total_time"
+    t.integer "total_memory"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["problem_id", "result", "score", "time", "memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
+    t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
     t.index ["problem_id", "result"], name: "index_old_submissions_on_problem_id_and_result"
     t.index ["problem_id"], name: "index_old_submissions_on_problem_id"
     t.index ["submission_id"], name: "index_old_submissions_on_submission_id", unique: true
