@@ -28,6 +28,7 @@
 #  strict_mode            :boolean          default(FALSE)
 #  skip_group             :boolean          default(FALSE)
 #  ranklist_display_score :boolean          default(FALSE)
+#  code_length_limit      :integer          default(5000000)
 #
 # Indexes
 #
@@ -72,6 +73,8 @@ class Problem < ApplicationRecord
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
+
+  validates :code_length_limit, numericality: { in: 1..16777216 }
 
   validates :score_precision, numericality: { in: 0..6 }
   validates :num_stages, numericality: { in: 1..10 }

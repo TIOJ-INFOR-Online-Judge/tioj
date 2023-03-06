@@ -51,8 +51,14 @@ class Submission < ApplicationRecord
   belongs_to :compiler
   has_many :submission_tasks, dependent: :delete_all
 
-  validates_length_of :code, :in => 0..5000000
+  validate :code_length_limit
   validates_length_of :message, :in => 0..65000, :allow_nil => true
+
+  def code_length_limit
+    if code.bytesize > problem.code_length_limit
+      errors.add(:code, "length limit exceeded (max #{problem.code_length_limit} bytes)")
+    end
+  end
 
   def contest?
     contest_id != nil

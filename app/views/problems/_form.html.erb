@@ -292,6 +292,11 @@
   <% end %>
 
   <div class="form-group">
+    <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
+    <%= f.number_field :code_length_limit, :in => 1..16777216, :class => 'form-control flat', :required => true %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :ranklist_display_score do %>
       <%= f.check_box :ranklist_display_score %>
       Display score in ranklist

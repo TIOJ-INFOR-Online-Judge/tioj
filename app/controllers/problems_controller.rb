@@ -236,6 +236,7 @@ class ProblemsController < ApplicationController
       :sjcode,
       :interlib,
       :interlib_impl,
+      :code_length_limit,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,
