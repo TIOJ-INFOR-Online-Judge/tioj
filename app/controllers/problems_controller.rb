@@ -250,7 +250,6 @@ class ProblemsController < ApplicationController
       :ranklist_display_score,
       :strict_mode,
       :skip_group,
-      :old_pid,
       sample_testdata_attributes:
       [
         :id,
