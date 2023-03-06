@@ -63,8 +63,8 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
         <td><%= verdict_text submission.result %></td>
         <td><%= sprintf("%g", submission.score) %></td>
-        <td><%= verdict_text submission.old_result %></td>
-        <td><%= sprintf("%g", submission.old_score) %></td>
+        <td><%= verdict_text submission.old_submission.result %></td>
+        <td><%= sprintf("%g", submission.old_submission.score) %></td>
         <td><%= submission.compiler.name %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
         <% if current_user&.admin %>
