@@ -77,7 +77,8 @@ class User < ApplicationRecord
   validates_presence_of :username, :nickname
   validates :username,
     :uniqueness => {:case_sensitive => false},
-    :username_convention => true
+    :username_convention => true,
+    on: :create
 
   validates :school, :presence => true, :length => {:minimum => 1}
   validates :gradyear, :presence => true, :inclusion => 1..1000

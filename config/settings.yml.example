@@ -19,5 +19,6 @@ shared:
     normal: 0.002
     cable: 0.001
 
-  # Sign up settings
+  # Sign up settings (default: false)
   disable_registration: false
+  unicode_username: false
