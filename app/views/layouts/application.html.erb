@@ -1,29 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<title><%= page_title yield(:title) %></title>
-<%= stylesheet_link_tag    "application", media: "all" %>
-<%= javascript_include_tag "application" %>
-<%= csrf_meta_tags %>
-<script>
-MathJax = ({
-  tex: {
-    inlineMath: [ ['$','$'], ['\\(','\\)'] ],
-    processEscapes: true
-  }
-});
-</script>
-<%= mathjax_tag :component => 'tex-svg-full.js' %>
+<% content_for :icon do %>
 <link rel="shortcut icon" href="/images/favicon.ico">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-#page-content{ padding-left: 40px; padding-right: 40px; padding-bottom: 40px; }
-.page-header{ margin: 10px 0 15px; }
-</style>
-</head>
+<% end %>
 
-<body>
+<% content_for :navbar do %>
 <div style="background-color:#003365">
   <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#003365">
     <div class="container-fluid">
@@ -59,11 +38,6 @@ MathJax = ({
     </div>
   </nav><!-- /navbar -->
 </div>
+<% end %>
 
-<div class="container-fluid" id="page-content">
-  <%= render 'layouts/anno_and_alert', :alert => alert, :notice => notice %>
-  <%= yield %>
-</div>
-
-</body>
-</html>
+<%= render template: "layouts/base" %>

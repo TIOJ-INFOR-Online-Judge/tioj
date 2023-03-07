@@ -1,29 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<title><%= page_title yield(:title) %></title>
-<%= stylesheet_link_tag    "application", media: "all" %>
-<%= javascript_include_tag "application" %>
-<%= csrf_meta_tags %>
-<script>
-MathJax = ({
-  tex: {
-    inlineMath: [ ['$','$'], ['\\(','\\)'] ],
-    processEscapes: true
-  }
-});
-</script>
-<%= mathjax_tag :component => 'tex-svg-full.js' %>
+<% content_for :icon do %>
 <link rel="shortcut icon" href="/images/favicon_co.ico">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-#page-content{ padding-left: 40px; padding-right: 40px; padding-bottom: 40px; }
-.page-header{ margin: 10px 0 15px; }
-</style>
-</head>
+<% end %>
 
-<body>
+<% content_for :navbar do %>
 <div style="background-color:#32CD32">
   <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">
     <div class="container-fluid">
@@ -45,7 +24,7 @@ MathJax = ({
           <% if current_user %>
             <li><%= link_to(current_user.username, user_path(current_user)) %></li>
             <li><%= link_to('Sign out', destroy_user_session_path, :method => :delete) %></li>
-            <% else %>
+          <% else %>
             <li><%= link_to('Sign in', new_session_path(:user)) %> </li>
             <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
               <li><%= link_to('Sign up', new_registration_path(:user)) %></li>
@@ -56,11 +35,6 @@ MathJax = ({
     </div>
   </nav><!-- /navbar -->
 </div>
+<% end %>
 
-<div class="container-fluid" id="page-content">
-  <%= render 'layouts/anno_and_alert', :alert => alert, :notice => notice %>
-  <%= yield %>
-</div>
-
-</body>
-</html>
+<%= render template: "layouts/base" %>
