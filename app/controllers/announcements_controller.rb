@@ -2,7 +2,7 @@ class AnnouncementsController < InheritedResources::Base
   actions :index, :create, :edit, :update, :destroy # no :show & :new
   before_action :set_contest, only: [:create, :index]
   before_action :set_announcement, only: [:edit, :update, :destroy]
-  before_action :set_paths, only: [:create, :update]
+  before_action :set_paths, only: [:create, :update, :destroy]
   before_action :authenticate_admin!
   layout :set_contest_layout, only: [:index, :edit]
 
@@ -20,6 +20,10 @@ class AnnouncementsController < InheritedResources::Base
 
   def update
     update! { @page_path }
+  end
+
+  def destroy
+    destroy! { @page_path }
   end
 
   private
