@@ -164,12 +164,23 @@ class ContestsController < ApplicationController
       if !tasks_valid?
         format.html { render action: 'edit' }
         format.json { render json: @contest.errors, status: :unprocessable_entity }
-      elsif @contest.update(contest_params)
-        format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
-        format.json { head :no_content }
       else
-        format.html { render action: 'edit' }
-        format.json { render json: @contest.errors, status: :unprocessable_entity }
+        begin
+          ret = @contest.update(contest_params)
+        rescue ActiveRecord::RecordNotUnique
+          params[:contest][:contest_problem_joints_attributes].each {|key, val| val.delete(:id)}
+          ActiveRecord::Base.transaction do
+            @contest.contest_problem_joints.destroy_all()
+            ret = @contest.update(contest_params)
+          end
+        end
+        if ret
+          format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @contest.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
