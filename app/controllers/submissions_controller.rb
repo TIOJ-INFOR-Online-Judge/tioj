@@ -9,6 +9,7 @@ class SubmissionsController < ApplicationController
   before_action :set_default_compiler, only: [:new, :edit]
   before_action :check_compiler, only: [:create, :update]
   before_action :set_show_attrs, only: [:show, :show_old]
+  before_action :normalize_code, only: [:create, :update]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
@@ -73,6 +74,7 @@ class SubmissionsController < ApplicationController
       end
     end
     @submission = Submission.new
+    @submission.code_content = CodeContent.new
     @contest_id = params[:contest_id]
   end
 
@@ -116,9 +118,7 @@ class SubmissionsController < ApplicationController
         end
       end
     end
-    params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
 
-    #@submission = @submissions.build(submission_params)
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
     @submission.problem_id = params[:problem_id]
@@ -144,7 +144,6 @@ class SubmissionsController < ApplicationController
 
   def update
     respond_to do |format|
-      params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
       if @submission.update(submission_params)
         format.html { redirect_to @submission, notice: 'Submission was successfully updated.' }
         format.json { head :no_content }
@@ -278,8 +277,19 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  def normalize_code
+    code = params[:submission][:code_content_attributes][:code].encode('utf-8', universal_newline: true)
+    params[:submission][:code_content_attributes][:code] = code
+    params[:submission][:code_length] = code.bytesize
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def submission_params
-    params.require(:submission).permit(:code, :compiler_id, :problem_id)
+    params.require(:submission).permit(
+      :compiler_id,
+      :problem_id,
+      :code_length,
+      code_content_attributes: [:id, :code]
+    )
   end
 end

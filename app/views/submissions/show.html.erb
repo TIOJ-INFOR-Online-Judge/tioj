@@ -265,7 +265,7 @@
       <strong>Code Length:</strong>
     </div>
     <div class="col-md-2">
-      <%= number_to_human_size(@submission.code.bytesize) %>
+      <%= number_to_human_size(@submission.code_length) %>
     </div>
   </div>
 </div>
@@ -282,7 +282,7 @@
       </span>
     </div>
   </div>
-  <pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code %></code></pre> 
+  <pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code_content.code %></code></pre> 
   <!-- <button type="button" id="copy_btn" class="btn btn-info btn-xs" style="float:right"> copy code </button> -->
   <!-- <script> init_code_copy_script() </script> -->
 <% end %>

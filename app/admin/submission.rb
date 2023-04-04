@@ -1,5 +1,5 @@
 ActiveAdmin.register Submission do
-  permit_params :id, :problem_id, :user_id, :contest_id, :compiler, :result, :score, :_result, :code, :total_time, :total_memory
+  permit_params :id, :problem_id, :user_id, :contest_id, :compiler, :result, :score, :_result, :code_length, :total_time, :total_memory
   includes :compiler
   index do
     selectable_column

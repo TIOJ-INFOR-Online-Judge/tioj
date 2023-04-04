@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_04_125005) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -111,6 +111,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.index ["compiler_id"], name: "fk_rails_6b2cbab705"
     t.index ["with_compiler_type", "with_compiler_id", "compiler_id"], name: "index_ban_compiler_unique", unique: true
     t.index ["with_compiler_type", "with_compiler_id"], name: "index_ban_compilers_on_with_compiler_type_and_with_compiler_id"
+  end
+
+  create_table "code_contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.binary "code", size: :long
   end
 
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -273,7 +277,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
   end
 
   create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "code", size: :long
     t.string "result", default: "queued"
     t.decimal "score", precision: 18, scale: 6, default: "0.0"
     t.datetime "created_at"
@@ -285,6 +288,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.integer "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
+    t.bigint "code_content_id", null: false
+    t.bigint "code_length", default: 0, null: false
+    t.index ["code_content_id"], name: "index_submissions_on_code_content_id"
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
     t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder", order: { score: :desc }
@@ -382,6 +388,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
+  add_foreign_key "submissions", "code_contents"
   add_foreign_key "submissions", "compilers"
   add_foreign_key "users", "compilers", column: "last_compiler_id"
 end

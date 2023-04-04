@@ -11,14 +11,14 @@ class ProblemsController < ApplicationController
   def ranklist
     # avoid additional COUNT(*) query by to_a
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
+        .order(score: :desc, total_time: :asc, total_memory: :asc, code_length: :asc, id: :asc)
         .includes(:compiler).preload(:user)).to_a
     @ranklist_old = false
   end
 
   def ranklist_old
     @submissions = (@problem.submissions.joins(:old_submission).where(old_submission: {result: 'AC'})
-        .order("old_submission.score DESC, old_submission.total_time ASC, old_submission.total_memory ASC, LENGTH(code) ASC").order(id: :asc)
+        .order("old_submission.score DESC, old_submission.total_time ASC, old_submission.total_memory ASC").order(code_length: :asc, id: :asc)
         .includes(:old_submission, :compiler).preload(:user)).to_a
     @ranklist_old = true
     render :ranklist
@@ -75,7 +75,6 @@ class ProblemsController < ApplicationController
 
   def show
     @tdlist = inverse_td_list(@problem)
-    #@contest_id = params[:contest_id]
   end
 
   def new

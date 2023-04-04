@@ -19,6 +19,6 @@
   <td><%= submission.old_submission.total_time %></td>
   <td><%= submission.old_submission.total_memory %></td>
   <td><%= submission.compiler.name %></td>
-  <td><%= number_to_human_size(submission.code.bytesize) %></td>
+  <td><%= number_to_human_size(submission.code_length) %></td>
   <td><%= submission.created_at.to_s(:clean) %></td>
 </tr>

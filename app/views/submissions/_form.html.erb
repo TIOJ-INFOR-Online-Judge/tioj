@@ -10,10 +10,12 @@
     <%= render 'compiler_chooser', :f => f %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :code %>
-    <%= f.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
-  </div>
+  <%= f.fields_for :code_content do |t| %>
+    <div class="form-group">
+      <%= t.label :code %>
+      <%= t.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
+    </div>
+  <% end %>
 
   <% if @contest_id %>
     <div class="field">
