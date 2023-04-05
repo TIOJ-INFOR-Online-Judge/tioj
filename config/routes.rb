@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :submissions do
     member do
       post 'rejudge'
+      get 'raw', to: 'submissions#download_raw'
       get 'old', to: 'submissions#show_old' if Rails.configuration.x.settings.dig(:old_submission_views)
     end
   end

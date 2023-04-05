@@ -1,9 +1,9 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_admin!, except: [:index, :show, :show_old, :create, :new, :verdict]
+  before_action :authenticate_admin!, only: [:rejudge, :edit, :update, :destroy]
   before_action :set_contest_problem_by_param, only: [:new, :create, :index]
   before_action :set_submissions, only: [:index]
-  before_action :set_submission, only: [:rejudge, :show, :show_old, :edit, :update, :destroy]
+  before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
   before_action :check_old, only: [:show_old]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :set_default_compiler, only: [:new, :edit]
@@ -46,6 +46,14 @@ class SubmissionsController < ApplicationController
     @has_vss = false
     @show_old = true
     render :show
+  end
+
+  def download_raw
+    if params[:inline] == '1'
+      send_data @submission.code_content.code, filename: "#{@submission.id}#{@submission.compiler.extension}", disposition: 'inline', type: 'text/plain'
+    else
+      send_data @submission.code_content.code, filename: "#{@submission.id}#{@submission.compiler.extension}"
+    end
   end
 
   def new

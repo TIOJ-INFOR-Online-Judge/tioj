@@ -9,6 +9,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  order       :integer
+#  extension   :string(255)
 #
 # Indexes
 #
