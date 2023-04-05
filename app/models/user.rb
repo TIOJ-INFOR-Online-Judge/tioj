@@ -17,7 +17,6 @@
 #  updated_at             :datetime
 #  nickname               :string(255)
 #  avatar                 :string(255)
-#  admin                  :boolean          default(FALSE)
 #  username               :string(255)
 #  motto                  :string(255)
 #  school                 :string(255)
@@ -25,6 +24,7 @@
 #  name                   :string(255)
 #  last_submit_time       :datetime
 #  last_compiler_id       :bigint
+#  user_type              :integer          default(5)
 #
 # Indexes
 #
@@ -32,6 +32,7 @@
 #  index_users_on_last_compiler_id      (last_compiler_id)
 #  index_users_on_nickname              (nickname) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_user_type             (user_type)
 #  index_users_on_username              (username) UNIQUE
 #
 # Foreign Keys
@@ -41,6 +42,8 @@
 
 require 'file_size_validator'
 class User < ApplicationRecord
+  enum :user_type, {admin: 10, normal_user: 5, contest_only: 0}
+
   has_many :submissions, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
@@ -50,11 +53,8 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  if Rails.configuration.x.settings.dig(:disable_registration)
-    devise :database_authenticatable, :rememberable, :trackable, :validatable
-  else
-    devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
-  end
+  devise :database_authenticatable, :rememberable, :trackable, :validatable
+  devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
 
   mount_uploader :avatar, AvatarUploader

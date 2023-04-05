@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_05_082624) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_05_133434) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -369,7 +369,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_082624) do
     t.datetime "updated_at"
     t.string "nickname"
     t.string "avatar"
-    t.boolean "admin", default: false
     t.string "username"
     t.string "motto"
     t.string "school"
@@ -377,10 +376,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_082624) do
     t.string "name"
     t.datetime "last_submit_time"
     t.bigint "last_compiler_id"
+    t.integer "user_type", default: 5
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["last_compiler_id"], name: "index_users_on_last_compiler_id"
     t.index ["nickname"], name: "index_users_on_nickname", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["user_type"], name: "index_users_on_user_type"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
-    <% if current_user&.admin %>
+    <% if current_user&.admin? %>
       <div>
         <%= link_to "Alter Announcement", announcements_path, :class => "btn btn-info btn-xs" %>
       </div>

@@ -84,7 +84,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Code Length</th>
       <th>Score</th>
       <th>Submit Time</th>
-      <% if current_user&.admin %>
+      <% if current_user&.admin? %>
          <th></th>
       <% end %>
     </tr>
@@ -108,7 +108,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= number_to_human_size(submission.code_length) %></td>
         <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>
         <td><%= submission.created_at.to_s(:clean) %></td>
-        <% if current_user&.admin %>
+        <% if current_user&.admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
               <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>

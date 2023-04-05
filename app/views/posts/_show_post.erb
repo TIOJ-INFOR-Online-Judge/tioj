@@ -25,7 +25,7 @@
 <div class="post_footer small">
   <% if poster == nil %>
     deleted account - <%= post.created_at.to_s(:clean) %>
-  <% elsif not current_user&.admin and not post.user_visible and current_user&.id != poster.id %>
+  <% elsif not current_user&.admin? and not post.user_visible and current_user&.id != poster.id %>
     anonymous - <%= post.created_at.to_s(:clean) %>
   <% else %>
     <%= link_to poster.username, user_path(poster) %> - <%= post.created_at.to_s(:clean) %>

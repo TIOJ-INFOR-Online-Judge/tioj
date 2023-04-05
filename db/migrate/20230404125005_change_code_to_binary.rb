@@ -8,7 +8,7 @@ class ChangeCodeToBinary < ActiveRecord::Migration[7.0]
 
     reversible do |direction|
       direction.up do
-        # add_column :code_contents, :submission_id, :bigint
+        add_column :code_contents, :submission_id, :bigint
         execute %{
           INSERT INTO code_contents (submission_id, code)
           SELECT id, code FROM submissions

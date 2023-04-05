@@ -179,7 +179,7 @@ class SubmissionsController < ApplicationController
 
   def set_submissions
     if @problem
-      unless current_user&.admin
+      unless current_user&.admin?
         if @problem.visible_contest?
           if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
             redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
@@ -230,7 +230,7 @@ class SubmissionsController < ApplicationController
     @submission = Submission.find(params[:id])
     @problem = @submission.problem
     @contest = @submission.contest
-    unless current_user&.admin
+    unless current_user&.admin?
       if @problem.visible_contest?
         raise_not_found if not @contest
       elsif @problem.visible_invisible?

@@ -194,7 +194,7 @@ class ProblemsController < ApplicationController
   end
 
   def check_visibility!
-    unless current_user&.admin
+    unless current_user&.admin?
       if @problem.visible_contest?
         if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time)
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'

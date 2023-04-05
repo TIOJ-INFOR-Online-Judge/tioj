@@ -15,7 +15,7 @@
         </td>
         <td><%= a.created_at.to_fs(:clean) %></td>
         <td><%= link_to a.user.nickname, user_path(a.user) %></td>
-        <% if current_user&.admin %>
+        <% if current_user&.admin? %>
           <td>
             <%= link_to edit_glyph, edit_article_path(a) %>
             <%= link_to destroy_glyph, a, method: :delete, data: { confirm: 'Are you sure?' } %>
