@@ -286,7 +286,11 @@ class SubmissionsController < ApplicationController
   end
 
   def normalize_code
-    code = params[:submission][:code_content_attributes][:code].encode('utf-8', universal_newline: true)
+    if params[:submission][:code_file]
+      code = params[:submission][:code_file].read
+    else
+      code = params[:submission][:code_content_attributes][:code].encode('utf-8', universal_newline: true)
+    end
     params[:submission][:code_content_attributes][:code] = code
     params[:submission][:code_length] = code.bytesize
   end

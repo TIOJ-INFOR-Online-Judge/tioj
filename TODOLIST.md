@@ -8,7 +8,7 @@
 - [ ] Problem import & export
     - [ ] Native format
     - [ ] Polygon & Kattis & CMS support
-- [ ] Upload submission by file + non-UTF-8 code
+- [x] Upload submission by file + non-UTF-8 code
 - [x] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Pin
 - [ ] IOI-style scoring in contest (max of each subtask)

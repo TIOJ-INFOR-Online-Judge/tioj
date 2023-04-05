@@ -3,7 +3,7 @@
 <% else %>
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
 <% end %>
-<%= form_for [@problem, @submission] do |f| %>
+<%= form_for [@problem, @submission], :html => {multipart: true} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">
@@ -13,9 +13,14 @@
   <%= f.fields_for :code_content do |t| %>
     <div class="form-group">
       <%= t.label :code %>
-      <%= t.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
+      <%= t.text_area :code, :class => 'form-control flat code-input', :rows => "12", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
     </div>
   <% end %>
+
+  <div class="form-group">
+    <%= f.label :code_file, 'Or, upload a file (overrides the code above):' %>
+    <%= f.file_field :code_file, :class => 'form-control flat' %>
+  </div>
 
   <% if @contest_id %>
     <div class="field">
