@@ -1,6 +1,4 @@
 # From .gitignore
-/tempioj
-/sql\ dump
 **/*.swp
 .vscode/
 
@@ -9,10 +7,6 @@
 
 # Ignore Solargraph config
 /.solargraph.yml
-
-# Ignore the default SQLite database.
-/db/*.sqlite3
-/db/*.sqlite3-journal
 
 # Ignore all logfiles and tempfiles.
 /log/*
