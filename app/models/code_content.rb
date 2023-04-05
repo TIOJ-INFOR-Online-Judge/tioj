@@ -7,4 +7,7 @@
 #
 
 class CodeContent < ApplicationRecord
+  def code_utf8
+    code.force_encoding('utf-8')
+  end
 end

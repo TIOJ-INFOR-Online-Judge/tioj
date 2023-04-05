@@ -3,7 +3,19 @@
 <% else %>
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
 <% end %>
-<%= form_for [@problem, @submission], :html => {multipart: true} do |f| %>
+
+<% check_upload = false %>
+<% form_html = {multipart: true} %>
+<% if @submission.code_content.code %>
+  <% @submission.code_content.code = @submission.code_content.code_utf8 %>
+  <% if not @submission.code_content.code.valid_encoding? %>
+    <% @submission.code_content.code = '' %>
+    <% check_upload = true %>
+    <% form_html[:onsubmit] = 'return check_upload();' %>
+  <% end %>
+<% end %>
+
+<%= form_for [@problem, @submission], :html => form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">
@@ -31,7 +43,18 @@
   <hr>
 
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <%= f.submit :class => 'btn btn-success btn-lg', :id => 'form-submit-button' %>
   </div>
 <% end %>
 
+<% if check_upload %>
+<script>
+function check_upload() {
+  let ret = document.getElementById('submission_code_file').files.length > 0 || confirm('Upload file is not set and the code in the text input will be used instead. Confirm?');
+  if (!ret) { <%# rails-ujs uses a setTimeout of 13ms to disable the button, so we also need to use it %>
+    setTimeout(function(){ document.getElementById('form-submit-button').removeAttribute('disabled'); }, 100);
+  }
+  return ret;
+}
+</script>
+<% end %>
