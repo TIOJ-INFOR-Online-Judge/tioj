@@ -69,6 +69,10 @@ class Submission < ApplicationRecord
     true
   end
 
+  def tasks_allowed_for(cur_user)
+    !contest? || cur_user&.admin? || contest.show_detail_result
+  end
+
   def calc_td_set_scores
     score_map = submission_tasks.map { |t| [t.position, t.score] }.to_h
     num_tasks = problem.testdata.count

@@ -122,23 +122,12 @@ $("button:not([type='submit'])").attr("type", "button");
 <%= paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
+<%= javascript_include_tag "submissions" %>
 <script>
 var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
-function score_str(str) {
-  return String(str).replace(/\.0$/, '');
-}
-
-function updateResult(data) {
-  var id = data['id'];
-  $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
-  if (data['total_time']) $('#time-' + id).text(data['total_time']);
-  if (data['total_memory']) $('#memory-' + id).text(data['total_memory']);
-  if ('score' in data) $('#score-' + id).text(score_str(data['score']));
-}
-
 $(document).ready(function() {
-  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateResult);
+  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleResult);
 });
 </script>
 <% end %>

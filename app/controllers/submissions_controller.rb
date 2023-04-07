@@ -257,7 +257,7 @@ class SubmissionsController < ApplicationController
   end
 
   def set_show_attrs
-    @show_detail = current_user&.admin? || @contest.blank? || @contest.show_detail_result? || Time.now > @contest.end_time
+    @show_detail = @submission.tasks_allowed_for(current_user)
     @tdlist = @submission.problem.testdata_sets
     @invtdlist = inverse_td_list(@submission.problem)
   end

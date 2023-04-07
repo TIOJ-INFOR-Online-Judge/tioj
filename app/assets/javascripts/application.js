@@ -13,6 +13,8 @@
 //= require jquery-1.8.3.min
 //= require jquery
 //= require_tree .
+//= stub 'submissions'
+//= stub 'submission_show'
 //= require jquery_ujs
 //= require popper
 //= require bootstrap

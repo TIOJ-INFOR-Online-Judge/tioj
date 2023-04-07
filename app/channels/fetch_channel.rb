@@ -165,7 +165,8 @@ class FetchChannel < ApplicationCable::Channel
         submission.update(:score => score)
       end
     end
-    ActionCable.server.broadcast("submission_#{submission.id}", {td_set_scores: td_set_scores, tasks: results})
+    ActionCable.server.broadcast("submission_#{submission.id}_tdset", {td_set_scores: td_set_scores})
+    ActionCable.server.broadcast("submission_#{submission.id}_tasks", {tasks: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
   end
 
