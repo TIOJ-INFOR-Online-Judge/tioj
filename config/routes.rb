@@ -45,7 +45,9 @@ Rails.application.routes.draw do
 
   resources :contests do
     resources :submissions
-    resources :problems
+    resources :problems do
+      resources :submissions
+    end
     resources :announcements
     resources :posts do
       resources :comments, except: [:index]
@@ -57,7 +59,6 @@ Rails.application.routes.draw do
       get 'dashboard_update'
     end
   end
-  resources :contest_problem_joints
 
   resources :articles
   resources :testdata, only: [:show]

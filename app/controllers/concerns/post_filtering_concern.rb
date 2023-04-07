@@ -1,16 +1,11 @@
 module PostFilteringConcern
   extend ActiveSupport::Concern
 
-  included do
-    helper_method :check_contest_and_problem
-    helper_method :check_problem_allow_create
-    helper_method :filter_posts
-  end
+ private
 
   def check_contest_and_problem
-    # also PostsController#check_contest_and_problem
     unless current_user&.admin?
-      if not @contest and Contest.where("start_time <= ? AND ? <= end_time AND disable_discussion", Time.now, Time.now).exists?
+      if not @contest and Contest.where("start_time <= ? AND ? < end_time AND disable_discussion", Time.now, Time.now).exists?
         redirect_back fallback_location: root_path, :notice => "No discussion during contest."
         return
       end
@@ -22,7 +17,6 @@ module PostFilteringConcern
   end
 
   def check_problem_allow_create
-    # also PostsController#check_create
     unless current_user&.admin?
       if @problem and not @problem.discussion_enabled?
         redirect_to problem_posts_path(@problem), :alert => "Discussion not allowed in this problem."

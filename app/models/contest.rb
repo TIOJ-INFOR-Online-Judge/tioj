@@ -39,6 +39,7 @@ class Contest < ApplicationRecord
 
   validates :start_time, :presence => true
   validates :end_time, :presence => true
+  validates_comparison_of :start_time, less_than: :end_time
   validates_numericality_of :freeze_minutes, :greater_than_or_equal_to => 0
 
   accepts_nested_attributes_for :contest_problem_joints, :reject_if => lambda { |a| a[:problem_id].blank? }, :allow_destroy => true
@@ -50,6 +51,10 @@ class Contest < ApplicationRecord
 
   def is_started?
     Time.now >= start_time
+  end
+
+  def is_ended?
+    Time.now >= end_time
   end
 
   def is_running?

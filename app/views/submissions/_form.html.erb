@@ -15,7 +15,9 @@
   <% end %>
 <% end %>
 
-<%= form_for [@problem, @submission], :html => form_html do |f| %>
+<% form_target = [@problem, @submission] %>
+<% form_target = [@contest] + form_target if @contest %>
+<%= form_for form_target, :html => form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">
@@ -33,12 +35,6 @@
     <%= f.label :code_file, 'Or, upload a file (overrides the code above):' %>
     <%= f.file_field :code_file, :class => 'form-control flat' %>
   </div>
-
-  <% if @contest_id %>
-    <div class="field">
-      <%= hidden_field_tag :contest_id, @contest_id %>
-    </div>
-  <% end %>
 
   <hr>
 

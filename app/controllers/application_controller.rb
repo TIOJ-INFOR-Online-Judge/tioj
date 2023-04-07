@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :set_verdict_hash
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_anno
+  before_action :set_layout
   mattr_accessor :verdict
   mattr_accessor :v2i
   mattr_accessor :i2v
@@ -51,8 +52,7 @@ class ApplicationController < ActionController::Base
 
   def store_location
     if (request.fullpath != "/users/sign_in" &&
-        request.fullpath != "/users/sign_out"&&
-        request.fullpath != "/users/password"&&
+        request.fullpath != "/users/sign_out" &&
         request.fullpath != "/users/sign_up" &&
         !request.xhr?)
       session[:previous_url] = request.fullpath
@@ -84,12 +84,16 @@ protected
     end
   end
 
-  def set_contest_layout
-    if @contest.blank?
-      "application"
+  def set_layout
+    if /\/contests\/[0-9]+/.match(request.fullpath)
+      @layout = :contest
     else
-      "contest"
+      @layout = :application
     end
+  end
+
+  def set_contest_layout
+    @layout.to_s
   end
 
   def set_anno
@@ -146,7 +150,6 @@ protected
     field = String.new
     line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m) do
       |word, sq, dq, esc, garbage, sep|
-      p [word, sq, dq, esc, garbage, sep]
       field << (word || sq || (dq && dq.gsub(/\\([$`"\\\n])/, '\\1')) || esc.gsub(/\\(.)/, '\\1')) if not garbage
       if sep
         words << field

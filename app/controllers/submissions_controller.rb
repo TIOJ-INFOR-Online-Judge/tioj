@@ -4,6 +4,7 @@ class SubmissionsController < ApplicationController
   before_action :set_contest_problem_by_param, only: [:new, :create, :index]
   before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
+  before_action :redirect_contest, only: [:show, :show_old, :edit]
   before_action :check_old, only: [:show_old]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :set_default_compiler, only: [:new, :edit]
@@ -28,7 +29,7 @@ class SubmissionsController < ApplicationController
 
   def show
     unless current_user&.admin? or current_user&.id == @submission.user_id or not @submission.contest
-      if Time.now <= @submission.contest.end_time
+      if not @submission.contest.is_ended?
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
         return
       elsif @submission.created_at >= @contest.freeze_after
@@ -71,7 +72,7 @@ class SubmissionsController < ApplicationController
           return
         end
         contest = Contest.find(params[:contest_id])
-        unless contest.problem_ids.include?(@problem.id) and Time.now >= contest.start_time and Time.now <= contest.end_time
+        unless contest.problem_ids.include?(@problem.id) and contest.is_running?
           redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
           return
         end
@@ -116,7 +117,7 @@ class SubmissionsController < ApplicationController
           return
         end
         contest = Contest.find(params[:contest_id])
-        unless contest.problem_ids.include?(@problem.id) and Time.now >= contest.start_time and Time.now <= contest.end_time
+        unless contest.problem_ids.include?(@problem.id) and contest.is_running?
           redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
           return
         end
@@ -130,16 +131,15 @@ class SubmissionsController < ApplicationController
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
     @submission.problem_id = params[:problem_id]
-    if params[:contest_id]
-      if @contest.problem_ids.include?(@submission.problem_id) and Time.now >= @contest.start_time and Time.now <= @contest.end_time
-        @submission.contest_id = @contest.id
-      end
+    if @contest&.problem_ids&.include?(@submission.problem_id) and @contest&.is_running?
+      @submission.contest_id = params[:contest_id]
     end
     respond_to do |format|
       if @submission.save
+        redirect_url = @submission.contest_id ? contest_submission_url(@contest, @submission) : submission_url(@submission)
         ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
-        format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @submission }
+        format.html { redirect_to redirect_url, notice: 'Submission was successfully created.' }
+        format.json { render action: 'show', status: :created, location: redirect_url }
       else
         format.html { render action: 'new' }
         format.json { render json: @submission.errors, status: :unprocessable_entity }
@@ -200,12 +200,12 @@ class SubmissionsController < ApplicationController
         else
           @submissions = @submissions.where("submissions.created_at < ?", @contest.freeze_after)
         end
-        if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
-          #only self submission
+        unless @contest.is_ended?
+          # only self submission
           if user_signed_in?
             @submissions = @submissions.where(user_id: current_user.id)
           else
-            @submissions = @submissions.where(user_id: 0) # just make it an empty set whatsoever
+            @submissions = Submission.none
             return
           end
         end
@@ -241,10 +241,14 @@ class SubmissionsController < ApplicationController
       raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
       unless current_user&.admin?
         raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
-        if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
-          raise_not_found if current_user&.id != @submission.user_id
-        end
+        raise_not_found unless @contest.is_ended? or current_user&.id == @submission.user_id
       end
+    end
+  end
+
+  def redirect_contest
+    if @layout != :contest and @submission.contest_id
+      redirect_to URI::join(contest_url(@contest) + '/', request.fullpath[1..]).to_s
     end
   end
 
@@ -299,7 +303,6 @@ class SubmissionsController < ApplicationController
   def submission_params
     params.require(:submission).permit(
       :compiler_id,
-      :problem_id,
       :code_length,
       code_content_attributes: [:id, :code]
     )

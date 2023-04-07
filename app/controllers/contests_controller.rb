@@ -15,12 +15,12 @@ class ContestsController < ApplicationController
   end
 
   def calculate_ranking
-    if Time.now < @contest.start_time
+    unless @contest.is_started?
       authenticate_admin!
     end
 
     c_submissions = nil
-    if @contest.type_ioi? and Time.now >= @contest.start_time and Time.now <= @contest.end_time
+    if @contest.type_ioi? and @contest.is_running?
       authenticate_user!
       if not current_user.admin?
         c_submissions = @contest.submissions.where("user_id = ?", current_user.id)

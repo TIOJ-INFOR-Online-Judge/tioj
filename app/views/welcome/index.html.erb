@@ -33,7 +33,7 @@
                 <td><%= contest.title %></td>
                 <td style="text-align: right;"><%= link_to 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
               <% end %>
-              <% if Time.now >= contest.end_time %>
+              <% if contest.is_ended? %>
                 <td style="white-space: nowrap;">Ended</td>
                 <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
               <% elsif contest.is_started? %>
