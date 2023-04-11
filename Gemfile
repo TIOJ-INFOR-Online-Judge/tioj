@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem "passenger", "~> 6", require: "phusion_passenger/rack_handler"
+gem 'passenger', '~> 6', require: 'phusion_passenger/rack_handler'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7'
@@ -98,12 +98,12 @@ group :development do
   gem 'listen', group: 'development'
 
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
+  gem 'web-console'
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
-  gem "webdrivers"
+  gem 'capybara'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
 end
