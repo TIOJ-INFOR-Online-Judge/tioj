@@ -41,10 +41,4 @@ jQuery ->
   $('.collapse-no-anim.collapse').on('hide.bs.collapse show.bs.collapse', toggleChevron)
   $('.collapse-no-anim.collapse').on('hide.bs.collapse show.bs.collapse', immediateToggle)
   $('.collapse-no-anim.collapse').on('hidden.bs.collapse shown.bs.collapse', noPropagate)
-  $("#quick_submit").click ->
-    prob_id = $('#quick_prob_id').val()
-    if prob_id == ""
-      return
-
-    window.location.href = "/problems/#{prob_id}/submissions/new"
 

@@ -10,6 +10,3 @@ jQuery ->
             $(this).text("Hide Form")
         else
             $(this).text("New Comment")
-
-
-

@@ -6,8 +6,17 @@
 toggleChevron = (e) ->
   $(e.target)
       .prev('.panel-heading')
-      .find("i.indicator")
+      .find('i.indicator')
       .toggleClass('glyphicon-chevron-down glyphicon-chevron-up')
+
+updateQuickSubmit = () -> 
+  prob_id = $(this).val()
+  link = '#'
+  if prob_id != ''
+    link = "problems/#{prob_id}/submissions/new"
+    if location.pathname.slice(-1) == '/'
+      link = '../' + link
+  $('#quick_submit').attr('href', link) 
 
 jQuery ->
   $('#lmenu').hide()
@@ -19,6 +28,8 @@ jQuery ->
     $('#unfold').show()
   $('#collapseLimit').on('hidden.bs.collapse', toggleChevron)
   $('#collapseLimit').on('shown.bs.collapse', toggleChevron)
+  $('#quick_prob_id').on('input', updateQuickSubmit)
+  $('#quick_prob_id').trigger('input')
   $('#toggle-solution-tag').click ->
     $(this).text((if $(this).hasClass('active') then 'Show' else 'Hide') + ' solution-related tags')
     $('.solution-tag').toggleClass('no-display');
