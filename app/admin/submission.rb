@@ -1,13 +1,16 @@
 ActiveAdmin.register Submission do
   permit_params :id, :problem_id, :user_id, :contest_id, :compiler, :result, :score, :_result, :code_length, :total_time, :total_memory
   includes :compiler
+  includes :code_content
+  includes :user
+
   index do
     selectable_column
     column :id do |t|
       link_to t.id, admin_submission_path(t)
     end
     column :problem_id
-    column :user_id
+    column :user
     column :contest_id
     column :compiler
     column :result
@@ -16,12 +19,13 @@ ActiveAdmin.register Submission do
   end
 
   preserve_default_filters!
+  remove_filter :old_submission
   remove_filter :submission_tasks
   remove_filter :problem
   remove_filter :user
+  remove_filter :code_content
   filter :problem_id
   filter :user_id
-  #filter
 
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
