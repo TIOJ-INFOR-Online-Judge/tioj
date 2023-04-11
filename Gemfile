@@ -45,11 +45,11 @@ gem 'carrierwave'
 gem 'mini_magick'
 # compression
 gem 'zstd-ruby'
-# progress bar
-gem 'jquery-fileupload-rails'
 
-# Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
+# Javascripts
+gem 'jquery-rails'
 gem 'jquery-tablesorter'
+gem 'jquery-fileupload-rails'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
