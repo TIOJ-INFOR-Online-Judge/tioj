@@ -5,6 +5,8 @@ gem "passenger", "~> 6", require: "phusion_passenger/rack_handler"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7'
 gem 'rdoc', '~> 6'
+
+# Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
 
 # Use mysql2 as the database for Active Record
@@ -27,18 +29,9 @@ gem 'redcarpet'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier'
 
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails'
-
 # Pagination
 gem 'kaminari'
 
-# JavaScript library
-gem 'jquery-rails'
-
-# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-#gem 'turbolinks'
-#gem 'jquery-turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'json'
 gem 'jbuilder'
@@ -54,6 +47,9 @@ gem 'mini_magick'
 gem 'zstd-ruby'
 # progress bar
 gem 'jquery-fileupload-rails'
+
+# Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
+gem 'jquery-tablesorter'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
@@ -77,16 +73,11 @@ gem 'friendly_id'
 # annotate (showing model info in model.rb)
 gem 'annotate'
 
-gem 'nokogiri' #getting old tioj probs
-
 # Timezone data
 gem 'tzinfo-data'
 
 # Ordered list management: https://github.com/swanandp/acts_as_list
 gem 'acts_as_list'
-
-# Tablesorter: https://github.com/themilkman/jquery-tablesorter-rails
-gem 'jquery-tablesorter'
 
 # Activerecord-import for bulk insert
 gem 'activerecord-import'
@@ -101,11 +92,18 @@ gem 'redis', '~> 4'
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
-# Bullet for debugging
-gem 'bullet', group: 'development'
-gem 'listen', group: 'development'
+group :development do
+  # Bullet for debugging
+  gem 'bullet', group: 'development'
+  gem 'listen', group: 'development'
 
-# Used for testing
-gem 'capybara', group: 'test'
-gem 'puma', group: 'test'
-gem 'selenium-webdriver', group: 'test'
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "web-console"
+end
+
+group :test do
+  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
+end
