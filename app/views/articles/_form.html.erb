@@ -9,7 +9,7 @@
 
   <div class="form-group">
     <%= f.label :pinned, "Pin to top" %><br>
-    <div class="switch switch-square"
+    <div class="make-switch switch-square"
       data-on-label="<i class='fui-check'></i>"
       data-off-label="<i class='fui-cross'></i>">
       <%= f.check_box :pinned %>
@@ -48,8 +48,8 @@
   <%= f.link_to_add "Add an attachment", :attachments, :class => 'btn btn-warning' %>
 
   <div class="form-group">
-    <%= f.label :public do %>
-      <%= f.check_box :public %>
+    <%= f.label :public, class: 'checkbox' do %>
+      <%= f.check_box :public, 'data-toggle': 'checkbox' %>
       Public to anyone
     <% end %>
   </div>

@@ -5,11 +5,12 @@ import {createPopper} from '@popperjs/core';
 
 import 'bootstrap';
 import 'bootstrap-select';
-import 'bootstrap-switch';
+import './vendor/bootstrap-switch'
 
 // flat UI
 import './vendor/flatui-checkbox';
 import './vendor/flatui-radio';
+import './helpers/flatui';
 
 import './vendor/jquery.tagsinput';
 import 'jquery-placeholder';

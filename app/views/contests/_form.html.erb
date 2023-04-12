@@ -68,23 +68,20 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :disable_discussion do %>
-      <%= f.check_box :disable_discussion %>
+    <%= f.label :disable_discussion, class: 'checkbox' do %>
+      <%= f.check_box :disable_discussion, 'data-toggle': 'checkbox' %>
       Disable global and problem discussion during the contest
     <% end %>
-    <br>
-    <%= f.label :show_detail_result do %>
-      <%= f.check_box :show_detail_result %>
+    <%= f.label :show_detail_result, class: 'checkbox' do %>
+      <%= f.check_box :show_detail_result, 'data-toggle': 'checkbox' %>
       Show detailed result of each testdata
     <% end %>
-    <br>
-    <%= f.label :skip_group do %>
-      <%= f.check_box :skip_group %>
+    <%= f.label :skip_group, class: 'checkbox' do %>
+      <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
       Skip the remaining testdata in the task if any of the testdata got non-AC
     <% end %>
-    <br>
-    <%= f.label :hide_old_submission do %>
-      <%= f.check_box :hide_old_submission %>
+    <%= f.label :hide_old_submission, class: 'checkbox' do %>
+      <%= f.check_box :hide_old_submission, 'data-toggle': 'checkbox' %>
       Hide old submissions in contest problems
     <% end %>
   </div>

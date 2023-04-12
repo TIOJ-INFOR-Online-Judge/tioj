@@ -254,8 +254,8 @@
       <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
     </div>
     <div class="form-group">
-      <%= f.label :judge_between_stages do %>
-        <%= f.check_box :judge_between_stage %>
+      <%= f.label :judge_between_stages, class: 'checkbox' do %>
+        <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
         Invoke special judge between stages (only applicable if number of stages &gt; 1)
       <% end %>
     </div>
@@ -297,19 +297,16 @@
   </div>
 
   <div class="form-group">
-    <%# TODO: Use flatui checkbox (class: 'checkbox'; 'data-toggle': 'checkbox') %>
-    <%= f.label :ranklist_display_score do %>
-      <%= f.check_box :ranklist_display_score %>
+    <%= f.label :ranklist_display_score, class: 'checkbox' do %>
+      <%= f.check_box :ranklist_display_score, 'data-toggle': 'checkbox', 'data-toggle': 'checkbox' %>
       Display score in ranklist
     <% end %>
-    <br>
-    <%= f.label :skip_group do %>
-      <%= f.check_box :skip_group %>
+    <%= f.label :skip_group, class: 'checkbox' do %>
+      <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
       Skip the remaining testdata in the task if any of the testdata got non-AC
     <% end %>
-    <br>
-    <%= f.label :strict_mode do %>
-      <%= f.check_box :strict_mode %>
+    <%= f.label :strict_mode, class: 'checkbox' do %>
+      <%= f.check_box :strict_mode, 'data-toggle': 'checkbox' %>
       Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
     <% end %>
     <div class="collapse" id="strictModeDescription" style="height: auto;">

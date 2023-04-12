@@ -83,3 +83,10 @@ tr.ce > td {
 .panel-ce {
   border-color: #C0C0C0;
 }
+
+label.checkbox.checked {
+  color: unset;
+}
+a.glyphicon-question-sign:hover {
+  color: #1abc9c !important;
+}
