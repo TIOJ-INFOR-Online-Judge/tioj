@@ -90,3 +90,47 @@ label.checkbox.checked {
 a.glyphicon-question-sign:hover {
   color: #1abc9c !important;
 }
+.motto {
+  max-width: 50rem;
+  max-height: 10rem;
+  overflow: hidden;
+}
+
+/* bootstrap 5 auto row */
+.bs5-row {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+.bs5-row > * {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--bs-gutter-y);
+}
+
+.bs5-col {
+  flex: 1 0 0%;
+}
+
+.bs5-col-auto {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+@media (min-width: 992px) {
+  .bs5-col-lg {
+    flex: 1 0 0%;
+  }
+  .bs5-col-lg-auto {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
