@@ -13,7 +13,7 @@ gem 'bootsnap', require: false
 gem 'mysql2'
 
 # Use SCSS for stylesheets
-gem 'sass-rails'
+gem 'sassc-rails'
 
 # Use jsbuilding-rails for JavaScript
 gem 'sprockets', '~> 4'
