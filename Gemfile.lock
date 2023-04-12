@@ -89,15 +89,10 @@ GEM
     arbre (1.5.0)
       activesupport (>= 3.0.0, < 7.1)
       ruby2_keywords (>= 0.0.2, < 1.0)
-    autoprefixer-rails (10.4.13.0)
-      execjs (~> 2)
     bcrypt (3.1.18)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
-    bootstrap-sass (3.4.1)
-      autoprefixer-rails (>= 5.2.1)
-      sassc (>= 2.0.0)
     builder (3.2.4)
     bullet (7.0.7)
       activesupport (>= 3.0.0)
@@ -174,6 +169,8 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-tablesorter (1.27.2)
       railties (>= 3.2)
+    jsbundling-rails (1.1.1)
+      railties (>= 6.0.0)
     json (2.6.3)
     jwt (2.7.0)
     kaminari (1.2.2)
@@ -264,7 +261,6 @@ GEM
     passenger (6.0.17)
       rack
       rake (>= 0.8.1)
-    popper_js (2.11.6)
     psych (5.1.0)
       stringio
     public_suffix (5.0.1)
@@ -402,7 +398,6 @@ DEPENDENCIES
   acts_as_list
   annotate
   bootsnap
-  bootstrap-sass (~> 3)
   bullet
   capybara
   carrierwave
@@ -410,8 +405,8 @@ DEPENDENCIES
   friendly_id
   jbuilder
   jquery-fileupload-rails
-  jquery-rails
   jquery-tablesorter
+  jsbundling-rails
   json
   kaminari
   listen
@@ -424,7 +419,6 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   passenger (~> 6)
-  popper_js
   rails (~> 7)
   rdoc (~> 6)
   redcarpet

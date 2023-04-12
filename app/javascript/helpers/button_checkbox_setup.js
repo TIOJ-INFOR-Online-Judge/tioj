@@ -1,5 +1,4 @@
-
-function button_checkbox_setup() {
+export function buttonCheckboxSetup() {
 
 $('.button-checkbox').each(function () {
 

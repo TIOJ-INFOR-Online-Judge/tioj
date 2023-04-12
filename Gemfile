@@ -14,9 +14,10 @@ gem 'mysql2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails'
-gem 'bootstrap-sass', '~> 3'
-gem 'popper_js'
+
+# Use jsbuilding-rails for JavaScript
 gem 'sprockets', '~> 4'
+gem 'jsbundling-rails'
 
 # User
 gem 'devise'
@@ -45,11 +46,6 @@ gem 'carrierwave'
 gem 'mini_magick'
 # compression
 gem 'zstd-ruby'
-
-# Javascripts
-gem 'jquery-rails'
-gem 'jquery-tablesorter'
-gem 'jquery-fileupload-rails'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'

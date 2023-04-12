@@ -1,22 +1,3 @@
-//= require actioncable
-//= require submission_show
-
-this.App || (this.App = {});
-
-var protocol = location.protocol.match(/^https/) ? 'wss' : 'ws';
-
-App.cable = ActionCable.createConsumer(`${protocol}:${location.host}/cable`);
-
-// id can be integer or array of integers
-this.subscribeSubmission = function(id, onReceive) {
-  return App.cable.subscriptions.create({
-    channel: "SubmissionChannel",
-    id: id
-  }, {
-    received: onReceive
-  });
-};
-
 var toggleChevron = function(e) {
   if (this.classList.contains('no-display')) {
     e.preventDefault();

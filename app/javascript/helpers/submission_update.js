@@ -67,7 +67,7 @@ function updateTask(data) {
   }
 }
 
-function updateResult(data) {
+function updateResult(data, cable) {
   var to_wait = waiting_verdicts.includes(data['result']);
   $('#verdict').text(verdict[data['result']]);
   $('#waiting-icon').toggleClass('no-display', !to_wait);
@@ -85,10 +85,20 @@ function updateResult(data) {
   if (data['total_time']) $('#total-time').text(data['total_time'])
   if (data['total_memory']) $('#total-memory').text(data['total_memory'])
   if ('score' in data) $('#total-score').text(score_str(data['score']));
-  if (!to_wait) App.cable.disconnect();
+  if (!to_wait) cable.disconnect();
 }
 
-function updateMultipleResult(data) {
+export function updateSubmissionDetail(data, cable) {
+  if ('result' in data) {
+    updateResult(data, cable);
+  } else if ('td_set_scores' in data) {
+    updateTdSet(data);
+  } else {
+    updateTask(data);
+  }
+}
+
+export function updateMultipleSubmissions(data, cable) {
   var id = data['id'];
   $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
   if (data['total_time']) $('#time-' + id).text(data['total_time']);

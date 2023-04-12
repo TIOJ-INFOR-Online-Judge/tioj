@@ -1,5 +1,5 @@
 
-function contest_dashboard_main(){
+export function contestDashboardRefresh() {
 
 let _debug = false
 

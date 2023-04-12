@@ -255,7 +255,7 @@
     </div>
     <div class="form-group">
       <%= f.label :judge_between_stages do %>
-        <%= f.check_box :judge_between_stages %>
+        <%= f.check_box :judge_between_stage %>
         Invoke special judge between stages (only applicable if number of stages &gt; 1)
       <% end %>
     </div>
@@ -297,6 +297,7 @@
   </div>
 
   <div class="form-group">
+    <%# TODO: Use flatui checkbox (class: 'checkbox'; 'data-toggle': 'checkbox') %>
     <%= f.label :ranklist_display_score do %>
       <%= f.check_box :ranklist_display_score %>
       Display score in ranklist
@@ -401,7 +402,7 @@
   $(document).on('nested:fieldRemoved',function(event){
     event.field.find("input").removeAttr("min max required");
   });
-  button_checkbox_setup();
+  buttonCheckboxSetup();
 </script>
 
 <% if @isNewProblem == true %>

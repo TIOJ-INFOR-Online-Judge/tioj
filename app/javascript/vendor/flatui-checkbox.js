@@ -1,3 +1,7 @@
+/*
+ * https://raw.githubusercontent.com/designmodo/Flat-UI/2.1.3/js/flatui-checkbox.js
+ * Adapted to jQuery 3
+ */
 /* =============================================================
  * flatui-checkbox v0.0.3
  * ============================================================ */
@@ -39,7 +43,8 @@
         , e = $.Event('toggle')
       
       if ($el.prop('disabled') == false) {
-        $parent.toggleClass(ch) && checked ? $el.removeAttr(ch) : $el.prop(ch, ch);
+        // modified here
+        $parent.toggleClass(ch) && checked ? $el.prop(ch, false) : $el.prop(ch, ch);
         $el.trigger(e).trigger('change'); 
       }
     }  

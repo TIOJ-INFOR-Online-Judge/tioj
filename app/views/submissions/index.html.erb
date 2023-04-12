@@ -129,7 +129,7 @@ $("button:not([type='submit'])").attr("type", "button");
 var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
 $(document).ready(function() {
-  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleResult);
+  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
 });
 </script>
 <% end %>

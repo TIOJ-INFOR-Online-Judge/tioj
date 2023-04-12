@@ -318,15 +318,7 @@ var panel_class_map = <%= raw(panel_class_map.to_json) %>;
 var row_class_map = <%= raw(row_class_map.to_json) %>;
 
 $(document).ready(function() {
-  subscribeSubmission(<%= @submission.id %>, function(data) {
-    if ('result' in data) {
-      updateResult(data);
-    } else if ('td_set_scores' in data) {
-      updateTdSet(data);
-    } else {
-      updateTask(data);
-    }
-  });
+  subscribeSubmission(<%= @submission.id %>, updateSubmissionDetail);
 });
 </script>
 <% end %>

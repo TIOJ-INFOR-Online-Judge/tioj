@@ -15,7 +15,6 @@
 - [ ] I/O interactive & output-only problems
 - [ ] Judge load balancing
 - [ ] Write basic tests
-- [ ] Migrate to Bootstrap 4
 - [ ] Rewrite contest scoreboard refresh using ActionCable
 - [ ] Add more languages
 - [ ] Send compiler information from judge server
@@ -27,3 +26,5 @@
 - [ ] Teaming in contest
 - [ ] Post voting & contribution system
 - [ ] Notification system for problem issue reporting
+- [ ] Migrate to Bootstrap 4
+    - [ ] Enhance posts UI
