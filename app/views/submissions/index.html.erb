@@ -124,10 +124,10 @@ $("button:not([type='submit'])").attr("type", "button");
 <%= paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
-<%= javascript_include_tag "submissions" %>
 <script>
 var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
+initSubmissionCable();
 $(document).ready(function() {
   subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
 });

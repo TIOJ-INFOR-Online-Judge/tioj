@@ -35,5 +35,7 @@ import './pages/users';
 import './helpers/init_code_copy_script'
 import { buttonCheckboxSetup } from './helpers/button_checkbox_setup'
 import { contestDashboardRefresh } from './helpers/contest_dashboard_refresh'
+import { initSubmissionCable } from './helpers/init_submission_cable';
 window.buttonCheckboxSetup = buttonCheckboxSetup
 window.contestDashboardRefresh = contestDashboardRefresh
+window.initSubmissionCable = initSubmissionCable

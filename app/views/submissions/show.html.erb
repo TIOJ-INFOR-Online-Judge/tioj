@@ -309,7 +309,6 @@
 <% end %>
 
 <% if will_update %>
-<%= javascript_include_tag "submissions" %>
 <script>
 var verdict = <%= raw(@verdict.to_json) %>;
 var no_task_verdicts = <%= raw(no_task_verdicts.to_json) %>;
@@ -317,6 +316,7 @@ var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
 var panel_class_map = <%= raw(panel_class_map.to_json) %>;
 var row_class_map = <%= raw(row_class_map.to_json) %>;
 
+initSubmissionCable();
 $(document).ready(function() {
   subscribeSubmission(<%= @submission.id %>, updateSubmissionDetail);
 });
