@@ -3,15 +3,15 @@ import './helpers/jquery-global';
 import 'jquery-ujs';
 import {createPopper} from '@popperjs/core';
 
+// Bootstrap & related components
 import 'bootstrap';
 import 'bootstrap-select';
 import './vendor/bootstrap-switch'
 
-// flat UI
+// Flat UI
 import './vendor/flatui-checkbox';
-import './vendor/flatui-radio';
-import './helpers/flatui';
 
+// JQuery components
 import './vendor/jquery.tagsinput';
 import 'jquery-placeholder';
 import './vendor/jquery_nested_form';
