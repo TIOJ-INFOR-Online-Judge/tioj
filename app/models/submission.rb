@@ -87,4 +87,8 @@ class Submission < ApplicationRecord
       {score: set_score, ratio: ratio, position: index, finished: finished}
     }
   end
+
+  def created_at_usec
+    created_at.to_i * 1000000 + created_at.usec
+  end
 end

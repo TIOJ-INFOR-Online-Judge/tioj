@@ -89,7 +89,7 @@ class FetchChannel < ApplicationCable::Channel
       contest_id: submission.contest_id || -1,
       priority: priority,
       compiler: submission.compiler.name,
-      time: submission.created_at.to_i * 1000000 + submission.created_at.usec,
+      time: submission.created_at_usec,
       code_base64: Base64.strict_encode64(submission.code_content.code),
       skip_group: problem.skip_group || submission.contest&.skip_group || false,
       user: {
@@ -113,7 +113,7 @@ class FetchChannel < ApplicationCable::Channel
       td: problem.testdata.map.with_index { |t, index|
         {
           id: t.id,
-          updated_at: t.updated_at.to_i * 1000000 + t.updated_at.usec,
+          updated_at: t.timestamp,
           time: t.time_limit * 1000, # us
           vss: t.vss_limit || 0,
           rss: t.rss_limit || 0,

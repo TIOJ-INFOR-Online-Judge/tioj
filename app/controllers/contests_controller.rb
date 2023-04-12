@@ -32,85 +32,14 @@ class ContestsController < ApplicationController
       c_submissions = @contest.submissions
     end
 
-    def Rank(a, &func)
-      run = id = 0
-      prv = nil
-      a.map do |n|
-        run += 1
-        next id if prv && func[n] == func[prv]
-        prv = n.clone
-        id += run
-        run = 0
-        id
-      end
-    end
-    @contest_submissions = c_submissions.select([:id, :problem_id, :user_id, :result, :score, :created_at]).to_a
-    @submissions = @contest_submissions.group_by(&:problem_id)
-    @participants = User.find(@contest_submissions.map(&:user_id).uniq)
-    # array of submissions grouped by problems
-    @submissions = @tasks.map{|x| @submissions[x.id] or []}
-    @scores = []
     freeze_start = current_user&.admin? ? @contest.end_time : @contest.freeze_after
-    waiting_verdicts = ['queued', 'received', 'Validating']
     if @contest.type_acm?
-      uncounted = ['CE', 'ER', 'CLE', 'JE'] + waiting_verdicts
-      first_solved = @submissions.map{|sub| sub.select{|a| a.result == 'AC'}.min_by(&:id)}.map{|a| a ? a.id : -1}
-      @participants.each do |u|
-        results = []
-        total_attempts = 0
-        total_solv = 0
-        last_ac = 0
-        penalty = 0
-        @submissions.zip(first_solved).each do |sub, firstsolve|
-          user_sub = sub.select{|s| s.user_id == u.id}
-          first_ac = user_sub.select{|s| s.result == 'AC' and s.created_at < freeze_start}.min_by{|s| s.id}
-          if first_ac
-            attempts = user_sub.select{|s| s.id < first_ac.id and not s.result.in?(uncounted) and s.created_at < freeze_start}.size
-            ac_time = (first_ac.created_at - @contest.start_time).to_i / 60
-            last_ac = [last_ac, ac_time].max
-            results << [attempts + 1, ac_time, first_ac.id == firstsolve, 0]
-            total_solv += 1
-            total_attempts += attempts + 1
-            penalty += attempts * 20
-          else
-            attempts = user_sub.select{|s| not s.result.in?(uncounted) and s.created_at < freeze_start}.size
-            pend = user_sub.select{|s| s.result.in?(waiting_verdicts) or s.created_at >= freeze_start}.size
-            results << [attempts, -1, false, pend]
-            total_attempts += attempts
-          end
-        end
-        penalty += results.sum{|a| a[1] == -1 ? 0 : a[1]}
-        @scores << [u, total_attempts, total_solv, results, penalty, last_ac]
-      end
-      @scores.sort_by!{|a| [-a[2], a[4], a[5]]}
-      @scores = @scores.zip(Rank(@scores){|a| [a[2], a[4], a[5]]}).map {|n| n[0] + [n[1]]}
-      @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
-      @color << 0
+      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :acm)
     else
-      @participants.each do |u|
-        results = []
-        @submissions.each do |sub|
-          user_sub = sub.select{|s| s.user_id == u.id}
-          if user_sub.empty?
-            results << [0, 0]
-          else
-            has_ac = user_sub.any?{|s| s.result == 'AC' and s.created_at < freeze_start}
-            pending_count = user_sub.count{|s| s.result.in?(waiting_verdicts) or s.created_at >= freeze_start}
-            pending = has_ac ? 0 : pending_count
-            max_score = user_sub.select{|s| s.created_at < freeze_start}.max_by{|a| a.score}&.score || 0
-            results << [max_score, pending]
-          end
-        end
-        @scores << [u, results, results.sum{|a| a[0]}]
-      end
-      @scores.sort_by!{|a| -a[2]}
-      @scores = @scores.zip(Rank(@scores){|a| a[2]}).map {|n| n[0] + [n[1]]}
-      @color = @scores.map{|a| a[2]}.uniq.sort_by{|a| -a}
-      @color << 0
+      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :gcj)
     end
-    if not current_user&.admin? and Time.now >= freeze_start and @contest.freeze_minutes != 0
-      flash.now[:notice] = "Scoreboard is now frozen."
-    end
+    @participants = User.where(id: @data[:participants])
+    @data[:tasks] = @tasks.map(&:id)
   end
 
   def dashboard

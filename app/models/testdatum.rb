@@ -40,4 +40,8 @@ class Testdatum < ApplicationRecord
   # for custom form fields
   attr_accessor :form_same_as_above
   attr_accessor :form_delete
+
+  def timestamp
+    updated_at.to_i * 1000000 + updated_at.usec
+  end
 end
