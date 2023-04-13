@@ -12,8 +12,8 @@ import './vendor/bootstrap-switch'
 import './vendor/flatui-checkbox';
 
 // JQuery components
-import './vendor/jquery.tagsinput';
 import 'jquery-placeholder';
+import './vendor/jquery.tagsinput';
 import './vendor/jquery_nested_form';
 
 // tablesorter
@@ -25,19 +25,19 @@ import './vendor/pager-custom-controls';
 import 'blueimp-file-upload';
 import 'blueimp-tmpl';
 
-// pages
-import './pages/posts';
-import './pages/problems';
-import './pages/submissions';
-import './pages/users';
+// globals
+import './globals/posts';
+import './globals/problems';
+import './globals/submissions';
+import './globals/users';
 
 // helpers
 import './helpers/init_code_copy_script'
-import { buttonCheckboxSetup } from './helpers/button_checkbox_setup'
-import { contestDashboardRefresh } from './helpers/contest_dashboard_refresh'
-import { contestRanklistReorder } from './helpers/contest_ranklist_reorder'
-import { initSubmissionCable } from './helpers/init_submission_cable';
+import { buttonCheckboxSetup } from './helpers/button_checkbox_setup';
 window.buttonCheckboxSetup = buttonCheckboxSetup
-window.contestDashboardRefresh = contestDashboardRefresh
-window.contestRanklistReorder = contestRanklistReorder
+
+// pages
+import { initContestRanklist } from './pages/contests/main';
+import { initSubmissionCable } from './pages/submissions/main';
+window.initContestRanklist = initContestRanklist
 window.initSubmissionCable = initSubmissionCable

@@ -5,6 +5,7 @@
     "@popperjs/core": "^2.11.7",
     "@rails/actioncable": "^7.0.4-3",
     "animate.css": "^4.1.1",
+    "binary-search-bounds": "^2.0.5",
     "blueimp-file-upload": "^10.32.0",
     "bootstrap": "^3.4.1",
     "bootstrap-select": "^1.13.18",
