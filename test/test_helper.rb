@@ -26,6 +26,16 @@ module SystemSignInHelper
     click_button "Sign in" 
     assert_text "Signed in successfully"
   end
+
+  def sign_in_admin(user)
+    visit '/admin/login'
+    # username same as password since we can't store plain password in fixtures
+    fill_in "Username", with: user.username
+    fill_in "Password", with: user.username
+
+    click_button "Login"
+    assert_text "Signed in successfully"
+  end
 end
 
 class ActionDispatch::IntegrationTest

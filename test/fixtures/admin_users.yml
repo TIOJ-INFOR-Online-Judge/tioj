@@ -24,9 +24,7 @@
 #  index_admin_users_on_username              (username) UNIQUE
 #
 
-class AdminUser < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable,
-         :recoverable, :rememberable, :trackable, :validatable
-end
+admin:
+  email: admin@example.org
+  encrypted_password: <%= AdminUser.new.send(:password_digest, 'admin') %>
+  username: admin
