@@ -54,7 +54,7 @@ module ContestsHelper
     func = rule == :acm ? method(:acm_ranklist_state) : method(:ioi_ranklist_state)
     submissions.each do |sub|
       participants << sub.user_id
-      next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result)
+      next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result) && sub.created_at < freeze_start
       key = "#{sub.user_id}_#{sub.problem_id}"
       is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
