@@ -199,12 +199,19 @@ jquery-placeholder@^2.3.1:
   resolved "https://registry.yarnpkg.com/jquery-placeholder/-/jquery-placeholder-2.3.1.tgz#6025a1241019c08a8fb3ab8ed076285c05ba5e91"
   integrity sha512-5MK5cRqAfgLrnky1vlLOoK/1SSivYmCFDWwYWLI92aD7VhiIBMmmI6V56F5xyROIXCJnd4BtTBtWzEZ3SiIGTw==
 
+jquery-ui@^1.13.2:
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/jquery-ui/-/jquery-ui-1.13.2.tgz#de03580ae6604773602f8d786ad1abfb75232034"
+  integrity sha512-wBZPnqWs5GaYJmo1Jj0k/mrSkzdQzKDwhXNtHKcBdAcKVxMM3KNYFq+iJ2i1rwiG53Z8M4mTn3Qxrm17uH1D4Q==
+  dependencies:
+    jquery ">=1.8.0 <4.0.0"
+
 jquery-ujs@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.3.tgz#dcac6026ab7268e5ee41faf9d31c997cd4ddd603"
   integrity sha512-59wvfx5vcCTHMeQT1/OwFiAj+UffLIwjRIoXdpO7Z7BCFGepzq9T9oLVeoItjTqjoXfUrHJvV7QU6pUR+UzOoA==
 
-jquery@>=1.2.6, jquery@^3.6.4:
+jquery@>=1.2.6, "jquery@>=1.8.0 <4.0.0", jquery@^3.6.4:
   version "3.6.4"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
   integrity sha512-v28EW9DWDFpzcD9O5iyJXg3R3+q+mET5JhnjJzQUZMHOv67bpSIHq81GEYpPNZHG+XXHsfSme3nxp/hndKEcsQ==

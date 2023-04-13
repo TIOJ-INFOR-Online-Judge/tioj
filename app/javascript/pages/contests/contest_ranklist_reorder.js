@@ -18,7 +18,7 @@ function acmCellText(current, user_state) {
       if (!current.state[2]) {
         text = '<span class="text-success"><strong>' + text + '</strong></span>'
       }
-      let penalty = ~~(current.state[1] / 60000000);
+      let penalty = Math.floor(current.state[1] / 60000000);
       text += '<small>/' + penalty + '</small>';
       if (current.state[2]) {
         text = '<span style="color:#008000"><strong>' + text + '</strong></span>'
@@ -103,8 +103,8 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
   }
 }
 
-export function contestRanklistReorder(data, contest_type, timestamp) {
-  if (contest_type == 'acm') {
+export function contestRanklistReorder(data, timestamp) {
+  if (data.contest_type == 'acm') {
     reorderTableInternal(
       data,
       timestamp,

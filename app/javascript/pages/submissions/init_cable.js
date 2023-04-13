@@ -1,5 +1,5 @@
 import { createConsumer } from "@rails/actioncable"
-import { updateSubmissionDetail, updateMultipleSubmissions } from './submission_update'
+import { updateSubmissionDetail, updateMultipleSubmissions } from '../../helpers/submission_update'
 
 export function initSubmissionCable() {
   var protocol = location.protocol.match(/^https/) ? 'wss' : 'ws';

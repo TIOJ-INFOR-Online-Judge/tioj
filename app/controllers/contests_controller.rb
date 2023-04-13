@@ -40,6 +40,13 @@ class ContestsController < ApplicationController
     end
     @participants = User.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
+    @data[:contest_type] = @contest.contest_type
+    @data[:timestamps] = {
+      :start => helpers.to_us(@contest.start_time),
+      :end => helpers.to_us(@contest.end_time),
+      :freeze => helpers.to_us(@contest.freeze_after),
+      :current => helpers.to_us(Time.now.clamp(@contest.start_time, @contest.end_time)),
+    }
   end
 
   def dashboard

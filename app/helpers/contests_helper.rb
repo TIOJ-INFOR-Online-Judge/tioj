@@ -8,7 +8,7 @@ module ContestsHelper
   end
 
   def rel_timestamp(submission, start_time)
-    submission.created_at_usec - (start_time.to_i * 1000000 + start_time.usec)
+    submission.created_at_usec - to_us(start_time)
   end
 
   # return item_state; global_state will be changed
