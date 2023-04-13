@@ -19,12 +19,14 @@ class ContestsController < ApplicationController
       authenticate_admin!
     end
 
+    self_only = false
     c_submissions = nil
     if @contest.type_ioi? and @contest.is_running?
       authenticate_user!
       if not current_user.admin?
         c_submissions = @contest.submissions.where("user_id = ?", current_user.id)
         flash[:notice] = "You can only see your own score."
+        self_only = true
       else
         c_submissions = @contest.submissions
       end
@@ -32,7 +34,13 @@ class ContestsController < ApplicationController
       c_submissions = @contest.submissions
     end
 
-    freeze_start = current_user&.admin? ? @contest.end_time : @contest.freeze_after
+    freeze_start = (
+        (current_user&.admin? && !params[:with_freeze]) || self_only ?
+        @contest.end_time : @contest.freeze_after)
+    if freeze_start != @contest.end_time and Time.now >= freeze_start
+      flash.now[:notice] = "Scoreboard is now frozen."
+    end
+
     if @contest.type_acm?
       @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :acm)
     else

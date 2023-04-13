@@ -28,7 +28,12 @@ function acmCellText(current, user_state) {
       user_state.tot_penalty += penalty + 20 * (current.state[0] - 1);
       if (current.state[1] > user_state.last_solved) user_state.last_solved = current.state[1];
     } else {
-      text = '<span class="text-danger"><strong>' + text + '</strong></span>'
+      if (current.state[0]) {
+        text = '<span class="text-danger"><strong>' + text + '</strong></span>';
+      }
+      if (current.state[3]) {
+        text += '+<span style="color:#888;"><strong>' + current.state[3] + '</strong></span>';
+      }
     }
   }
   return text;
@@ -44,9 +49,12 @@ function ioiCellText(current, user_state) {
   // TODO: change to Decimal
   let text = '0';
   if (current) {
-    let value = parseFloat(current.state);
+    let value = parseFloat(current.state[0]);
     text = value;
     user_state.score += value;
+    if (current.state[2]) {
+      text += ' <small><span style="color:#888;">+' + current.state[2] + '</span></small>';
+    }
   }
   return text;
 }

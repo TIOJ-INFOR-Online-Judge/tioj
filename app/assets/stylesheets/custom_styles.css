@@ -31,6 +31,7 @@ h1 h2 h3 h4 h5 h6 {
   display: none;
 }
 
+/* verdicts */
 tr.ole > td {
   background-color: #F3E6FC;
 }
@@ -84,6 +85,12 @@ tr.ce > td {
   border-color: #C0C0C0;
 }
 
+/* slider */
+.ui-slider {
+  background: #f5f5f5;
+}
+
+/* misc */
 label.checkbox.checked {
   color: unset;
 }
@@ -94,6 +101,15 @@ a.glyphicon-question-sign:hover {
   max-width: 50rem;
   max-height: 10rem;
   overflow: hidden;
+}
+.table-align-middle td {
+  vertical-align: middle !important;
+}
+.align-middle {
+  vertical-align: middle !important;
+}
+small {
+  line-height: 1.4;
 }
 
 /* bootstrap 5 auto row */
