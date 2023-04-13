@@ -81,7 +81,7 @@ GEM
       activerecord (>= 6.0, < 7.1)
     acts_as_list (1.1.0)
       activerecord (>= 4.2)
-    addressable (2.8.3)
+    addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
@@ -191,7 +191,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.2)
-    mathjax-rails-3 (3.2.2.2)
+    mathjax-rails-3 (3.2.2.3)
       railties (>= 3.0)
     matrix (0.4.2)
     mechanize (2.9.0)
@@ -232,7 +232,7 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.9)
-    nokogiri (1.14.2)
+    nokogiri (1.14.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (2.0.9)
@@ -258,9 +258,11 @@ GEM
     psych (5.1.0)
       stringio
     public_suffix (5.0.1)
+    puma (6.2.1)
+      nio4r (~> 2.0)
     racc (1.6.2)
     rack (2.2.6.4)
-    rack-protection (3.0.5)
+    rack-protection (3.0.6)
       rack
     rack-test (2.1.0)
       rack (>= 1.3)
@@ -378,7 +380,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.6.7)
-    zstd-ruby (1.5.4.1)
+    zstd-ruby (1.5.5.0)
 
 PLATFORMS
   ruby
@@ -409,6 +411,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   passenger (~> 6)
+  puma
   rails (~> 7)
   rdoc (~> 6)
   redcarpet

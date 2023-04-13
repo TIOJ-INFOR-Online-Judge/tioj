@@ -13,3 +13,19 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+module SystemSignInHelper
+  def sign_in(user)
+    visit '/users/sign_in'
+    # username same as password since we can't store plain password in fixtures
+    fill_in "Username", with: user.username
+    fill_in "Password", with: user.username
+
+    click_button "Sign in" 
+    assert_text "Signed in successfully"
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+end
