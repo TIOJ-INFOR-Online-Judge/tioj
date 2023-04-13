@@ -28,7 +28,7 @@ module ContestsHelper
     item_state
   end
 
-  def gcj_ranklist_state(submission, start_time, item_state, global_state)
+  def ioi_ranklist_state(submission, start_time, item_state, global_state)
     # state: score
     if item_state.nil?
       item_state = BigDecimal('-1e+12')
@@ -41,7 +41,7 @@ module ContestsHelper
     waiting = Hash.new(0)
     participants = Set[]
     global_state = {}
-    func = rule == :acm ? method(:acm_ranklist_state) : method(:gcj_ranklist_state)
+    func = rule == :acm ? method(:acm_ranklist_state) : method(:ioi_ranklist_state)
     submissions.each do |sub|
       key = "#{sub.user_id}_#{sub.problem_id}"
       if ['queued', 'received', 'Validating'].include?(sub.result) or sub.created_at >= freeze_start

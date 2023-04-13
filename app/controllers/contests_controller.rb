@@ -36,7 +36,7 @@ class ContestsController < ApplicationController
     if @contest.type_acm?
       @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :acm)
     else
-      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :gcj)
+      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :ioi)
     end
     @participants = User.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
