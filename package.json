@@ -2,6 +2,7 @@
   "name": "app",
   "private": "true",
   "dependencies": {
+    "@activeadmin/activeadmin": "^2.13.1",
     "@popperjs/core": "^2.11.7",
     "@rails/actioncable": "^7.0.4-3",
     "animate.css": "^4.1.1",
