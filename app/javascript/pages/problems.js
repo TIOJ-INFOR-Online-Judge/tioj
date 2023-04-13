@@ -17,11 +17,11 @@ function updateQuickSubmit() {
 
 $(() => {
   $('#lmenu').hide();
-  $('#unfold').click(function() {
+  $('#unfold').on('click', function() {
     $('#unfold').hide();
     $('#lmenu').show();
   });
-  $('#fold').click(function() {
+  $('#fold').on('click', function() {
     $('#lmenu').hide();
     $('#unfold').show();
   });
@@ -29,7 +29,7 @@ $(() => {
   $('#collapseLimit').on('shown.bs.collapse', toggleChevron);
   $('#quick_prob_id').on('input', updateQuickSubmit);
   $('#quick_prob_id').trigger('input');
-  $('#toggle-solution-tag').click(function() {
+  $('#toggle-solution-tag').on('click', function() {
     $(this).text(($(this).hasClass('active') ? 'Show' : 'Hide') + ' solution-related tags');
     $('.solution-tag').toggleClass('no-display');
     return $(this).toggleClass('active');
