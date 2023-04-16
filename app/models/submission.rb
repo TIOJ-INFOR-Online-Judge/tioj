@@ -73,11 +73,12 @@ class Submission < ApplicationRecord
     !contest? || cur_user&.admin? || contest.show_detail_result
   end
 
-  def calc_td_set_scores
+  def calc_td_set_scores(num_tasks = nil, testdata_sets = nil)
     score_map = submission_tasks.map { |t| [t.position, t.score] }.to_h
-    num_tasks = problem.testdata.count
     skip_group = problem.skip_group || contest&.skip_group || false
-    problem.testdata_sets.order(id: :asc).map.with_index{|s, index|
+    num_tasks ||= problem.testdata.count
+    testdata_sets ||= problem.testdata_sets.order(id: :asc)
+    testdata_sets.map.with_index{|s, index|
       lst = s.td_list_arr(num_tasks)
       set_result = score_map.values_at(*lst)
       finished = skip_group ? set_result.any? : set_result.all?
@@ -86,6 +87,10 @@ class Submission < ApplicationRecord
       set_score = finished ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
       {score: set_score, ratio: ratio, position: index, finished: finished}
     }
+  end
+
+  def calc_td_set_scores_prefetched
+    calc_td_set_scores(problem.testdata.length, problem.testdata_sets.sort_by(&:id))
   end
 
   def created_at_usec

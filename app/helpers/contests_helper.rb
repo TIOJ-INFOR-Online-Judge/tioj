@@ -45,11 +45,38 @@ module ContestsHelper
     end
   end
 
+  def ioi_new_ranklist_state(submission, start_time, item_state, is_waiting)
+    # state: [score, has_sub, waiting]
+    if item_state.nil?
+      item_state = [BigDecimal(0), false, 0, nil]
+    end
+    item_state = item_state.dup
+    if is_waiting
+      item_state[2] += 1
+      item_state
+    else
+      scores = submission.calc_td_set_scores_prefetched.map{|x| x[:score]}
+      if item_state[3].nil?
+        item_state[3] = scores
+      else
+        item_state[3] = item_state[3].zip(scores).map(&:max)
+      end
+      nscore = item_state[3].sum
+      item_state[0] >= nscore && item_state[1] ? nil : [nscore, true, item_state[2], item_state[3]]
+    end
+  end
+
   def ranklist_data(submissions, start_time, freeze_start, rule)
     res = Hash.new { |h, k| h[k] = [] }
     participants = Set[]
-    func = rule == :acm ? method(:acm_ranklist_state) : method(:ioi_ranklist_state)
+    func = {
+      'acm' => method(:acm_ranklist_state),
+      'ioi' => method(:ioi_ranklist_state),
+      'ioi_new' => method(:ioi_new_ranklist_state),
+    }[rule]
     first_ac = {}
+    submissions = submissions.to_a
+    logger.fatal 'meow'
     submissions.each do |sub|
       participants << sub.user_id
       next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result) && sub.created_at < freeze_start
@@ -61,6 +88,7 @@ module ContestsHelper
       first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, sub.user_id) if sub.result == 'AC'
     end
     res.delete_if { |key, value| value.empty? }
+    res.each_value {|x| x.each {|item| item[:state].pop}} if rule == 'ioi_new'
     {result: res, participants: participants.to_a, first_ac: first_ac}
   end
 end

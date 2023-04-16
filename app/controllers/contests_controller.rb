@@ -21,7 +21,7 @@ class ContestsController < ApplicationController
 
     self_only = false
     c_submissions = nil
-    if @contest.type_ioi? and @contest.is_running?
+    if not @contest.dashboard_during_contest and @contest.is_running?
       authenticate_user!
       if not current_user.admin?
         c_submissions = @contest.submissions.where("user_id = ?", current_user.id)
@@ -33,6 +33,8 @@ class ContestsController < ApplicationController
     else
       c_submissions = @contest.submissions
     end
+    # TODO: Too slow on new IOI style
+    c_submissions = c_submissions.includes(:submission_tasks).includes(problem: [:testdata_sets, :testdata]) if @contest.type_ioi_new?
 
     freeze_start = (
         (current_user&.admin? && !params[:with_freeze]) || self_only ?
@@ -41,11 +43,7 @@ class ContestsController < ApplicationController
       flash.now[:notice] = "Scoreboard is now frozen."
     end
 
-    if @contest.type_acm?
-      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :acm)
-    else
-      @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, :ioi)
-    end
+    @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, @contest.contest_type)
     @participants = User.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
