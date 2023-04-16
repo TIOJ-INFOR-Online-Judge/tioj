@@ -10,17 +10,17 @@ Array.prototype.compare = function (arr){
   return 0;
 }
 
-function acmCellText(current, user_state) {
+function acmCellText(current, user_state, first_ac) {
   let text = '-';
   if (current) {
     text = current.state[0];
     if (current.state[1] !== null) {
-      if (!current.state[2]) {
+      if (!first_ac) {
         text = '<span class="text-success"><strong>' + text + '</strong></span>'
       }
       let penalty = Math.floor(current.state[1] / 60000000);
       text += '<small>/' + penalty + '</small>';
-      if (current.state[2]) {
+      if (first_ac) {
         text = '<span style="color:#008000"><strong>' + text + '</strong></span>'
       }
 
@@ -31,7 +31,7 @@ function acmCellText(current, user_state) {
       if (current.state[0]) {
         text = '<span class="text-danger"><strong>' + text + '</strong></span>';
       }
-      if (current.state[3]) {
+      if (current.state[2]) {
         text += '+<span style="color:#888;"><strong>' + current.state[3] + '</strong></span>';
       }
     }
@@ -45,7 +45,7 @@ function acmRowSummary(user_id, user_state) {
   return [-user_state.solved, user_state.tot_penalty, user_state.last_solved];
 }
 
-function ioiCellText(current, user_state) {
+function ioiCellText(current, user_state, first_ac) {
   // TODO: change to Decimal
   let text = '0';
   if (current) {
@@ -80,7 +80,8 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
       let key = user_id + '_' + prob_id;
       let value = data.result[key];
       let current = getValue(value);
-      $('#cell_item_' + key).html(cellText(current, user_state));
+      let first_ac = data.first_ac[String(prob_id)] === user_id;
+      $('#cell_item_' + key).html(cellText(current, user_state, first_ac));
     }
     compare_keys['row_user_' + user_id] = rowSummary(user_id, user_state);
   }

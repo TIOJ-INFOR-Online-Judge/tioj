@@ -66,6 +66,5 @@
 </div>
 
 <script>
-var data = <%= raw(@data.to_json) %>;
-initContestRanklist(data);
+initContestRanklist(<%= raw(@data.to_json) %>);
 </script>
