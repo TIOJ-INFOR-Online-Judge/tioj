@@ -1,17 +1,36 @@
-<% @participants.each do |usr| %>
-  <tr id="row_user_<%= usr.id %>">
-    <td id="cell_rank_<%= usr.id %>"></td>
-    <td><%= link_to image_tag(usr.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(usr) %></td>
-    <td><%= link_to usr.username, user_path(usr) %></td>
-    <td><%= usr.nickname %></td>
-    <% @tasks.each do |t|%>
-      <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
+<thead>
+  <tr>
+    <th>Rank</th>
+    <th></th>
+    <th>Username</th>
+    <th>Nickname</th>
+    <% @tasks.each_with_index do |task, index| %>
+      <th><%= link_to ('p' + (65+index).chr), contest_problem_path(@contest, task) %></th>
     <% end %>
     <% if @contest.type_acm? %>
-      <td id="cell_solved_<%= usr.id %>"></td>
-      <td id="cell_penalty_<%= usr.id %>"></td>
+      <th>Solv</th>
+      <th>Penalty</th>
     <% else %>
-      <td id="cell_score_<%= usr.id %>"></td>
+      <th>Total</th>
     <% end %>
   </tr>
-<% end %>
+</thead>
+<tbody id="dashboard_table_body">
+  <% @participants.each do |usr| %>
+    <tr id="row_user_<%= usr.id %>">
+      <td id="cell_rank_<%= usr.id %>"></td>
+      <td><%= link_to image_tag(usr.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(usr) %></td>
+      <td><%= link_to usr.username, user_path(usr) %></td>
+      <td><%= usr.nickname %></td>
+      <% @tasks.each do |t|%>
+        <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
+      <% end %>
+      <% if @contest.type_acm? %>
+        <td id="cell_solved_<%= usr.id %>"></td>
+        <td id="cell_penalty_<%= usr.id %>"></td>
+      <% else %>
+        <td id="cell_score_<%= usr.id %>"></td>
+      <% end %>
+    </tr>
+  <% end %>
+</tbody>

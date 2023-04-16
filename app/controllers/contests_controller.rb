@@ -119,6 +119,7 @@ class ContestsController < ApplicationController
           end
         end
         if ret
+          helpers.notify_contest_channel @contest.id
           format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
           format.json { head :no_content }
         else
