@@ -11,22 +11,20 @@
     <%= link_to 'Submissions', contest_submissions_path(@contest), :class => 'btn btn-info btn-xs btn-block' %>
   </div>
   <div class="col-md-2">
-    <%= link_to 'Refresh', {:controller => :contests, :action => :dashboard_update, :id => @contest.id}, :remote => true, :class => 'btn btn-info btn-xs btn-block', :id => 'refresh' %>
+    <%= link_to 'Force Refresh', {:controller => :contests, :action => :dashboard_update, :id => @contest.id}, :remote => true, :class => 'btn btn-info btn-xs btn-block', :id => 'refresh' %>
   </div>
-  <div class="col-md-5 vcenter">
-    <div class="switch"
-        data-on-label="<i class='fui-check'></i>"
-        data-off-label="<i class='fui-cross'></i>">
-      <input id="enable_autorefresh" autocomplete=off type="checkbox" name="enable_autorefresh">
+  <div class="col-md-2" style="display: flex; align-items: center; padding-top: 2px;">
+    <div id="status-indicator" class="offline-indicator">
+      <span class="blink"></span>
     </div>
-    <label style="padding:5px 5px 0px;">Auto refresh, interval</label>
-    <input id="refresh_interval" class="form-control input-sm flat" type="number" placeholder="Refresh interval" value=10 min=5 step=1 style="width:60px">
-    <label style="padding:5px 5px 0px;">secs</label>
+    <small id="status-text">Offline</small>
   </div>
 </div>
 
 <div>
-  <p class="text-center" style="margin-bottom: 0">Display time: <span id="ranklist_time">Current status</span></p>
+  <p class="text-center" style="margin-bottom: 0; margin-top: 0.8rem;">
+    Display time: <span id="ranklist_time">Current status</span>
+  </p>
   <div id="ranklist_time_slider"></div>
 </div>
 
@@ -67,4 +65,5 @@
 
 <script>
 initContestRanklist(<%= raw(@data.to_json) %>);
+initContestCable(<%= raw(@contest.id) %>);
 </script>

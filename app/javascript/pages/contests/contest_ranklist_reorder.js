@@ -32,7 +32,7 @@ function acmCellText(current, user_state, first_ac) {
         text = '<span class="text-danger"><strong>' + text + '</strong></span>';
       }
       if (current.state[2]) {
-        text += '+<span style="color:#888;"><strong>' + current.state[3] + '</strong></span>';
+        text += '+<span style="color:#888;"><strong>' + current.state[2] + '</strong></span>';
       }
     }
   }

@@ -38,7 +38,8 @@ import { buttonCheckboxSetup } from './helpers/button_checkbox_setup';
 window.buttonCheckboxSetup = buttonCheckboxSetup
 
 // pages
-import { initContestRanklist } from './pages/contests/main';
-import { initSubmissionCable } from './pages/submissions/init_cable';
+import { initContestRanklist, initContestCable } from './pages/contests/main';
+import { initSubmissionCable } from './pages/submissions/main';
 window.initContestRanklist = initContestRanklist
+window.initContestCable = initContestCable
 window.initSubmissionCable = initSubmissionCable

@@ -17,6 +17,7 @@ class SubmissionsController < ApplicationController
     @submission.submission_tasks.destroy_all
     @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
+    helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
     redirect_back fallback_location: root_path
   end
 
@@ -138,6 +139,7 @@ class SubmissionsController < ApplicationController
       if @submission.save
         redirect_url = @submission.contest_id ? contest_submission_url(@contest, @submission) : submission_url(@submission)
         ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
+        helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
         format.html { redirect_to redirect_url, notice: 'Submission was successfully created.' }
         format.json { render action: 'show', status: :created, location: redirect_url }
       else
@@ -163,6 +165,7 @@ class SubmissionsController < ApplicationController
   end
 
   def destroy
+    helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
     @submission.destroy
     respond_to do |format|
       format.html { redirect_to submissions_url }

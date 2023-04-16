@@ -41,6 +41,7 @@ class FetchChannel < ApplicationCable::Channel
       end
     end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
+    notify_contest_channel(submission.contest_id, submission.user_id)
   end
 
   def report_queued(data)

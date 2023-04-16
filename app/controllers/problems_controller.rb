@@ -1,6 +1,6 @@
 class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old, :rejudge]
   before_action :set_contest, only: [:show]
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
@@ -26,6 +26,9 @@ class ProblemsController < ApplicationController
 
   def delete_submissions
     Submission.where(problem_id: params[:id]).destroy_all
+    ContestProblemJoint.where(problem_id: params[:id]).each do |x|
+      helpers.notify_contest_channel x.contest_id
+    end
     redirect_back fallback_location: root_path
   end
 
@@ -34,6 +37,9 @@ class ProblemsController < ApplicationController
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     SubmissionTask.where(submission_id: subs.map(&:id)).delete_all
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
+    ContestProblemJoint.where(problem_id: params[:id]).each do |x|
+      helpers.notify_contest_channel x.contest_id
+    end
     redirect_back fallback_location: root_path
   end
 

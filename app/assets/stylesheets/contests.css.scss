@@ -3,6 +3,43 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .vcenter {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+div.offline-indicator {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  background-color: #df3212;
+  border-radius: 50%;
+  position: relative;
+}
+
+div.online-indicator {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  background-color: #0fcc45;
+  border-radius: 50%;
+  position: relative;
+}
+
+div.online-indicator > span.blink {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background-color: #0fcc45;
+  opacity: 0.7;
+  border-radius: 50%;
+  animation: blink 1s linear infinite;
+}
+
+@keyframes blink {
+  100% {
+    transform: scale(2, 2); 
+    opacity: 0;
+  }
 }
