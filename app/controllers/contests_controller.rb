@@ -189,6 +189,7 @@ class ContestsController < ApplicationController
       :cd_time,
       :disable_discussion,
       :freeze_minutes,
+      :dashboard_during_contest,
       :show_detail_result,
       :hide_old_submission,
       :skip_group,

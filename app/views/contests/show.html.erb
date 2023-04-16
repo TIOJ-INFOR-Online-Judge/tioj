@@ -15,7 +15,7 @@
 </h4>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Starts at</h1>
@@ -25,7 +25,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Ends at</h1>
@@ -35,13 +35,13 @@
       </div>
     </div>
   </div>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Contest Type</h1>
       </div>
       <div class="panel-body">
-        <%= contest_type_desc_map[@contest.contest_type] %>
+        <%= contest_type_desc_map[@contest.contest_type] %> <%= @contest.dashboard_during_contest ? "with dashboard" : "without dashboard" %>
       </div>
     </div>
   </div>

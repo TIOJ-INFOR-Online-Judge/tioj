@@ -68,6 +68,10 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :dashboard_during_contest, class: 'checkbox' do %>
+      <%= f.check_box :dashboard_during_contest, 'data-toggle': 'checkbox' %>
+      Enable dashboard during contest
+    <% end %>
     <%= f.label :disable_discussion, class: 'checkbox' do %>
       <%= f.check_box :disable_discussion, 'data-toggle': 'checkbox' %>
       Disable global and problem discussion during the contest

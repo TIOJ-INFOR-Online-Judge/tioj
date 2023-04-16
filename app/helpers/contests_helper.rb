@@ -1,9 +1,9 @@
 module ContestsHelper
   def contest_type_desc_map
     {
-      "gcj" => "gcj style (partial/dashboard)",
-      "ioi" => "ioi style (partial/no dashboard)",
-      "acm" => "acm style (no partial/dashboard)",
+      "ioi" => "IOI style (rank by score)",
+      "ioi_new" => "New IOI style (rank by score, union by subtasks)",
+      "acm" => "ACM style (rank by solved problems)",
     }
   end
 

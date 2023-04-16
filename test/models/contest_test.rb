@@ -18,6 +18,7 @@
 #  user_whitelist             :text(65535)
 #  skip_group                 :boolean          default(FALSE)
 #  description_before_contest :text(16777215)
+#  dashboard_during_contest   :boolean          default(TRUE)
 #
 # Indexes
 #

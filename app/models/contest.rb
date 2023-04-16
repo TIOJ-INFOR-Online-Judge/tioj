@@ -5,7 +5,6 @@
 #  id                         :bigint           not null, primary key
 #  title                      :string(255)
 #  description                :text(16777215)
-#  description_before_contest :text(16777215)
 #  start_time                 :datetime
 #  end_time                   :datetime
 #  contest_type               :integer
@@ -18,6 +17,8 @@
 #  hide_old_submission        :boolean          default(FALSE), not null
 #  user_whitelist             :text(65535)
 #  skip_group                 :boolean          default(FALSE)
+#  description_before_contest :text(16777215)
+#  dashboard_during_contest   :boolean          default(TRUE)
 #
 # Indexes
 #
@@ -25,7 +26,7 @@
 #
 
 class Contest < ApplicationRecord
-  enum :contest_type, {gcj: 0, ioi: 1, acm: 2}, prefix: :type
+  enum :contest_type, {ioi: 0, ioi_new: 1, acm: 2}, prefix: :type
 
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints
