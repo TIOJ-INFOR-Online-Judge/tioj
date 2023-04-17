@@ -204,7 +204,7 @@
     <h1 class="panel-title">Subtasks</h1>
   </div>
   <table class="table table-hover table-striped table-condensed">
-    <% show_cons = @problem.testdata_sets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
+    <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
     <thead>
       <tr>
         <th width="5%">No.</th>
@@ -215,7 +215,7 @@
         <th width="15%">Score</th>
       </tr>
     </thead>
-    <% @problem.testdata_sets.order(id: :asc).each_with_index do |s, i| %>
+    <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
       <tr>
         <td><%= i + 1 %></td>
         <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>

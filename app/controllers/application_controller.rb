@@ -120,7 +120,7 @@ protected
   end
 
   def reduce_td_list(str, sz)
-    TestdataSet.td_list_str_to_arr(str, sz).chunk_while{|x, y|
+    Subtask.td_list_str_to_arr(str, sz).chunk_while{|x, y|
       x + 1 == y
     }.map{|x|
       x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
@@ -129,7 +129,7 @@ protected
 
   def inverse_td_list(prob)
     sz = prob.testdata.count
-    prob.testdata_sets.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}
+    prob.subtasks.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
   end
 

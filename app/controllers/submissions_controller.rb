@@ -14,7 +14,7 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
-    @submission.submission_tasks.destroy_all
+    @submission.submission_testdata_results.destroy_all
     @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
     helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
@@ -38,13 +38,13 @@ class SubmissionsController < ApplicationController
         return
       end
     end
-    @_result = @submission.submission_tasks.index_by(&:position)
+    @_result = @submission.submission_testdata_results.index_by(&:position)
     @has_vss = @_result.empty? || @_result.values.any?{|x| x.vss}
     @show_old = false
   end
 
   def show_old
-    @_result = @submission.old_submission.old_submission_tasks.index_by(&:position)
+    @_result = @submission.old_submission.old_submission_testdata_results.index_by(&:position)
     @has_vss = false
     @show_old = true
     render :show
@@ -261,7 +261,7 @@ class SubmissionsController < ApplicationController
 
   def set_show_attrs
     @show_detail = @submission.tasks_allowed_for(current_user)
-    @tdlist = @submission.problem.testdata_sets
+    @tdlist = @submission.problem.subtasks
     @invtdlist = inverse_td_list(@submission.problem)
   end
 

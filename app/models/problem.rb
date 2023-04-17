@@ -60,8 +60,8 @@ class Problem < ApplicationRecord
   has_many :testdata, -> { order(position: :asc) }, :dependent => :destroy
   accepts_nested_attributes_for :testdata, :allow_destroy => true, :reject_if => :all_blank
 
-  has_many :testdata_sets, dependent: :delete_all
-  accepts_nested_attributes_for :testdata_sets, :allow_destroy => true, :reject_if => :all_blank
+  has_many :subtasks, dependent: :delete_all
+  accepts_nested_attributes_for :subtasks, :allow_destroy => true, :reject_if => :all_blank
 
   has_many :posts, :as => :postable, :dependent => :destroy
   accepts_nested_attributes_for :posts, :allow_destroy => true, :reject_if => :all_blank

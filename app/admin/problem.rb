@@ -23,7 +23,7 @@ ActiveAdmin.register Problem do
   remove_filter :sample_testdata
   remove_filter :posts
   remove_filter :testdata
-  remove_filter :testdata_sets
+  remove_filter :subtasks
   remove_filter :base_tags
   remove_filter :tag_taggings
   remove_filter :taggings

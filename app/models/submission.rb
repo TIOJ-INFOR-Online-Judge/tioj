@@ -43,7 +43,7 @@ class Submission < ApplicationRecord
   belongs_to :contest, optional: true
   belongs_to :compiler
   belongs_to :code_content
-  has_many :submission_tasks, dependent: :delete_all
+  has_many :submission_testdata_results, dependent: :delete_all
 
   has_one :old_submission, dependent: :destroy
 
@@ -73,12 +73,12 @@ class Submission < ApplicationRecord
     !contest? || cur_user&.admin? || contest.show_detail_result
   end
 
-  def calc_td_set_scores(num_tasks = nil, testdata_sets = nil)
-    score_map = submission_tasks.map { |t| [t.position, t.score] }.to_h
+  def calc_td_set_scores(num_tasks = nil, subtasks = nil)
+    score_map = submission_testdata_results.map { |t| [t.position, t.score] }.to_h
     skip_group = problem.skip_group || contest&.skip_group || false
     num_tasks ||= problem.testdata.count
-    testdata_sets ||= problem.testdata_sets.order(id: :asc)
-    testdata_sets.map.with_index{|s, index|
+    subtasks ||= problem.subtasks.order(id: :asc)
+    subtasks.map.with_index{|s, index|
       lst = s.td_list_arr(num_tasks)
       set_result = score_map.values_at(*lst)
       finished = skip_group ? set_result.any? : set_result.all?
@@ -90,7 +90,7 @@ class Submission < ApplicationRecord
   end
 
   def calc_td_set_scores_prefetched
-    calc_td_set_scores(problem.testdata.length, problem.testdata_sets.sort_by(&:id))
+    calc_td_set_scores(problem.testdata.length, problem.subtasks.sort_by(&:id))
   end
 
   def created_at_usec

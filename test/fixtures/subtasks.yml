@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: testdata_sets
+# Table name: subtasks
 #
 #  id          :bigint           not null, primary key
 #  problem_id  :bigint
@@ -12,7 +12,7 @@
 #
 # Indexes
 #
-#  index_testdata_sets_on_problem_id  (problem_id)
+#  index_subtasks_on_problem_id  (problem_id)
 #
 
 one_1:

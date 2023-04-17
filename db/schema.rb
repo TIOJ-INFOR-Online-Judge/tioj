@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_17_042612) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -177,7 +177,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.boolean "online", default: false
   end
 
-  create_table "old_submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "old_submission_id"
     t.integer "position"
     t.string "result"
@@ -186,7 +186,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.integer "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["old_submission_id"], name: "index_old_submission_tasks_on_old_submission_id"
+    t.index ["old_submission_id"], name: "index_old_submission_testdata_results_on_old_submission_id"
   end
 
   create_table "old_submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -262,7 +262,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
-  create_table "submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.integer "position"
     t.string "result"
@@ -274,8 +274,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.integer "vss"
     t.string "message_type"
     t.text "message", size: :medium
-    t.index ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true
-    t.index ["submission_id"], name: "index_submission_tasks_on_submission_id"
+    t.index ["submission_id", "position"], name: "index_submission_testdata_results_on_submission_id_and_position", unique: true
+    t.index ["submission_id"], name: "index_submission_testdata_results_on_submission_id"
   end
 
   create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -303,6 +303,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.index ["result", "contest_id", "id"], name: "index_submissions_fetch"
     t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
     t.index ["user_id"], name: "index_submissions_on_user_id"
+  end
+
+  create_table "subtasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "problem_id"
+    t.decimal "score", precision: 18, scale: 6
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "td_list", null: false
+    t.text "constraints", size: :medium
+    t.index ["problem_id"], name: "index_subtasks_on_problem_id"
   end
 
   create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -343,16 +353,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_16_142322) do
     t.integer "output_limit", default: 65536
     t.boolean "input_compressed", default: false
     t.boolean "output_compressed", default: false
-  end
-
-  create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "problem_id"
-    t.decimal "score", precision: 18, scale: 6
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "td_list", null: false
-    t.text "constraints", size: :medium
-    t.index ["problem_id"], name: "index_testdata_sets_on_problem_id"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

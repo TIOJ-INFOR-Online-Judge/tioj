@@ -35,7 +35,7 @@ class ProblemsController < ApplicationController
   def rejudge
     subs = Submission.where(problem_id: params[:id])
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
-    SubmissionTask.where(submission_id: subs.map(&:id)).delete_all
+    SubmissionTestdataResult.where(submission_id: subs.map(&:id)).delete_all
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|
       helpers.notify_contest_channel x.contest_id
@@ -116,11 +116,11 @@ class ProblemsController < ApplicationController
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       @problem.attributes = check_params()
-      pre_ids = @problem.testdata_sets.collect(&:id)
-      changed = @problem.testdata_sets.any? {|x| x.score_changed? || x.td_list_changed?}
+      pre_ids = @problem.subtasks.collect(&:id)
+      changed = @problem.subtasks.any? {|x| x.score_changed? || x.td_list_changed?}
       changed ||= @problem.score_precision_changed?
       if @problem.save
-        changed ||= pre_ids.sort != @problem.testdata_sets.collect(&:id).sort
+        changed ||= pre_ids.sort != @problem.subtasks.collect(&:id).sort
         if changed
           recalc_score
         end
@@ -167,9 +167,9 @@ class ProblemsController < ApplicationController
   end
 
   def reduce_list
-    if problem_params[:testdata_sets_attributes]
-      problem_params[:testdata_sets_attributes].each do |x, y|
-        params[:problem][:testdata_sets_attributes][x][:td_list] = \
+    if problem_params[:subtasks_attributes]
+      problem_params[:subtasks_attributes].each do |x, y|
+        params[:problem][:subtasks_attributes][x][:td_list] = \
             reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
       end
     end
@@ -181,10 +181,10 @@ class ProblemsController < ApplicationController
 
   def recalc_score
     num_tasks = @problem.testdata.count
-    tdset_map = @problem.testdata_sets.map{|s| [s.td_list_arr(num_tasks), s.score]}
+    tdset_map = @problem.subtasks.map{|s| [s.td_list_arr(num_tasks), s.score]}
     @problem.submissions.select(:id).each_slice(256) do |s|
       ids = s.map(&:id).to_a
-      arr = SubmissionTask.where(:submission_id => ids).
+      arr = SubmissionTestdataResult.where(:submission_id => ids).
           select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
         td_map = y.map{|t| [t.position, t.score]}.to_h
         score = tdset_map.map{|td, td_score|
@@ -264,7 +264,7 @@ class ProblemsController < ApplicationController
         :_destroy
       ],
       compiler_ids: [],
-      testdata_sets_attributes:
+      subtasks_attributes:
       [
         :id,
         :td_list,

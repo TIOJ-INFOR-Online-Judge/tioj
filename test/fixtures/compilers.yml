@@ -15,9 +15,6 @@
 #
 #  index_compilers_on_name  (name) UNIQUE
 #
-
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 c99:
   name: c99
   description: c99Description

@@ -27,7 +27,7 @@ class SubmissionChannel < ApplicationCable::Channel
   def init_data(submission, with_detail)
     ActionCable.server.broadcast("submission_#{submission.id}_tdset", {td_set_scores: submission.calc_td_set_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_tasks", {
-      tasks: submission.submission_tasks.map do |t|
+      tasks: submission.submission_testdata_results.map do |t|
         [:position, :result, :time, :rss, :vss, :score, :message_type, :message].map{|attr|
           [attr, t.read_attribute(attr)]
         }.to_h

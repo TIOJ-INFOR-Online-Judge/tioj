@@ -30,7 +30,7 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
     else
-      tasks = submission.submission_tasks
+      tasks = submission.submission_testdata_results
       update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
     end
@@ -83,7 +83,7 @@ class FetchChannel < ApplicationCable::Channel
     problem = submission.problem
     user = submission.user
     td_count = problem.testdata.count
-    verdict_ignore_set = TestdataSet.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
+    verdict_ignore_set = Subtask.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
     priority = (submission.contest ? 100000000 : 0) - submission.id
     data = {
       submission_id: submission.id,
@@ -124,7 +124,7 @@ class FetchChannel < ApplicationCable::Channel
           verdict_ignore: verdict_ignore_set.include?(index),
         }
       },
-      tasks: problem.testdata_sets.map { |s|
+      tasks: problem.subtasks.map { |s|
         {
           positions: s.td_list_arr(td_count),
           score: (s.score * BigDecimal('1e+6')).to_i,
@@ -154,7 +154,7 @@ class FetchChannel < ApplicationCable::Channel
         message: res[:message],
       }
     }
-    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
+    SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
     td_set_scores = submission.calc_td_set_scores
     score = td_set_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1

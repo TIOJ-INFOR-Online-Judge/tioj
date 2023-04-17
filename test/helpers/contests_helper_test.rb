@@ -136,18 +136,18 @@ class ContestsHelperTest < ActionView::TestCase
   end
 
   test "ranklist_data new-ioi-style score is correct" do
-    problem = Problem.new(id: 1, testdata: Array.new(2){ Testdatum.new }, testdata_sets: [
-      TestdataSet.new(td_list: '0', score: 50),
-      TestdataSet.new(td_list: '1', score: 50),
+    problem = Problem.new(id: 1, testdata: Array.new(2){ Testdatum.new }, subtasks: [
+      Subtask.new(td_list: '0', score: 50),
+      Subtask.new(td_list: '1', score: 50),
     ])
     submissions = [
-      Submission.new(user_id: 1, problem: problem, result: "WA", score: 50, submission_tasks: [
-        SubmissionTask.new(score: 20, position: 0), # weighted score: 10
-        SubmissionTask.new(score: 80, position: 1), # weighted score: 40
+      Submission.new(user_id: 1, problem: problem, result: "WA", score: 50, submission_testdata_results: [
+        SubmissionTestdataResult.new(score: 20, position: 0), # weighted score: 10
+        SubmissionTestdataResult.new(score: 80, position: 1), # weighted score: 40
       ]),
-      Submission.new(user_id: 1, problem: problem, result: "WA", score: 50, submission_tasks: [
-        SubmissionTask.new(score: 80, position: 0),
-        SubmissionTask.new(score: 20, position: 1),
+      Submission.new(user_id: 1, problem: problem, result: "WA", score: 50, submission_testdata_results: [
+        SubmissionTestdataResult.new(score: 80, position: 0),
+        SubmissionTestdataResult.new(score: 20, position: 1),
       ]),
     ]
     start_time = Time.new(2022, 1, 1, 0, 0, 0)

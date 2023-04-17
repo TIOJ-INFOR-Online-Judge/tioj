@@ -116,7 +116,7 @@
       <table class="table table-condensed table-align-middle">
         <% problem = @submission.problem %>
         <% num_tasks = problem.testdata.count %>
-        <% testsets = problem.testdata_sets.order(id: :asc) %>
+        <% testsets = problem.subtasks.order(id: :asc) %>
         <% show_cons = testsets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
         <thead>
           <tr>
