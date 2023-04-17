@@ -55,7 +55,7 @@ module ContestsHelper
       item_state[2] += 1
       item_state
     else
-      scores = submission.submission_subtask_result.result.map{|x| x[:score]}
+      scores = submission.get_subtask_result.map{|x| x[:score]}
       if item_state[3].nil?
         item_state[3] = scores
       else

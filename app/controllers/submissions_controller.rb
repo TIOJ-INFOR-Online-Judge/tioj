@@ -14,8 +14,8 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
-    @submission.submission_testdata_results.destroy_all
-    @submission.update(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
+    @submission.submission_testdata_results.delete_all
+    @submission.update_self_with_subtask_result({:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil})
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
     helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
     redirect_back fallback_location: root_path
@@ -131,10 +131,11 @@ class SubmissionsController < ApplicationController
 
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
-    @submission.problem_id = params[:problem_id]
+    @submission.problem = @problem
     if @contest&.problem_ids&.include?(@submission.problem_id) and @contest&.is_running?
-      @submission.contest_id = params[:contest_id]
+      @submission.contest = @contest
     end
+    @submission.generate_subtask_result
     respond_to do |format|
       if @submission.save
         redirect_url = @submission.contest_id ? contest_submission_url(@contest, @submission) : submission_url(@submission)

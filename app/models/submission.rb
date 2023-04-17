@@ -102,6 +102,20 @@ class Submission < ApplicationRecord
     end
   end
 
+  def update_self_with_subtask_result(update_hash, subtask_scores = nil)
+    subtask_scores ||= calc_subtask_result
+    if submission_subtask_result
+      submission_subtask_result.update(result: subtask_scores)
+      update(**update_hash)
+    else
+      update(**update_hash, submission_subtask_result: SubmissionSubtaskResult.new(result: subtask_scores))
+    end
+  end
+
+  def get_subtask_result
+    submission_subtask_result.result
+  end
+
   def created_at_usec
     created_at.to_i * 1000000 + created_at.usec
   end

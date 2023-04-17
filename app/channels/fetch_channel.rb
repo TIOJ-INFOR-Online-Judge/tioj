@@ -163,7 +163,7 @@ class FetchChannel < ApplicationCable::Channel
       submission.reload if not is_first
       submission.with_lock do
         return if not ['Validating', 'received'].include?(submission.result)
-        submission.update(:score => score)
+        submission.update_self_with_subtask_result({score: score}, subtask_scores)
       end
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})

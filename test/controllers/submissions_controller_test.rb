@@ -2,6 +2,10 @@ require "test_helper"
 
 class SubmissionsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    Submission.all.each do |sub|
+      sub.generate_subtask_result
+      sub.save
+    end
     @submission = submissions(:ac)
     @submission_invisible = submissions(:invisible)
     @problem = problems(:one)
@@ -43,7 +47,7 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_login_needed
 
     sign_in users(:userOne)
-    assert_difference(["Submission.count", "CodeContent.count"]) do
+    assert_difference(["Submission.count", "SubmissionSubtaskResult.count", "CodeContent.count"]) do
       post problem_submissions_url(@problem), params: {submission: {
         compiler_id: compilers(:c99).id,
         code_content_attributes: {code: "somecode"}
