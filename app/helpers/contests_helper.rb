@@ -55,7 +55,7 @@ module ContestsHelper
       item_state[2] += 1
       item_state
     else
-      scores = submission.calc_subtask_scores_prefetched.map{|x| x[:score]}
+      scores = submission.submission_subtask_result.result.map{|x| x[:score]}
       if item_state[3].nil?
         item_state[3] = scores
       else
@@ -76,7 +76,6 @@ module ContestsHelper
     }[rule]
     first_ac = {}
     submissions = submissions.to_a
-    logger.fatal 'meow'
     submissions.each do |sub|
       participants << sub.user_id
       next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result) && sub.created_at < freeze_start

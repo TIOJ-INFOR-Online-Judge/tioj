@@ -43,9 +43,10 @@ class Submission < ApplicationRecord
   belongs_to :contest, optional: true
   belongs_to :compiler
   belongs_to :code_content
-  has_many :submission_testdata_results, dependent: :delete_all
 
   has_one :old_submission, dependent: :destroy
+  has_one :submission_subtask_result, dependent: :destroy
+  has_many :submission_testdata_results, dependent: :delete_all
 
   validate :code_length_limit
   validates_length_of :message, :in => 0..65000, :allow_nil => true
@@ -73,24 +74,32 @@ class Submission < ApplicationRecord
     !contest? || cur_user&.admin? || contest.show_detail_result
   end
 
-  def calc_subtask_scores(num_tasks = nil, subtasks = nil)
+  def calc_subtask_result(data = [], prefetched = false)
+    num_tds, subtasks, n_problem, n_contest = data
+    
     score_map = submission_testdata_results.map { |t| [t.position, t.score] }.to_h
-    skip_group = problem.skip_group || contest&.skip_group || false
-    num_tasks ||= problem.testdata.count
-    subtasks ||= problem.subtasks.order(id: :asc)
+    n_problem ||= problem
+    n_contest ||= contest if contest_id
+    skip_group = n_problem.skip_group || n_contest&.skip_group || false
+    num_tds ||= prefetched ? n_problem.testdata.length : n_problem.testdata.count
+    subtasks ||= prefetched ? n_problem.subtasks.sort_by(&:id) : n_problem.subtasks.order(id: :asc)
     subtasks.map.with_index{|s, index|
-      lst = s.td_list_arr(num_tasks)
+      lst = s.td_list_arr(num_tds)
       set_result = score_map.values_at(*lst)
       finished = skip_group ? set_result.any? : set_result.all?
       set_result = set_result.reject(&:nil?)
       ratio = finished ? (lst.size > 0 ? set_result.min.to_f / 100 : 1.0) : 0.0
-      set_score = finished ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(problem.score_precision) : 0
+      set_score = finished ? (((lst.size > 0 ? set_result.min : BigDecimal(100)) * s.score) / 100).round(n_problem.score_precision) : 0
       {score: set_score, ratio: ratio, position: index, finished: finished}
     }
   end
 
-  def calc_subtask_scores_prefetched
-    calc_subtask_scores(problem.testdata.length, problem.subtasks.sort_by(&:id))
+  def generate_subtask_result(prefetched = false)
+    if submission_subtask_result
+      submission_subtask_result.result = calc_subtask_result([], prefetched)
+    else
+      self.submission_subtask_result = SubmissionSubtaskResult.new(result: calc_subtask_result([], prefetched))
+    end
   end
 
   def created_at_usec

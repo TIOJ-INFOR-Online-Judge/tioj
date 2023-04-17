@@ -155,7 +155,7 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    subtask_scores = submission.calc_subtask_scores
+    subtask_scores = submission.calc_subtask_result
     score = subtask_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_17_042612) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_17_071542) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -262,6 +262,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_17_042612) do
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
+  create_table "submission_subtask_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "submission_id", null: false
+    t.binary "result", size: :medium
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["submission_id"], name: "index_submission_subtask_results_on_submission_id", unique: true
+  end
+
   create_table "submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.integer "position"
@@ -391,6 +399,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_17_042612) do
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
+  add_foreign_key "submission_subtask_results", "submissions"
   add_foreign_key "submissions", "code_contents"
   add_foreign_key "submissions", "compilers"
   add_foreign_key "users", "compilers", column: "last_compiler_id"

@@ -136,10 +136,14 @@ class ContestsHelperTest < ActionView::TestCase
   end
 
   test "ranklist_data new-ioi-style score is correct" do
-    problem = Problem.new(id: 1, testdata: Array.new(2){ Testdatum.new }, subtasks: [
-      Subtask.new(td_list: '0', score: 50),
-      Subtask.new(td_list: '1', score: 50),
-    ])
+    problem = Problem.new(
+      id: 1,
+      testdata: Array.new(2){ Testdatum.new() },
+      subtasks: [
+        Subtask.new(td_list: '0', score: 50),
+        Subtask.new(td_list: '1', score: 50),
+      ],
+    )
     submissions = [
       Submission.new(user_id: 1, problem: problem, result: "WA", score: 50, submission_testdata_results: [
         SubmissionTestdataResult.new(score: 20, position: 0), # weighted score: 10
@@ -153,6 +157,7 @@ class ContestsHelperTest < ActionView::TestCase
     start_time = Time.new(2022, 1, 1, 0, 0, 0)
     freeze_start = Time.new(2022, 1, 1, 1, 0, 0)
     submissions.each_with_index {|x, i| x.created_at = start_time + i + 1}
+    submissions.each {|x| x.generate_subtask_result(true)}
     expected_result = {
       result: {
         "1_1" => [
