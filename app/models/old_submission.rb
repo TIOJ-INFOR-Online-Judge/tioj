@@ -25,7 +25,7 @@ class OldSubmission < ApplicationRecord
   belongs_to :submission
   has_many :old_submission_testdata_results, dependent: :delete_all
 
-  def calc_td_set_scores
+  def calc_subtask_scores
     score_map = old_submission_testdata_results.map { |t| [t.position, t.score] }.to_h
     num_tasks = problem.testdata.count
     skip_group = problem.skip_group

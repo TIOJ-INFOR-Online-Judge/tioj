@@ -131,8 +131,8 @@
           </tr>
         </thead>
         <tbody>
-          <% td_set_obj = @show_old ? @submission.old_submission : @submission %>
-          <% task_results = td_set_obj.calc_td_set_scores.index_by{|x| x[:position]} %>
+          <% subtask_obj = @show_old ? @submission.old_submission : @submission %>
+          <% task_results = subtask_obj.calc_subtask_scores.index_by{|x| x[:position]} %>
           <% testsets.order(id: :asc).each_with_index do |s, i| %>
             <tr>
               <td><%= i + 1 %></td>

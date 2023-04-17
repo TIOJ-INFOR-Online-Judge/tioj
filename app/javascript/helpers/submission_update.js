@@ -35,18 +35,18 @@ function time_str(str) {
   return str;
 }
 
-function updateTdSet(data) {
-  for (var td_set of data['td_set_scores']) {
-    var pos = td_set['position'];
-    if (td_set['finished']) {
-      $('#subtask-score-bg-' + pos).css('background-color', color_map(td_set['ratio']));
-      $('#subtask-score-' + pos).text(score_str(td_set['score']));
+function updateSubtask(data) {
+  for (var subtask of data['subtask_scores']) {
+    var pos = subtask['position'];
+    if (subtask['finished']) {
+      $('#subtask-score-bg-' + pos).css('background-color', color_map(subtask['ratio']));
+      $('#subtask-score-' + pos).text(score_str(subtask['score']));
     }
   }
 }
 
-function updateTask(data) {
-  for (var td of data['tasks']) {
+function updateTestdata(data) {
+  for (var td of data['testdata']) {
     var pos = td['position'];
     $('#td-time-' + pos).html(time_str(td['time']));
     $('#td-vss-' + pos).text(td['vss']);
@@ -91,10 +91,10 @@ function updateResult(data, cable) {
 export function updateSubmissionDetail(data, cable) {
   if ('result' in data) {
     updateResult(data, cable);
-  } else if ('td_set_scores' in data) {
-    updateTdSet(data);
+  } else if ('subtask_scores' in data) {
+    updateSubtask(data);
   } else {
-    updateTask(data);
+    updateTestdata(data);
   }
 }
 

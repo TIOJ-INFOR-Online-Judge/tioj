@@ -55,7 +55,7 @@ module ContestsHelper
       item_state[2] += 1
       item_state
     else
-      scores = submission.calc_td_set_scores_prefetched.map{|x| x[:score]}
+      scores = submission.calc_subtask_scores_prefetched.map{|x| x[:score]}
       if item_state[3].nil?
         item_state[3] = scores
       else

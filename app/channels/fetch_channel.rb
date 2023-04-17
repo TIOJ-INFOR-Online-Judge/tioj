@@ -7,7 +7,7 @@ class FetchChannel < ApplicationCable::Channel
   def td_result(data)
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
-    update_task_results(data[:results], submission)
+    update_td_results(data[:results], submission)
   end
 
   def submission_result(data)
@@ -18,7 +18,7 @@ class FetchChannel < ApplicationCable::Channel
       ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
       return
     end
-    update_task_results(data[:td_results], submission) if data[:td_results]
+    update_td_results(data[:td_results], submission) if data[:td_results]
     update_hash = {}
     if data[:message]
       update_hash[:message] = data[:message]
@@ -30,9 +30,9 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
     else
-      tasks = submission.submission_testdata_results
-      update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
-      update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
+      tds = submission.submission_testdata_results
+      update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
+      update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
     retry_op do |is_first|
       submission.reload if not is_first
@@ -140,7 +140,7 @@ class FetchChannel < ApplicationCable::Channel
 
   private
 
-  def update_task_results(data, submission)
+  def update_td_results(data, submission)
     results = data.map { |res|
       {
         submission_id: submission.id,
@@ -155,8 +155,8 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    td_set_scores = submission.calc_td_set_scores
-    score = td_set_scores.sum{|x| x[:score]}
+    subtask_scores = submission.calc_subtask_scores
+    score = subtask_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
     retry_op do |is_first|
@@ -166,15 +166,14 @@ class FetchChannel < ApplicationCable::Channel
         submission.update(:score => score)
       end
     end
-    ActionCable.server.broadcast("submission_#{submission.id}_tdset", {td_set_scores: td_set_scores})
-    ActionCable.server.broadcast("submission_#{submission.id}_tasks", {tasks: results})
+    ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
+    ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
   end
 
   def retry_op(retry_times=4, interval=0.3)
     is_first = true
     begin
-      raise ActiveRecord::Deadlocked if retry_times == 4
       yield(is_first)
     rescue ActiveRecord::Deadlocked => e
       retry_times -= 1

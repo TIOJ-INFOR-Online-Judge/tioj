@@ -5,8 +5,8 @@ class SubmissionChannel < ApplicationCable::Channel
       submission = Submission.find_by_id(params[:id])
       reject && return unless submission&.allowed_for(current_user)
       with_detail = submission&.tasks_allowed_for(current_user)
-      stream_from "submission_#{submission.id}_tdset"
-      stream_from "submission_#{submission.id}_tasks" if with_detail
+      stream_from "submission_#{submission.id}_subtasks"
+      stream_from "submission_#{submission.id}_testdata" if with_detail
       stream_from "submission_#{submission.id}_overall"
       init_data(submission, with_detail)
     else
@@ -25,9 +25,9 @@ class SubmissionChannel < ApplicationCable::Channel
   private
 
   def init_data(submission, with_detail)
-    ActionCable.server.broadcast("submission_#{submission.id}_tdset", {td_set_scores: submission.calc_td_set_scores})
-    ActionCable.server.broadcast("submission_#{submission.id}_tasks", {
-      tasks: submission.submission_testdata_results.map do |t|
+    ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: submission.calc_subtask_scores})
+    ActionCable.server.broadcast("submission_#{submission.id}_testdata", {
+      testdata: submission.submission_testdata_results.map do |t|
         [:position, :result, :time, :rss, :vss, :score, :message_type, :message].map{|attr|
           [attr, t.read_attribute(attr)]
         }.to_h

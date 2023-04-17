@@ -73,7 +73,7 @@ class Submission < ApplicationRecord
     !contest? || cur_user&.admin? || contest.show_detail_result
   end
 
-  def calc_td_set_scores(num_tasks = nil, subtasks = nil)
+  def calc_subtask_scores(num_tasks = nil, subtasks = nil)
     score_map = submission_testdata_results.map { |t| [t.position, t.score] }.to_h
     skip_group = problem.skip_group || contest&.skip_group || false
     num_tasks ||= problem.testdata.count
@@ -89,8 +89,8 @@ class Submission < ApplicationRecord
     }
   end
 
-  def calc_td_set_scores_prefetched
-    calc_td_set_scores(problem.testdata.length, problem.subtasks.sort_by(&:id))
+  def calc_subtask_scores_prefetched
+    calc_subtask_scores(problem.testdata.length, problem.subtasks.sort_by(&:id))
   end
 
   def created_at_usec

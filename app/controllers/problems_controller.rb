@@ -134,13 +134,8 @@ class ProblemsController < ApplicationController
   end
 
   def destroy
-    redirect_to action:'index'
-    return
-    # 'Deletion of problem may cause unwanted paginate behavior.'
-
-    #@problem.destroy
     respond_to do |format|
-      format.html { redirect_to problems_url, notice: 'Deletion of problem may cause unwanted paginate behavior.' }
+      format.html { redirect_to problems_url, alert: "Deletion of problem is disabled since it will cause unwanted paginate behavior." }
       format.json { head :no_content }
     end
   end
@@ -181,19 +176,19 @@ class ProblemsController < ApplicationController
 
   def recalc_score
     num_tasks = @problem.testdata.count
-    tdset_map = @problem.subtasks.map{|s| [s.td_list_arr(num_tasks), s.score]}
+    subtask_map = @problem.subtasks.map{|s| [s.td_list_arr(num_tasks), s.score]}
     @problem.submissions.select(:id).each_slice(256) do |s|
       ids = s.map(&:id).to_a
       arr = SubmissionTestdataResult.where(:submission_id => ids).
           select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
         td_map = y.map{|t| [t.position, t.score]}.to_h
-        score = tdset_map.map{|td, td_score|
+        score = subtask_map.map{|td, td_score|
           ((td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score / 100).round(@problem.score_precision)
         }.sum
         max_score = BigDecimal('1e+12') - 1
         score = score.clamp(-max_score, max_score).round(6)
-        # compiler_id is only there to prevent SQL error; it will not be used
-        {id: x, score: score.to_s, compiler_id: 0}
+        # compiler_id / code_content_id is only there to prevent SQL error; it will not be used
+        {id: x, score: score.to_s, compiler_id: 0, code_content_id: 0}
       }
       Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
     end
