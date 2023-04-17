@@ -34,8 +34,11 @@ class ProblemsController < ApplicationController
 
   def rejudge
     subs = Submission.where(problem_id: params[:id])
+    sub_ids = subs.pluck(:id)
+    SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
+    subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)
     subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
-    SubmissionTestdataResult.where(submission_id: subs.map(&:id)).delete_all
+    subtask_results.update_all(result: subs.first.calc_subtask_result) if subs.first
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|
       helpers.notify_contest_channel x.contest_id
@@ -175,22 +178,26 @@ class ProblemsController < ApplicationController
   end
 
   def recalc_score
-    num_tasks = @problem.testdata.count
-    subtask_map = @problem.subtasks.map{|s| [s.td_list_arr(num_tasks), s.score]}
-    @problem.submissions.select(:id).each_slice(256) do |s|
-      ids = s.map(&:id).to_a
-      arr = SubmissionTestdataResult.where(:submission_id => ids).
-          select(:submission_id, :position, :score).group_by(&:submission_id).map{ |x, y|
-        td_map = y.map{|t| [t.position, t.score]}.to_h
-        score = subtask_map.map{|td, td_score|
-          ((td.size > 0 ? td_map.values_at(*td).map{|x| x ? x : 0}.min : 100) * td_score / 100).round(@problem.score_precision)
-        }.sum
-        max_score = BigDecimal('1e+12') - 1
-        score = score.clamp(-max_score, max_score).round(6)
-        # compiler_id / code_content_id is only there to prevent SQL error; it will not be used
-        {id: x, score: score.to_s, compiler_id: 0, code_content_id: 0}
-      }
-      Submission.import(arr, on_duplicate_key_update: [:score], validate: false, timestamps: false)
+    num_tds = @problem.testdata.count
+    subtasks = @problem.subtasks
+    contests_map = @problem.contests.all.index_by(&:id)
+    @problem.submissions.includes(:submission_testdata_results).find_in_batches(batch_size: 1024) do |batch|
+      data = batch.map do |sub|
+        {
+          submission_id: sub.id,
+          result: sub.calc_subtask_result([num_tds, subtasks, @problem, contests_map[sub.contest_id]]),
+        }
+      end
+      sub_data = data.map do |item|
+        {
+          id: item[:submission_id],
+          score: item[:result].map{|x| x[:score]}.sum.to_s,
+          compiler_id: 0,
+          code_content_id: 0,
+        }
+      end
+      Submission.import(sub_data, on_duplicate_key_update: [:score], validate: false, timestamps: false)
+      SubmissionSubtaskResult.import(data, on_duplicate_key_update: [:result], validate: false)
     end
   end
 

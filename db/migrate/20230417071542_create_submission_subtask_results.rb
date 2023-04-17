@@ -12,7 +12,6 @@ class CreateSubmissionSubtaskResults < ActiveRecord::Migration[7.0]
         subtasks_map = Subtask.all.group_by(&:problem_id)
         problems_map = Problem.all.index_by(&:id)
         contests_map = Contest.all.index_by(&:id)
-        Submission.where.not(contest_id: [nil] + contests_map.keys).update_all(contest_id: nil)
         Submission.includes(:submission_testdata_results).find_in_batches(batch_size: 1024) do |batch|
           data = batch.map do |sub|
             {
