@@ -52,8 +52,8 @@
       </table>
       <br>
     <% end %>
-    Signed up at: <%= @user.created_at.to_s(:clean) %><br>
-    Last sign in: <%= @user.last_sign_in_at.to_s(:clean) %><br>
+    Signed up at: <%= @user.created_at.to_fs(:clean) %><br>
+    Last sign in: <%= @user.last_sign_in_at.to_fs(:clean) %><br>
     <br>
     <%= link_to('Edit My Account', edit_registration_path(:user), :class => 'btn btn-info btn-xs') %>
   </div>

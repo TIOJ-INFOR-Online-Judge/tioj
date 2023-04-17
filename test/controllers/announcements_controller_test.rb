@@ -40,4 +40,17 @@ class AnnouncementsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to announcements_url
   end
+
+  test "normal user should not access announcement" do
+    sign_in users(:userOne)
+
+    get announcements_url
+    assert_response :redirect
+    post announcements_url, params: { announcement: { body: @announcement.body, title: @announcement.title } }
+    assert_response :redirect
+    patch announcement_url(@announcement), params: { announcement: { body: @announcement.body, title: @announcement.title } }
+    assert_response :redirect
+    delete announcement_url(@announcement)
+    assert_response :redirect
+  end
 end

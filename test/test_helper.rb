@@ -40,4 +40,13 @@ end
 
 class ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
+
+  def assert_no_permission
+    assert_response :redirect
+    assert_equal flash[:alert], 'Insufficient User Permissions.'
+  end
+
+  def assert_login_needed
+    assert_redirected_to '/users/sign_in'
+  end
 end

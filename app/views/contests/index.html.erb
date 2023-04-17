@@ -37,8 +37,8 @@
         <% else %>
           <td>Not yet</td>
         <% end %>
-        <td><%= contest.start_time.to_s(:clean) %></td>
-        <td><%= contest.end_time.to_s(:clean) %></td>
+        <td><%= contest.start_time.to_fs(:clean) %></td>
+        <td><%= contest.end_time.to_fs(:clean) %></td>
         <td><%= contest.contest_type.upcase %> style / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
         <% if current_user&.admin? %>
           <td>

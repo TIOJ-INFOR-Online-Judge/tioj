@@ -109,7 +109,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code_length) %></td>
         <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>
-        <td><%= submission.created_at.to_s(:clean) %></td>
+        <td><%= submission.created_at.to_fs(:clean) %></td>
         <% if current_user&.admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>

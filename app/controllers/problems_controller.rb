@@ -203,10 +203,10 @@ class ProblemsController < ApplicationController
     unless current_user&.admin?
       if @problem.visible_contest?
         if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and @contest.is_started?)
-          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+          redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
         end
       elsif @problem.visible_invisible?
-        redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
       end
     end
   end

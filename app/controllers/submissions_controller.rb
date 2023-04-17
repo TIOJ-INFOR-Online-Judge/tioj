@@ -185,10 +185,10 @@ class SubmissionsController < ApplicationController
       unless current_user&.admin?
         if @problem.visible_contest?
           if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
-            redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+            redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
           end
         elsif @problem.visible_invisible?
-          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+          redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
         end
       end
     end

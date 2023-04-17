@@ -1,0 +1,13 @@
+# == Schema Information
+#
+# Table name: code_contents
+#
+#  id   :bigint           not null, primary key
+#  code :binary(429496729
+#
+
+acCode:
+  code: somecode
+
+invisibleCode:
+  code: somecode
