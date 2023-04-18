@@ -65,6 +65,12 @@ GEM
       activesupport (= 7.0.4.3)
     activerecord-import (1.4.1)
       activerecord (>= 4.2)
+    activerecord-session_store (2.0.0)
+      actionpack (>= 5.2.4.1)
+      activerecord (>= 5.2.4.1)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 2.0.8, < 3)
+      railties (>= 5.2.4.1)
     activestorage (7.0.4.3)
       actionpack (= 7.0.4.3)
       activejob (= 7.0.4.3)
@@ -214,6 +220,7 @@ GEM
     mini_portile2 (2.8.1)
     minitest (5.18.0)
     msgpack (1.7.0)
+    multi_json (1.15.0)
     multi_xml (0.6.0)
     mysql2 (0.5.5)
     nested_form (0.3.2)
@@ -388,6 +395,7 @@ PLATFORMS
 DEPENDENCIES
   activeadmin
   activerecord-import
+  activerecord-session_store
   acts-as-taggable-on
   acts_as_list
   annotate
