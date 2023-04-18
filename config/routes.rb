@@ -44,7 +44,9 @@ Rails.application.routes.draw do
   end
 
   resources :contests do
-    resources :submissions
+    resources :submissions do
+      get 'raw', to: 'submissions#download_raw', on: :member
+    end
     resources :problems, except: [:index, :create, :new] do
       resources :submissions, only: [:index, :create, :new]
     end
@@ -61,7 +63,9 @@ Rails.application.routes.draw do
   end
 
   resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
-    resources :submissions, except: [:update, :edit, :destroy]
+    resources :submissions, except: [:update, :edit, :destroy] do
+      get 'raw', to: 'submissions#download_raw', on: :member
+    end
     resources :problems, only: [:show] do
       resources :submissions, only: [:index, :create, :new]
     end

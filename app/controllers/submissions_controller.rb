@@ -4,7 +4,7 @@ class SubmissionsController < ApplicationController
   before_action :set_problem_by_param, only: [:new, :create, :index]
   before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
-  before_action :redirect_contest, only: [:show, :show_old, :edit]
+  before_action :redirect_contest, only: [:show, :show_old, :download_raw, :edit]
   before_action :check_old, only: [:show_old]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :set_default_compiler, only: [:new, :edit]
