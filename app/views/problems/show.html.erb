@@ -1,5 +1,5 @@
 <% set_page_title @problem.id.to_s + " - " + @problem.name %>
-<% hide_old_submission = (not current_user&.admin?) && @contest&.hide_old_submission %>
+<% hide_old_submission = (!effective_admin? && @contest&.hide_old_submission) || @layout == :single_contest %>
 
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
@@ -33,7 +33,7 @@
     <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_path(@contest), :class => 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>
-<% if current_user&.admin? %>
+<% if effective_admin? %>
   <div class="row" style="padding-top:10px;">
     <div class="col-md-2">
       <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
@@ -289,7 +289,7 @@
       <%= link_to 'Ranklist', ranklist_problem_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
     </div>
   <% end %>
-  <% if current_user&.admin? %>
+  <% if effective_admin? %>
     <div class="col-md-2">
       <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
     </div>

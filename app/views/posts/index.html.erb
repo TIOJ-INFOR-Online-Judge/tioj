@@ -14,12 +14,12 @@
 <% end %>
 
 <div class="actions">
-  <% if user_signed_in? and (current_user.admin? or not @problem or @problem.discussion_enabled?) %>
+  <% if user_signed_in? and (effective_admin? or not @problem or @problem.discussion_enabled?) %>
     <% if @contest %>
-      <% if current_user.admin? %>
-        <%= link_to "New Announcement", new_contest_post_path(@contest), :class => "btn btn-success"%>
+      <% if effective_admin? %>
+        <%= link_to "New Announcement", contest_adaptive_polymorphic_path([:post], action: :new), :class => "btn btn-success"%>
       <% else %>
-        <%= link_to "New Question", new_contest_post_path(@contest), :class => "btn btn-success"%>
+        <%= link_to "New Question", contest_adaptive_polymorphic_path([:post], action: :new), :class => "btn btn-success"%>
       <% end %>
     <% elsif @problem %>
       <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-success" %>

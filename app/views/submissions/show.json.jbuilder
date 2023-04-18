@@ -1,4 +1,4 @@
-if current_user&.admin? or current_user&.id == @submission.user_id
+if effective_admin? or current_user&.id == @submission.user_id
   json.extract! @submission, :id, :code, :compiler, :result, :score, :created_at, :updated_at
 else
   json.extract! @submission, :id, :compiler, :result, :score, :created_at, :updated_at

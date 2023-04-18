@@ -43,15 +43,11 @@
     <%= link_to 'View Old Results', old_submission_path(@submission), :class => 'btn btn-default btn-xs' %>
   <% end %>
 <% end %>
-<% if current_user&.admin? && !@show_old %>
+<% if effective_admin? && !@show_old %>
   <%= form_with url: rejudge_submission_path(@submission), :html => {:style => 'display: inline;'} do |f| %>
     <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
   <% end %>
-  <% if @contest.blank? %>
-    <%= link_to 'Edit', edit_submission_path(@submission), :class => 'btn btn-info btn-xs' %>
-  <% else %>
-    <%= link_to 'Edit', edit_contest_submission_path(@contest, @submission), :class => 'btn btn-info btn-xs' %>
-  <% end %>
+  <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), :class => 'btn btn-info btn-xs' %>
   <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
 <% end %>
 </p>
@@ -79,11 +75,7 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-md-3">
-        <% if @submission.contest_id.blank? %>
-          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, problem_path(@submission.problem) %>
-        <% else %>
-          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_problem_path(@submission.contest_id, @submission.problem) %>
-        <% end %>
+        <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_adaptive_polymorphic_path([@submission.problem]) %>
       </div>
       <div id="total-time" class="col-md-2">
         <%= infor_obj.total_time.to_i %>
@@ -270,7 +262,7 @@
   </div>
 </div>
 
-<% if current_user&.admin? or current_user&.id == @submission.user_id %>
+<% if effective_admin? or current_user&.id == @submission.user_id %>
   <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
     <div class="panel-heading">
         <h1 class="panel-title">Compilation Error Message</h1>

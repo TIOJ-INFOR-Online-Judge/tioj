@@ -20,7 +20,7 @@
           <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
           <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
           <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
-          <li><%= link_to "Dashboard", {:controller => :contests, :action => :dashboard, :id => @contest.id} %></li>
+          <li><%= link_to "Dashboard", dashboard_contest_path(@contest) %></li>
           <% if current_user %>
             <li><%= link_to(current_user.username, user_path(current_user)) %></li>
             <li><%= link_to('Sign out', destroy_user_session_path, :method => :delete) %></li>

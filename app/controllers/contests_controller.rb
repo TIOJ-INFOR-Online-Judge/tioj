@@ -1,6 +1,5 @@
 class ContestsController < ApplicationController
   before_action :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
-  before_action :set_contest, only: [:show, :edit, :update, :destroy, :dashboard, :dashboard_update, :set_contest_task]
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
@@ -135,10 +134,7 @@ class ContestsController < ApplicationController
     end
   end
 
-  private
-  def set_contest
-    @contest = Contest.find(params[:id])
-  end
+ private
 
   def set_tasks
     @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}

@@ -1,7 +1,7 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
   before_action :authenticate_admin!, only: [:rejudge, :edit, :update, :destroy]
-  before_action :set_contest_problem_by_param, only: [:new, :create, :index]
+  before_action :set_problem_by_param, only: [:new, :create, :index]
   before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
   before_action :redirect_contest, only: [:show, :show_old, :edit]
@@ -23,13 +23,13 @@ class SubmissionsController < ApplicationController
 
   def index
     @submissions = @submissions.order(id: :desc).page(params[:page]).preload(:user, :compiler, :problem)
-    unless current_user&.admin?
+    unless effective_admin?
       @submissions = @submissions.preload(:contest)
     end
   end
 
   def show
-    unless current_user&.admin? or current_user&.id == @submission.user_id or not @submission.contest
+    unless effective_admin? or current_user&.id == @submission.user_id or not @submission.contest
       if not @submission.contest.is_ended?
         redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
         return
@@ -63,7 +63,7 @@ class SubmissionsController < ApplicationController
       redirect_to action:'index'
       return
     end
-    unless current_user.admin?
+    unless effective_admin?
       if @problem.visible_invisible?
         redirect_to action:'index'
         return
@@ -108,7 +108,7 @@ class SubmissionsController < ApplicationController
       redirect_to action: 'index'
       return
     end
-    unless current_user.admin?
+    unless effective_admin?
       if @problem.visible_invisible?
         redirect_to action: 'index'
         return
@@ -176,14 +176,13 @@ class SubmissionsController < ApplicationController
 
   private
 
-  def set_contest_problem_by_param
-    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
+  def set_problem_by_param
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]
   end
 
   def set_submissions
     if @problem
-      unless current_user&.admin?
+      unless effective_admin?
         if @problem.visible_contest?
           if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
             redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
@@ -196,14 +195,15 @@ class SubmissionsController < ApplicationController
 
     @submissions = Submission
     @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
-    if params[:contest_id]
-      @submissions = @submissions.where(contest_id: params[:contest_id])
-      unless current_user&.admin?
+    if @contest
+      @submissions = @submissions.where(contest_id: @contest.id)
+      unless effective_admin?
         if user_signed_in?
           @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.freeze_after, current_user.id)
         else
           @submissions = @submissions.where("submissions.created_at < ?", @contest.freeze_after)
         end
+        # TODO: Add an option to still hide submission after contest
         unless @contest.is_ended?
           # only self submission
           if user_signed_in?
@@ -216,7 +216,7 @@ class SubmissionsController < ApplicationController
       end
     else
       @submissions = @submissions.where(contest_id: nil)
-      unless current_user&.admin?
+      unless effective_admin?
         @submissions = @submissions.joins(:problem).where(problem: {visible_state: :public})
       end
     end
@@ -233,8 +233,10 @@ class SubmissionsController < ApplicationController
   def set_submission
     @submission = Submission.find(params[:id])
     @problem = @submission.problem
-    @contest = @submission.contest
-    unless current_user&.admin?
+    logger.fatal [@contest, @submission]
+    raise_not_found if @contest && @contest.id != @submission.contest_id
+    @contest ||= @submission.contest
+    unless effective_admin?
       if @problem.visible_contest?
         raise_not_found if not @contest
       elsif @problem.visible_invisible?
@@ -242,8 +244,7 @@ class SubmissionsController < ApplicationController
       end
     end
     if @contest
-      raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
-      unless current_user&.admin?
+      unless effective_admin?
         raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
         raise_not_found unless @contest.is_ended? or current_user&.id == @submission.user_id
       end
@@ -251,7 +252,7 @@ class SubmissionsController < ApplicationController
   end
 
   def redirect_contest
-    if @layout != :contest and @submission.contest_id
+    if @layout == :application and @submission.contest_id
       redirect_to URI::join(contest_url(@contest) + '/', request.fullpath[1..]).to_s
     end
   end

@@ -119,4 +119,25 @@ module ApplicationHelper
       ActionCable.server.broadcast("ranklist_update_#{contest_id}_#{user_id}", {})
     end
   end
+
+  def strip_contest_prefix(x)
+    pat = /^\/single_contest\/([0-9]+)\//
+    m1 = pat.match(request.original_fullpath)
+    m2 = pat.match(x)
+    return x unless m1 && m2 && m1[1] == m2[1]
+    prefix = 'a://a'
+    return URI.parse(prefix + x).route_from(prefix + request.original_fullpath).to_s
+  end
+
+  def contest_adaptive_polymorphic_path(records, options = {})
+    if @contest
+      ret = polymorphic_path([@contest] + records, options)
+      if @layout == :single_contest
+        ret = strip_contest_prefix(ret.gsub(/^\/contests/, '/single_contest'))
+      end
+      ret
+    else
+      polymorphic_path(records, options)
+    end
+  end
 end

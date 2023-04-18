@@ -1,7 +1,6 @@
 class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old, :rejudge]
-  before_action :set_contest, only: [:show]
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
@@ -149,10 +148,6 @@ class ProblemsController < ApplicationController
     @problem = Problem.find(params[:id])
   end
 
-  def set_contest
-    @contest = Contest.find(params[:contest_id]) if not params[:contest_id].blank?
-  end
-
   def set_testdata
     @testdata = @problem.testdata
     @has_rss = @testdata.any?{|x| x.rss_limit}
@@ -202,7 +197,7 @@ class ProblemsController < ApplicationController
   end
 
   def check_visibility!
-    unless current_user&.admin?
+    unless effective_admin?
       if @problem.visible_contest?
         if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and @contest.is_started?)
           redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'

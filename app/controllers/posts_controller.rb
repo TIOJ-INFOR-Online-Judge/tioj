@@ -9,6 +9,9 @@ class PostsController < ApplicationController
   before_action :check_params!, only: [:create, :update]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
+  helper_method :allow_edit
+  helper_method :allow_set_visibility
+
   # GET /posts
   # GET /posts.json
   def index
@@ -81,6 +84,14 @@ class PostsController < ApplicationController
 
   private
 
+  def allow_edit(post)
+    effective_admin? || (current_user&.id == post.user_id && !@contest)
+  end
+
+  def allow_set_visibility
+    !@contest || effective_admin?
+  end
+
   def check_post_create
     check_problem_allow_create
   end
@@ -115,7 +126,7 @@ class PostsController < ApplicationController
 
   def check_user!
     @post = @posts.find(params[:id])
-    unless current_user&.admin? or (current_user&.id == @post.user_id and not @contest)
+    unless allow_edit(@post)
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action: 'index'
       return
@@ -123,10 +134,12 @@ class PostsController < ApplicationController
   end
 
   def check_params!
-    return if current_user&.admin?
-    params[:post][:global_visible] = '0' if @contest
+    unless allow_set_visibility
+      params[:post][:global_visible] = '0' if @contest
+      params[:post][:user_visible] = '0' if @contest
+    end
     if not @post_types.map{|x| x[1]}.include?(params[:post][:post_type])
-      flash[:alert] = 'Insufficient User Permissions.'
+      flash[:alert] = 'Invalid post type.'
       redirect_to action: 'index'
       return
     end

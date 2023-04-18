@@ -1,8 +1,11 @@
 <% if @submission.persisted? %>
   <% set_page_title "Edit submission - " + @submission.id.to_s %>
+  <% form_target = [@submission] %>
 <% else %>
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
+  <% form_target = [@problem, @submission] %>
 <% end %>
+<% form_target = [@contest] + form_target if @contest %>
 
 <% check_upload = false %>
 <% form_html = {multipart: true} %>
@@ -15,8 +18,6 @@
   <% end %>
 <% end %>
 
-<% form_target = [@problem, @submission] %>
-<% form_target = [@contest] + form_target if @contest %>
 <%= form_for form_target, :html => form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 

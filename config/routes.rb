@@ -45,8 +45,8 @@ Rails.application.routes.draw do
 
   resources :contests do
     resources :submissions
-    resources :problems do
-      resources :submissions
+    resources :problems, except: [:index, :create, :new] do
+      resources :submissions, only: [:index, :create, :new]
     end
     resources :announcements
     resources :posts do
@@ -57,6 +57,25 @@ Rails.application.routes.draw do
       post 'set_contest_task'
       get 'dashboard'
       get 'dashboard_update'
+    end
+  end
+
+  resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
+    resources :submissions, except: [:update, :edit, :destroy]
+    resources :problems, only: [:show] do
+      resources :submissions, only: [:index, :create, :new]
+    end
+    resources :posts, except: [:update, :edit, :destroy] do
+      resources :comments, except: [:index, :update, :edit, :destroy]
+    end
+
+    member do
+      get 'dashboard'
+      get 'dashboard_update'
+      # custom user session
+      get 'users/sign_in', to: 'contests#sign_in'
+      post 'users/sign_in', to: 'contests#sign_in_post'
+      post 'users/sign_out', to: 'contests#sign_out'
     end
   end
 

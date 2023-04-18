@@ -55,7 +55,7 @@
         <td><%= raw anno.title %></td>
         <td><%= raw anno.body %></td>
         <td style="width: 0; white-space: nowrap;">
-          <%= link_to 'Edit', edit_announcement_path(anno), :class => 'btn btn-info btn-xs' %>
+          <%= link_to 'Edit', contest_adaptive_polymorphic_path([anno], action: :edit), :class => 'btn btn-info btn-xs' %>
           <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
         </td>
       </tr>

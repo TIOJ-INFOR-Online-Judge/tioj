@@ -25,7 +25,7 @@
 <div class="post_footer small">
   <% if poster == nil %>
     deleted account - <%= post.created_at.to_fs(:clean) %>
-  <% elsif not current_user&.admin? and not post.user_visible and current_user&.id != poster.id %>
+  <% elsif not effective_admin? and not post.user_visible and current_user&.id != poster.id %>
     anonymous - <%= post.created_at.to_fs(:clean) %>
   <% else %>
     <%= link_to poster.username, user_path(poster) %> - <%= post.created_at.to_fs(:clean) %>
@@ -36,8 +36,8 @@
     (private post)
   <% end %>
 </div>
-<% if current_user&.admin? or (current_user&.id == post.user_id and not @contest) %>
-  <%= link_to "Edit Post", edit_polymorphic_path(post_object), :class=>'btn btn-primary btn-xs'%>
+<% if allow_edit(post) %>
+  <%= link_to "Edit Post", contest_adaptive_polymorphic_path(post_object, action: :edit), :class=>'btn btn-primary btn-xs'%>
   <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
 <% end %>
 <% if post.comments.present? %>
@@ -53,7 +53,7 @@
     <% end %><!-- comments.each -->
   </div> <!-- comments -->
 <% end %> <!-- if post.comments.present? -->
-<% if user_signed_in? and (current_user.admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
+<% if user_signed_in? and (effective_admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
   <div class="new_comment" style="display:inline">
     <button class="new_comment btn btn-info btn-xs">New Comment</button>
     <div class="new_comment_form well well-lg" style="margin-top: 1rem; margin-bottom: 0; padding-top: 1rem;">

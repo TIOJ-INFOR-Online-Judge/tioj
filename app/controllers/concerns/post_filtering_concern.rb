@@ -4,7 +4,7 @@ module PostFilteringConcern
  private
 
   def check_contest_and_problem
-    unless current_user&.admin?
+    unless effective_admin?
       if not @contest and Contest.where("start_time <= ? AND ? < end_time AND disable_discussion", Time.now, Time.now).exists?
         redirect_back fallback_location: root_path, :notice => "No discussion during contest."
         return
@@ -17,7 +17,7 @@ module PostFilteringConcern
   end
 
   def check_problem_allow_create
-    unless current_user&.admin?
+    unless effective_admin?
       if @problem and not @problem.discussion_enabled?
         redirect_to problem_posts_path(@problem), :alert => "Discussion not allowed in this problem."
         return
@@ -26,7 +26,6 @@ module PostFilteringConcern
   end
 
   def filter_posts
-    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
     @problem = Problem.find(params[:problem_id]) if params[:problem_id] and not @contest
     if @contest
       @posts = @contest.posts.order(global_visible: :desc) # put announcements on top
@@ -42,7 +41,7 @@ module PostFilteringConcern
       @page_path = posts_path
     end
     if user_signed_in?
-      unless current_user.admin?
+      unless effective_admin?
         # cannot use .or here because it will OR on the whole clause
         @posts = @posts.where('user_id = ? OR global_visible', current_user.id)
       end

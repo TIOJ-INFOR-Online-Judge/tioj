@@ -24,7 +24,7 @@
     <%= f.label :content, raw('Content: (all characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %>
     <%= f.text_area :content, :class=> 'form-control flat', :rows => 6, :placeholder=>'Content'%>
   </div>
-  <% if not @contest or current_user.admin? %>
+  <% if allow_set_visibility %>
     <div class="form-group">
       <%= f.label :global_visible, class: 'checkbox' do %>
         <%= f.check_box :global_visible, 'data-toggle': 'checkbox' %>

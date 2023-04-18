@@ -5,11 +5,14 @@ class ApplicationController < ActionController::Base
   before_action :store_location
   before_action :set_verdict_hash
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_layout_and_contest
   before_action :set_anno
-  before_action :set_layout
   mattr_accessor :verdict
   mattr_accessor :v2i
   mattr_accessor :i2v
+  helper_method :effective_admin?
+
+  include SingleContestAuthenticationConcern
 
   @@verdict = {
     "AC" => "Accepted",
@@ -62,7 +65,7 @@ class ApplicationController < ActionController::Base
     session[:previous_url] || root_path
   end
 
-protected
+ protected
   def authenticate_admin!
     authenticate_user!
     if not current_user.admin?
@@ -84,11 +87,26 @@ protected
     end
   end
 
-  def set_layout
+  def set_layout_and_contest
+    logger.fatal request.fullpath
     if /\/contests\/[0-9]+/.match(request.fullpath)
       @layout = :contest
+    elsif /\/single_contest\/[0-9]+/.match(request.fullpath)
+      @layout = :single_contest
     else
       @layout = :application
+    end
+
+    if @layout == :application
+      @contest = nil
+    else
+      if controller_name == 'contests'
+        contest_param = params[:id]
+      else
+        contest_param = @layout == :contest ? params[:contest_id] : params[:single_contest_id]
+      end
+      contest_id = contest_param && contest_param.to_i
+      @contest = Contest.find(contest_id)
     end
   end
 
@@ -97,9 +115,7 @@ protected
   end
 
   def set_anno
-    contest_param = controller_name == 'contests' ? params[:id] : params[:contest_id]
-    contest_id = contest_param && contest_param.to_i
-    @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
+    @annos = Announcement.where(contest_id: @contest&.id).order(:id).all.to_a
   end
 
   def get_sorted_user(limit = nil)
@@ -141,7 +157,7 @@ protected
     raise ActionController::RoutingError.new('')
   end
 
-  public
+ public
 
   def self.shellsplit_safe(line)
     # adapted from shellwords library
