@@ -3,6 +3,7 @@ class SubmissionChannel < ApplicationCable::Channel
     # reject() will return true
     if params[:id].is_a? Integer
       submission = Submission.find_by_id(params[:id])
+      reject && return if single_contest && submission.contest_id != single_contest.id
       reject && return unless submission&.allowed_for(current_user, effective_admin?)
       with_detail = submission&.tasks_allowed_for(current_user, effective_admin?)
       stream_from "submission_#{submission.id}_subtasks"
@@ -11,7 +12,9 @@ class SubmissionChannel < ApplicationCable::Channel
       init_data(submission, with_detail)
     else
       reject && return if params[:id].size > 20
-      submissions = Submission.where(id: params[:id]).filter{|s| s.allowed_for(current_user, effective_admin?)}
+      submissions = Submission.where(id: params[:id])
+      submissions = submissions.where(contest_id: single_contest.id) if single_contest
+      submissions = submissions.filter{|s| s.allowed_for(current_user, effective_admin?)}
       reject && return if not submissions
       submissions.each do |s|
         stream_from "submission_#{s.id}_overall"

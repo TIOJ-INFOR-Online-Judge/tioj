@@ -3,7 +3,7 @@ module ApplicationCable
     include ApplicationHelper
 
     def effective_admin?
-      current_user&.admin && !is_single_contest
+      current_user&.admin? && single_contest.nil?
     end
   end
 end
