@@ -3,15 +3,15 @@ class SubmissionChannel < ApplicationCable::Channel
     # reject() will return true
     if params[:id].is_a? Integer
       submission = Submission.find_by_id(params[:id])
-      reject && return unless submission&.allowed_for(current_user)
-      with_detail = submission&.tasks_allowed_for(current_user)
+      reject && return unless submission&.allowed_for(current_user, effective_admin?)
+      with_detail = submission&.tasks_allowed_for(current_user, effective_admin?)
       stream_from "submission_#{submission.id}_subtasks"
       stream_from "submission_#{submission.id}_testdata" if with_detail
       stream_from "submission_#{submission.id}_overall"
       init_data(submission, with_detail)
     else
       reject && return if params[:id].size > 20
-      submissions = Submission.where(id: params[:id]).filter{|s| s.allowed_for(current_user)}
+      submissions = Submission.where(id: params[:id]).filter{|s| s.allowed_for(current_user, effective_admin?)}
       reject && return if not submissions
       submissions.each do |s|
         stream_from "submission_#{s.id}_overall"

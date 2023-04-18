@@ -5,7 +5,6 @@
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
   <% form_target = [@problem, @submission] %>
 <% end %>
-<% form_target = [@contest] + form_target if @contest %>
 
 <% check_upload = false %>
 <% form_html = {multipart: true} %>
@@ -18,7 +17,7 @@
   <% end %>
 <% end %>
 
-<%= form_for form_target, :html => form_html do |f| %>
+<%= form_for form_target, url: contest_adaptive_polymorphic_path(form_target), html: form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">

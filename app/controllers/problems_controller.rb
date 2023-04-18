@@ -146,6 +146,7 @@ class ProblemsController < ApplicationController
 
   def set_problem
     @problem = Problem.find(params[:id])
+    raise_not_found if @contest && !@problem.in?(@contest.problems)
   end
 
   def set_testdata

@@ -6,8 +6,14 @@
   <% @post.user_visible = @contest == nil %>
 <% end %>
 
-<% form_target = @postable ? [@postable, @post] : @post %>
-<%= form_for form_target do |f| %>
+<% if @contest %>
+  <% form_target = @post %>
+  <% form_url = contest_adaptive_polymorphic_path([@post]) %>
+<% else %>
+  <% form_target = @postable ? [@postable, @post] : @post %>
+  <% form_url = @postable ? [@postable, @post] : @post %>
+<% end %>
+<%= form_for form_target, url: form_url do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @post.errors, item: 'post'} %>
 
   <div class="form-group">

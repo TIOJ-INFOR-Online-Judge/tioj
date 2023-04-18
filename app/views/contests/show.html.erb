@@ -1,6 +1,6 @@
 <% set_page_title @contest.title %>
 
-<% if current_user&.admin? %>
+<% if effective_admin? %>
   <div class="row">
     <div class="col-md-12">
       <div>
@@ -73,7 +73,7 @@
   </div>
 <% end %>
 
-<% if current_user&.admin? %>
+<% if effective_admin? %>
   <div style="margin-bottom:10px;">
     <% Problem.visible_states.each do |name, val| %>
       <%= form_with url: set_contest_task_contest_path(@contest), :html => {:style => 'display: inline;'} do |f| %>
@@ -91,7 +91,7 @@
   <div class="panel-body">
     <% if @contest.is_started? || current_user&.admin? %>
       <% @tasks.each_with_index do |task, index| %>
-        <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
+        <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
         <br>
       <% end %>
     <% else %>
@@ -101,10 +101,12 @@
 </div>
 
 <p>
-  <%= link_to 'Dashboard', {:controller => :contests, :action => :dashboard, :id => @contest.id}, {:class => 'btn btn-xs btn-warning'} %>
-  <%= link_to 'Submissions', contest_submissions_path(@contest), :class => 'btn btn-info btn-xs' %>
-  <% if current_user&.admin? %>
+  <%= link_to 'Dashboard', contest_adaptive_polymorphic_path([], action: :dashboard), {:class => 'btn btn-xs btn-warning'} %>
+  <%= link_to 'Submissions', contest_adaptive_polymorphic_path([:submissions]), :class => 'btn btn-info btn-xs' %>
+  <% if effective_admin? %>
     <%= link_to 'Edit', edit_contest_path(@contest), :class => 'btn btn-info btn-xs' %>
   <% end %>
-  <%= link_to 'Back to Contests List', contests_path, :class => 'btn btn-default btn-xs' %>
+  <% if @layout != :single_contest %>
+    <%= link_to 'Back to Contests List', contests_path, :class => 'btn btn-default btn-xs' %>
+  <% end %>
 </p>

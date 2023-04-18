@@ -8,18 +8,14 @@
 <p>
 <div class="row">
   <div class="col-md-2">
-    <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
+    <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { :class => 'btn btn-success btn-xs btn-block' } %>
   </div>
   <% if not hide_old_submission %>
     <div class="col-md-2">
-      <% if @contest %>
-        <%= link_to 'Status', contest_problem_submissions_path(@contest, @problem), :class => 'btn btn-info btn-xs btn-block' %>
-      <% else %>
-        <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-      <% end %>
+      <%= link_to 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), :class => 'btn btn-info btn-xs btn-block' %>
     </div>
   <% end %>
-  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) %>
+  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
     <div class="col-md-2">
       <%= link_to 'Discussion / Solution', problem_posts_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
     </div>
@@ -30,7 +26,7 @@
     </div>
   <% end %>
   <div class="col-md-2">
-    <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_path(@contest), :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_adaptive_polymorphic_path([]), :class => 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>
 <% if effective_admin? %>
@@ -279,7 +275,7 @@
 
 <div class="row">
   <div class="col-md-2">
-    <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
+    <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { :class => 'btn btn-success btn-xs btn-block' } %>
   </div>
   <% if not hide_old_submission %>
     <div class="col-md-2">

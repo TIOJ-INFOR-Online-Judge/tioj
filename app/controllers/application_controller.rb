@@ -88,7 +88,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout_and_contest
-    logger.fatal request.fullpath
     if /\/contests\/[0-9]+/.match(request.fullpath)
       @layout = :contest
     elsif /\/single_contest\/[0-9]+/.match(request.fullpath)

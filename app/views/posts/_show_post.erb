@@ -37,7 +37,7 @@
   <% end %>
 </div>
 <% if allow_edit(post) %>
-  <%= link_to "Edit Post", contest_adaptive_polymorphic_path(post_object, action: :edit), :class=>'btn btn-primary btn-xs'%>
+  <%= link_to "Edit Post", contest_adaptive_polymorphic_path([post], action: :edit), :class=>'btn btn-primary btn-xs'%>
   <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
 <% end %>
 <% if post.comments.present? %>

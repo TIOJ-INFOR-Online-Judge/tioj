@@ -30,7 +30,7 @@ module PostFilteringConcern
     if @contest
       @posts = @contest.posts.order(global_visible: :desc) # put announcements on top
       @postable = @contest
-      @page_path = contest_posts_path(@contest)
+      @page_path = helpers.contest_adaptive_polymorphic_path([:posts], strip_prefix: false)
     elsif @problem
       @posts = @problem.posts.order(Arel.sql("(post_type = #{Post.post_types[:solution]}) DESC"))
       @postable = @problem

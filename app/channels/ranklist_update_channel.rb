@@ -4,7 +4,7 @@ class RanklistUpdateChannel < ApplicationCable::Channel
     reject && return unless params[:id].is_a? Integer
     contest = Contest.find_by_id(params[:id])
     reject && return unless contest.is_started?
-    if contest.type_ioi? and @contest.is_running? and not current_user.admin?
+    if !contest.dashboard_during_contest && contest.is_running? && !effective_admin?
       stream_from "ranklist_update_#{contest.id}_#{current_user.id}"
       stream_from "ranklist_update_#{contest.id}_global"
     else

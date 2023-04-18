@@ -121,6 +121,7 @@ module ApplicationHelper
   end
 
   def strip_contest_prefix(x)
+    x = x + '/' if /^\/single_contest\/([0-9]+)$/.match(x)
     pat = /^\/single_contest\/([0-9]+)\//
     m1 = pat.match(request.original_fullpath)
     m2 = pat.match(x)
@@ -130,10 +131,12 @@ module ApplicationHelper
   end
 
   def contest_adaptive_polymorphic_path(records, options = {})
+    strip_prefix = options.delete(:strip_prefix)
     if @contest
       ret = polymorphic_path([@contest] + records, options)
       if @layout == :single_contest
-        ret = strip_contest_prefix(ret.gsub(/^\/contests/, '/single_contest'))
+        ret = ret.gsub(/^\/contests/, '/single_contest')
+        ret = strip_contest_prefix(ret) unless strip_prefix == false
       end
       ret
     else

@@ -31,11 +31,7 @@
 <% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
 
 <p>
-<% if @contest.blank? %>
-  <%= link_to 'Back to Submissions List', submissions_path, :class => 'btn btn-default btn-xs' %>
-<% else %>
-  <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
-<% end %>
+<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), :class => 'btn btn-default btn-xs' %>
 <% if Rails.configuration.x.settings.dig(:old_submission_views) and @submission.old_submission %>
   <% if @show_old %>
     <%= link_to 'View New Results', submission_path(@submission), :class => 'btn btn-default btn-xs' %>

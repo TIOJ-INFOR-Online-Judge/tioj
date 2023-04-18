@@ -63,15 +63,17 @@ class Submission < ApplicationRecord
     contest_id != nil
   end
 
-  def allowed_for(cur_user)
-    return true if cur_user&.admin? || !contest?
+  def allowed_for(cur_user, override_admin = nil)
+    effective_admin = override_admin.nil? ? cur_user&.admin? : override_admin
+    return true if effective_admin || !contest?
     return false if created_at >= contest.freeze_after && cur_user&.id != user_id
     return false unless contest.is_ended? or cur_user&.id == user_id
     true
   end
 
-  def tasks_allowed_for(cur_user)
-    !contest? || cur_user&.admin? || contest.show_detail_result
+  def tasks_allowed_for(cur_user, override_admin = nil)
+    effective_admin = override_admin.nil? ? cur_user&.admin? : override_admin
+    !contest? || effective_admin || contest.show_detail_result
   end
 
   def calc_subtask_result(data = [], prefetched = false)

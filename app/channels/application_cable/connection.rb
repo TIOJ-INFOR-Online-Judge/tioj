@@ -1,6 +1,6 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :judge_server, :current_user
+    identified_by :judge_server, :current_user, :is_single_contest
     
     def initialize(*args)
       super
@@ -8,6 +8,7 @@ module ApplicationCable
     end
 
     def connect
+      self.is_single_contest = request.headers['HTTP_SINGLECONTEST'] == '1'
       if request.params['key']
         @mutex.synchronize do
           return if @disconnected
@@ -52,9 +53,9 @@ module ApplicationCable
     end
 
     def find_user
-      user_id = cookies.encrypted[:_tioj_session]&.dig('warden.user.user.key', 0, 0)
-      reject_unauthorized_connection if not user_id
-      user = User.find(user_id)
+      user_id = request.session&.dig('warden.user.user.key', 0, 0)
+      return nil if not user_id
+      user = User.find_by(id: user_id)
       reject_unauthorized_connection if not user
       user
     end

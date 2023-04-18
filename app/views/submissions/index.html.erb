@@ -25,8 +25,7 @@
 </h4>
 
 <% if @problem %>
-  <%# TODO: add a helper for contest-dependent links %>
-  <% submit_link = @contest ? new_contest_problem_submission_path(@contest, @problem) : new_problem_submission_path(@problem) %>
+  <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
   <%= link_to 'Submit to Problem', submit_link, :class => "btn btn-success btn-xs" %>
 <% else %>
   <div class="form-inline">

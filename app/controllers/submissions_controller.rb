@@ -138,7 +138,7 @@ class SubmissionsController < ApplicationController
     @submission.generate_subtask_result
     respond_to do |format|
       if @submission.save
-        redirect_url = @submission.contest_id ? contest_submission_url(@contest, @submission) : submission_url(@submission)
+        redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)
         ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
         helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
         format.html { redirect_to redirect_url, notice: 'Submission was successfully created.' }
@@ -233,7 +233,6 @@ class SubmissionsController < ApplicationController
   def set_submission
     @submission = Submission.find(params[:id])
     @problem = @submission.problem
-    logger.fatal [@contest, @submission]
     raise_not_found if @contest && @contest.id != @submission.contest_id
     @contest ||= @submission.contest
     unless effective_admin?
@@ -262,7 +261,7 @@ class SubmissionsController < ApplicationController
   end
 
   def set_show_attrs
-    @show_detail = @submission.tasks_allowed_for(current_user)
+    @show_detail = @submission.tasks_allowed_for(current_user, effective_admin?)
     @tdlist = @submission.problem.subtasks
     @invtdlist = inverse_td_list(@submission.problem)
   end
