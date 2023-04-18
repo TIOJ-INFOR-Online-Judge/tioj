@@ -90,6 +90,21 @@ tr.ce > td {
   background: #f5f5f5;
 }
 
+/* Prism fix */
+.line-numbers span.line-numbers-rows {
+  top: -2.2px;
+}
+div.code-toolbar > .toolbar > .toolbar-item > button.copy-to-clipboard-button {
+	background-color: #3498db;
+	color: #ffffff;
+	padding: 3px 10px;
+	font-size: 18px;
+	margin: 6px 6px 0 0;
+}
+pre.code-block[class*="language-"] {
+  font-size: 14px;
+}
+
 /* misc */
 label.checkbox.checked {
   color: unset;

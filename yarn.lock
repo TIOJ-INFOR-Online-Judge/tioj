@@ -225,6 +225,16 @@ jquery@>=1.2.6, "jquery@>=1.8.0 <4.0.0", jquery@^3.4.1, jquery@^3.6.4:
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
   integrity sha512-v28EW9DWDFpzcD9O5iyJXg3R3+q+mET5JhnjJzQUZMHOv67bpSIHq81GEYpPNZHG+XXHsfSme3nxp/hndKEcsQ==
 
+prismjs-components-importer@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/prismjs-components-importer/-/prismjs-components-importer-0.2.0.tgz#b66af0117bc21f09f6f412ec7d9df027ab09b1e7"
+  integrity sha512-2WJBqocATZOOoApIH9y6QmZG7dkQsX9BKexbW6LjMZ9QBAxoDsmoAKTzOt3g9xgpTQVEydmkS4I4tSlguJ52Kg==
+
+prismjs@^1.29.0:
+  version "1.29.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.29.0.tgz#f113555a8fa9b57c35e637bba27509dcf802dd12"
+  integrity sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==
+
 tablesorter@^2.31.3:
   version "2.31.3"
   resolved "https://registry.yarnpkg.com/tablesorter/-/tablesorter-2.31.3.tgz#94c33234ba0e5d9efc5ba4e48651010a396c8b64"

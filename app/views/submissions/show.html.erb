@@ -290,7 +290,7 @@
           <div style="margin: 0.3rem; margin-left: 1.2rem; margin-top: 0.5rem">Code truncated to 32 KiB. Click Download or View Raw to get the full source code.</div>
           <% code_utf8 = code_utf8.truncate_bytes(code_length_thresh) %>
         <% end %>
-        <pre class="line-numbers" style="margin: 0; width: 100%; min-height: 40px;"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= code_utf8 %></code></pre> 
+        <pre class="line-numbers code-block" style="margin: 0; width: 100%; min-height: 44px;"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= code_utf8 %></code></pre>
       </div>
     <% else %>
       <div class="panel-body">
@@ -317,6 +317,5 @@ $(document).ready(function() {
 
 <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs' %>
 
-<%= javascript_include_tag "/codehighlighter/prism.js" %>
-<%= stylesheet_link_tag    "/codehighlighter/prism.css" %>
-
+<%= javascript_include_tag "prism" %>
+<%= stylesheet_link_tag "prism" %>

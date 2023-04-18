@@ -21,7 +21,6 @@
 /td
 /public/*
 /public-tmp
-!/public/codehighlighter
 !/public/fonts
 !/public/images
 !/public/robots.txt
