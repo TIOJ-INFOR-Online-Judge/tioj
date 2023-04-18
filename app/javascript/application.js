@@ -7,6 +7,7 @@ import {createPopper} from '@popperjs/core';
 import 'bootstrap';
 import 'bootstrap-select';
 import './vendor/bootstrap-switch'
+import 'bootstrap-notify';
 
 // Flat UI
 import './vendor/flatui-checkbox';

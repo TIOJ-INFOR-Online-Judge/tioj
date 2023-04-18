@@ -20,7 +20,7 @@
  *= require tablesorter/dist/css/theme.blue
  *= require tablesorter/dist/css/jquery.tablesorter.pager.min
  *
- *= require animate.css/animate
+ *= require animate.css/animate.min
  *
  *= require blueimp-file-upload/css/jquery.fileupload
  *= require blueimp-file-upload/css/jquery.fileupload-ui
