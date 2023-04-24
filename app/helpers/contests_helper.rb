@@ -7,6 +7,14 @@ module ContestsHelper
     }
   end
 
+  def contest_type_short_desc_map
+    {
+      "ioi" => "IOI style",
+      "ioi_new" => "New IOI style",
+      "acm" => "ACM style",
+    }
+  end
+
   def rel_timestamp(submission, start_time)
     submission.created_at_usec - to_us(start_time)
   end

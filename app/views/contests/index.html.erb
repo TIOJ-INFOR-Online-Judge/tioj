@@ -39,7 +39,7 @@
         <% end %>
         <td><%= contest.start_time.to_fs(:clean) %></td>
         <td><%= contest.end_time.to_fs(:clean) %></td>
-        <td><%= contest.contest_type.upcase %> style / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
+        <td><%= contest_type_short_desc_map[contest.contest_type] %> / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
         <% if current_user&.admin? %>
           <td>
             <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
