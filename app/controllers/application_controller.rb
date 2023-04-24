@@ -2,10 +2,10 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_action :store_location
   before_action :set_verdict_hash
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_layout_and_contest
+  before_action :store_location
   before_action :set_anno
   mattr_accessor :verdict
   mattr_accessor :v2i
@@ -54,13 +54,19 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    if (request.fullpath != "/users/sign_in" &&
-        request.fullpath != "/users/sign_out" &&
-        request.fullpath != "/users/sign_up" &&
-        !request.xhr?)
-      session[:previous_url] = request.fullpath
+    if @layout == :single_contest
+      unless /^\/single_contest\/[0-9]+\/users\/sign_(in|out)/.match(request.fullpath) || request.xhr?
+        session[:single_contest] ||= {}
+        session[:single_contest][@contest.id] ||= {}
+        session[:single_contest][@contest.id][:previous_url] = request.fullpath
+      end
+    else
+      unless /^\/users\/sign_(in|out|up)/.match(request.fullpath) || request.xhr?
+        session[:previous_url] = request.fullpath
+      end
     end
   end
+
   def after_sign_in_path_for(resource)
     session[:previous_url] || root_path
   end
@@ -88,9 +94,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout_and_contest
-    if /\/contests\/[0-9]+/.match(request.fullpath)
+    if /^\/contests\/[0-9]+/.match(request.fullpath)
       @layout = :contest
-    elsif /\/single_contest\/[0-9]+/.match(request.fullpath)
+    elsif /^\/single_contest\/[0-9]+/.match(request.fullpath)
       @layout = :single_contest
     else
       @layout = :application

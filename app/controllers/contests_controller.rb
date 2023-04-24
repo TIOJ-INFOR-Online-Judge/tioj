@@ -1,9 +1,9 @@
 class ContestsController < ApplicationController
-  before_action :authenticate_admin!, except: [:dashboard, :dashboard_update, :index, :show]
+  before_action :authenticate_admin!, only: [:set_contest_task, :new, :create, :edit, :update, :destroy]
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
-  layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
+  layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update, :sign_in]
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -132,6 +132,33 @@ class ContestsController < ApplicationController
       format.html { redirect_to contests_url }
       format.json { head :no_content }
     end
+  end
+
+  ## Single contest
+
+  def sign_in_post
+    sign_in_params = params.require(:user).permit(:username, :password)
+    user = User.find_by(username: sign_in_params[:username])
+    if user and user.valid_password?(sign_in_params[:password])
+      session[:single_contest] ||= {}
+      session[:single_contest][@contest.id] ||= {}
+      session[:single_contest][@contest.id][:user_id] = user.id
+      url = session.dig(:single_contest, @contest.id, :previous_url)
+      url = single_contest_path(@contest) unless url
+      redirect_to url, notice: "Signed in successfully."
+    else
+      flash[:alert] = "Invalid login or password."
+      render 'single_contest/sign_in'
+    end
+  end
+
+  def sign_in
+    render 'single_contest/sign_in'
+  end
+
+  def sign_out
+    session[:single_contest].delete(@contest.id)
+    redirect_to single_contest_path(@contest), notice: "Signed out successfully."
   end
 
  private

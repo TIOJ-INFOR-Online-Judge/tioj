@@ -77,9 +77,9 @@ Rails.application.routes.draw do
       get 'dashboard'
       get 'dashboard_update'
       # custom user session
-      get 'users/sign_in', to: 'contests#sign_in'
-      post 'users/sign_in', to: 'contests#sign_in_post'
-      post 'users/sign_out', to: 'contests#sign_out'
+      get 'users/sign_in', as: :sign_in, to: 'contests#sign_in'
+      post 'users/sign_in', as: :sign_in_post, to: 'contests#sign_in_post'
+      delete 'users/sign_out', as: :sign_out, to: 'contests#sign_out'
     end
   end
 

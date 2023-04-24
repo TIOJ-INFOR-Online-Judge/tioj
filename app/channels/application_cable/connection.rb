@@ -19,8 +19,7 @@ module ApplicationCable
           self.judge_server = judge_server
         end
       else
-        self.single_contest = find_single_contest
-        self.current_user = find_user
+        self.single_contest, self.current_user = find_single_contest_and_user
       end
     end
 
@@ -52,20 +51,24 @@ module ApplicationCable
       judge
     end
 
-    def find_user
-      user_id = request.session&.dig('warden.user.user.key', 0, 0)
-      return nil unless user_id
+    def find_single_contest_and_user
+      contest_id = request.headers['HTTP_SINGLECONTESTID']
+      if contest_id
+        contest = Contest.find_by(id: contest_id.to_i)
+        reject_unauthorized_connection unless contest
+      else
+        contest = nil
+      end
+
+      if contest
+        user_id = request.session&.dig('single_contest', contest.id, :user_id)
+      else
+        user_id = request.session&.dig('warden.user.user.key', 0, 0)
+      end
+      return [contest, nil] unless user_id
       user = User.find_by(id: user_id)
       reject_unauthorized_connection unless user
-      user
-    end
-
-    def find_single_contest
-      contest_id = request.headers['HTTP_SINGLE_CONTEST_ID']
-      return nil unless contest_id
-      contest = Contest.find_by(id: contest_id.to_i)
-      reject_unauthorized_connection unless contest
-      contest
+      [contest, user]
     end
   end
 end

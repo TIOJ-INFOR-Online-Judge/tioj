@@ -23,9 +23,9 @@
           <li><%= link_to "Dashboard", strip_contest_prefix(dashboard_single_contest_path(@contest)) %></li>
           <% if current_user %>
             <li><%= link_to(current_user.username, '#') %></li>
-            <li><%= link_to('Sign out', destroy_user_session_path, :method => :delete) %></li>
+            <li><%= link_to('Sign out', strip_contest_prefix(sign_out_single_contest_path(@contest)), :method => :delete) %></li>
           <% else %>
-            <li><%= link_to('Sign in', new_session_path(:user)) %></li>
+            <li><%= link_to('Sign in', strip_contest_prefix(sign_in_single_contest_path(@contest))) %></li>
           <% end %>
         </ul>
       </div><!-- /.navbar-collapse -->

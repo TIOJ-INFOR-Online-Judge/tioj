@@ -56,7 +56,7 @@ MathJax = ({
       <strong>Oh No! </strong> <%= alert %>
     </div>
   <% end %>
-  <%= request.session.to_h %><br><%= user_session %><%# TODO: Add session:trim cronjob to Dockerfile & installation script %>
+  <%= session.to_h %><br><%= user_session %><%# TODO: Add session:trim cronjob to Dockerfile & installation script %>
   <%= yield %>
 </div>
 

@@ -3,6 +3,7 @@ class SubmissionChannel < ApplicationCable::Channel
     # reject() will return true
     if params[:id].is_a? Integer
       submission = Submission.find_by_id(params[:id])
+      logger.fatal [submission.contest_id, single_contest&.id, effective_admin?, current_user&.admin?, single_contest.nil?]
       reject && return if single_contest && submission.contest_id != single_contest.id
       reject && return unless submission&.allowed_for(current_user, effective_admin?)
       with_detail = submission&.tasks_allowed_for(current_user, effective_admin?)
