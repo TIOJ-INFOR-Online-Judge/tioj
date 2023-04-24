@@ -115,7 +115,7 @@ $("button:not([type='submit'])").attr("type", "button");
     <% end %>
   </tbody>
 </table>
-<%= paginate @submissions %>
+<%= contest_adaptive_paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
 <script>

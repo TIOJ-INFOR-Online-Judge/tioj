@@ -1,5 +1,5 @@
 <% set_page_title @problem.id.to_s + " - " + @problem.name %>
-<% hide_old_submission = (!effective_admin? && @contest&.hide_old_submission) || @layout == :single_contest %>
+<% hide_old_submission = !effective_admin? && @contest&.hide_old_submission %>
 
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
@@ -10,11 +10,9 @@
   <div class="col-md-2">
     <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { :class => 'btn btn-success btn-xs btn-block' } %>
   </div>
-  <% if not hide_old_submission %>
-    <div class="col-md-2">
-      <%= link_to 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), :class => 'btn btn-info btn-xs btn-block' %>
-    </div>
-  <% end %>
+  <div class="col-md-2">
+    <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), :class => 'btn btn-info btn-xs btn-block' %>
+  </div>
   <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
     <div class="col-md-2">
       <%= link_to 'Discussion / Solution', problem_posts_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>

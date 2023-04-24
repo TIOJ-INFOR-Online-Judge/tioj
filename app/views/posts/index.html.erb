@@ -29,7 +29,7 @@
   <% end %>
 </div>
 
-<%= paginate @posts %>
+<%= contest_adaptive_paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
     <div class="post well<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
@@ -37,4 +37,4 @@
     </div>
   <% end %>
 </div> <!-- posts div -->
-<%= paginate @posts%>
+<%= contest_adaptive_paginate @posts %>

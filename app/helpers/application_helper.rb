@@ -127,7 +127,10 @@ module ApplicationHelper
     m2 = pat.match(x)
     return x unless m1 && m2 && m1[1] == m2[1]
     prefix = 'a://a'
-    return URI.parse(prefix + x).route_from(prefix + request.original_fullpath).to_s
+    parsed = URI.parse(prefix + x)
+    ret = URI.parse(prefix + x).route_from(prefix + request.original_fullpath).to_s
+    ret = '?' if ret == '' && !request.query_string.empty?
+    ret
   end
 
   def contest_adaptive_polymorphic_path(records, options = {})
@@ -141,6 +144,19 @@ module ApplicationHelper
       ret
     else
       polymorphic_path(records, options)
+    end
+  end
+
+  def contest_adaptive_paginate(objects)
+    if @layout == :single_contest
+      html = paginate objects, params: { only_path: true }
+      doc = Nokogiri::HTML::DocumentFragment.parse html
+      doc.css('a').each do |el|
+        el['href'] = strip_contest_prefix(el['href']) if el['href']
+      end
+      raw doc.to_s
+    else
+      paginate objects
     end
   end
 end
