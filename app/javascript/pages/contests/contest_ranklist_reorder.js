@@ -46,12 +46,11 @@ function acmRowSummary(user_id, user_state) {
 }
 
 function ioiCellText(current, user_state, first_ac) {
-  // TODO: change to Decimal
   let text = '0';
   if (current) {
-    let value = parseFloat(current.state[0]);
-    text = value;
-    user_state.score += value;
+    let value = new Decimal(current.state[0]);
+    text = value.toString();
+    user_state.score = user_state.score.add(value);
     if (current.state[2]) {
       text += ' <small><span style="color:#888;">+' + current.state[2] + '</span></small>';
     }
@@ -60,11 +59,12 @@ function ioiCellText(current, user_state, first_ac) {
 }
 
 function ioiRowSummary(user_id, user_state) {
-  $('#cell_score_' + user_id).text(user_state.score);
+  $('#cell_score_' + user_id).text(user_state.score.toString());
   return [-user_state.score];
 }
 
 import * as bounds from 'binary-search-bounds';
+import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
   if (!data.participants) return;
@@ -125,7 +125,7 @@ export function contestRanklistReorder(data, timestamp) {
     reorderTableInternal(
       data,
       timestamp,
-      {score: 0.0},
+      {score: new Decimal(0)},
       ioiCellText,
       ioiRowSummary
     );
