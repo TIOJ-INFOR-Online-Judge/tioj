@@ -12,7 +12,12 @@ module SingleContestAuthenticationConcern
       user_id = session.dig(:single_contest, @contest.id, :user_id)
       # TODO: store partial password for password change?
       return nil if user_id.nil?
-      return User.find_by(id: user_id)
+      # This cache only lives in a request
+      @user_cache ||= {}
+      return @user_cache[user_id] if @user_cache.key?(user_id)
+      ret = User.find_by(id: user_id)
+      @user_cache[user_id] = ret
+      return ret
     end
     super
   end

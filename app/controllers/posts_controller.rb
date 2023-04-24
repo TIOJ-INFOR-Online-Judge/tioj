@@ -15,7 +15,7 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = @posts.order("updated_at DESC").page(params[:page]).includes(:user).preload(comments: :user)
+    @posts = @posts.page(params[:page]).includes(:user).preload(comments: :user)
     if @contest
       @title = "Q & A"
     elsif @problem
