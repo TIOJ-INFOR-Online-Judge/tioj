@@ -11,7 +11,7 @@
 <% end %>
 
 <h4 class='page-header'>
-  Contest Name : <%= @contest.title %>
+  <%= @contest.title %>
 </h4>
 
 <div class="row">
@@ -58,7 +58,7 @@
   </div>
 <% end %>
 
-<% if @contest.is_started? || current_user&.admin? %>
+<% if @contest.is_started? || effective_admin? %>
   <div class="panel panel-default">
     <div class="panel-heading">
       <% if !@contest.is_started? %>
@@ -84,21 +84,23 @@
   </div>
 <% end %>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Tasks</h1>
-  </div>
-  <div class="panel-body">
-    <% if @contest.is_started? || current_user&.admin? %>
-      <% @tasks.each_with_index do |task, index| %>
-        <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
-        <br>
+<% unless @layout == :single_contest && (!user_signed_in? || !@contest.is_running?) %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">Tasks</h1>
+    </div>
+    <div class="panel-body">
+      <% if @contest.is_started? || current_user&.admin? %>
+        <% @tasks.each_with_index do |task, index| %>
+          <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
+          <br>
+        <% end %>
+      <% else %>
+        <%= 'Contest has not yet started.' %>
       <% end %>
-    <% else %>
-      <%= 'Contest has not yet started.' %>
-    <% end %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <p>
   <%= link_to 'Dashboard', contest_adaptive_polymorphic_path([], action: :dashboard), {:class => 'btn btn-xs btn-warning'} %>

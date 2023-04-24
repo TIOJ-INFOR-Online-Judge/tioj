@@ -1,4 +1,5 @@
 class ContestsController < ApplicationController
+  before_action :authenticate_user_and_running_if_single_contest!, only: [:dashboard, :dashboard_update]
   before_action :authenticate_admin!, only: [:set_contest_task, :new, :create, :edit, :update, :destroy]
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]

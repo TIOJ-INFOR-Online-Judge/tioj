@@ -76,8 +76,18 @@ class ApplicationController < ActionController::Base
     authenticate_user!
     if not current_user.admin?
       flash[:alert] = 'Insufficient User Permissions.'
-      redirect_to action:'index'
+      redirect_to action: 'index'
       return
+    end
+  end
+
+  def authenticate_user_and_running_if_single_contest!
+    if @layout == :single_contest
+      authenticate_user!
+      unless @contest.is_running?
+        flash[:alert] = 'Contest is not running.'
+        redirect_to single_contest_path(@contest)
+      end
     end
   end
 

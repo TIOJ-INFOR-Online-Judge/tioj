@@ -31,6 +31,18 @@ h1 h2 h3 h4 h5 h6 {
   display: none;
 }
 
+/* navbar patch */
+@media (min-width: 767px) {
+  .navbar-brand {
+    padding: 13px 42px;
+  }
+}
+@media (max-width: 767px) {
+  .navbar-text {
+    padding: 7px 21px;
+  }
+}
+
 /* verdicts */
 tr.ole > td {
   background-color: #F3E6FC;

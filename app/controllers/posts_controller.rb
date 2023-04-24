@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   include PostFilteringConcern
-
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user_and_running_if_single_contest!, only: [:index]
   before_action :set_posts, :check_contest_and_problem
   before_action :check_post_create, only: [:new, :create]
   before_action :set_post_types, only: [:new, :create, :edit, :update]

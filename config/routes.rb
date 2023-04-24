@@ -63,15 +63,13 @@ Rails.application.routes.draw do
   end
 
   resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
-    resources :submissions, except: [:update, :edit, :destroy] do
+    resources :submissions, only: [:index, :create, :new, :show] do
       get 'raw', to: 'submissions#download_raw', on: :member
     end
     resources :problems, only: [:show] do
       resources :submissions, only: [:index, :create, :new]
     end
-    resources :posts, except: [:update, :edit, :destroy] do
-      resources :comments, except: [:index, :update, :edit, :destroy]
-    end
+    resources :posts, only: [:index, :create, :new]
 
     member do
       get 'dashboard'
