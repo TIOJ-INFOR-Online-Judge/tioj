@@ -27,6 +27,8 @@
     deleted account - <%= post.created_at.to_fs(:clean) %>
   <% elsif not effective_admin? and not post.user_visible and current_user&.id != poster.id %>
     anonymous - <%= post.created_at.to_fs(:clean) %>
+  <% elsif @layout == :single_contest %>
+    <%= poster.username %> - <%= post.created_at.to_fs(:clean) %>
   <% else %>
     <%= link_to poster.username, user_path(poster) %> - <%= post.created_at.to_fs(:clean) %>
   <% end %>

@@ -237,12 +237,14 @@
 
 <div class="well well-sm">
   <div class="row">
-    <div class="col-md-2">
-      <strong>Submitter:</strong>
-    </div>
-    <div class="col-md-2">
-      <%= link_to @submission.user.username, user_path(@submission.user) %>
-    </div>
+    <% if @layout != :single_contest %>
+      <div class="col-md-2">
+        <strong>Submitter:</strong>
+      </div>
+      <div class="col-md-2">
+        <%= link_to @submission.user.username, user_path(@submission.user) %>
+      </div>
+    <% end %>
     <div class="col-md-2">
       <strong>Compiler:</strong>
     </div>

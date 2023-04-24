@@ -1,5 +1,5 @@
 <% set_page_title @problem.id.to_s + " - " + @problem.name %>
-<% hide_old_submission = !effective_admin? && @contest&.hide_old_submission %>
+<% hide_old_submission = (!effective_admin? && @contest&.hide_old_submission) || @layout == :single_contest %>
 
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>

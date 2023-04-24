@@ -46,6 +46,7 @@ class ContestsController < ApplicationController
     @participants = User.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
+    @data[:user_id] = current_user&.id
     @data[:timestamps] = {
       :start => helpers.to_us(@contest.start_time),
       :end => helpers.to_us(@contest.end_time),

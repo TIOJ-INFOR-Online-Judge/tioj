@@ -1,7 +1,9 @@
 <thead>
   <tr>
     <th>Rank</th>
-    <th></th>
+    <% if @layout != :single_contest %>
+      <th></th>
+    <% end %>
     <th>Username</th>
     <th>Nickname</th>
     <% @tasks.each_with_index do |task, index| %>
@@ -18,10 +20,14 @@
 <tbody id="dashboard_table_body">
   <% @participants.each do |usr| %>
     <tr id="row_user_<%= usr.id %>">
-      <td id="cell_rank_<%= usr.id %>"></td>
-      <td><%= link_to image_tag(usr.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(usr) %></td>
-      <td><%= link_to usr.username, user_path(usr) %></td>
-      <td><%= usr.nickname %></td>
+      <td id="cell_rank_<%= usr.id %>" class="highlight-if-self"></td>
+      <% if @layout != :single_contest %>
+        <td><%= link_to image_tag(usr.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(usr) %></td>
+        <td class="highlight-if-self"><%= link_to usr.username, user_path(usr) %></td>
+      <% else %>
+        <td class="highlight-if-self"><%= usr.username %></td>
+      <% end %>
+      <td class="highlight-if-self"><%= usr.nickname %></td>
       <% @tasks.each do |t|%>
         <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
       <% end %>

@@ -67,6 +67,9 @@ import * as bounds from 'binary-search-bounds';
 import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
+  function rowUserID(row) {
+    return parseInt(row.id.slice(9));
+  }
   if (!data.participants) return;
   let compare_keys = {};
   let getValue = timestamp === -1 ? (
@@ -87,8 +90,8 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
   }
   let tbody = $('#dashboard_table_body');
   tbody.append(tbody.children().detach().sort((a, b) => {
-    let key_a = compare_keys[a.id].concat([parseInt(a.id.slice(9))]);
-    let key_b = compare_keys[b.id].concat([parseInt(b.id.slice(9))]);
+    let key_a = compare_keys[a.id].concat([rowUserID(a)]);
+    let key_b = compare_keys[b.id].concat([rowUserID(b)]);
     return key_a.compare(key_b);
   }));
   let children = tbody.children();
@@ -107,7 +110,11 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
       color += 1;
     }
     row.removeClass();
-    if (color < 3) row.addClass(color_map[color]);
+    if (rowUserID(children[i]) === data.user_id) {
+      row.addClass('ole');
+    } else if (color < 3) {
+      row.addClass(color_map[color]);
+    }
     row.children()[0].innerText = rank + 1;
   }
 }
