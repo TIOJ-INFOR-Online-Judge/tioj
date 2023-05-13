@@ -6,7 +6,7 @@
     <% if @testdatum.test_input %>
       <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_input, :class => 'form-control flat' %>
+    <%= f.file_field :test_input, :class => 'form-control flat' , multiple: true%>
   </div>
 
   <div class="form-group">
@@ -14,7 +14,7 @@
     <% if @testdatum.test_output %>
       <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_output, :class => 'form-control flat' %>
+    <%= f.file_field :test_output, :class => 'form-control flat', multiple: true %>
   </div>
   <div class="form-group">
     <%= f.label :time_limit, "Time Limit" %>
@@ -101,52 +101,116 @@ $(function () {
         '/s'
       );
     };
-    var formData = new FormData(this);
-    var lastUpdate = (new Date().getTime()) - 500;
-    var byterate = 0.0;
-    var prevLoaded = 0;
-    $.ajax({
-      type: 'POST',
-      url: $(this).attr('action'),
-      data: formData,
-      processData: false,
-      contentType: false,
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.onprogress = function(evt) {
-          if (evt.lengthComputable) {
-            var now = new Date().getTime();
-            $('#progress-fade').addClass('in');
-            if (evt.loaded == evt.total) {
-              $('#progress-inner-bar').width('100%');
-              $('#progress-text').text('Processing...');
-            } else if (now - lastUpdate >= 500) {
-              var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
-              byterate = byterate * 0.7 + curByterate * 0.3;
-              evt.byterate = curByterate;
-              lastUpdate = now;
-              prevLoaded = evt.loaded;
-              $('#progress-text').text(_renderProgress(evt));
-              $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
-            }
-          }
-        };
-        return xhr;
-      },
-      success: function (data) {
-        document.open();
-        document.write(data);
-        document.close();
-      },
-      error: function (xhr, status, error) {
-        $('#progress-fade').removeClass('in');
-        $('#progress-inner-bar').width('0%');
-      },
-      abort: function() {
-        $('#progress-fade').removeClass('in');
-        $('#progress-inner-bar').width('0%');
-      },
+    console.log( this.elements )
+    console.log( this.elements["testdatum_test_input"][ "files"] )
+    var fileInputs = Array.from( this.elements["testdatum_test_input"]["files"] ) .sort().filter( (file) => {
+        return file.name.endsWith('.in');
+      })
+    ;
+    var fileOutputs = Array.from(this.elements["testdatum_test_output"]["files"]) .sort() .filter( (file) => {
+        return file.name.endsWith(".out")
     });
+
+
+    /* filter the data */
+
+
+    console.log( fileInputs.length, fileOutputs.length)
+    if( fileInputs.length != fileOutputs.length )  {
+      alert("Error of length")
+      location.reload();
+    }
+
+
+    var baseForm = new FormData(this)
+    var num_files = fileInputs.length;
+
+    baseForm.delete("testdatum[test_input][]")
+    baseForm.delete("testdatum[test_output][]")
+
+    console.log( num_files )
+    for( let i = 0; i < num_files; ++i) {
+      var formData = new FormData();;
+      console.log( fileInputs[ i ])
+
+             // Iterate over all fields in the original form data
+        for(let pair of baseForm.entries()) {
+            // Exclude files from copying
+            if(pair[0] !== "testdatum_test_input" && pair[0] !== "testdatum_test_output") {
+                formData.append(pair[0], pair[1]);
+            }
+        }
+
+        // Add other elements of testdatum_test_input and testdatum_test_output
+        for(let key in this.elements["testdatum_test_input"]) {
+            if(key !== "files") {
+                if( this.elements["testdatum_test_input"][key] == null)
+                  formData.append("testdatum_test_input[" + key + "]", null);
+                else 
+                  formData.append("testdatum_test_input[" + key + "]", this.elements["testdatum_test_input"][key].value);
+            }
+        }
+
+        for(let key in this.elements["testdatum_test_output"]) {
+            if(key !== "files") {
+                if( this.elements["testdatum_test_output"][key] == null)
+                  formData.append("testdatum_test_output[" + key + "]", null);
+                else 
+                  formData.append("testdatum_test_output[" + key + "]", this.elements["testdatum_test_output"][key].value);
+            }
+        }
+
+        // Add current files
+        formData.append("testdatum[test_input]", fileInputs[i]);
+        formData.append("testdatum[test_output]", fileOutputs[i]);
+
+
+      var lastUpdate = (new Date().getTime()) - 500;
+      var byterate = 0.0;
+      var prevLoaded = 0;
+      $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function() {
+          var xhr = new window.XMLHttpRequest();
+          xhr.upload.onprogress = function(evt) {
+            if (evt.lengthComputable) {
+              var now = new Date().getTime();
+              $('#progress-fade').addClass('in');
+              if (evt.loaded == evt.total) {
+                $('#progress-inner-bar').width('100%');
+                $('#progress-text').text('Processing...');
+              } else if (now - lastUpdate >= 500) {
+                var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
+                byterate = byterate * 0.7 + curByterate * 0.3;
+                evt.byterate = curByterate;
+                lastUpdate = now;
+                prevLoaded = evt.loaded;
+                $('#progress-text').text(_renderProgress(evt));
+                $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
+              }
+            }
+          };
+          return xhr;
+        },
+        success: function (data) {
+          document.open();
+          document.write(data);
+          document.close();
+        },
+        error: function (xhr, status, error) {
+          $('#progress-fade').removeClass('in');
+          $('#progress-inner-bar').width('0%');
+        },
+        abort: function() {
+          $('#progress-fade').removeClass('in');
+          $('#progress-inner-bar').width('0%');
+        },
+      });
+    }
   });
 });
 </script>
