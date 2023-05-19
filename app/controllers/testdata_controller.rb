@@ -4,7 +4,7 @@ class TestdataController < ApplicationController
   before_action :set_testdatum, only: [:show, :edit, :update, :destroy]
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
-  
+
   COMPRESS_THRESHOLD = 128 * 1024
 
   def index
@@ -33,15 +33,28 @@ class TestdataController < ApplicationController
   end
 
   def create
-    @testdatum = @problem.testdata.build(testdatum_params)
+
+    testdata_errors = []
+    print testdatum_params_list.size
+
+    testdatum_params_list.each do |p|
+      puts p
+    end
+
+    testdatum_params_list.each do |testdatum_params|
+      @testdatum = @problem.testdata.build(testdatum_params.to_h)
+      if not @testdatum.save
+        testdata_errors << @testdatum.errors
+      end
+    end
 
     respond_to do |format|
-      if @testdatum.save
+      if testdata_errors.empty?
         format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
         #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
       else
-        format.html { render action: 'new' }
-        format.json { render json: @testdatum.errors, status: :unprocessable_entity }
+          format.html { render action: 'new' }
+          format.json { render json: testdata_errors, status: :unprocessable_entity }
       end
     end
   end
@@ -169,6 +182,47 @@ class TestdataController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
+  def testdatum_params_list
+    new_params = params.require(:testdatum).permit(
+      :problem_id,
+      :time_limit,
+      :rss_limit,
+      :vss_limit,
+      :output_limit,
+      test_input_list:[],
+      test_output_list:[],
+    )
+
+    test_input = new_params[:test_input_list].reject{ |item| item.is_a?(String)  }.select{ |item| item.original_filename.end_with?(".in")}
+    test_output = new_params[:test_output_list].reject{ |item| item.is_a?(String) }.select{ |item| item.original_filename.end_with?(".out")}
+    #print test_input.size
+    #print test_output.size
+
+    new_params.delete(:test_input_list)
+    new_params.delete(:test_output_list)
+
+    new_params_list = test_input.zip(test_output).map do |item1, item2|
+      new_params.dup.tap do |params|
+        params[:test_input] = item1
+        params[:test_output] = item2
+
+        if params[:test_input]
+          params[:input_compressed] = false
+          if params[:test_input].size >= COMPRESS_THRESHOLD
+            params[:input_compressed] = compress_file(params[:test_input])
+          end
+        end
+        if params[:test_output]
+          params[:output_compressed] = false
+          if params[:test_output].size >= COMPRESS_THRESHOLD
+            params[:output_compressed] = compress_file(params[:test_output]) end
+        end
+      end
+    end
+
+    new_params_list
+  end
+
   def testdatum_params
     new_params = params.require(:testdatum).permit(
       :problem_id,

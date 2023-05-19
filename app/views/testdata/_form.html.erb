@@ -2,19 +2,19 @@
   <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
   <div class="form-group">
-    <%= f.label :test_input, "Input testdata" %>
+    <%= f.label :test_input_list, "Input testdata" %>
     <% if @testdatum.test_input %>
       <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_input, class: 'form-control flat' %>
+    <%= f.file_field :test_input_list, :class => 'form-control flat', multiple: true %>
   </div>
 
   <div class="form-group">
-    <%= f.label :test_output, "Output testdata" %>
+    <%= f.label :test_output_list, "Output testdata" %>
     <% if @testdatum.test_output %>
       <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_output, class: 'form-control flat' %>
+    <%= f.file_field :test_output_list, :class => 'form-control flat', multiple: true %>
   </div>
   <div class="form-group">
     <%= f.label :time_limit, "Time Limit" %>
