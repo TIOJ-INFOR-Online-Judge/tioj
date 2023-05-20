@@ -101,6 +101,21 @@ $(function () {
         '/s'
       );
     };
+
+    //console.log( this.elements['testdatum_test_input_list']['files'])
+    var FileInput  = Array.from( this.elements['testdatum_test_input_list']['files'] ).filter( (file) => {
+      return file.name.endsWith('.in');
+    });
+    var FileOutput = Array.from( this.elements['testdatum_test_output_list']['files'] ).filter( (file) => {
+      return file.name.endsWith('.out');
+    });
+    if( FileInput.length != FileOutput.length ){
+      alert('Number of input files and output files are not equal.');
+      //refresh the page
+      location.reload();
+      return;
+    }
+
     var formData = new FormData(this);
     var lastUpdate = (new Date().getTime()) - 500;
     var byterate = 0.0;
