@@ -11,11 +11,11 @@
 - [x] Upload submission by file + non-UTF-8 code
 - [x] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
 - [ ] Pin
-- [ ] IOI-style scoring in contest (max of each subtask)
+- [x] IOI-style scoring in contest (max of each subtask)
 - [ ] I/O interactive & output-only problems
 - [ ] Judge load balancing
 - [ ] Write basic tests
-- [ ] Rewrite contest scoreboard refresh using ActionCable
+- [x] Rewrite contest scoreboard refresh using ActionCable
 - [ ] Add more languages
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit / interactive lib
