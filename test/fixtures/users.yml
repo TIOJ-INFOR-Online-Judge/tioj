@@ -25,14 +25,15 @@
 #  name                   :string(255)
 #  last_submit_time       :datetime
 #  last_compiler_id       :bigint
+#  type                   :string(255)      default("User"), not null
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_last_compiler_id      (last_compiler_id)
-#  index_users_on_nickname              (nickname) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_username              (username) UNIQUE
+#  index_users_on_last_compiler_id               (last_compiler_id)
+#  index_users_on_type_and_email                 (type,email) UNIQUE
+#  index_users_on_type_and_nickname              (type,nickname) UNIQUE
+#  index_users_on_type_and_reset_password_token  (type,reset_password_token) UNIQUE
+#  index_users_on_type_and_username              (type,username) UNIQUE
 #
 # Foreign Keys
 #
@@ -47,7 +48,7 @@ userOne:
   nickname: userOneNck
   school: userOneSchool
   gradyear: 123
-  user_type: normal_user
+  admin: false
 
 adminOne:
   email: adminOne@example.org
@@ -57,4 +58,4 @@ adminOne:
   nickname: adminOneNck
   school: adminOneSchool
   gradyear: 123
-  user_type: admin
+  admin: true

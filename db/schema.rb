@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_17_161313) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -395,11 +395,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_17_161313) do
     t.string "name"
     t.datetime "last_submit_time"
     t.bigint "last_compiler_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.string "type", default: "User", null: false
     t.index ["last_compiler_id"], name: "index_users_on_last_compiler_id"
-    t.index ["nickname"], name: "index_users_on_nickname", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["username"], name: "index_users_on_username", unique: true
+    t.index ["type", "email"], name: "index_users_on_type_and_email", unique: true
+    t.index ["type", "nickname"], name: "index_users_on_type_and_nickname", unique: true
+    t.index ["type", "reset_password_token"], name: "index_users_on_type_and_reset_password_token", unique: true
+    t.index ["type", "username"], name: "index_users_on_type_and_username", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
