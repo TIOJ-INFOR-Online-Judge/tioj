@@ -6,7 +6,7 @@
     <% if @testdatum.test_input %>
       <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_input_list, :class => 'form-control flat', multiple: true %>
+    <%= f.file_field :test_input_list, :class => 'form-control flat', multiple: true , onchange: "updateInputFile(event)"%>
   </div>
 
   <div class="form-group">
@@ -14,8 +14,27 @@
     <% if @testdatum.test_output %>
       <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_output_list, :class => 'form-control flat', multiple: true %>
+    <%= f.file_field :test_output_list, :class => 'form-control flat', multiple: true, onchange: 'updateOutputFile(event)' %>
   </div>
+
+  <div class="form-group">
+    <div class="fold-header">
+      Input/Output files info
+      <%= button_tag '展開/收起',id: 'testdata-fold-button', class: 'btn btn-default btn-xs', type: "button"%>
+    </div>
+    <div class="testdata-table">
+      <table id="folded-testdata-group"  class="table">
+        <td>Input 0, output 0</td>
+      </table>
+      <table id="fold-table" style="display:none;" class="table">
+        <tr>
+        <td>nothing input</td>
+        <td>nothing output</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
   <div class="form-group">
     <%= f.label :time_limit, "Time Limit" %>
     <%= f.number_field :time_limit, class: 'form-control flat' %>
@@ -51,10 +70,50 @@
 
 <% end %>
 
-
 <script>
-$(function () {
- $('#testdata-form').submit(function (event) {
+$("#testdata-fold-button") .click( () => {
+  $("#fold-table") .toggle();
+})
+var InputFileList = [];
+var OutputFileList = [];
+
+
+function refreshFileListTable() {
+  //console.log( 'refresh');
+  document.getElementById('folded-testdata-group').innerHTML =
+        "<td>" + 'Input ' + InputFileList.length + ', output ' + OutputFileList.length + "</td>";
+
+  let tmpTable = document.getElementById('fold-table');
+  tmpTable.innerHTML = '';
+  for( let idx = 0; idx < Math.max( InputFileList.length, OutputFileList.length ); idx++ ){
+    let tmpRow = tmpTable.insertRow();
+    let tmpCell = tmpRow.insertCell();
+    tmpCell.innerHTML = InputFileList[idx] ? InputFileList[idx].name : ' ';
+    tmpCell = tmpRow.insertCell();
+    tmpCell.innerHTML = OutputFileList[idx] ? OutputFileList[idx].name : ' ';
+    //console.log( OutputFileList[idx] ? OutputFileList[idx].name : ' ' );
+  }
+}
+
+function updateOutputFile(event) {
+  //console.log( "update Output");
+  OutputFileList = Array.from( event['target']['files'] ) .sort() .filter( (file) => {
+    return file.name.endsWith('.out');
+  })
+  //console.log( OutputFileList[0] );
+  refreshFileListTable();
+}
+
+function updateInputFile(event) {
+  //console.log( "update Input");
+  InputFileList = Array.from( event['target']['files'] ) .sort() .filter( (file) => {
+    return file.name.endsWith('.in');
+  });
+  refreshFileListTable();
+}
+</script>
+<script>
+$(function () { $('#testdata-form').submit(function (event) {
     event.preventDefault();
     var _formatFileSize = function (bytes) {
       if (typeof bytes !== 'number') {
@@ -198,3 +257,11 @@ $(function () {
   });
 });
 </script>
+
+<style>
+.testdata-table {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background: #fff;
+}
+</style>
