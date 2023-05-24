@@ -48,7 +48,6 @@ class UserBase < ApplicationRecord
   has_many :submissions, :dependent => :destroy
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
-  has_many :articles, :dependent => :destroy
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 
@@ -77,6 +76,8 @@ class UserBase < ApplicationRecord
 end
 
 class User < UserBase
+  has_many :articles, :dependent => :destroy
+
   validates_presence_of :username, :nickname
   validates :username,
     :uniqueness => {:case_sensitive => false},

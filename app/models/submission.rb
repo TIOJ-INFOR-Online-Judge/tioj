@@ -39,7 +39,7 @@
 
 class Submission < ApplicationRecord
   belongs_to :problem
-  belongs_to :user
+  belongs_to :user, class_name: 'UserBase'
   belongs_to :contest, optional: true
   belongs_to :compiler
   belongs_to :code_content
