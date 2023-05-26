@@ -6,7 +6,7 @@ class AddContestUser < ActiveRecord::Migration[7.0]
     remove_index :users, column: [:nickname]
     remove_index :users, column: [:email]
     add_index :users, [:type, :reset_password_token], unique: true
-    add_index :users, [:type, :username], unique: true
+    add_index :users, [:type, :username]
     # nickname & email is NULL if it is a ContestUser
     # MySQL allows multiple NULL on unique constraints
     add_index :users, [:type, :nickname], unique: true

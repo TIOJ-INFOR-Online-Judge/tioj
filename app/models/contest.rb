@@ -31,6 +31,15 @@ class Contest < ApplicationRecord
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :problems, :through => :contest_problem_joints
 
+  has_many :contest_users, :dependent => :destroy
+
+  # registration
+  has_many :contest_user_joints, :dependent => :destroy
+  has_many :registered_users,
+      :source => :user_base, :through => :contest_user_joints
+  has_many :approved_registered_users, ->{ where(contest_user_joints: {approved: true}) },
+      :source => :user_base, :through => :contest_user_joints
+
   # contest submissions will change to normal submissions once the contest is deleted
   has_many :submissions, dependent: :nullify
   has_many :posts, :as => :postable, :dependent => :destroy

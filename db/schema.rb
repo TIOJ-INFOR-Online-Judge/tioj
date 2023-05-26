@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_25_154015) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -146,6 +146,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["contest_id", "problem_id"], name: "contest_task_ix", unique: true
+  end
+
+  create_table "contest_user_joints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "contest_id", null: false
+    t.boolean "approved", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id", "approved"], name: "index_contest_user_joints_on_contest_id_and_approved"
+    t.index ["contest_id", "user_id"], name: "index_contest_user_joints_on_contest_id_and_user_id", unique: true
+    t.index ["user_id", "approved"], name: "index_contest_user_joints_on_user_id_and_approved"
   end
 
   create_table "contests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -373,7 +384,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email", default: "", null: false
+    t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -396,11 +407,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
     t.datetime "last_submit_time"
     t.bigint "last_compiler_id"
     t.string "type", default: "User", null: false
+    t.bigint "contest_id"
+    t.index ["contest_id"], name: "index_users_on_contest_id"
     t.index ["last_compiler_id"], name: "index_users_on_last_compiler_id"
     t.index ["type", "email"], name: "index_users_on_type_and_email", unique: true
     t.index ["type", "nickname"], name: "index_users_on_type_and_nickname", unique: true
     t.index ["type", "reset_password_token"], name: "index_users_on_type_and_reset_password_token", unique: true
-    t.index ["type", "username"], name: "index_users_on_type_and_username", unique: true
+    t.index ["type", "username"], name: "index_users_on_type_and_username"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -412,4 +425,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_24_151720) do
   add_foreign_key "submissions", "code_contents"
   add_foreign_key "submissions", "compilers"
   add_foreign_key "users", "compilers", column: "last_compiler_id"
+  add_foreign_key "users", "contests"
 end
