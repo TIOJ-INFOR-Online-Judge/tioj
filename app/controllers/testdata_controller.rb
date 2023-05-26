@@ -5,6 +5,7 @@ class TestdataController < ApplicationController
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
 
+  require 'zip'
   COMPRESS_THRESHOLD = 128 * 1024
 
   def index
@@ -35,11 +36,11 @@ class TestdataController < ApplicationController
   def create
 
     testdata_errors = []
-    print testdatum_params_list.size
+    #print testdatum_params_list.size
 
-    testdatum_params_list.each do |p|
-      puts p
-    end
+    # testdatum_params_list.each do |p|
+    #   puts p
+    # end
 
     testdatum_params_list.each do |testdatum_params|
       @testdatum = @problem.testdata.build(testdatum_params.to_h)
@@ -181,6 +182,24 @@ class TestdataController < ApplicationController
     tmpfile
   end
 
+
+  def unzip_folder(zip_file_path)
+    tmp_folder = Dir.mktmpdir # create a temp folder
+
+    Zip::File.open(zip_file_path) do |zip|
+      zip.each do |entry|
+        # Extract to file/directory/symlink
+        puts "Extracting #{entry.name}"
+        entry.extract("#{tmp_folder}/#{entry.name}")
+      end
+    end
+    tmp_folder
+  end
+
+  def remove_folder(folder_path)
+    FileUtils.remove_entry folder_path
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def testdatum_params_list
     new_params = params.require(:testdatum).permit(
@@ -189,14 +208,40 @@ class TestdataController < ApplicationController
       :rss_limit,
       :vss_limit,
       :output_limit,
-      test_input_list:[],
-      test_output_list:[],
+      :test_input_list,
+      :test_output_list,
     )
-
-    test_input = new_params[:test_input_list].reject{ |item| item.is_a?(String)  }.select{ |item| item.original_filename.end_with?(".in")}
-    test_output = new_params[:test_output_list].reject{ |item| item.is_a?(String) }.select{ |item| item.original_filename.end_with?(".out")}
+    #test_input = new_params[:test_input_list].reject{ |item| item.is_a?(String)  }.select{ |item| item.original_filename.end_with?(".in")}
+    #test_output = new_params[:test_output_list].reject{ |item| item.is_a?(String) }.select{ |item| item.original_filename.end_with?(".out")}
     #print test_input.size
     #print test_output.size
+
+
+    test_input_folder = unzip_folder(new_params[:test_input_list].path)
+    test_output_folder = unzip_folder(new_params[:test_output_list].path)
+
+    puts "test_input_list: #{test_input_folder}"
+    puts "test_output_list: #{test_output_folder}"
+
+    test_input = Dir.foreach(test_input_folder)
+                  .reject{ |item| item == '.' or item == '..' }
+                  .select{ |item| item.end_with?(".in") }
+                  .map{ |file_name| File.join(test_input_folder, file_name) }
+                  .sort{ |a, b| a <=> b}
+                  .map{ |file_name| File.open(file_name, 'rb')}
+    test_output = Dir.foreach(test_output_folder)
+                  .reject{ |item| item == '.' or item == '..' }
+                  .select{ |item| item.end_with?(".out") }
+                  .map{ |file_name| File.join(test_output_folder, file_name) }
+                  .sort{ |a, b| a <=> b}
+                  .map{ |file_name| File.open(file_name, 'rb') }
+
+    # making the zip file to be like the fileList
+    puts "test_input: #{test_input}"
+    puts "test_output: #{test_output}"
+
+    new_params_list = []
+
 
     new_params.delete(:test_input_list)
     new_params.delete(:test_output_list)
@@ -206,20 +251,24 @@ class TestdataController < ApplicationController
         params[:test_input] = item1
         params[:test_output] = item2
 
+        puts "test_input: #{params[:test_input]}"
+        puts "test_output: #{params[:test_output]}"
+
         if params[:test_input]
           params[:input_compressed] = false
-          if params[:test_input].size >= COMPRESS_THRESHOLD
+          if (params[:test_input]).size >= COMPRESS_THRESHOLD
             params[:input_compressed] = compress_file(params[:test_input])
           end
         end
         if params[:test_output]
           params[:output_compressed] = false
-          if params[:test_output].size >= COMPRESS_THRESHOLD
-            params[:output_compressed] = compress_file(params[:test_output]) end
+          if (params[:test_output]).size >= COMPRESS_THRESHOLD
+            params[:output_compressed] = compress_file(params[:test_output])
+          end
         end
       end
     end
-
+    puts new_params_list
     new_params_list
   end
 

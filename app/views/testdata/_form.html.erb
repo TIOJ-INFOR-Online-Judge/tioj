@@ -70,6 +70,7 @@
 
 <% end %>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
 <script>
 $("#testdata-fold-button") .click( () => {
   $("#fold-table") .toggle();
@@ -193,6 +194,10 @@ $(function () { $('#testdata-form').submit(function (event) {
     var tmpData = new FormData(this);
     var formData = new FormData();
 
+    var testInputZip = new JSZip();
+    var testOutputZip = new JSZip();
+
+
 
     for( let [key, value] of tmpData.entries() ){
       if( key == 'testdatum[test_input_list][]' || key == 'testdatum[test_output_list][]' ){
@@ -200,59 +205,99 @@ $(function () { $('#testdata-form').submit(function (event) {
       }
       formData.append(key, value);
     }
+    /*
     FileInput.forEach( (file) => {
       formData.append('testdatum[test_input_list][]', file);
     });
-    FileOutput.forEach( (file) => {
-      formData.append('testdatum[test_output_list][]', file);
+    */
+    FileInput.forEach( (file) => {
+      testInputZip.file(file.name, file, {compression: "DEFLATE"});
     });
 
 
 
-    var lastUpdate = (new Date().getTime()) - 500;
-    var byterate = 0.0;
-    var prevLoaded = 0;
-    $.ajax({
-      type: 'POST',
-      url: $(this).attr('action'),
-      data: formData,
-      processData: false,
-      contentType: false,
-      xhr: function() {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.onprogress = function(evt) {
-          if (evt.lengthComputable) {
-            var now = new Date().getTime();
-            $('#progress-fade').addClass('in');
-            if (evt.loaded == evt.total) {
-              $('#progress-inner-bar').width('100%');
-              $('#progress-text').text('Processing...');
-            } else if (now - lastUpdate >= 500) {
-              var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
-              byterate = byterate * 0.7 + curByterate * 0.3;
-              evt.byterate = curByterate;
-              lastUpdate = now;
-              prevLoaded = evt.loaded;
-              $('#progress-text').text(_renderProgress(evt));
-              $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
-            }
-          }
-        };
-        return xhr;
-      },
-      success: function (data) {
-        document.open();
-        document.write(data);
-        document.close();
-      },
-      error: function (xhr, status, error) {
-        $('#progress-fade').removeClass('in');
-        $('#progress-inner-bar').width('0%');
-      },
-      abort: function() {
-        $('#progress-fade').removeClass('in');
-        $('#progress-inner-bar').width('0%');
-      },
+    /*
+    FileOutput.forEach( (file) => {
+      formData.append('testdatum[test_output_list][]', file);
+    });
+    */
+    FileOutput.forEach( (file) => {
+      testOutputZip.file(file.name, file, {compression: "DEFLATE"});
+    });
+
+    console.log(FileOutput);
+    // get the sum of the FileOutput Size
+    var totalOutputSize = FileOutput.reduce( (sum, file) => {
+      return sum + file.size;
+    }, 0);
+    console.log(totalOutputSize);
+
+    var totalInputSize = FileInput.reduce( (sum, file) => {
+      return sum + file.size;
+    }, 0);
+    console.log(totalInputSize);
+
+    let Url = $(this).attr('action');
+    console.log(Url);
+    Promise.all([
+      testInputZip.generateAsync({type:"blob"}),
+      testOutputZip.generateAsync({type:"blob"})
+    ]).then(function(results) {
+        var inputContent = results[0];
+        var outputContent = results[1];
+        console.log(inputContent);
+        console.log(outputContent);
+        console.log( inputContent.size );
+
+        formData.append('testdatum[test_input_list]', inputContent, 'input.zip');
+        formData.append('testdatum[test_output_list]', outputContent, 'output.zip');
+
+
+        var lastUpdate = (new Date().getTime()) - 500;
+        var byterate = 0.0;
+        var prevLoaded = 0;
+        $.ajax({
+          type: 'POST',
+          url: Url,
+          data: formData,
+          processData: false,
+          contentType: false,
+          xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            xhr.upload.onprogress = function(evt) {
+              if (evt.lengthComputable) {
+                var now = new Date().getTime();
+                $('#progress-fade').addClass('in');
+                if (evt.loaded == evt.total) {
+                  $('#progress-inner-bar').width('100%');
+                  $('#progress-text').text('Processing...');
+                } else if (now - lastUpdate >= 500) {
+                  var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
+                  byterate = byterate * 0.7 + curByterate * 0.3;
+                  evt.byterate = curByterate;
+                  lastUpdate = now;
+                  prevLoaded = evt.loaded;
+                  $('#progress-text').text(_renderProgress(evt));
+                  $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
+                }
+              }
+            };
+            return xhr;
+          },
+          success: function (data) {
+            document.open();
+            document.write(data);
+            document.close();
+          },
+          error: function (xhr, status, error) {
+            $('#progress-fade').removeClass('in');
+            $('#progress-inner-bar').width('0%');
+          },
+          abort: function() {
+            $('#progress-fade').removeClass('in');
+            $('#progress-inner-bar').width('0%');
+          },
+        });
     });
   });
 });
