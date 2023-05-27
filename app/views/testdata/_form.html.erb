@@ -60,14 +60,17 @@
     <div class="actions" style="margin-right: 1em; flex: 0 0 0%;">
       <%= f.submit class: 'btn btn-success btn-lg' %>
     </div>
-    <div class="fade" id="progress-fade" style="flex: 1 0 0%;">
-      <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
-        <div id="progress-inner-bar" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+    <div style="flex: 1 0 0%; ">
+      <% ["inputzip", "outputzip", "update"].each do |data|%>
+      <div class="fade" id="progress-fade-<%= data%>" style="flex: 1 0 0%;">
+        <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
+          <div id="progress-inner-bar-<%= data%>" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+        </div>
+        <div id="progress-text-<%= data%>" class="progress-extended small"></div>
       </div>
-      <div id="progress-text" class="progress-extended small"></div>
+      <%end%>
     </div>
   </div>
-
 <% end %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
@@ -240,14 +243,30 @@ $(function () { $('#testdata-form').submit(function (event) {
     let Url = $(this).attr('action');
     console.log(Url);
     Promise.all([
-      testInputZip.generateAsync({type:"blob"}),
-      testOutputZip.generateAsync({type:"blob"})
+      testInputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
+        // console.log("input zip", progress.percent);
+        $('#progress-fade-inputzip').addClass('in');
+        $('#progress-inner-bar-inputzip').width( progress.percent + '%' );
+        $('#progress-text-inputzip').text( `input files zipping: ${Math.round( progress.percent )}%` );
+        if ( progress.percent == 100 ) {
+          $('#progress-text-inputzip').text( `input zip File complete` );
+        }
+      }),
+      testOutputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
+        // console.log("output zip", progress.percent);
+        $('#progress-fade-outputzip').addClass('in');
+        $('#progress-inner-bar-outputzip').width( progress.percent + '%' );
+        $('#progress-text-outputzip').text( `output files zipping: ${Math.round( progress.percent )}%` );
+        if ( progress.percent == 100 ) {
+          $('#progress-text-outputzip').text( `output zip File complete` );
+        }
+      })
     ]).then(function(results) {
         var inputContent = results[0];
         var outputContent = results[1];
-        console.log(inputContent);
-        console.log(outputContent);
-        console.log( inputContent.size );
+        // console.log(inputContent);
+        // console.log(outputContent);
+        // console.log( inputContent.size );
 
         formData.append('testdatum[test_input_list]', inputContent, 'input.zip');
         formData.append('testdatum[test_output_list]', outputContent, 'output.zip');
@@ -267,18 +286,18 @@ $(function () { $('#testdata-form').submit(function (event) {
             xhr.upload.onprogress = function(evt) {
               if (evt.lengthComputable) {
                 var now = new Date().getTime();
-                $('#progress-fade').addClass('in');
+                $('#progress-fade-update').addClass('in');
                 if (evt.loaded == evt.total) {
-                  $('#progress-inner-bar').width('100%');
-                  $('#progress-text').text('Processing...');
+                  $('#progress-inner-bar-update').width('100%');
+                  $('#progress-text-update').text('Processing...');
                 } else if (now - lastUpdate >= 500) {
                   var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
                   byterate = byterate * 0.7 + curByterate * 0.3;
                   evt.byterate = curByterate;
                   lastUpdate = now;
                   prevLoaded = evt.loaded;
-                  $('#progress-text').text(_renderProgress(evt));
-                  $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
+                  $('#progress-text-update').text(_renderProgress(evt));
+                  $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
                 }
               }
             };
@@ -290,12 +309,12 @@ $(function () { $('#testdata-form').submit(function (event) {
             document.close();
           },
           error: function (xhr, status, error) {
-            $('#progress-fade').removeClass('in');
-            $('#progress-inner-bar').width('0%');
+            $('#progress-fade-update').removeClass('in');
+            $('#progress-inner-bar-update').width('0%');
           },
           abort: function() {
-            $('#progress-fade').removeClass('in');
-            $('#progress-inner-bar').width('0%');
+            $('#progress-fade-update').removeClass('in');
+            $('#progress-inner-bar-update').width('0%');
           },
         });
     });

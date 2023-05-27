@@ -13,7 +13,7 @@ gem 'bootsnap', require: false
 gem 'mysql2'
 
 # Use rubyzip to zip files
-gem 'rubyzip'
+# gem 'rubyzip'
 
 # Use SCSS for stylesheets
 gem 'sassc-rails'
