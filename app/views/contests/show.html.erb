@@ -10,6 +10,16 @@
   </div>
 <% end %>
 
+<% if @contest.can_register? %>
+  <div class="pull-right">
+    <% if @register_status.nil? %>
+      <%= button_to "Register", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-success' %>
+    <% else %>
+      <%= button_to "Unregister", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-danger', form: {style: 'display: inline'}, params: {cancel: 1} %>
+    <% end %>  
+  </div>
+<% end %>
+
 <h4 class='page-header'>
   <%= @contest.title %>
 </h4>
@@ -18,19 +28,10 @@
   <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h1 class="panel-title">Starts at</h1>
+        <h1 class="panel-title">Start / End</h1>
       </div>
       <div class="panel-body">
-        <%= @contest.start_time.to_fs(:clean) %>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Ends at</h1>
-      </div>
-      <div class="panel-body">
+        <%= @contest.start_time.to_fs(:clean) %> ~<br>
         <%= @contest.end_time.to_fs(:clean) %>
       </div>
     </div>
@@ -41,7 +42,28 @@
         <h1 class="panel-title">Contest Type</h1>
       </div>
       <div class="panel-body">
-        <%= contest_type_desc_map[@contest.contest_type] %> <%= @contest.dashboard_during_contest ? "with dashboard" : "without dashboard" %>
+        <%= contest_type_desc_map[@contest.contest_type] %><br>
+        <% if @contest.dashboard_during_contest %>
+          Dashboard visible<% if @contest.freeze_minutes > 0 %>, freezes <%= pluralize(@contest.freeze_minutes, 'minute') %> before end<% end %>
+        <% else %>
+          No dashboard
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Registration Status</h1>
+      </div>
+      <div class="panel-body">
+        <% if @register_status.nil? %>
+          <span class="glyphicon glyphicon-remove text-danger"></span> Not registered
+        <% elsif @register_status %>
+          <span class="glyphicon glyphicon-ok text-success"></span> Registered
+        <% else %>
+          <span class="glyphicon glyphicon-play text-warning"></span> Pending approval
+        <% end %>
       </div>
     </div>
   </div>

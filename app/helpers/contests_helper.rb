@@ -15,6 +15,14 @@ module ContestsHelper
     }
   end
 
+  def register_mode_desc_map
+    {
+      "no_register" => "No registration required",
+      "free_register" => "Registraion required, no approval needed",
+      "require_approval" => "Registration and approval required",
+    }
+  end
+
   def rel_timestamp(submission, start_time)
     submission.created_at_usec - to_us(start_time)
   end

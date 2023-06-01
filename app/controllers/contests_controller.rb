@@ -1,10 +1,11 @@
 class ContestsController < ApplicationController
   before_action :authenticate_user_and_running_if_single_contest!, only: [:dashboard, :dashboard_update]
+  before_action :authenticate_user!, only: [:register]
   before_action :authenticate_admin!, only: [:set_contest_task, :new, :create, :edit, :update, :destroy]
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
-  layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update, :sign_in]
+  layout :set_contest_layout, only: [:show, :edit, :dashboard, :dashboard_update, :sign_in]
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -43,6 +44,7 @@ class ContestsController < ApplicationController
     end
 
     @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, @contest.contest_type)
+    @data[:participants] |= @contest.approved_registered_users.ids
     @participants = User.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
@@ -69,6 +71,7 @@ class ContestsController < ApplicationController
   end
 
   def show
+    @register_status = @contest.contest_user_joints.where(user_id: current_user&.id).first&.approved
   end
 
   def new
@@ -100,6 +103,7 @@ class ContestsController < ApplicationController
   end
 
   def update
+    update_registration = @contest.require_approval?
     params[:contest][:compiler_ids] ||= []
     @ban_compiler_ids = params[:contest][:compiler_ids].map{|x| x.to_i}.to_set
     respond_to do |format|
@@ -117,6 +121,9 @@ class ContestsController < ApplicationController
           end
         end
         if ret
+          if update_registration and !@contest.require_approval?
+            @contest.contest_user_joints.update_all(approved: true)
+          end
           helpers.notify_contest_channel @contest.id
           format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
           format.json { head :no_content }
@@ -133,6 +140,33 @@ class ContestsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to contests_url }
       format.json { head :no_content }
+    end
+  end
+
+  def register
+    unless @contest.can_register?
+      flash[:alert] = 'Registration is closed.'
+      redirect_to @contest
+      return
+    end
+    if params[:cancel] == '1'
+      @contest.contest_user_joints.where(user_id: current_user.id).destroy_all
+      respond_to do |format|
+        format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
+        format.json { head :no_content }
+      end
+    else
+      entry = @contest.contest_user_joints.new(user_id: current_user.id, approved: !@contest.require_approval?)
+      respond_to do |format|
+        begin
+          entry.save!
+          format.html { redirect_to @contest, notice: @contest.require_approval? ? 'Registration request sent, approval pending.' : 'Successfully registered.' }
+          format.json { head :no_content }
+        rescue ActiveRecord::RecordNotUnique
+          format.html { redirect_to @contest, alert: 'Registration failed.' }
+          format.json { render json: @entry.errors, status: :unprocessable_entity }
+        end
+      end
     end
   end
 
@@ -207,6 +241,8 @@ class ContestsController < ApplicationController
       :description_before_contest,
       :start_time,
       :end_time,
+      :register_before,
+      :register_mode,
       :contest_type,
       :cd_time,
       :disable_discussion,

@@ -12,6 +12,20 @@
     <%= f.text_field :title, :class => 'form-control flat' %>
   </div>
 
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= render 'contest_type_chooser', :f => f %>
+      </div>
+    </div>
+  
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= render 'register_mode_chooser', :f => f %>
+      </div>
+    </div>
+  </div>
+
   <div class="alert alert-success alert-dismissible" role="alert">
     <button type="button" class="close" data-dismiss="alert">
       <span aria-hidden="true">&times;</span>
@@ -23,7 +37,8 @@
   <div class="row">
     <div class="col-md-4">
       <div class="form-group">
-        <%= render 'contest_type_chooser', :f => f %>
+        <%= f.label :register_before %>
+        <%= f.datetime_local_field :register_before, :class => 'form-control flat', :type => 'datetime-local' %>
       </div>
     </div>
 
