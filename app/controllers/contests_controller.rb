@@ -12,7 +12,7 @@ class ContestsController < ApplicationController
     alter_to = params[:alter_to].to_i
     name = Problem.visible_states.key(alter_to)
     flash[:notice] = "Contest tasks set to #{helpers.visible_state_desc_map[name]}."
-    @tasks.map{|a| a.update(:visible_state => alter_to)}
+    @tasks.map{|a| a.update(visible_state: alter_to)}
   end
 
   def calculate_ranking
@@ -50,10 +50,10 @@ class ContestsController < ApplicationController
     @data[:contest_type] = @contest.contest_type
     @data[:user_id] = current_user&.id
     @data[:timestamps] = {
-      :start => helpers.to_us(@contest.start_time),
-      :end => helpers.to_us(@contest.end_time),
-      :freeze => helpers.to_us(@contest.freeze_after),
-      :current => helpers.to_us(Time.now.clamp(@contest.start_time, @contest.end_time)),
+      start: helpers.to_us(@contest.start_time),
+      end: helpers.to_us(@contest.end_time),
+      freeze: helpers.to_us(@contest.freeze_after),
+      current: helpers.to_us(Time.now.clamp(@contest.start_time, @contest.end_time)),
     }
   end
 

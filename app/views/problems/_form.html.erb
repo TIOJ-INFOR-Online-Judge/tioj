@@ -4,14 +4,14 @@
   <% set_page_title "New problem" %>
 <% end %>
 
-<%= nested_form_for @problem, :html => {:class => 'form', :id => 'problem-form'} do |f| %>
+<%= nested_form_for @problem, html: {class: 'form', id: 'problem-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @problem.errors, item: 'problem'} %>
 
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <%= f.label :name %>
-        <%= f.text_field :name, :class => 'form-control flat' %>
+        <%= f.text_field :name, class: 'form-control flat' %>
       </div>
     </div>
   </div>
@@ -20,13 +20,13 @@
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :tag_list, "Tags" %>
-        <%= f.text_field :tag_list, value: @problem.tag_list.to_s, :class => 'tagsinput' %>
+        <%= f.text_field :tag_list, value: @problem.tag_list.to_s, class: 'tagsinput' %>
       </div>
     </div>
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :solution_tag_list, "Solution Tags" %>
-        <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, :class => 'tagsinput' %>
+        <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, class: 'tagsinput' %>
       </div>
     </div>
     <script>
@@ -36,27 +36,27 @@
       <div class="form-group">
         <%= f.label :visible_state %>
         <%= f.select :visible_state, Problem.visible_states.keys.map.with_index {|x, index| ["[#{index}] #{visible_state_desc_map[x].capitalize}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
   </div>
 
   <div class="form-group">
     <%= f.label :description %>
-        <%= f.text_area :description, :class => 'form-control flat', :rows => '9' %>
+        <%= f.text_area :description, class: 'form-control flat', rows: '9' %>
   </div>
 
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :input, "Input Format" %>
-        <%= f.text_area :input, :class => 'form-control flat', :rows => '7' %>
+        <%= f.text_area :input, class: 'form-control flat', rows: '7' %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :output, "Output Format" %>
-        <%= f.text_area :output, :class => 'form-control flat', :rows => '7' %>
+        <%= f.text_area :output, class: 'form-control flat', rows: '7' %>
       </div>
     </div>
   </div>
@@ -65,33 +65,33 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
-          <%= t.label :input, "Sample Input", :class => "sample_input" %>
-          <%= t.text_area :input, :class => 'form-control flat code-input', :rows => '7' %>
+          <%= t.label :input, "Sample Input", class: "sample_input" %>
+          <%= t.text_area :input, class: 'form-control flat code-input', rows: '7' %>
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <%= t.label :output, "Sample Output", :class => "sample_output" %>
-          <%= t.link_to_remove "Remove this sample testdatum", :class => "btn btn-danger pull-right", :name => "testdatum_remove" %>
-          <%= t.text_area :output, :class => 'form-control flat code-input', :rows => '7' %>
+          <%= t.label :output, "Sample Output", class: "sample_output" %>
+          <%= t.link_to_remove "Remove this sample testdatum", class: "btn btn-danger pull-right", name: "testdatum_remove" %>
+          <%= t.text_area :output, class: 'form-control flat code-input', rows: '7' %>
         </div>
       </div>
     </div>
   <% end %>
 
-  <%= f.link_to_add "Add sample testdatum", :sample_testdata, :class => "btn btn-warning", :id => "testdatum_add" %>
+  <%= f.link_to_add "Add sample testdatum", :sample_testdata, class: "btn btn-warning", id: "testdatum_add" %>
 
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :hint, "Hints" %>
-        <%= f.text_area :hint, :class => 'form-control flat', :rows => '3' %>
+        <%= f.text_area :hint, class: 'form-control flat', rows: '3' %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :source, "Problem Source" %>
-        <%= f.text_area :source, :class => 'form-control flat', :rows => '3' %>
+        <%= f.text_area :source, class: 'form-control flat', rows: '3' %>
       </div>
     </div>
   </div>
@@ -99,7 +99,7 @@
   <div class="form-group">
     <%= f.label :discussion_visibility %>
     <%= f.select :discussion_visibility, Problem.discussion_visibilities.keys.map.with_index {|x, index| ["[#{index}] #{discussion_visibility_desc_map[x]}", x]},
-      {}, {:class => 'form-control flat'} %>
+      {}, {class: 'form-control flat'} %>
   </div>
 
   <div class="form-group">
@@ -120,14 +120,14 @@
       <div class="form-group">
         <%= f.label :specjudge_type, "Judge Type" %>
         <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :interlib_type, "Interactive Library Type" %>
         <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-4">
@@ -142,7 +142,7 @@
             </div>
           </div>
         </div>
-        <%= f.number_field :num_stages, :in => 1..10, :class => 'form-control flat', :required => true %>
+        <%= f.number_field :num_stages, in: 1..10, class: 'form-control flat', required: true %>
       </div>
     </div>
   </div>
@@ -153,13 +153,13 @@
         <div class="form-group">
           <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
           <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
-              {}, {:class => 'form-control flat'} %>
+              {}, {class: 'form-control flat'} %>
         </div>
       </div>
       <div class="col-md-4">
         <div class="form-group">
           <%= f.label :score_precision %>
-          <%= f.number_field :score_precision, :in => 0..6, :class => 'form-control flat', :required => true %>
+          <%= f.number_field :score_precision, in: 0..6, class: 'form-control flat', required: true %>
         </div>
       </div>
     </div>
@@ -251,7 +251,7 @@
           </div>
         </div>
       </div>
-      <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
+      <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
     </div>
     <div class="form-group">
       <%= f.label :judge_between_stages, class: 'checkbox' do %>
@@ -276,24 +276,24 @@
           </div>
         </div>
       </div>
-      <%= f.text_field :default_scoring_args, :class => 'form-control flat' %>
+      <%= f.text_field :default_scoring_args, class: 'form-control flat' %>
     </div>
   <% end %>
 
   <% if @problem.interlib_header? %>
     <div class="form-group">
       <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
-      <%= f.text_area :interlib, :class => 'form-control flat code-input', :rows => '7' %>
+      <%= f.text_area :interlib, class: 'form-control flat code-input', rows: '7' %>
     </div>
     <div class="form-group">
       <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
-      <%= f.text_area :interlib_impl, :class => 'form-control flat code-input', :rows => '7' %>
+      <%= f.text_area :interlib_impl, class: 'form-control flat code-input', rows: '7' %>
     </div>
   <% end %>
 
   <div class="form-group">
     <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
-    <%= f.number_field :code_length_limit, :in => 1..16777216, :class => 'form-control flat', :required => true %>
+    <%= f.number_field :code_length_limit, in: 1..16777216, class: 'form-control flat', required: true %>
   </div>
 
   <div class="form-group">
@@ -331,34 +331,34 @@
           <%= t.label :td_list, "Testdata list:" %>
         </div>
         <div class="col-md-2">
-          <%= t.text_field :td_list, :pattern => '\d+(-\d+)?(,\d+(-\d+)?)*', :class => 'form-control flat', :required => true %>
+          <%= t.text_field :td_list, pattern: '\d+(-\d+)?(,\d+(-\d+)?)*', class: 'form-control flat', required: true %>
         </div>
         <div class="col-md-1">
           <%= t.label :td_list, "Constraints:" %>
         </div>
         <div class="col-md-3">
-          <%= t.text_field :constraints, :class => 'form-control flat' %>
+          <%= t.text_field :constraints, class: 'form-control flat' %>
         </div>
         <div class="col-md-1">
           <%= t.label :score, "Score:" %>
         </div>
         <div class="col-md-1">
-          <%= t.number_field :score, :in => 0..100000, :step => :any, :class => 'form-control flat', :required => true %>
+          <%= t.number_field :score, in: 0..100000, step: :any, class: 'form-control flat', required: true %>
         </div>
         <div class="col-md-1">
-          <%= t.link_to_remove "Remove this range", :class => 'btn btn-danger' %>
+          <%= t.link_to_remove "Remove this range", class: 'btn btn-danger' %>
         </div>
       </div>
     </div>
   <% end %>
-  <%= f.link_to_add "Add a range", :subtasks, :class => 'btn btn-warning' %>
+  <%= f.link_to_add "Add a range", :subtasks, class: 'btn btn-warning' %>
 
   <br><br>
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
-        <%= f.text_field :verdict_ignore_td_list, :class => 'form-control flat' %>
+        <%= f.text_field :verdict_ignore_td_list, class: 'form-control flat' %>
       </div>
     </div>
   </div>
@@ -366,7 +366,7 @@
   <hr>
   <div class="actions">
     <span class="flex-container-bottom-align">
-      <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
+      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
     </span>
   </div>
 <% end %>

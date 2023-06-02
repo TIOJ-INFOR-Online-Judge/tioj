@@ -49,7 +49,7 @@ class Submission < ApplicationRecord
   has_many :submission_testdata_results, dependent: :delete_all
 
   validate :code_length_limit
-  validates_length_of :message, :in => 0..65000, :allow_nil => true
+  validates_length_of :message, in: 0..65000, allow_nil: true
 
   accepts_nested_attributes_for :code_content
 

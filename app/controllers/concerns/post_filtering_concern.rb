@@ -6,11 +6,11 @@ module PostFilteringConcern
   def check_contest_and_problem
     unless effective_admin?
       if not @contest and Contest.where("start_time <= ? AND ? < end_time AND disable_discussion", Time.now, Time.now).exists?
-        redirect_back fallback_location: root_path, :notice => "No discussion during contest."
+        redirect_back fallback_location: root_path, notice: "No discussion during contest."
         return
       end
       if @problem and @problem.discussion_disabled?
-        redirect_to problem_path(@problem), :alert => "Discussion not allowed in this problem."
+        redirect_to problem_path(@problem), alert: "Discussion not allowed in this problem."
         return
       end
     end
@@ -19,7 +19,7 @@ module PostFilteringConcern
   def check_problem_allow_create
     unless effective_admin?
       if @problem and not @problem.discussion_enabled?
-        redirect_to problem_posts_path(@problem), :alert => "Discussion not allowed in this problem."
+        redirect_to problem_posts_path(@problem), alert: "Discussion not allowed in this problem."
         return
       end
     end

@@ -31,34 +31,34 @@ class Contest < ApplicationRecord
   enum :contest_type, {ioi: 0, ioi_new: 1, acm: 2}, prefix: :type
   enum :register_mode, {no_register: 0, free_register: 1, require_approval: 2}
 
-  has_many :contest_problem_joints, :dependent => :destroy
-  has_many :problems, :through => :contest_problem_joints
+  has_many :contest_problem_joints, dependent: :destroy
+  has_many :problems, through: :contest_problem_joints
 
-  has_many :contest_users, :dependent => :destroy
+  has_many :contest_users, dependent: :destroy
 
   # registration
-  has_many :contest_registrations, :dependent => :destroy
+  has_many :contest_registrations, dependent: :destroy
   has_many :registered_users,
-      :source => :user_base, :through => :contest_registrations
+      source: :user_base, through: :contest_registrations
   has_many :approved_registered_users, ->{ where(contest_registrations: {approved: true}) },
-      :source => :user_base, :through => :contest_registrations
+      source: :user_base, through: :contest_registrations
 
   # contest submissions will change to normal submissions once the contest is deleted
   has_many :submissions, dependent: :nullify
-  has_many :posts, :as => :postable, :dependent => :destroy
+  has_many :posts, as: :postable, dependent: :destroy
 
-  has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
-  has_many :compilers, :through => :ban_compilers, :as => :with_compiler
+  has_many :ban_compilers, as: :with_compiler, dependent: :destroy
+  has_many :compilers, through: :ban_compilers, as: :with_compiler
 
-  has_many :announcements, :dependent => :destroy
+  has_many :announcements, dependent: :destroy
 
-  validates :start_time, :presence => true
-  validates :end_time, :presence => true
+  validates :start_time, presence: true
+  validates :end_time, presence: true
   validates_comparison_of :start_time, less_than: :end_time
-  validates_numericality_of :freeze_minutes, :greater_than_or_equal_to => 0
+  validates_numericality_of :freeze_minutes, greater_than_or_equal_to: 0
 
-  accepts_nested_attributes_for :contest_problem_joints, :reject_if => lambda { |a| a[:problem_id].blank? }, :allow_destroy => true
-  accepts_nested_attributes_for :ban_compilers, :allow_destroy => true
+  accepts_nested_attributes_for :contest_problem_joints, reject_if: lambda { |a| a[:problem_id].blank? }, allow_destroy: true
+  accepts_nested_attributes_for :ban_compilers, allow_destroy: true
 
   def freeze_after
     end_time - freeze_minutes * 60

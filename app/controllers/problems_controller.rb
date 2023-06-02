@@ -37,7 +37,7 @@ class ProblemsController < ApplicationController
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
     subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)
-    subs.update_all(:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil)
+    subs.update_all(result: "queued", score: 0, total_time: nil, total_memory: nil, message: nil)
     subtask_results.update_all(result: subs.first.calc_subtask_result) if subs.first
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|
@@ -76,7 +76,7 @@ class ProblemsController < ApplicationController
       "BIT_OR(s.user_id = %d) cur_user_tried" % query_user_id,
     ]
     @attr_map = (Problem.select(*attributes)
-        .where(:id => problem_ids)
+        .where(id: problem_ids)
         .joins("LEFT JOIN submissions s ON s.problem_id = problems.id AND s.contest_id IS NULL")
         .group(:id)
         .index_by(&:id))
@@ -202,10 +202,10 @@ class ProblemsController < ApplicationController
     unless effective_admin?
       if @problem.visible_contest?
         if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and @contest.is_started?)
-          redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
+          redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
         end
       elsif @problem.visible_invisible?
-        redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
+        redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
       end
     end
   end

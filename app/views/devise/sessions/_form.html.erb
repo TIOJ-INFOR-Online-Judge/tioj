@@ -3,12 +3,12 @@
 <%= form_for(resource, as: resource_name, url: url) do |f| %>
   <div class="form-group">
     <%= f.label :username %>
-    <%= f.text_field :username, :autofocus => true, :class => "form-control flat" %>
+    <%= f.text_field :username, autofocus: true, class: "form-control flat" %>
   </div>
 
   <div class="form-group">
     <%= f.label :password %>
-    <%= f.password_field :password, autocomplete: "off", :class => "form-control flat" %>
+    <%= f.password_field :password, autocomplete: "off", class: "form-control flat" %>
   </div>
 
   <% if is_devise && devise_mapping.rememberable? -%>
@@ -21,7 +21,7 @@
   <% end -%>
 
   <div>
-    <%= f.submit "Sign in", :class => 'btn btn-success btn-lg' %>
+    <%= f.submit "Sign in", class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>
 <% if is_devise %>

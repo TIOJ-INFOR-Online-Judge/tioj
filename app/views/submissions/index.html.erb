@@ -26,7 +26,7 @@
 
 <% if @problem %>
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
-  <%= link_to 'Submit to Problem', submit_link, :class => "btn btn-success btn-xs" %>
+  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-xs" %>
 <% else %>
   <div class="form-inline">
     <div class="form-group">
@@ -111,7 +111,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% if effective_admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
             <% end %>
           </td>
         <% end %>

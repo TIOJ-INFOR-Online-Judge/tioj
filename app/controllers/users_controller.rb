@@ -62,11 +62,11 @@ class UsersController < ApplicationController
     begin
       @user = User.friendly.find(params[:id])
       if @user.blank?
-        redirect_to users_path, :alert => "Username '#{params[:id]}' not found."
+        redirect_to users_path, alert: "Username '#{params[:id]}' not found."
         return
       end
     rescue ActiveRecord::RecordNotFound => e
-      redirect_to users_path, :alert => "Username '#{params[:id]}' not found."
+      redirect_to users_path, alert: "Username '#{params[:id]}' not found."
       return
     end
   end

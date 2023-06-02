@@ -1,7 +1,7 @@
 <% set_page_title "Discuss - " + @post.id.to_s %>
 
 <div class="well well-lg">
-  <%= render partial: 'show_post', :locals => {:post => @post}  %>
+  <%= render partial: 'show_post', locals: {post: @post}  %>
 </div>
 
-<%= link_to 'Back', @page_path, :class => "btn btn-default btn-xs" %>
+<%= link_to 'Back', @page_path, class: "btn btn-default btn-xs" %>

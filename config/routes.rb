@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :announcements
 
-  devise_for :users, :controllers => {:registrations => "registrations", :passwords => "users/passwords"}
+  devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
 
   scope 'admin' do
@@ -109,8 +109,8 @@ Rails.application.routes.draw do
 
   get 'about' => 'about#index', as: :about
 
-  get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false, :id => /[0-9]+/
-  get 'problems/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false
+  get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, format: false, id: /[0-9]+/
+  get 'problems/*file' => redirect{ |path, req| "/#{path[:file]}"}, format: false
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

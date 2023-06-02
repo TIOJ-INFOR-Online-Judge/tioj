@@ -83,7 +83,7 @@ class CommentsController < ApplicationController
     # disable comment on contests
     unless effective_admin?
       if @contest
-        redirect_to contest_posts_path(@contest), :alert => "Comments not allowed in contest."
+        redirect_to contest_posts_path(@contest), alert: "Comments not allowed in contest."
       end
     end
   end

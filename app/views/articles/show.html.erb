@@ -22,7 +22,7 @@
   </dfn>
 </p>
 
-<%= link_to 'Back to Bulletin', articles_path, :class => 'btn btn-xs btn-default' %>
+<%= link_to 'Back to Bulletin', articles_path, class: 'btn btn-xs btn-default' %>
 <% if current_user&.admin? %>
-  <%= link_to 'Edit', edit_article_path(@article), :class => 'btn btn-info btn-xs' %>
+  <%= link_to 'Edit', edit_article_path(@article), class: 'btn btn-info btn-xs' %>
 <% end %>

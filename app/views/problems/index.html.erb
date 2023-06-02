@@ -7,7 +7,7 @@
 </h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Problem', new_problem_path, :class => 'btn btn-success btn-sm' %><br>
+  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success btn-sm' %><br>
 <% end %>
 
 <form class="form-inline search-form" accept-charset="UTF-8" method="get">
@@ -71,7 +71,7 @@ window.onpageshow = function(e){
             <% begin %>
               <% tcoder = topcoders[problem.id] %>
               <% if tcoder %>
-                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(tcoder) %>
+                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(tcoder) %>
               <% end %>
             <% end %>
           </td>
@@ -83,9 +83,9 @@ window.onpageshow = function(e){
           <% if user_signed_in? %>
             <td style="white-space: nowrap;">
               <% if current_user.admin? %>
-                <%= link_to 'Edit', edit_problem_path(problem), :class => 'btn btn-info btn-xs' %>
+                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-xs' %>
               <% end %>
-              <%= link_to 'Submit', new_problem_submission_path(problem), :class => 'btn btn-success btn-xs' %>
+              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-xs' %>
             </td>
           <% end %>
         </tr>

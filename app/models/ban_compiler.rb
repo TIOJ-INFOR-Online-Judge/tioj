@@ -21,6 +21,6 @@
 #
 
 class BanCompiler < ApplicationRecord
-  belongs_to :with_compiler, :polymorphic => true
+  belongs_to :with_compiler, polymorphic: true
   belongs_to :compiler
 end

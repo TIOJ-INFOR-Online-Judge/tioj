@@ -8,14 +8,14 @@
 
 <div class="row">
   <div class="col-md-2">
-    <%= link_to 'Back to Problem', problem_path(@problem), :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Problem', problem_path(@problem), class: 'btn btn-default btn-xs btn-block' %>
   </div>
   <div class="col-md-2">
     <% if Rails.configuration.x.settings.dig(:old_submission_views) and @problem.old_submissions.exists? %>
       <% if @ranklist_old %>
-        <%= link_to 'View New Ranklist', ranklist_problem_path(@problem), :class => 'btn btn-default btn-xs btn-block' %>
+        <%= link_to 'View New Ranklist', ranklist_problem_path(@problem), class: 'btn btn-default btn-xs btn-block' %>
       <% else %>
-        <%= link_to 'View Old Ranklist', ranklist_old_problem_path(@problem), :class => 'btn btn-default btn-xs btn-block' %>
+        <%= link_to 'View Old Ranklist', ranklist_old_problem_path(@problem), class: 'btn btn-default btn-xs btn-block' %>
       <% end %>
     <% end %>
   </div>
@@ -193,6 +193,6 @@ $("table").bind("sortEnd",function() {
 
 <div class="row">
   <div class="col-md-2">
-    <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>

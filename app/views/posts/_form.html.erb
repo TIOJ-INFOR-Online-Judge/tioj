@@ -18,17 +18,17 @@
 
   <div class="form-group">
     <%= f.label :title, "Title:" %> <br />
-    <%= f.text_field :title, :class=> 'form-control', :placeholder=>'Title' %>
+    <%= f.text_field :title, class: 'form-control', placeholder:'Title' %>
   </div>
   <% if not @contest %>
     <div class="form-group">
       <%= f.label :post_type %>
-      <%= f.select :post_type, @post_types, {}, {:class => 'form-control flat'} %>
+      <%= f.select :post_type, @post_types, {}, {class: 'form-control flat'} %>
     </div>
   <% end %>
   <div class="form-group">
     <%= f.label :content, raw('Content: (all characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %>
-    <%= f.text_area :content, :class=> 'form-control flat', :rows => 6, :placeholder=>'Content'%>
+    <%= f.text_area :content, class: 'form-control flat', rows: 6, placeholder:'Content'%>
   </div>
   <% if allow_set_visibility %>
     <div class="form-group">
@@ -45,7 +45,7 @@
     </div>
   <% end %>
   <div class="form-group">
-    <%= f.submit :class=>"btn btn-primary" %>
+    <%= f.submit class:"btn btn-primary" %>
   </div>
 <% end %>
 

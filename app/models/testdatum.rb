@@ -24,13 +24,13 @@ class Testdatum < ApplicationRecord
   mount_uploader :test_input, TestdataUploader
   mount_uploader :test_output, TestdataUploader
 
-  validates :test_input, :presence => true
-  validates :test_output, :presence => true
+  validates :test_input, presence: true
+  validates :test_output, presence: true
 
-  validates :time_limit, :numericality => { :greater_than_or_equal_to => 0 }
-  validates :vss_limit, :numericality => { :greater_than_or_equal_to => 0 }, allow_nil: true
-  validates :rss_limit, :numericality => { :greater_than_or_equal_to => 0 }, allow_nil: true
-  validates :output_limit, :numericality => { :greater_than_or_equal_to => 0 }
+  validates :time_limit, numericality: { greater_than_or_equal_to: 0 }
+  validates :vss_limit, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :rss_limit, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
+  validates :output_limit, numericality: { greater_than_or_equal_to: 0 }
   validate :vss_or_rss
 
   def vss_or_rss

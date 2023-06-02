@@ -7,15 +7,15 @@
 <%= semantic_form_for form_target do |f| %>
   <div class="form-group">
     <%= f.label :title %><br>
-    <%= f.text_field :title, :class => "form-control flat" %><br>
+    <%= f.text_field :title, class: "form-control flat" %><br>
   </div>
 
   <div class="form-group">
     <%= f.label :body %><br>
-    <%= f.text_field :body, :class => "form-control flat" %><br>
+    <%= f.text_field :body, class: "form-control flat" %><br>
   </div>
 
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <%= f.submit class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>

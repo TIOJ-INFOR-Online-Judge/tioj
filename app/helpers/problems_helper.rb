@@ -34,7 +34,7 @@ module ProblemsHelper
     all = problem.submissions.where(contest_id: nil)
     ac = all.where(result: 'AC').count
     all = all.count
-    ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
+    ac_page = link_to ac, controller: :submissions, action: :index, problem_id: problem.id, filter_status: "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
@@ -49,7 +49,7 @@ module ProblemsHelper
   def submissions_ac_ratio_with_infor(problem, attr_map)
     all = attr_map[problem.id].sub_cnt
     ac = attr_map[problem.id].sub_ac
-    ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
+    ac_page = link_to ac, controller: :submissions, action: :index, problem_id: problem.id, filter_status: "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
@@ -75,8 +75,8 @@ module ProblemsHelper
   end
 
   def tag_list_html(problem)
-    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-default' } +
-         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
+    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-default' } +
+         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
   end
 
   def specjudge_type_desc_map

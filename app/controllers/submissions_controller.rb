@@ -16,7 +16,7 @@ class SubmissionsController < ApplicationController
 
   def rejudge
     @submission.submission_testdata_results.delete_all
-    @submission.update_self_with_subtask_result({:result => "queued", :score => 0, :total_time => nil, :total_memory => nil, :message => nil})
+    @submission.update_self_with_subtask_result({result: "queued", score: 0, total_time: nil, total_memory: nil, message: nil})
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
     helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
     redirect_back fallback_location: root_path
@@ -32,10 +32,10 @@ class SubmissionsController < ApplicationController
   def show
     unless effective_admin? or current_user&.id == @submission.user_id or not @submission.contest
       if not @submission.contest.is_ended?
-        redirect_to contest_path(@submission.contest), :notice => 'Submission is censored during contest.'
+        redirect_to contest_path(@submission.contest), notice: 'Submission is censored during contest.'
         return
       elsif @submission.created_at >= @contest.freeze_after
-        redirect_to contest_path(@submission.contest), :notice => 'Submission is censored before unfreeze.'
+        redirect_to contest_path(@submission.contest), notice: 'Submission is censored before unfreeze.'
         return
       end
     end
@@ -186,10 +186,10 @@ class SubmissionsController < ApplicationController
       unless effective_admin?
         if @problem.visible_contest?
           if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
-            redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
+            redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
           end
         elsif @problem.visible_invisible?
-          redirect_back fallback_location: root_path, :alert => 'Insufficient User Permissions.'
+          redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
         end
       end
     end

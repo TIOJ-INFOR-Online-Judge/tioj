@@ -1,6 +1,6 @@
 namespace :user do
   desc "Check if there are accounts with invalid usernames"
-  task :check_invalid_username => :environment do
+  task check_invalid_username: :environment do
     lst = User.where.not('username REGEXP ?', '^[A-Za-z][a-zA-Z0-9._\-]*$')
     unless lst
       puts 'There are no accounts with invalid usernames.'

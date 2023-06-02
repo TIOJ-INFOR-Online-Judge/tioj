@@ -1,5 +1,5 @@
 <h4 class="page-header" >Judge Servers</h4>
-<%= link_to 'New Judge Server', new_judge_server_path, :class => "btn btn-success btn-sm" %>
+<%= link_to 'New Judge Server', new_judge_server_path, class: "btn btn-success btn-sm" %>
 <table class = "table table-hover table-striped table-condensed">
   <thead>
     <tr>
@@ -18,8 +18,8 @@
         <td><%= judge_server.ip %></td>
         <td><%= judge_server.key %></td>
         <th>
-          <%= link_to 'Edit', edit_judge_server_path(judge_server), :class => 'btn btn-info btn-xs' %>
-          <%= link_to 'Destroy', judge_server_path(judge_server), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+          <%= link_to 'Edit', edit_judge_server_path(judge_server), class: 'btn btn-info btn-xs' %>
+          <%= link_to 'Destroy', judge_server_path(judge_server), method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
         </th>
       </tr>
     <% end %>

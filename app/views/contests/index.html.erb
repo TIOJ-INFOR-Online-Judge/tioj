@@ -2,7 +2,7 @@
 <h4 class="page-header">Contests</h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Contest', new_contest_path, :class => 'btn btn-success btn-sm' %>
+  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn-sm' %>
   <br>
 <% end %>
 <%= paginate @contests %>
@@ -26,7 +26,7 @@
       <tr>
         <td><%= contest.title %></td>
         <td style="text-align: right;">
-          <%= link_to contest.is_running? ? 'Participate' : 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %>
+          <%= link_to contest.is_running? ? 'Participate' : 'View', contest, class: 'btn btn-xs btn-primary', target: '_blank' %>
         </td>
         <% if contest.is_ended? %>
           <td>Ended</td>
@@ -42,8 +42,8 @@
         <td><%= contest_type_short_desc_map[contest.contest_type] %> / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
         <% if current_user&.admin? %>
           <td>
-            <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
-            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-xs' %>
+            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-xs' %>
+            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
           </td>
         <% end %>
       </tr>

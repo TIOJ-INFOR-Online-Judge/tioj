@@ -30,8 +30,8 @@ class Post < ApplicationRecord
   belongs_to :postable, optional: true, polymorphic: true
   has_many :comments, dependent: :destroy
 
-  validates_length_of :title, :in => 0..30
-  validates_length_of :content, :in => 0..65536
+  validates_length_of :title, in: 0..30
+  validates_length_of :content, in: 0..65536
 
   accepts_nested_attributes_for :comments
 end

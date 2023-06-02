@@ -7,7 +7,7 @@
   <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#402030">
     <div class="container-fluid">
       <div class="navbar-header">
-        <%= link_to @contest.title, strip_contest_prefix(single_contest_path(@contest)), :class => "navbar-brand" %>
+        <%= link_to @contest.title, strip_contest_prefix(single_contest_path(@contest)), class: "navbar-brand" %>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -25,7 +25,7 @@
               <li><%= link_to "Dashboard", strip_contest_prefix(dashboard_single_contest_path(@contest)) %></li>
             <% end %>
             <li><p class="navbar-text"><%= current_user.username %></p></li>
-            <li><%= link_to('Sign out', strip_contest_prefix(sign_out_single_contest_path(@contest)), :method => :delete) %></li>
+            <li><%= link_to('Sign out', strip_contest_prefix(sign_out_single_contest_path(@contest)), method: :delete) %></li>
           <% else %>
             <li><%= link_to('Sign in', strip_contest_prefix(sign_in_single_contest_path(@contest))) %></li>
           <% end %>

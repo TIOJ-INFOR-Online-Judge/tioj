@@ -48,12 +48,12 @@ require 'file_size_validator'
 class UserBase < ApplicationRecord
   self.table_name = "users"
 
-  has_many :submissions, :dependent => :destroy
-  has_many :posts, :dependent => :destroy
-  has_many :comments, :dependent => :destroy
+  has_many :submissions, dependent: :destroy
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
 
-  has_many :contest_registrations, :dependent => :destroy, foreign_key: :user_id
-  has_many :registered_contests, :source => :contest, :through => :contest_registrations
+  has_many :contest_registrations, dependent: :destroy, foreign_key: :user_id
+  has_many :registered_contests, source: :contest, through: :contest_registrations
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 
@@ -65,16 +65,16 @@ class UserBase < ApplicationRecord
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
-    #:presence => true,
-    :file_size => {
-      :maximum => 5.megabytes.to_i
+    #presence: true,
+    file_size: {
+      maximum: 5.megabytes.to_i
     }
 
   attr_accessor :login
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
     else
       where(conditions).first
     end
@@ -84,22 +84,22 @@ end
 class User < UserBase
   devise :validatable
 
-  has_many :articles, :dependent => :destroy
+  has_many :articles, dependent: :destroy
 
   validates_presence_of :username, :nickname
   validates :username,
-    :uniqueness => {:case_sensitive => false},
-    :username_convention => true,
+    uniqueness: {case_sensitive: false},
+    username_convention: true,
     on: :create
 
-  validates :school, :presence => true, :length => {:minimum => 1}
-  validates :gradyear, :presence => true, :inclusion => 1..1000
-  validates :name, :presence => true, :length => {:in => 1..12}
+  validates :school, presence: true, length: {minimum: 1}
+  validates :gradyear, presence: true, inclusion: 1..1000
+  validates :name, presence: true, length: {in: 1..12}
 
   validates_uniqueness_of :nickname
-  validates_length_of :nickname, :in => 1..12
-  validates_length_of :username, :in => 3..20
-  validates_length_of :motto, :maximum => 75
+  validates_length_of :nickname, in: 1..12
+  validates_length_of :username, in: 3..20
+  validates_length_of :motto, maximum: 75
 
   extend FriendlyId
   friendly_id :username
@@ -108,7 +108,7 @@ end
 class ContestUser < UserBase
   belongs_to :contest
   validates :username,
-    :uniqueness => {:case_sensitive => false, :scope => :contest_id},
-    :username_convention => true,
+    uniqueness: {case_sensitive: false, scope: :contest_id},
+    username_convention: true,
     on: :create
 end

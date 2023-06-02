@@ -14,7 +14,7 @@ class FetchChannel < ApplicationCable::Channel
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
-      submission.update(:result => data[:verdict])
+      submission.update(result: data[:verdict])
       ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
       return
     end
