@@ -19,7 +19,7 @@
 #  skip_group                 :boolean          default(FALSE)
 #  description_before_contest :text(16777215)
 #  dashboard_during_contest   :boolean          default(TRUE)
-#  register_mode              :integer          default(0), not null
+#  register_mode              :integer          default("no_register"), not null
 #  register_before            :datetime         not null
 #
 # Indexes
@@ -37,11 +37,11 @@ class Contest < ApplicationRecord
   has_many :contest_users, :dependent => :destroy
 
   # registration
-  has_many :contest_user_joints, :dependent => :destroy
+  has_many :registrations, :dependent => :destroy
   has_many :registered_users,
-      :source => :user_base, :through => :contest_user_joints
-  has_many :approved_registered_users, ->{ where(contest_user_joints: {approved: true}) },
-      :source => :user_base, :through => :contest_user_joints
+      :source => :user_base, :through => :registrations
+  has_many :approved_registered_users, ->{ where(registrations: {approved: true}) },
+      :source => :user_base, :through => :registrations
 
   # contest submissions will change to normal submissions once the contest is deleted
   has_many :submissions, dependent: :nullify

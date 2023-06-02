@@ -14,8 +14,8 @@
 #  total_memory    :integer
 #  message         :text(16777215)
 #  compiler_id     :bigint           not null
-#  code_content_id :bigint           not null
 #  code_length     :bigint           default(0), not null
+#  code_content_id :bigint           not null
 #
 # Indexes
 #

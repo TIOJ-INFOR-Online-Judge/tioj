@@ -71,7 +71,7 @@ class ContestsController < ApplicationController
   end
 
   def show
-    @register_status = @contest.contest_user_joints.where(user_id: current_user&.id).first&.approved
+    @register_status = @contest.registrations.where(user_id: current_user&.id).first&.approved
   end
 
   def new
@@ -122,7 +122,7 @@ class ContestsController < ApplicationController
         end
         if ret
           if update_registration and !@contest.require_approval?
-            @contest.contest_user_joints.update_all(approved: true)
+            @contest.registrations.update_all(approved: true)
           end
           helpers.notify_contest_channel @contest.id
           format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
@@ -150,13 +150,13 @@ class ContestsController < ApplicationController
       return
     end
     if params[:cancel] == '1'
-      @contest.contest_user_joints.where(user_id: current_user.id).destroy_all
+      @contest.registrations.where(user_id: current_user.id).destroy_all
       respond_to do |format|
         format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
         format.json { head :no_content }
       end
     else
-      entry = @contest.contest_user_joints.new(user_id: current_user.id, approved: !@contest.require_approval?)
+      entry = @contest.registrations.new(user_id: current_user.id, approved: !@contest.require_approval?)
       respond_to do |format|
         begin
           entry.save!
