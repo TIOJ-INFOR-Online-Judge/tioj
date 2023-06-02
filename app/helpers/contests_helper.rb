@@ -18,7 +18,7 @@ module ContestsHelper
   def register_mode_desc_map
     {
       "no_register" => "No registration required",
-      "free_register" => "Registraion required, no approval needed",
+      "free_register" => "Registration required, no approval needed",
       "require_approval" => "Registration and approval required",
     }
   end

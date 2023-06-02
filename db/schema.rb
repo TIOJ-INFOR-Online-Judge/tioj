@@ -148,6 +148,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_02_023419) do
     t.index ["contest_id", "problem_id"], name: "contest_task_ix", unique: true
   end
 
+  create_table "contest_registrations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "contest_id", null: false
+    t.boolean "approved", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id", "approved"], name: "index_contest_registrations_on_contest_id_and_approved"
+    t.index ["contest_id", "user_id"], name: "index_contest_registrations_on_contest_id_and_user_id", unique: true
+    t.index ["user_id", "approved"], name: "index_contest_registrations_on_user_id_and_approved"
+  end
+
   create_table "contests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "description", size: :medium
@@ -253,17 +264,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_02_023419) do
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
-  end
-
-  create_table "registrations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "contest_id", null: false
-    t.boolean "approved", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["contest_id", "approved"], name: "index_registrations_on_contest_id_and_approved"
-    t.index ["contest_id", "user_id"], name: "index_registrations_on_contest_id_and_user_id", unique: true
-    t.index ["user_id", "approved"], name: "index_registrations_on_user_id_and_approved"
   end
 
   create_table "sample_testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

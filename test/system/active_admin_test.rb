@@ -31,14 +31,14 @@ class AnnouncementsTest < ApplicationSystemTestCase
     # Usernames are case-insensitive
     visit admin_users_url
     row = page.find(:css, 'td.col-username', text: /^userOne$/i).find(:xpath, './parent::tr')
-    assert row.find(:css, 'td.col-user_type').text == "normal_user"
+    assert_equal row.find(:css, 'td.col-admin').text, "NO"
 
     row.find(:css, 'a.edit_link').click
-    select "Admin", :from => "User type"
+    check "Admin"
     click_button "Update User"
 
     visit admin_users_url
     row = page.find(:css, 'td.col-username', text: /^userOne$/i).find(:xpath, './parent::tr')
-    assert row.find(:css, 'td.col-user_type').text == "admin"
+    assert_equal row.find(:css, 'td.col-admin').text, "YES"
   end
 end

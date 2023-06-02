@@ -1,5 +1,5 @@
 ActiveAdmin.register User do
-  permit_params :email, :nickname, :user_type, :avatar_url, :motto, :school, :gradyear, :name
+  permit_params :email, :nickname, :admin, :avatar_url, :motto, :school, :gradyear, :name
 
   index do
     selectable_column
@@ -8,7 +8,7 @@ ActiveAdmin.register User do
     column :email
     column :nickname
     column :name
-    column :user_type
+    column :admin
     column :created_at
     column :updated_at
     column :current_sign_in_at
@@ -22,6 +22,9 @@ ActiveAdmin.register User do
   remove_filter :posts
   remove_filter :comments
   remove_filter :articles
+  remove_filter :contests
+  remove_filter :contest_registrations
+  remove_filter :registered_contests
   filter :id
   filter :username
   filter :nickname

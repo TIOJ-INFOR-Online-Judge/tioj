@@ -52,8 +52,8 @@ class UserBase < ApplicationRecord
   has_many :posts, :dependent => :destroy
   has_many :comments, :dependent => :destroy
 
-  has_many :contest_user_joints, :dependent => :destroy, foreign_key: :user_id
-  has_many :registered_contests, :source => :contest, :through => :registrations
+  has_many :contest_registrations, :dependent => :destroy, foreign_key: :user_id
+  has_many :registered_contests, :source => :contest, :through => :contest_registrations
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 

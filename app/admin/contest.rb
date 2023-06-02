@@ -13,7 +13,14 @@ ActiveAdmin.register Contest do
   preserve_default_filters!
   remove_filter :submissions
   remove_filter :contest_problem_joints
+  remove_filter :ban_compilers
+  remove_filter :posts
   remove_filter :problems
+  remove_filter :announcements
+  remove_filter :contest_users
+  remove_filter :contest_registrations
+  remove_filter :registered_users
+  remove_filter :approved_registered_users
   filter :id
 
   # See permitted parameters documentation:

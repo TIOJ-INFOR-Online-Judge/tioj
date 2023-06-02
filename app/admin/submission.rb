@@ -21,6 +21,7 @@ ActiveAdmin.register Submission do
   preserve_default_filters!
   remove_filter :old_submission
   remove_filter :submission_testdata_results
+  remove_filter :submission_subtask_result
   remove_filter :problem
   remove_filter :user
   remove_filter :code_content
