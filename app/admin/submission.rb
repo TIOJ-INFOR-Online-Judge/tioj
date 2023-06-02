@@ -18,6 +18,16 @@ ActiveAdmin.register Submission do
     actions
   end
 
+  show do
+    attributes_table do
+      default_attribute_table_rows.each do |field|
+        row field
+      end
+      row('Code') { |x| x.code_content.code_utf8 }
+    end
+  end
+  
+
   preserve_default_filters!
   remove_filter :old_submission
   remove_filter :submission_testdata_results
@@ -27,6 +37,8 @@ ActiveAdmin.register Submission do
   remove_filter :code_content
   filter :problem_id
   filter :user_id
+  filter :contest_id
+  filter :code_content_code, as: :string
 
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters

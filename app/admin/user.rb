@@ -22,7 +22,7 @@ ActiveAdmin.register User do
   remove_filter :posts
   remove_filter :comments
   remove_filter :articles
-  remove_filter :contests
+  remove_filter :contest_id
   remove_filter :contest_registrations
   remove_filter :registered_contests
   filter :id
@@ -30,6 +30,7 @@ ActiveAdmin.register User do
   filter :nickname
   filter :name
   filter :admin
+  filter :registered_contests_id, as: :numeric, label: 'Registered contest ID'
 
   controller do
     def find_resource

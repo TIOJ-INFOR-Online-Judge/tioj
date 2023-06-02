@@ -27,12 +27,16 @@ ActiveAdmin.register Problem do
   remove_filter :base_tags
   remove_filter :tag_taggings
   remove_filter :taggings
+  remove_filter :tags
   remove_filter :solution_tag_taggings
+  remove_filter :solution_tags
   filter :id
   filter :visible_state
   filter :specjudge_type
   filter :specjudge_compiler_id
   filter :interlib_type
+  filter :tags_name, as: :string
+  filter :solution_tags_name, as: :string
 
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
