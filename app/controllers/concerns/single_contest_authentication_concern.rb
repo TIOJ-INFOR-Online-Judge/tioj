@@ -9,15 +9,9 @@ module SingleContestAuthenticationConcern
 
   def current_user
     if @layout == :single_contest
-      user_id = session.dig(:single_contest, @contest.id, :user_id)
-      # TODO: store partial password for password change?
-      return nil if user_id.nil?
-      # This cache only lives in a request
-      @user_cache ||= {}
-      return @user_cache[user_id] if @user_cache.key?(user_id)
-      ret = User.find_by(id: user_id)
-      @user_cache[user_id] = ret
-      return ret
+      ret = get_single_contest_user
+      return nil if ret.nil?
+      return @contest.user_registered?(ret) ? ret : nil
     end
     super
   end
@@ -39,5 +33,18 @@ module SingleContestAuthenticationConcern
       redirect_to sign_in_single_contest_path(@contest)
     end
     super
+  end
+
+ private
+  
+  def get_single_contest_user
+    user_id = session.dig(:single_contest, @contest.id, :user_id)
+    return nil if user_id.nil?
+    # This cache only lives in a request
+    @user_cache ||= {}
+    return @user_cache[user_id] if @user_cache.key?(user_id)
+    ret = User.find_by(id: user_id)
+    @user_cache[user_id] = ret
+    return ret
   end
 end

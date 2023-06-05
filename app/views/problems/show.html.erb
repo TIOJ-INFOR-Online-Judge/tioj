@@ -7,9 +7,7 @@
 
 <p>
 <div class="row">
-  <div class="col-md-2">
-    <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { class: 'btn btn-success btn-xs btn-block' } %>
-  </div>
+  <%= render 'submit_button' %>
   <div class="col-md-2">
     <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), class: 'btn btn-info btn-xs btn-block' %>
   </div>
@@ -268,25 +266,7 @@
 </div>
 
 <div class="row">
-  <div class="col-md-2">
-    <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { class: 'btn btn-success btn-xs btn-block' } %>
-  </div>
-  <% if not hide_old_submission %>
-    <div class="col-md-2">
-      <%= link_to 'Status', problem_submissions_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
-      <%= link_to 'Ranklist', ranklist_problem_path(@problem), class: 'btn btn-inverse btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <% if effective_admin? %>
-    <div class="col-md-2">
-      <%= link_to 'Edit', edit_problem_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
-      <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-xs btn-block' %>
-    </div>
-  <% end %>
+  <%= render 'submit_button' %>
   <div class="col-md-2">
     <%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs btn-block' %>
   </div>

@@ -79,4 +79,12 @@ class Contest < ApplicationRecord
   def can_register?
     Time.now < [register_before, end_time].min
   end
+
+  def user_registered?(usr)
+    usr && approved_registered_users.exists?(usr.id)
+  end
+
+  def user_can_submit?(usr)
+    usr && (no_register? || approved_registered_users.exists?(usr.id))
+  end
 end

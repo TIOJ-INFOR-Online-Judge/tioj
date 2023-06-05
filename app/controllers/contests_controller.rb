@@ -71,7 +71,7 @@ class ContestsController < ApplicationController
   end
 
   def show
-    @register_status = @contest.registrations.where(user_id: current_user&.id).first&.approved
+    @register_status = @contest.contest_registrations.where(user_id: current_user&.id).first&.approved
   end
 
   def new
@@ -122,7 +122,7 @@ class ContestsController < ApplicationController
         end
         if ret
           if update_registration and !@contest.require_approval?
-            @contest.registrations.update_all(approved: true)
+            @contest.contest_registrations.update_all(approved: true)
           end
           helpers.notify_contest_channel @contest.id
           format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
@@ -150,13 +150,13 @@ class ContestsController < ApplicationController
       return
     end
     if params[:cancel] == '1'
-      @contest.registrations.where(user_id: current_user.id).destroy_all
+      @contest.contest_registrations.where(user_id: current_user.id).destroy_all
       respond_to do |format|
         format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
         format.json { head :no_content }
       end
     else
-      entry = @contest.registrations.new(user_id: current_user.id, approved: !@contest.require_approval?)
+      entry = @contest.contest_registrations.new(user_id: current_user.id, approved: !@contest.require_approval?)
       respond_to do |format|
         begin
           entry.save!
@@ -175,7 +175,7 @@ class ContestsController < ApplicationController
   def sign_in_post
     sign_in_params = params.require(:user).permit(:username, :password)
     user = User.find_by(username: sign_in_params[:username])
-    if user and user.valid_password?(sign_in_params[:password])
+    if user && user.valid_password?(sign_in_params[:password]) && @contest.user_registered?(user)
       session[:single_contest] ||= {}
       session[:single_contest][@contest.id] ||= {}
       session[:single_contest][@contest.id][:user_id] = user.id
@@ -184,7 +184,7 @@ class ContestsController < ApplicationController
       redirect_to url, notice: "Signed in successfully."
     else
       flash[:alert] = "Invalid login or password."
-      render 'single_contest/sign_in'
+      render 'single_contest/sign_in', layout: 'single_contest'
     end
   end
 

@@ -1,17 +1,19 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_user_and_running_if_single_contest!, only: [:index, :show]
+  before_action :authenticate_user_and_running_if_single_contest!, only: [:index, :show, :new, :create]
   before_action :authenticate_admin!, only: [:rejudge, :edit, :update, :destroy]
-  before_action :set_problem_by_param, only: [:new, :create, :index]
-  before_action :set_submissions, only: [:index]
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
+  before_action :set_problem_by_param, only: [:new, :create, :index]
+  before_action :check_problem_visibility
+  before_action :check_contest_status, only: [:new, :create]
+  before_action :set_submissions, only: [:index]
   before_action :redirect_contest, only: [:show, :show_old, :download_raw, :edit]
   before_action :check_old, only: [:show_old]
   before_action :set_compiler, only: [:new, :create, :edit, :update]
   before_action :set_default_compiler, only: [:new, :edit]
   before_action :check_compiler, only: [:create, :update]
-  before_action :set_show_attrs, only: [:show, :show_old]
   before_action :normalize_code, only: [:create, :update]
+  before_action :set_show_attrs, only: [:show, :show_old]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
@@ -64,26 +66,6 @@ class SubmissionsController < ApplicationController
       redirect_to action:'index'
       return
     end
-    unless effective_admin?
-      if @problem.visible_invisible?
-        redirect_to action:'index'
-        return
-      elsif @problem.visible_contest?
-        if params[:contest_id].blank?
-          redirect_to action:'index'
-          return
-        end
-        contest = Contest.find(params[:contest_id])
-        unless contest.problem_ids.include?(@problem.id) and contest.is_running?
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
-          return
-        end
-      end
-    end
     @submission = Submission.new
     @submission.code_content = CodeContent.new
     @contest_id = params[:contest_id]
@@ -105,37 +87,12 @@ class SubmissionsController < ApplicationController
     end
     user.update(last_compiler_id: params[:submission][:compiler_id])
 
-    if params[:problem_id].blank?
-      redirect_to action: 'index'
-      return
-    end
-    unless effective_admin?
-      if @problem.visible_invisible?
-        redirect_to action: 'index'
-        return
-      elsif @problem.visible_contest?
-        if params[:contest_id].blank?
-          redirect_to action:'index'
-          return
-        end
-        contest = Contest.find(params[:contest_id])
-        unless contest.problem_ids.include?(@problem.id) and contest.is_running?
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
-          return
-        end
-      end
-    end
+    raise_not_found unless @problem
 
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
     @submission.problem = @problem
-    if @contest&.problem_ids&.include?(@submission.problem_id) and @contest&.is_running?
-      @submission.contest = @contest
-    end
+    @submission.contest = @contest
     @submission.generate_subtask_result
     respond_to do |format|
       if @submission.save
@@ -179,30 +136,19 @@ class SubmissionsController < ApplicationController
 
   def set_problem_by_param
     @problem = Problem.find(params[:problem_id]) if params[:problem_id]
+    raise_not_found if @problem && @contest && !@contest.problems.exists?(@problem.id)
   end
 
   def set_submissions
-    if @problem
-      unless effective_admin?
-        if @problem.visible_contest?
-          if params[:contest_id].blank? or not (@contest.problem_ids.include?(@problem.id) and Time.now >= @contest.start_time)
-            redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
-          end
-        elsif @problem.visible_invisible?
-          redirect_back fallback_location: root_path, alert: 'Insufficient User Permissions.'
-        end
-      end
-    end
-
     @submissions = Submission
     @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
     if @contest
       @submissions = @submissions.where(contest_id: @contest.id)
       unless effective_admin?
         if user_signed_in?
-          @submissions = @submissions.where("submissions.created_at < ? or submissions.user_id = ?", @contest.freeze_after, current_user.id)
+          @submissions = @submissions.where('submissions.created_at < ? OR submissions.user_id = ?', @contest.freeze_after, current_user.id)
         else
-          @submissions = @submissions.where("submissions.created_at < ?", @contest.freeze_after)
+          @submissions = @submissions.where('submissions.created_at < ?', @contest.freeze_after)
         end
         # TODO: Add an option to still hide submission after contest
         unless @contest.is_ended?
@@ -236,15 +182,9 @@ class SubmissionsController < ApplicationController
     @problem = @submission.problem
     raise_not_found if @contest && @contest.id != @submission.contest_id
     @contest ||= @submission.contest
-    unless effective_admin?
-      if @problem.visible_contest?
-        raise_not_found if not @contest
-      elsif @problem.visible_invisible?
-        raise_not_found
-      end
-    end
     if @contest
       unless effective_admin?
+        # TODO: Add an option to still hide submission after contest
         raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
         raise_not_found unless @contest.is_ended? or current_user&.id == @submission.user_id
       end
@@ -292,6 +232,29 @@ class SubmissionsController < ApplicationController
       redirect_to submissions_path, alert: 'Invalid compiler.'
       return
     end
+  end
+
+  def check_contest_status
+    return unless @contest
+    unless @contest.is_running?
+      redirect_to contest_problem_path(@contest, @problem), alert: 'Contest is not running.'
+      return
+    end
+    unless @contest.user_can_submit?(current_user)
+      redirect_to contest_path(@contest), alert: 'You are not registered in this contest.'
+      return
+    end
+    # TODO: delete user_whitelist to registration
+    if Regexp.new(@contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
+      redirect_to contest_problem_path(@contest, @problem), notice: 'You are not allowed to submit in this contest.'
+      return
+    end
+  end
+
+  def check_problem_visibility
+    return if effective_admin? || !@problem
+    raise_not_found if @problem.visible_invisible?
+    raise_not_found if @problem.visible_contest? && !@contest
   end
 
   def normalize_code

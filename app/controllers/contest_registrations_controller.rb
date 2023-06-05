@@ -5,6 +5,6 @@ class ContestRegistrationsController < InheritedResources::Base
   def create
   end
 
-  private
+ private
 
 end

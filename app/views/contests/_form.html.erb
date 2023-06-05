@@ -58,12 +58,20 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :description, 'Description (only available after the contest is started)' %>
+    <%= f.label :description, help_collapse_toggle('Description in contest', 'contestDescription') %>
+    <div class="collapse" id="contestDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small" style="line-height: 1.4;">
+          This description will be shown to users that are able to submit to this contest after the contest is started (also after the contest is ended).<br>
+          For unregistered users (only if registration is required) or guest users, "Description before contest" is shown even after the contest is started.
+        </div>
+      </div>
+    </div>
     <%= f.text_area :description, class: 'form-control flat', rows: "9" %>
   </div>
 
   <div class="form-group">
-    <%= f.label :description_before_contest, 'Before-contest description (publicly available before contest)' %>
+    <%= f.label :description_before_contest, 'Description before contest' %>
     <%= f.text_area :description_before_contest, class: 'form-control flat', rows: "9" %>
   </div>
 

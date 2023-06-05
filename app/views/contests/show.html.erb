@@ -69,10 +69,14 @@
   </div>
 </div>
 
-<% if not @contest.is_started? %>
+<% if effective_admin? || !(@contest.is_started? && @contest.user_can_submit?(current_user)) %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h1 class="panel-title">Description</h1>
+      <% if effective_admin? %>
+        <h1 class="panel-title">Description before contest</h1>
+      <% else %>
+        <h1 class="panel-title">Description</h1>
+      <% end %>
     </div>
     <div class="panel-body">
       <%= markdown(@contest.description_before_contest) %>
@@ -80,11 +84,11 @@
   </div>
 <% end %>
 
-<% if @contest.is_started? || effective_admin? %>
+<% if effective_admin? || (@contest.is_started? && @contest.user_can_submit?(current_user)) %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <% if !@contest.is_started? %>
-        <h1 class="panel-title">Description during contest (preview)</h1>
+      <% if effective_admin? %>
+        <h1 class="panel-title">Description in contest</h1>
       <% else %>
         <h1 class="panel-title">Description</h1>
       <% end %>
