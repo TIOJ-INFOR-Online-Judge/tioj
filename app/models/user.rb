@@ -48,9 +48,9 @@ require 'file_size_validator'
 class UserBase < ApplicationRecord
   self.table_name = "users"
 
-  has_many :submissions, dependent: :destroy
-  has_many :posts, dependent: :destroy
-  has_many :comments, dependent: :destroy
+  has_many :submissions, dependent: :destroy, foreign_key: :user_id
+  has_many :posts, dependent: :destroy, foreign_key: :user_id
+  has_many :comments, dependent: :destroy, foreign_key: :user_id
 
   has_many :contest_registrations, dependent: :destroy, foreign_key: :user_id
   has_many :registered_contests, source: :contest, through: :contest_registrations
