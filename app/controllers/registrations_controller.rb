@@ -10,11 +10,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     super
-    Tempfile.create(['', '.png']) do |tmpfile|
-      Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
-      resource.avatar = tmpfile
-      resource.save!
-    end
+    resource.generate_random_avatar
+    resource.save!
   end
 
   def update

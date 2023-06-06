@@ -1,0 +1,34 @@
+<%= render partial: "shared/errors", locals: {errors: @form.errors, item: 'contest user'} %>
+
+<h4>Contest users list</h4>
+
+<% alert_tag class: 'alert-warning' do %>
+  Save the account information now. <strong>Once you leave this page, the passwords will be lost forever.</strong>
+<% end %>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default copy-group problem-copy-group">
+      <div class="panel-heading">
+        <h1 class="panel-title pull-left">Account information (JSON)</h1>
+        <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+      </div>
+      <div class="panel-body code-input copy-group-code"><pre><%= @data_json %></pre></div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Account information (CSV)</h1>
+      </div>
+      <div class="panel-body">
+        <a href="data:text/plain;charset=utf-8,<%= @data_csv %>" download="accounts.csv" class="btn btn-success">Download CSV</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <%= link_to "Back to contest registrations", contest_contest_registrations_path(@contest), class: 'btn btn-success' %>
+</div>

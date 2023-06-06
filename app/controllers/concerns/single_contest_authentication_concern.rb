@@ -43,7 +43,7 @@ module SingleContestAuthenticationConcern
     # This cache only lives in a request
     @user_cache ||= {}
     return @user_cache[user_id] if @user_cache.key?(user_id)
-    ret = User.find_by(id: user_id)
+    ret = UserBase.find_by(id: user_id)
     @user_cache[user_id] = ret
     return ret
   end

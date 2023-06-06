@@ -11,16 +11,16 @@
       <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-xs btn-block" %>
     </div>
   </div>
-<% end %>
 
-<% if @contest.can_register? %>
-  <div class="pull-right">
-    <% if @register_status.nil? %>
-      <%= button_to "Register", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-success' %>
-    <% else %>
-      <%= button_to "Unregister", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-danger', form: {style: 'display: inline'}, params: {cancel: 1} %>
-    <% end %>  
-  </div>
+  <% if @contest.can_register? %>
+    <div class="pull-right">
+      <% if @register_status.nil? %>
+        <%= button_to "Register", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-success' %>
+      <% else %>
+        <%= button_to "Unregister", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-danger', form: {style: 'display: inline'}, params: {cancel: 1} %>
+      <% end %>  
+    </div>
+  <% end %>
 <% end %>
 
 <h4 class='page-header'>

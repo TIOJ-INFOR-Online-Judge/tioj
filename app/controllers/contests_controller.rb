@@ -45,7 +45,7 @@ class ContestsController < ApplicationController
 
     @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, @contest.contest_type)
     @data[:participants] |= @contest.approved_registered_users.ids
-    @participants = User.where(id: @data[:participants])
+    @participants = UserBase.where(id: @data[:participants])
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
     @data[:user_id] = current_user&.id
@@ -174,8 +174,8 @@ class ContestsController < ApplicationController
 
   def sign_in_post
     sign_in_params = params.require(:user).permit(:username, :password)
-    user = User.find_by(username: sign_in_params[:username])
-    if user && user.valid_password?(sign_in_params[:password]) && @contest.user_registered?(user)
+    user = @contest.approved_registered_users.find_by(username: sign_in_params[:username])
+    if user && user.valid_password?(sign_in_params[:password])
       session[:single_contest] ||= {}
       session[:single_contest][@contest.id] ||= {}
       session[:single_contest][@contest.id][:user_id] = user.id

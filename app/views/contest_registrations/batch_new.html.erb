@@ -1,8 +1,8 @@
 <%= render partial: "shared/errors", locals: {errors: @form.errors, item: 'contest user'} %>
 
-<h4>Generate contest users</h1>
+<h4>Generate contest users</h4>
 
-<%= form_with model: @form, url: contest_contest_registrations_path(@contest) do |f| %>
+<%= form_with model: @form, url: batch_new_contest_contest_registrations_path(@contest) do |f| %>
 
   <% alert_tag do %>
     <ul>
@@ -17,13 +17,13 @@
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :num_start, 'User number start' %>
-        <%= f.number_field :num_start, min: 1, max: 1024, class: 'form-control flat', required: true %>
+        <%= f.number_field :num_start, min: 1, max: 1024, class: 'form-control flat' %>
       </div>
     </div>
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :num_end, 'User number end' %>
-        <%= f.number_field :num_end, min: 1, max: 1024, class: 'form-control flat', required: true %>
+        <%= f.number_field :num_end, min: 1, max: 1024, class: 'form-control flat' %>
       </div>
     </div>
   </div>
@@ -32,21 +32,21 @@
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :username_format %>
-        <%= f.text_field :username_format, class: 'form-control flat', maxlength: 32, required: true %>
+        <%= f.text_field :username_format, class: 'form-control flat', maxlength: 32 %>
       </div>
     </div>
 
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :nickname_format %>
-        <%= f.text_field :nickname_format, class: 'form-control flat', maxlength: 32, required: true %>
+        <%= f.text_field :nickname_format, class: 'form-control flat', maxlength: 32 %>
       </div>
     </div>
 
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :password_length %>
-        <%= f.number_field :password_length, min: 4, max: 32, class: 'form-control flat', required: true %>
+        <%= f.number_field :password_length, min: 4, max: 32, class: 'form-control flat' %>
       </div>
     </div>
   </div>

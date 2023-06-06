@@ -1,29 +1,32 @@
 <div class="pull-right">
-  <%= link_to "Generate contest users", new_contest_contest_registration_path(@contest), class: 'btn btn-lg btn-success' %>
+  <%= link_to "Generate contest users", batch_new_contest_contest_registrations_path(@contest), class: 'btn btn-lg btn-success' %>
 </div>
 <h4>Contest users</h4>
 
 <% if @contest_users %>
-  <% alert_tag class: 'alert-danger' do %>
+  <% alert_tag class: 'alert-warning' do %>
     Deleting a contest user will delete all its submissions.
   <% end %>
 
   <table class="table table-hover table-striped table-condensed">
     <tr>
-      <th>Username</th>
       <th></th>
+      <th>Username</th>
       <th>Nickname</th>
       <th>
+        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'contest_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'} %>
       </th>
     </tr>
-    <% @contest_users.map(&:user).each do |user| %>
+    <% @contest_users.each do |item| %>
     <tr>
+      <% user = item.user %>
+      <td><%= image_tag user.avatar.mini_thumb.to_s, class: 'img-rounded' %></td>
       <td><%= user.username %></td>
-      <td><%= image_tag user.avatar.mini_thumb.to_s, class: "img-rounded" %></td>
       <td><%= user.nickname %></td>
       <td>
-        <%= link_to 'Edit', edit_contest_path(@contest), class: 'btn btn-info btn-xs' %>
-        <%= link_to 'Delete', edit_contest_path(@contest), method: :delete, data: { confirm: 'Are you sure to delete? This will permanently delete all its submissions.' }, class:'btn btn-xs btn-danger' %>
+        <%# TODO: Add edit %>
+        <%= link_to 'Edit', '#', class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, data: {confirm: 'Are you sure to delete? This will permanently delete all its submissions.'}, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
     <% end %>
@@ -43,18 +46,21 @@
 
   <table class="table table-hover table-striped table-condensed">
     <tr>
+      <th></th>
       <th>Username</th>
-      <th></th>
       <th>Nickname</th>
-      <th></th>
+      <th>
+        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'registered_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all users?'} %>
+      </th>
     </tr>
-    <% @registered_users.map(&:user).each do |user| %>
+    <% @registered_users.each do |item| %>
     <tr>
-      <td><%= user.username %></td>
-      <td><%= image_tag user.avatar.mini_thumb.to_s, class: "img-rounded" %></td>
+      <% user = item.user %>
+      <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
+      <td><%= link_to user.username, user_path(user) %></td>
       <td><%= user.nickname %></td>
       <td>
-        <%= link_to 'Unregister', edit_contest_path(@contest), class:'btn btn-xs btn-danger' %>
+        <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
     <% end %>
@@ -74,18 +80,21 @@
 
   <table class="table table-hover table-striped table-condensed">
     <tr>
+      <th></th>
       <th>Username</th>
-      <th></th>
       <th>Nickname</th>
-      <th></th>
+      <th>
+        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'unapproved_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete all unapproved registrations?'} %>
+      </th>
     </tr>
-    <% @unapproved_users.map(&:user).each do |user| %>
+    <% @unapproved_users.each do |item| %>
     <tr>
-      <td><%= user.username %></td>
-      <td><%= image_tag user.avatar.mini_thumb.to_s, class: "img-rounded" %></td>
+      <% user = item.user %>
+      <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
+      <td><%= link_to user.username, user_path(user) %></td>
       <td><%= user.nickname %></td>
       <td>
-        <%= link_to 'Unregister', edit_contest_path(@contest), class:'btn btn-xs btn-danger' %>
+        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
     <% end %>

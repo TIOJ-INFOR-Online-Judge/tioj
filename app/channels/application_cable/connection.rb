@@ -66,7 +66,7 @@ module ApplicationCable
         user_id = request.session&.dig('warden.user.user.key', 0, 0)
       end
       return [contest, nil] unless user_id
-      user = User.find_by(id: user_id)
+      user = UserBase.find_by(id: user_id)
       reject_unauthorized_connection unless user
       [contest, user]
     end

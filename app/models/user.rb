@@ -63,6 +63,10 @@ class UserBase < ApplicationRecord
   devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
 
+  validates_presence_of :username, :nickname
+  validates_length_of :nickname, in: 1..12
+  validates_length_of :username, in: 3..20
+
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
     #presence: true,
@@ -79,6 +83,13 @@ class UserBase < ApplicationRecord
       where(conditions).first
     end
   end
+
+  def generate_random_avatar
+    Tempfile.create(['', '.png']) do |tmpfile|
+      Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
+      self.avatar = tmpfile
+    end
+  end
 end
 
 class User < UserBase
@@ -86,7 +97,6 @@ class User < UserBase
 
   has_many :articles, dependent: :destroy
 
-  validates_presence_of :username, :nickname
   validates :username,
     uniqueness: {case_sensitive: false},
     username_convention: true,
@@ -97,8 +107,6 @@ class User < UserBase
   validates :name, presence: true, length: {in: 1..12}
 
   validates_uniqueness_of :nickname
-  validates_length_of :nickname, in: 1..12
-  validates_length_of :username, in: 3..20
   validates_length_of :motto, maximum: 75
 
   extend FriendlyId

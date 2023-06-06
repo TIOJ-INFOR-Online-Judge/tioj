@@ -169,7 +169,7 @@ class SubmissionsController < ApplicationController
     end
     @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?
     if not params[:filter_username].blank?
-      usr_clause = User.select(:id).where('username LIKE ?', params[:filter_username]).to_sql
+      usr_clause = UserBase.select(:id).where('username LIKE ?', params[:filter_username]).to_sql
       @submissions = @submissions.where("user_id IN (#{usr_clause})")
     end
     @submissions = @submissions.where(user_id: params[:filter_user_id]) if not params[:filter_user_id].blank?
