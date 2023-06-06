@@ -254,7 +254,7 @@ class SubmissionsController < ApplicationController
   def check_problem_visibility
     return if effective_admin? || !@problem
     raise_not_found if @problem.visible_invisible?
-    raise_not_found if @problem.visible_contest? && !@contest
+    raise_not_found if @problem.visible_contest? && !@contest&.is_started?
   end
 
   def normalize_code
