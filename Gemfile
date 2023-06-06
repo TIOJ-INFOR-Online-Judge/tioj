@@ -49,6 +49,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 # compression
 gem 'zstd-ruby'
+gem 'rubyzip', require: 'zip'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'

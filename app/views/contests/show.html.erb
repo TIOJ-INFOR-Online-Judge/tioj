@@ -1,11 +1,14 @@
 <% set_page_title @contest.title %>
 
-<% if effective_admin? %>
+<% if @layout != :single_contest %>
   <div class="row">
-    <div class="col-md-12">
-      <div>
-        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-xs" %>
+    <% if effective_admin? %>
+      <div class="col-md-2">
+        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-xs btn-block" %>
       </div>
+    <% end %>
+    <div class="col-md-2">
+      <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-xs btn-block" %>
     </div>
   </div>
 <% end %>

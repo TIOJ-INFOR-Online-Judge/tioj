@@ -20,5 +20,5 @@ class ContestRegistration < ApplicationRecord
   default_scope { order('id ASC') }
 
   belongs_to :contest
-  belongs_to :user_base, foreign_key: :user_id
+  belongs_to :user, class_name: 'UserBase', foreign_key: :user_id
 end

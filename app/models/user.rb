@@ -92,8 +92,8 @@ class User < UserBase
     username_convention: true,
     on: :create
 
-  validates :school, presence: true, length: {minimum: 1}
-  validates :gradyear, presence: true, inclusion: 1..1000
+  validates :school, presence: true, length: {in: 1..64}
+  validates :gradyear, presence: true, inclusion: 1..3000
   validates :name, presence: true, length: {in: 1..12}
 
   validates_uniqueness_of :nickname
@@ -111,4 +111,5 @@ class ContestUser < UserBase
     uniqueness: {case_sensitive: false, scope: :contest_id},
     username_convention: true,
     on: :create
+  validates_uniqueness_of :nickname, scope: :contest_id
 end
