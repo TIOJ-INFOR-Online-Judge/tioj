@@ -54,6 +54,8 @@ class Contest < ApplicationRecord
 
   validates :start_time, presence: true
   validates :end_time, presence: true
+  validates :register_before, presence: true
+  validates_comparison_of :register_before, :less_than_or_equal_to => :end_time
   validates_comparison_of :start_time, less_than: :end_time
   validates_numericality_of :freeze_minutes, greater_than_or_equal_to: 0
 

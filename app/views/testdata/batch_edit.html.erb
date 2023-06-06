@@ -5,7 +5,7 @@ The testdata list of each testdata set won't change after reordering.</p>
 
 <%= form_tag batch_edit_problem_testdata_path(@problem) do %>
   <% if @testdata.map{|x| x.errors.any?}.any? %>
-    <div id="error_explanation" class="alert alert-danger" role="alert">
+    <% alert_tag class: 'alert-danger', dismissible: false do %>
       <strong><%= pluralize(@testdata.sum{|x| x.errors.count}, "error") %> prohibited this testdatum from being saved:</strong>
       <ul>
         <% @testdata.each do |td| %>
@@ -14,7 +14,7 @@ The testdata list of each testdata set won't change after reordering.</p>
           <% end %>
         <% end %>
       </ul>
-    </div>
+    <% end %>
   <% end %>
 
   <table class="table table-hover table-striped table-condensed">

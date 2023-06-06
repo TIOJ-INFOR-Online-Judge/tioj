@@ -79,6 +79,24 @@ module ApplicationHelper
     raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
   end
 
+  def alert_tag(opts={}, &block)
+    dismissible = opts.fetch(:dismissible, true)
+    cls = opts.fetch(:class, 'alert-info')
+    cls += ' alert-dismissible' if dismissible
+    cls = ' ' + cls if cls[0] != ' '
+    ret = raw '<div class="alert' + cls + '" role="alert">'
+    if dismissible
+      ret += raw <<~HTML
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+      HTML
+    end
+    ret += capture(&block) + raw('</div>')
+    concat(ret)
+  end
+
   def score_str(x)
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end

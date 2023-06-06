@@ -26,13 +26,9 @@
     </div>
   </div>
 
-  <div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert">
-      <span aria-hidden="true">&times;</span>
-      <span class="sr-only">Close</span>
-    </button>
+  <% alert_tag do %>
     <strong>Oh Geez! </strong><%= "If datetime picker isn't available, an example time format is `1996-12-19T16:39:57`." %>
-  </div>
+  <% end %>
 
   <div class="row">
     <div class="col-md-4">
@@ -126,37 +122,32 @@
     <% end %>
   </div>
 
-   <div class="alert alert-success alert-dismissible" role="alert">
-     <button type="button" class="close" data-dismiss="alert">
-       <span aria-hidden="true">&times;</span>
-       <span class="sr-only">Close</span>
-     </button>
-     <strong>Oh Geez! </strong> <%= "Make sure tasks are set to `visible during contest`." %>
-   </div>
+  <% alert_tag class: 'alert-success' do %>
+    <strong>Oh Geez! </strong> <%= "Make sure tasks are set to `visible during contest`." %>
+  <% end %>
 
-   <%= f.fields_for :contest_problem_joints do |t| %>
-     <div class="form-group">
-       <div class="row">
-         <div class="col-md-1">
+  <%= f.fields_for :contest_problem_joints do |t| %>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-1">
           <%= t.label :task %>
-         </div>
-         <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
           <%= t.number_field :problem_id, class: 'form-control flat', autocomplete: "off" %>
-         </div>
-         <div class="col-md-3">
+        </div>
+        <div class="col-md-3">
           <%= t.link_to_remove "Remove this task", class: "btn btn-danger" %>
-         </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%= f.link_to_add "Add a task", :contest_problem_joints, class: "btn btn-warning" %>
 
-       </div>
-     </div>
-   <% end %>
-   <%= f.link_to_add "Add a task", :contest_problem_joints, class: "btn btn-warning" %>
+  <hr>
 
-   <hr>
-
-   <div class="actions">
-       <%= f.submit class: "btn btn-success btn-lg"%>
-   </div>
+  <div class="actions">
+    <%= f.submit class: "btn btn-success btn-lg"%>
+  </div>
 <% end %>
 
 <script>buttonCheckboxSetup()</script>
