@@ -39,9 +39,9 @@ class Contest < ApplicationRecord
   # registration
   has_many :contest_registrations, dependent: :destroy
   has_many :registered_users,
-      source: :user_base, through: :contest_registrations
+      source: :user, through: :contest_registrations
   has_many :approved_registered_users, ->{ where(contest_registrations: {approved: true}) },
-      source: :user_base, through: :contest_registrations
+      source: :user, through: :contest_registrations
 
   # contest submissions will change to normal submissions once the contest is deleted
   has_many :submissions, dependent: :nullify

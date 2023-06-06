@@ -6,21 +6,10 @@
 <%= stylesheet_link_tag    "application", media: "all" %>
 <%= javascript_include_tag "application" %>
 <%= csrf_meta_tags %>
-<script>
-MathJax = ({
-  tex: {
-    inlineMath: [ ['$','$'], ['\\(','\\)'] ],
-    processEscapes: true
-  }
-});
-</script>
+<script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
 <%= mathjax_tag component: 'tex-svg-full.js' %>
 <%= yield :icon %>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-#page-content{ padding-left: 40px; padding-right: 40px; padding-bottom: 40px; }
-.page-header{ margin: 10px 0 15px; }
-</style>
 </head>
 
 <body>

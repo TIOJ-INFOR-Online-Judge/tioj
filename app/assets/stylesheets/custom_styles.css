@@ -88,6 +88,14 @@ tr.ole > td.highlight-if-self { /* dashboard self */
   font-weight: bold;
   color: #7C18C4;
 }
+#page-content {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 40px;
+}
+.page-header {
+  margin: 10px 0 15px;
+}
 
 /* bootstrap 5 auto row */
 .bs5-row {

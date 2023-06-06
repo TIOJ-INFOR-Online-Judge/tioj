@@ -30,8 +30,8 @@ gem 'activerecord-session_store'
 # Use Redcarpet to render Markdown
 gem 'redcarpet'
 
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier'
+# Use Terser as compressor for JavaScript assets
+gem 'terser'
 
 # Pagination
 gem 'kaminari'
@@ -81,9 +81,6 @@ gem 'acts_as_list'
 
 # Activerecord-import for bulk insert
 gem 'activerecord-import'
-
-# Fix warning: https://stackoverflow.com/questions/67773514/getting-warning-already-initialized-constant-on-assets-precompile-at-the-time
-gem 'net-http'
 
 # Redis for Action Cable
 gem 'redis', '~> 4'
