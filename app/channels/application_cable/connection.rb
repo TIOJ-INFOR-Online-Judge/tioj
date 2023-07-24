@@ -27,7 +27,13 @@ module ApplicationCable
       # connect and disconnect may be called in different thread simutaneously, thus use a mutex to prevent races
       @mutex.synchronize do
         if self.judge_server
-          self.judge_server.update(online: false)
+          begin
+            self.judge_server.update(online: false)
+          rescue ActiveRecord::StatementInvalid => e
+            # This happens once in a while when the server restarts;
+            #  disconnect the connection pool to prevent the server being stuck by ~1min because of stale connections
+            ActiveRecord::Base.connection_pool.disconnect
+          end
         end
         @disconnected = true
       end
@@ -37,7 +43,9 @@ module ApplicationCable
 
     def find_judge_server
       key = request.params['key']
+      version = request.params['version']
       reject_unauthorized_connection if not key
+      reject_unauthorized_connection if (not version or Gem::Version.new(version) < Gem::Version.new('1.2.0'))
       judge = JudgeServer.find_by(key: key)
       reject_unauthorized_connection if not judge or (not (judge.ip || "").empty? and judge.ip != request.remote_ip)
       judge

@@ -5,16 +5,7 @@
 <% end %>
 
 <%= nested_form_for(@article) do |f| %>
-  <% if @article.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
-      <ul>
-        <% @article.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @article.errors, item: 'article'} %>
 
   <div class="form-group">
     <%= f.label :pinned, "Pin to top" %><br>

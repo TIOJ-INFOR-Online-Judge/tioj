@@ -56,9 +56,7 @@
 <% if user_signed_in? and (current_user.admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
   <div class="new_comment" style="display:inline">
     <button class="new_comment btn btn-info btn-xs">New Comment</button>
-    <br>
-    <div class="new_comment_form">
-      <br>
+    <div class="new_comment_form well well-lg" style="margin-top: 1rem; margin-bottom: 0; padding-top: 1rem;">
       <%= render partial: 'comment_form', :locals => {:post => post}  %>
     </div> <!-- new_comment_form -->
   </div> <!-- new_comment -->

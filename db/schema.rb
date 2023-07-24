@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -77,6 +77,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.string "body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "contest_id"
+    t.index ["contest_id"], name: "index_announcements_on_contest_id"
   end
 
   create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -155,6 +157,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.boolean "show_detail_result", default: true, null: false
     t.boolean "hide_old_submission", default: false, null: false
     t.text "user_whitelist"
+    t.boolean "skip_group", default: false
+    t.text "description_before_contest", size: :medium
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
@@ -165,6 +169,33 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "online", default: false
+  end
+
+  create_table "old_submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "old_submission_id"
+    t.integer "position"
+    t.string "result"
+    t.decimal "score", precision: 18, scale: 6
+    t.integer "time"
+    t.integer "rss"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["old_submission_id"], name: "index_old_submission_tasks_on_old_submission_id"
+  end
+
+  create_table "old_submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "submission_id"
+    t.bigint "problem_id"
+    t.string "result"
+    t.decimal "score", precision: 18, scale: 6
+    t.integer "total_time"
+    t.integer "total_memory"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
+    t.index ["problem_id", "result"], name: "index_old_submissions_on_problem_id_and_result"
+    t.index ["problem_id"], name: "index_old_submissions_on_problem_id"
+    t.index ["submission_id"], name: "index_old_submissions_on_submission_id", unique: true
   end
 
   create_table "posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -197,7 +228,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.integer "visible_state", default: 0
     t.text "sjcode", size: :long
     t.text "interlib", size: :long
-    t.integer "old_pid"
     t.integer "specjudge_type", null: false
     t.integer "interlib_type", null: false
     t.bigint "specjudge_compiler_id"
@@ -209,6 +239,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.boolean "judge_between_stages", default: false
     t.string "default_scoring_args"
     t.boolean "strict_mode", default: false
+    t.boolean "skip_group", default: false
+    t.boolean "ranklist_display_score", default: false
+    t.integer "code_length_limit", default: 5000000
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
@@ -233,10 +266,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "vss"
-    t.string "old_result"
-    t.decimal "old_score", precision: 18, scale: 6
-    t.decimal "old_time", precision: 12, scale: 3
-    t.integer "old_memory"
     t.string "message_type"
     t.text "message", size: :medium
     t.index ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true
@@ -256,22 +285,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.integer "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
-    t.string "old_result"
-    t.decimal "old_score", precision: 18, scale: 6
-    t.integer "old_time"
-    t.integer "old_memory"
-    t.boolean "new_rejudged", default: true
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
-    t.index ["contest_id", "new_rejudged", "id"], name: "index_submissions_on_contest_id_and_new_rejudged_and_id"
-    t.index ["contest_id", "new_rejudged", "result"], name: "index_submissions_on_contest_id_and_new_rejudged_and_result"
     t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder", order: { score: :desc }
     t.index ["contest_id", "problem_id", "user_id", "result"], name: "index_submissions_problem_query"
     t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result", order: { id: :desc }
-    t.index ["contest_id", "user_id", "problem_id", "old_result"], name: "index_submissions_old_user_query"
     t.index ["contest_id", "user_id", "problem_id", "result"], name: "index_submissions_user_query"
-    t.index ["contest_id", "user_id", "result", "old_result", "problem_id"], name: "index_submissions_old_user_problem_result"
-    t.index ["contest_id", "user_id", "result", "old_result"], name: "index_submissions_old_user_result"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
     t.index ["result", "contest_id", "id"], name: "index_submissions_fetch"
     t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
@@ -314,6 +333,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
     t.integer "vss_limit", default: 65536
     t.integer "rss_limit"
     t.integer "output_limit", default: 65536
+    t.boolean "input_compressed", default: false
+    t.boolean "output_compressed", default: false
   end
 
   create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -358,6 +379,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_29_100329) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "submissions", "compilers"

@@ -13,6 +13,10 @@
 #  category   :integer
 #  public     :boolean
 #
+# Indexes
+#
+#  index_articles_on_category_and_pinned_and_era  (category,pinned,era)
+#
 
 require 'test_helper'
 

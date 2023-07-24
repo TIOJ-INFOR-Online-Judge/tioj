@@ -11,12 +11,14 @@
  *= require bootstrap_import
  *= require_tree .
  *= require_self
- *= require custom_styles
  *
- * Somehow the ".default" in theme.default is stripped by sprocket 4 asset finding logic.
- * We add another .default to as an dirty hack to make it find the correct asset.
+ *= require custom_styles
  *
  *= require jquery-tablesorter/theme.blue
  *= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
+ *
  *= require animate
+ *
+ *= require jquery.fileupload
+ *= require jquery.fileupload-ui
  */

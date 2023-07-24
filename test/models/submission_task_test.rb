@@ -12,12 +12,13 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  vss           :integer
-#  old_result    :string(255)
-#  old_score     :decimal(18, 6)
-#  old_time      :decimal(12, 3)
-#  old_memory    :integer
 #  message_type  :string(255)
 #  message       :text(16777215)
+#
+# Indexes
+#
+#  index_submission_tasks_on_submission_id               (submission_id)
+#  index_submission_tasks_on_submission_id_and_position  (submission_id,position) UNIQUE
 #
 
 require 'test_helper'

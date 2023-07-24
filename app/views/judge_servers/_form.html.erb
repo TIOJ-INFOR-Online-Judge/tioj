@@ -1,15 +1,6 @@
 <%= form_for @judge_server do |f| %>
-  <% if @judge_server.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@judge_server.errors.count, "error") %> prohibited this JudgeServer from being saved:</h2>
+  <%= render partial: "shared/errors", locals: {errors: @judge_server.errors, item: 'JudgeServer'} %>
 
-      <ul>
-        <% @judge_server.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
   <div class="form-group">
     <%= f.label :name, 'Server Name' %> <br>
     <%= f.text_field :name, :class => 'form-control', :placeholder => 'Server Name' %>
@@ -25,6 +16,4 @@
   <div class="form-group">
     <%= f.submit :class=>"btn btn-primary "%>
   </div>
-
-
 <% end %>

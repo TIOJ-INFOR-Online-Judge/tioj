@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
   def changed_problems
     ac_cur = @user.submissions.select(:problem_id).where(result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
-    ac_old = @user.submissions.select(:problem_id).where(old_result: 'AC', contest_id: nil).group(:problem_id).map(&:problem_id)
+    ac_old = @user.submissions.joins(:old_submission).select(:problem_id).where(old_submission: {result: 'AC'}).group(:problem_id).map(&:problem_id)
     changed = ac_old - ac_cur
     @problems = Problem.where(id: changed)
     @problems = @problems.order(id: :asc).page(params[:page]).per(50)
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     else
       @submissions = @user.submissions
     end
-    @submissions = @submissions.where(old_result: 'AC').where.not(result: 'AC')
+    @submissions = @submissions.includes(:old_submission).where(old_submission: {result: 'AC'}).where.not(result: 'AC')
     if not params[:problem_id].blank?
       @problem = Problem.find(params[:problem_id])
       @submissions = @submissions.where(problem_id: params[:problem_id])

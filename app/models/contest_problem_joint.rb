@@ -8,6 +8,10 @@
 #  created_at :datetime
 #  updated_at :datetime
 #
+# Indexes
+#
+#  contest_task_ix  (contest_id,problem_id) UNIQUE
+#
 
 class ContestProblemJoint < ApplicationRecord
   default_scope { order('id ASC') }

@@ -55,7 +55,7 @@ class ArticlesController < ApplicationController
       if @article.update(article_params)
         format.html { redirect_to @article, notice: 'Article was successfully updated.' }
       else
-        format.html { render action: 'new' }
+        format.html { render action: 'edit' }
       end
     end
   end

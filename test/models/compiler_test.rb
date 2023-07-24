@@ -10,6 +10,10 @@
 #  updated_at  :datetime         not null
 #  order       :integer
 #
+# Indexes
+#
+#  index_compilers_on_name  (name) UNIQUE
+#
 
 require 'test_helper'
 

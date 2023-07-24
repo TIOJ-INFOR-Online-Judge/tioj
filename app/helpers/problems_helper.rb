@@ -19,10 +19,6 @@ module ProblemsHelper
     return topcoders_mp
   end
 
-  def get_submissions_user(subs)
-    return User.where(id: subs.map(&:user_id).uniq).index_by(&:id)
-  end
-
   def ratio_text(ac, all)
     return "%.1f%%" % (100.0 * ac / all)
   end

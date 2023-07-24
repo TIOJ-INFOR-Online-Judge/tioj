@@ -1,4 +1,3 @@
-Rails.logger.fatal Rails.configuration.x.settings
 if Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn
   Sentry.init do |config|
     config.dsn = Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn

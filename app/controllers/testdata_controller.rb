@@ -4,6 +4,8 @@ class TestdataController < ApplicationController
   before_action :set_testdatum, only: [:show, :edit, :update, :destroy]
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
+  
+  COMPRESS_THRESHOLD = 128 * 1024
 
   def index
     @testdata = @problem.testdata
@@ -17,13 +19,17 @@ class TestdataController < ApplicationController
     if params[:type] == 'input'
       path = @testdatum.test_input
       name = @testdatum.test_input_identifier
+      compressed = @testdatum.input_compressed
     elsif params[:type] == 'output'
       path = @testdatum.test_output
       name = @testdatum.test_output_identifier
+      compressed = @testdatum.output_compressed
     else
       raise_not_found
     end
-    send_file path.to_s, filename: strip_uuid(name)
+    name = strip_uuid(name)
+    name = name + '.zst' if compressed
+    send_file path.to_s, filename: name
   end
 
   def create
@@ -130,9 +136,41 @@ class TestdataController < ApplicationController
     x[0...-37]
   end
 
+  def compress_file(f)
+    Tempfile.create(binmode: true) do |tmpfile|
+      File.open(f.path, 'rb') do |origfile|
+        stream = Zstd::StreamingCompress.new(7)
+        while (buffer = origfile.read(1024 * 1024)) do
+          tmpfile.write(stream.compress(buffer))
+        end
+        tmpfile.write(stream.finish)
+      end
+      tmpfile.flush
+      nsize = tmpfile.size
+      tmpfile.close
+      if nsize < f.size
+        File.rename tmpfile.path, f.path
+        return true
+      end
+    end
+    false
+  end
+
+  def decompress_file(f)
+    tmpfile = Tempfile.new(binmode: true)
+    File.open(f, 'rb') do |origfile|
+      stream = Zstd::StreamingDecompress.new
+      while (buffer = origfile.read(1024 * 1024)) do
+        tmpfile.write(stream.decompress(buffer))
+      end
+    end
+    tmpfile.close
+    tmpfile
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def testdatum_params
-    params.require(:testdatum).permit(
+    new_params = params.require(:testdatum).permit(
       :problem_id,
       :test_input,
       :test_output,
@@ -141,6 +179,19 @@ class TestdataController < ApplicationController
       :vss_limit,
       :output_limit,
     )
+    if new_params[:test_input]
+      new_params[:input_compressed] = false
+      if new_params[:test_input].size >= COMPRESS_THRESHOLD
+        new_params[:input_compressed] = compress_file(new_params[:test_input])
+      end
+    end
+    if new_params[:test_output]
+      new_params[:output_compressed] = false
+      if new_params[:test_output].size >= COMPRESS_THRESHOLD
+        new_params[:output_compressed] = compress_file(new_params[:test_output])
+      end
+    end
+    new_params
   end
 
   def batch_update_params

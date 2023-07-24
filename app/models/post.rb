@@ -14,6 +14,14 @@
 #  post_type      :integer          default("discuss")
 #  user_visible   :boolean          default(FALSE)
 #
+# Indexes
+#
+#  index_post_post_type       (postable_type,post_type)
+#  index_post_postable        (postable_type,postable_id)
+#  index_posts_on_postable    (postable_type,postable_id)
+#  index_posts_on_updated_at  (updated_at)
+#  index_posts_on_user_id     (user_id)
+#
 
 class Post < ApplicationRecord
   enum :post_type, {discuss: 0, solution: 1, issue: 2}, prefix: :type
