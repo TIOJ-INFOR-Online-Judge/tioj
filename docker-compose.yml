@@ -24,9 +24,9 @@ services:
       - MAIL_SENDER
       - ALLOW_REGISTER
     volumes:
-      - /srv/tioj/web-td:/tioj/td
-      - /srv/tioj/web-log:/tioj/log
-      - /srv/tioj/public:/tioj/public
+      - /srv/ioic_tioj/web-td:/tioj/td
+      - /srv/ioic_tioj/web-log:/tioj/log
+      - /srv/ioic_tioj/public:/tioj/public
     depends_on:
       - db
     networks:
@@ -34,30 +34,36 @@ services:
     ports:
       - "4000:4000"
     logging: *default-logging
+    container_name: ioic2023_tioj_web
+    restart: always
   db:
     image: mysql:8.0
     volumes:
-      - /srv/tioj/db:/var/lib/mysql
+      - /srv/ioic_tioj/db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE=tioj_production
     networks:
       - app
     logging: *default-logging
+    container_name: ioic2023_tioj_db
+    restart: always
   judge:
     build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#main
     environment:
       TIOJ_URL: "http://localhost:4000"
       TIOJ_KEY: $FETCH_KEY
     volumes:
-      - /srv/tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
-      - /srv/tioj/judge-testdata:/var/lib/tioj-judge/testdata
+      - /srv/ioic_tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
+      - /srv/ioic_tioj/judge-testdata:/var/lib/tioj-judge/testdata
     tmpfs:
       - /tmp:exec
     privileged: true
     network_mode: host
     pid: host
     logging: *default-logging
+    container_name: ioic2023_tioj_judge
+    restart: always
 
 networks:
   app:
