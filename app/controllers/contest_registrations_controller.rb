@@ -2,6 +2,7 @@ class ContestRegistrationsController < InheritedResources::Base
   actions :index, :create, :update, :destroy
   before_action :authenticate_admin!
   before_action :set_registration, only: [:update, :destroy]
+  before_action :set_contest_user, only: [:edit_contest_user, :update_contest_user]
   layout :set_contest_layout
 
   class CreateForm
@@ -176,6 +177,33 @@ class ContestRegistrationsController < InheritedResources::Base
     redirect_to contest_contest_registrations_path(@contest), notice: msg
   end
 
+  def edit_contest_user
+  end
+
+  def update_contest_user
+    if @user.update(contest_user_params)
+      redirect_to contest_contest_registrations_path(@contest), notice: "Contest user was successfully updated."
+    else
+      respond_to do |format|
+        format.html { render action: 'edit_contest_user' }
+      end
+    end
+  end
+
+  def create
+    @user = User.where(username: params[:username]).first
+    if @user
+      begin
+        @contest.contest_registrations.create(user: @user, approved: true)
+        redirect_to contest_contest_registrations_path(@contest), notice: "User was successfully registered."
+      rescue ActiveRecord::RecordNotUnique
+        redirect_to contest_contest_registrations_path(@contest), alert: "User already registered."
+      end
+    else
+      redirect_to contest_contest_registrations_path(@contest), alert: "User not found."
+    end
+  end
+
   def update
     if @registration.approved
       @registration.update(approved: false)
@@ -201,7 +229,6 @@ class ContestRegistrationsController < InheritedResources::Base
   def index
     registrations = @contest.contest_registrations.includes(:user)
     @duplicate_names = registrations.group_by{|x| x.user.username }.select{|k, v| v.size > 1 }.map(&:first).to_set
-    logger.fatal @duplicate_names
     groups = registrations.group_by{|x| x.approved ? (x.user.type == 'User' ? 1 : 0) : -1}
     @contest_users = groups[0]
     @registered_users = groups[1]
@@ -214,9 +241,19 @@ class ContestRegistrationsController < InheritedResources::Base
     @registration = @contest.contest_registrations.find(params[:id])
   end
 
+  def set_contest_user
+    @user = @contest.contest_users.find(params[:id])
+  end
+
   def batch_create_params
     params.require(:contest_registrations_controller_create_form).permit(
       :num_start, :num_end, :username_format, :nickname_format, :password_length, :account_file, :avatar
+    )
+  end
+
+  def contest_user_params
+    params.require(:contest_user).permit(
+      :username, :nickname, :password, :password_confirmation
     )
   end
 end

@@ -29,8 +29,7 @@
       </td>
       <td><%= user.nickname %></td>
       <td>
-        <%# TODO: Add edit %>
-        <%#= link_to 'Edit', '#', class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Edit', edit_contest_contest_user_path(@contest, user), class: 'btn btn-info btn-xs' %>
         <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'}, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
@@ -43,6 +42,14 @@
 <hr style="border-top: 3px solid #ddd">
 
 <h4>Registered users</h4>
+
+<%= form_with url: contest_contest_registrations_path(@contest), class: 'form-inline' do |f| %>
+  <div class="form-group">
+    <%= f.label :username, "Register a user" %>
+    <%= f.text_field :username, placeholder: "Enter Username", class: 'form-control input-sm flat' %>
+  </div>
+  <%= f.submit 'Submit', class: 'btn btn-success btn-xs' %>
+<% end %>
 
 <% if @registered_users %>
   <% alert_tag do %>
