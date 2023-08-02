@@ -55,11 +55,11 @@ Rails.application.routes.draw do
       resources :comments, except: [:index]
     end
 
-    resources :contest_registrations, only: [:index, :new, :create, :destroy] do
+    resources :contest_registrations, only: [:index, :new, :create, :update, :destroy] do
       collection do
         get 'batch_new'
         post 'batch_new', to: 'contest_registrations#batch_create'
-        post 'batch_delete'
+        post 'batch_op'
       end
     end
 

@@ -170,11 +170,12 @@ class ContestsController < ApplicationController
     end
   end
 
-  ## Single contest
+  ## Single Contest
 
   def sign_in_post
     sign_in_params = params.require(:user).permit(:username, :password)
-    user = @contest.approved_registered_users.find_by(username: sign_in_params[:username])
+    order_clause = UserBase.arel_table[:type].eq('ContestUser').desc
+    user = @contest.approved_registered_users.where(username: sign_in_params[:username]).order(order_clause).first
     if user && user.valid_password?(sign_in_params[:password])
       session[:single_contest] ||= {}
       session[:single_contest][@contest.id] ||= {}

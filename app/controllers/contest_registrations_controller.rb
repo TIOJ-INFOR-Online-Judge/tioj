@@ -1,6 +1,7 @@
 class ContestRegistrationsController < InheritedResources::Base
-  actions :index, :create, :destroy
+  actions :index, :create, :update, :destroy
   before_action :authenticate_admin!
+  before_action :set_registration, only: [:update, :destroy]
   layout :set_contest_layout
 
   class CreateForm
@@ -154,29 +155,42 @@ class ContestRegistrationsController < InheritedResources::Base
     @form = CreateForm.new(num_start: 1, num_end: 10, password_length: 6)
   end
 
-  def batch_delete
+  def batch_op
     action = params[:action_type]
-    if action == 'contest_users'
+    if action == 'delete_contest_users'
       @contest.contest_users.destroy_all
       msg = 'Contest users were successfully deleted.'
-    elsif action == 'registered_users'
-      @contest.contest_registrations.where(approved: true).update_all(approved: false)
+    elsif action == 'unregister_all'
+      @contest.contest_registrations.joins(:user).where(approved: true, user: {type: 'User'}).update_all(approved: false)
       msg = 'Users were successfully unregistered.'
-    else
+    elsif action == 'approve_all'
+      @contest.contest_registrations.where(approved: false).update_all(approved: true)
+      msg = 'Registrations were successfully approved.'
+    elsif action == 'delete_unapproved'
       @contest.contest_registrations.where(approved: false).delete_all
       msg = 'Registrations were successfully deleted.'
+    else
+      redirect_to contest_contest_registrations_path(@contest), alert: 'Invalid action.'
+      return
+    end
+    redirect_to contest_contest_registrations_path(@contest), notice: msg
+  end
+
+  def update
+    if @registration.approved
+      @registration.update(approved: false)
+      msg = 'User was successfully unregistered.'
+    else
+      @registration.update(approved: true)
+      msg = 'Registration was successfully approved.'
     end
     redirect_to contest_contest_registrations_path(@contest), notice: msg
   end
 
   def destroy
-    @registration = @contest.contest_registrations.find(params[:id])
     if @registration.user.type == 'ContestUser'
       @registration.user.destroy
       msg = 'Contest user was successfully deleted.'
-    elsif @registration.approved
-      @registration.update(approved: false)
-      msg = 'User was successfully unregistered.'
     else
       @registration.destroy
       msg = 'Registration was successfully deleted.'
@@ -186,6 +200,8 @@ class ContestRegistrationsController < InheritedResources::Base
 
   def index
     registrations = @contest.contest_registrations.includes(:user)
+    @duplicate_names = registrations.group_by{|x| x.user.username }.select{|k, v| v.size > 1 }.map(&:first).to_set
+    logger.fatal @duplicate_names
     groups = registrations.group_by{|x| x.approved ? (x.user.type == 'User' ? 1 : 0) : -1}
     @contest_users = groups[0]
     @registered_users = groups[1]
@@ -193,6 +209,10 @@ class ContestRegistrationsController < InheritedResources::Base
   end
 
  private
+
+  def set_registration
+    @registration = @contest.contest_registrations.find(params[:id])
+  end
 
   def batch_create_params
     params.require(:contest_registrations_controller_create_form).permit(

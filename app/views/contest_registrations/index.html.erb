@@ -5,7 +5,7 @@
 
 <% if @contest_users %>
   <% alert_tag class: 'alert-warning' do %>
-    Deleting a contest user will delete all its submissions.
+    Deleting a contest user will delete all their submissions.
   <% end %>
 
   <table class="table table-hover table-striped table-condensed">
@@ -14,19 +14,24 @@
       <th>Username</th>
       <th>Nickname</th>
       <th>
-        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'contest_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'} %>
+        <%= button_to 'Delete All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'delete_contest_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'} %>
       </th>
     </tr>
     <% @contest_users.each do |item| %>
     <tr>
       <% user = item.user %>
       <td><%= image_tag user.avatar.mini_thumb.to_s, class: 'img-rounded' %></td>
-      <td><%= user.username %></td>
+      <td>
+        <%= user.username %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-warning" data-toggle="tooltip" data-placement="right" title="This contest user shadows a normal user."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
       <td><%= user.nickname %></td>
       <td>
         <%# TODO: Add edit %>
-        <%= link_to 'Edit', '#', class: 'btn btn-info btn-xs' %>
-        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, data: {confirm: 'Are you sure to delete? This will permanently delete all its submissions.'}, class:'btn btn-xs btn-danger' %>
+        <%#= link_to 'Edit', '#', class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'}, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
     <% end %>
@@ -41,7 +46,7 @@
 
 <% if @registered_users %>
   <% alert_tag do %>
-    Unregistering a user won't delete its existing submissions.
+    Unregistering a user won't delete their existing submissions.
   <% end %>
 
   <table class="table table-hover table-striped table-condensed">
@@ -50,17 +55,22 @@
       <th>Username</th>
       <th>Nickname</th>
       <th>
-        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'registered_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all users?'} %>
+        <%= button_to 'Unregister All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'unregister_all'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all users?'} %>
       </th>
     </tr>
     <% @registered_users.each do |item| %>
     <tr>
       <% user = item.user %>
       <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
-      <td><%= link_to user.username, user_path(user) %></td>
+      <td>
+        <%= link_to user.username, user_path(user) %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
       <td><%= user.nickname %></td>
       <td>
-        <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
+        <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
     <% end %>
@@ -84,16 +94,23 @@
       <th>Username</th>
       <th>Nickname</th>
       <th>
-        <%= button_to 'Delete All', batch_delete_contest_contest_registrations_path(@contest), params: {action_type: 'unapproved_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete all unapproved registrations?'} %>
+        <%= button_to 'Approve All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'approve_all'}, class: 'btn btn-xs btn-info', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to approve all registrations?'} %>
+        <%= button_to 'Delete All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'delete_unapproved'}, class: 'btn btn-xs btn-danger', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete all unapproved registrations?'} %>
       </th>
     </tr>
     <% @unapproved_users.each do |item| %>
     <tr>
       <% user = item.user %>
       <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
-      <td><%= link_to user.username, user_path(user) %></td>
+      <td>
+        <%= link_to user.username, user_path(user) %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
       <td><%= user.nickname %></td>
       <td>
+        <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-info' %>
         <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
       </td>
     </tr>
@@ -102,3 +119,7 @@
 <% else %>
   No currently unapproved registrations.
 <% end %>
+
+<script>
+$(() => { $('[data-toggle="tooltip"]').tooltip(); })
+</script>

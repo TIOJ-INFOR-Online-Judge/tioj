@@ -6,10 +6,10 @@
 
   <% alert_tag do %>
     <ul>
-      <li>Use C-style formatting for username & nickname format. For example, if (start, end) = (1, 10), <code>user%03d</code> will yield <code>user001</code>, <code>user002</code>, ...,  <code>user010</code>.</li>
-      <li>It is fine to use the same username / nickname as a regular user or a contest user in another contest.</li>
+      <li>Use <code>printf</code>-style formatting for username & nickname format. For example, if (start, end) = (1, 10), <code>user%03d</code> will yield <code>user001</code>, <code>user002</code>, ...,  <code>user010</code>.</li>
       <li>Contest users can only login from the <%= link_to 'Single Contest page', single_contest_path(@contest) %>.</li>
       <li>Passwords will be randomly generated from alphanumeric characters, excluding <code>01iloIO</code>.</li>
+      <li>It is fine to use the same username / nickname as a regular user or a contest user in another contest. However, normal users with a same username as a contest user in this contest will not be able to login from the Single Contest page.</li>
     </ul>
   <% end %>
 
