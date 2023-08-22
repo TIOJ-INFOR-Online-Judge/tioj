@@ -28,6 +28,18 @@ class RolesController < ApplicationController
   def edit
   end
 
+  def update
+    respond_to do |format|
+      if @role.update(role_params)
+        format.html { redirect_to @role, notice: 'Role was successfully updated.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: 'edit' }
+        format.json { render json: @role.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def destroy
     @role.destroy
     respond_to do |format|

@@ -48,6 +48,8 @@ class User < ApplicationRecord
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 
+  has_and_belongs_to_many :roles
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   if Rails.configuration.x.settings.dig(:disable_registration)

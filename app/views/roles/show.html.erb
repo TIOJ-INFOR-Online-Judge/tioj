@@ -1,6 +1,52 @@
-<h4>Role: <%= @role.name %>
-<p>
-  <%# <strong>IP Address: </strong><%= @judge_server.ip %1> <br> %>
-  <%# <strong>Secure Key: </strong><%= @judge_server.key %1> <br> %>
-  <%= link_to 'Back', roles_path, :class => 'btn btn-default' %>
-</p>
+<h4>Role Name: <%= @role.name %> </h4>
+
+<h6>Permitted Problems</h6>
+<%# The members can access the following invisible problems even if the visible state is invisible. %>
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <% 10.times do |a| %>
+        <th></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @role.problems.each_with_index do |prob, idx| %>
+      <% if idx%10 == 0 %>
+        <tr>
+        <% end %>
+
+        <td>
+          <%= link_to prob.id.to_s, problem_path(prob), :class => "text-success" %>
+        </td>
+
+        <% if idx%10 == 9 %>
+          </tr>
+        <% end %>
+      <% end %>
+  </tbody>
+</table>
+
+<h6>Members</h6>
+<table class = "table table-hover table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Username</th>
+      <th>Nickname</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @role.users.each_with_index do |u, index| %>
+      <tr>
+        <td> <%= index + 1 %> </td>
+        <td> <%= u.username %> </td>
+        <td> <%= u.nickname %> </td>
+        <td> <%= u.email %> </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', roles_path, :class => 'btn btn-default' %>

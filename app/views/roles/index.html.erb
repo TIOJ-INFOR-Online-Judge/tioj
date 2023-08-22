@@ -4,8 +4,6 @@
   <thead>
     <tr>
       <th>Name</th>
-      <%# <th>IP Address</th> %>
-      <%# <th>Key</th> %>
       <th></th>
     </tr>
   </thead>
@@ -14,6 +12,7 @@
       <tr>
         <td><%= role.name %></td>
         <th>
+          <%= link_to 'View', role, :class => 'btn btn-xs btn-primary' %>
           <%= link_to 'Edit', edit_role_path(role), :class => 'btn btn-info btn-xs' %>
           <%= link_to 'Destroy', role_path(role), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
         </th>
