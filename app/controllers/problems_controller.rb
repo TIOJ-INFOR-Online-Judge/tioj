@@ -1,19 +1,28 @@
 class ProblemsController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
-  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist]
+  before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old]
   before_action :set_contest, only: [:show]
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit]
   before_action :reduce_list, only: [:create, :update]
-  before_action :check_visibility!, only: [:show, :ranklist]
+  before_action :check_visibility!, only: [:show, :ranklist, :ranklist_old]
   layout :set_contest_layout, only: [:show]
 
   def ranklist
+    # avoid additional COUNT(*) query by to_a
     @submissions = (@problem.submissions.where(contest_id: nil, result: 'AC')
         .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
-        .includes(:compiler))
-    @display_score = @problem.specjudge_new? || @problem.verdict_ignore_td_list != ''
+        .includes(:compiler).preload(:user)).to_a
+    @ranklist_old = false
+  end
+
+  def ranklist_old
+    @submissions = (@problem.submissions.joins(:old_submission).where(old_submission: {result: 'AC'})
+        .order("old_submission.score DESC, old_submission.total_time ASC, old_submission.total_memory ASC, LENGTH(code) ASC").order(id: :asc)
+        .includes(:old_submission, :compiler).preload(:user)).to_a
+    @ranklist_old = true
+    render :ranklist
   end
 
   def delete_submissions
@@ -86,6 +95,7 @@ class ProblemsController < ApplicationController
   def create
     params[:problem][:compiler_ids] ||= []
     @problem = Problem.new(check_params())
+    @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       if @problem.save
         format.html { redirect_to @problem, notice: 'Problem was successfully created.' }
@@ -99,6 +109,7 @@ class ProblemsController < ApplicationController
 
   def update
     params[:problem][:compiler_ids] ||= []
+    @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       @problem.attributes = check_params()
       pre_ids = @problem.testdata_sets.collect(&:id)
@@ -166,7 +177,7 @@ class ProblemsController < ApplicationController
 
   def recalc_score
     num_tasks = @problem.testdata.count
-    tdset_map = @problem.testdata_sets.map{|s| [td_list_to_arr(s.td_list, num_tasks), s.score]}
+    tdset_map = @problem.testdata_sets.map{|s| [s.td_list_arr(num_tasks), s.score]}
     @problem.submissions.select(:id).each_slice(256) do |s|
       ids = s.map(&:id).to_a
       arr = SubmissionTask.where(:submission_id => ids).
@@ -236,8 +247,10 @@ class ProblemsController < ApplicationController
       :sjcode,
       :interlib,
       :interlib_impl,
+      :code_length_limit,
+      :ranklist_display_score,
       :strict_mode,
-      :old_pid,
+      :skip_group,
       sample_testdata_attributes:
       [
         :id,

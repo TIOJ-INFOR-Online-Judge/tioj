@@ -1,6 +1,18 @@
-<h4 class="page-header">New Announcement</h4>
+<% set_page_title "Announcements" %>
 
-<%= semantic_form_for @announcement, :html => { :class => "form-inline" } do |f| %>
+<% if @contest %>
+<h4 class="page-header">New Contest Announcement <small><%= @contest.title %></small></h4>
+<% else %>
+<h4 class="page-header">New Announcement</h4>
+<% end %>
+
+<% if @contest %>
+  <% form_target = [@contest, @announcement] %>
+<% else %>
+  <% form_target = @announcement %>
+<% end %>
+
+<%= semantic_form_for form_target, :html => { :class => "form-inline" } do |f| %>
   <div class="row">
     <div class="col-lg-3">
       <div class="form-group" style="display: unset;">
@@ -22,9 +34,13 @@
 <% end %>
 <br>
 
+<% if @contest %>
+<h4 class="page-header">Contest Announcements</h4>
+<% else %>
 <h4 class="page-header">Announcements</h4>
+<% end %>
 
-<table class = "table table-hover table-striped table-condensed">
+<table class="table table-hover table-striped table-condensed">
   <thead>
     <tr>
       <th>Title</th>

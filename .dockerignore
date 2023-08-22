@@ -2,6 +2,7 @@
 /tempioj
 /sql\ dump
 **/*.swp
+.vscode/
 
 # Ignore bundler config.
 /.bundle

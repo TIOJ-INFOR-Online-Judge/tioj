@@ -93,7 +93,9 @@ protected
   end
 
   def set_anno
-    @annos = Announcement.order(:id).all.to_a
+    contest_param = controller_name == 'contests' ? params[:id] : params[:contest_id]
+    contest_id = contest_param && contest_param.to_i
+    @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
   end
 
   def get_sorted_user(limit = nil)
@@ -113,12 +115,8 @@ protected
     query.to_a
   end
 
-  def td_list_to_arr(str, sz)
-    ApplicationController.td_list_to_arr(str, sz)
-  end
-
   def reduce_td_list(str, sz)
-    td_list_to_arr(str, sz).chunk_while{|x, y|
+    TestdataSet.td_list_str_to_arr(str, sz).chunk_while{|x, y|
       x + 1 == y
     }.map{|x|
       x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
@@ -127,7 +125,7 @@ protected
 
   def inverse_td_list(prob)
     sz = prob.testdata.count
-    prob.testdata_sets.map.with_index{|x, i| td_list_to_arr(x.td_list, sz).map{|y| [y, i]}}
+    prob.testdata_sets.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
   end
 
@@ -140,13 +138,6 @@ protected
   end
 
   public
-
-  def self.td_list_to_arr(str, sz)
-    str.split(',').map{|x|
-      t = x.split('-')
-      Range.new([0, t[0].to_i].max, [t[-1].to_i, sz - 1].min).to_a
-    }.flatten.sort.uniq
-  end
 
   def self.shellsplit_safe(line)
     # adapted from shellwords library

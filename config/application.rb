@@ -7,6 +7,7 @@ require "rails/all"
 Bundler.require(*Rails.groups)
 
 module Tioj
+  VERSION = '2.3.1'
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
@@ -14,6 +15,9 @@ module Tioj
     config.site_name = "TIOJ INFOR Online Judge"
     begin
       config.x.settings = config_for(:settings)
+      if !config.x.settings
+        config.x.settings = {}
+      end
     rescue RuntimeError
       config.x.settings = {}
     end

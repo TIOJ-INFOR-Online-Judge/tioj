@@ -11,10 +11,17 @@ shared:
       enable_starttls_auto: true
     url_options:
       host: https://tioj.example.com # the URL of the website, used to generate the link in the email
-    sender: tioj.example.com # email sender
+    sender: tioj@example.com # email sender
 
   # Sentry settings
   sentry_dsn: https://xxxxxxx@xxxx.ingest.sentry.io/xxxx # copy from your sentry project
   sentry_sample_rate:
     normal: 0.002
     cable: 0.001
+
+  # Sign up settings (default: false)
+  disable_registration: false
+  unicode_username: false
+
+  # Old submission views (default: false)
+  old_submission_views: false

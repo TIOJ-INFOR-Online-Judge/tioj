@@ -24,6 +24,19 @@
 #  gradyear               :integer
 #  name                   :string(255)
 #  last_submit_time       :datetime
+#  last_compiler_id       :bigint
+#
+# Indexes
+#
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_last_compiler_id      (last_compiler_id)
+#  index_users_on_nickname              (nickname) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_username              (username) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (last_compiler_id => compilers.id)
 #
 
 require 'file_size_validator'
@@ -37,7 +50,11 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  if Rails.configuration.x.settings.dig(:disable_registration)
+    devise :database_authenticatable, :rememberable, :trackable, :validatable
+  else
+    devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
+  end
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
 
   mount_uploader :avatar, AvatarUploader
@@ -60,7 +77,8 @@ class User < ApplicationRecord
   validates_presence_of :username, :nickname
   validates :username,
     :uniqueness => {:case_sensitive => false},
-    :username_convention => true
+    :username_convention => true,
+    on: :create
 
   validates :school, :presence => true, :length => {:minimum => 1}
   validates :gradyear, :presence => true, :inclusion => 1..1000

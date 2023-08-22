@@ -5,17 +5,7 @@
 <% end %>
 
 <%= nested_form_for(@contest) do |f| %>
-  <% if @contest.errors.any? %>
-    <div id="error_explanation">
-    <h2><%= pluralize(@contest.errors.count, "error") %> prohibited this contest from being saved:</h2>
-
-    <ul>
-      <% @contest.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @contest.errors, item: 'contest'} %>
 
   <div class="form-group">
     <%= f.label :title %>
@@ -53,8 +43,13 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :description, 'Description (it will be publicly available before contest)' %>
+    <%= f.label :description, 'Description (only available after the contest is started)' %>
     <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description_before_contest, 'Before-contest description (publicly available before contest)' %>
+    <%= f.text_area :description_before_contest, :class => 'form-control flat', :rows => "9" %>
   </div>
 
   <div class="form-group">
@@ -81,6 +76,11 @@
     <%= f.label :show_detail_result do %>
       <%= f.check_box :show_detail_result %>
       Show detailed result of each testdata
+    <% end %>
+    <br>
+    <%= f.label :skip_group do %>
+      <%= f.check_box :skip_group %>
+      Skip the remaining testdata in the task if any of the testdata got non-AC
     <% end %>
     <br>
     <%= f.label :hide_old_submission do %>

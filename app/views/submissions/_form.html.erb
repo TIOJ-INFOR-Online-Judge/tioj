@@ -4,16 +4,7 @@
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
 <% end %>
 <%= form_for [@problem, @submission] do |f| %>
-  <% if @submission.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@submission.errors.count, "error") %> prohibited this submission from being saved:</h2>
-      <ul>
-      <% @submission.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">
     <%= render 'compiler_chooser', :f => f %>
@@ -21,7 +12,7 @@
 
   <div class="form-group">
     <%= f.label :code %>
-    <%= f.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;' %>
+    <%= f.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
   </div>
 
   <% if @contest_id %>

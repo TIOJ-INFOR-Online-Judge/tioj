@@ -8,20 +8,11 @@
 
 <% form_target = @postable ? [@postable, @post] : @post %>
 <%= form_for form_target do |f| %>
-  <% if @post.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@post.errors.count, "error") %> prohibited this problem from being saved:</h2>
-      <ul>
-        <% @post.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "shared/errors", locals: {errors: @post.errors, item: 'post'} %>
 
   <div class="form-group">
-    <%= f.label :title, "Title:"%> <br />
-    <%= f.text_field :title, :class=> 'form-control', :placeholder=>'Title'%>
+    <%= f.label :title, "Title:" %> <br />
+    <%= f.text_field :title, :class=> 'form-control', :placeholder=>'Title' %>
   </div>
   <% if not @contest %>
     <div class="form-group">
@@ -48,7 +39,7 @@
     </div>
   <% end %>
   <div class="form-group">
-    <%= f.submit :class=>"btn btn-primary "%>
+    <%= f.submit :class=>"btn btn-primary" %>
   </div>
 <% end %>
 

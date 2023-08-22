@@ -1,4 +1,10 @@
-<%= semantic_form_for @announcement do |f| %>
+<% if @contest %>
+  <% form_target = [@contest, @announcement] %>
+<% else %>
+  <% form_target = @announcement %>
+<% end %>
+
+<%= semantic_form_for form_target do |f| %>
   <div class="form-group">
     <%= f.label :title %><br>
     <%= f.text_field :title, :class => "form-control flat" %><br>

@@ -2,20 +2,26 @@
 #
 # Table name: contests
 #
-#  id                  :bigint           not null, primary key
-#  title               :string(255)
-#  description         :text(16777215)
-#  start_time          :datetime
-#  end_time            :datetime
-#  contest_type        :integer
-#  created_at          :datetime
-#  updated_at          :datetime
-#  cd_time             :integer          default(15), not null
-#  disable_discussion  :boolean          default(TRUE), not null
-#  freeze_minutes      :integer          default(0), not null
-#  show_detail_result  :boolean          default(TRUE), not null
-#  hide_old_submission :boolean          default(FALSE), not null
-#  user_whitelist      :text(65535)
+#  id                         :bigint           not null, primary key
+#  title                      :string(255)
+#  description                :text(16777215)
+#  description_before_contest :text(16777215)
+#  start_time                 :datetime
+#  end_time                   :datetime
+#  contest_type               :integer
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  cd_time                    :integer          default(15), not null
+#  disable_discussion         :boolean          default(TRUE), not null
+#  freeze_minutes             :integer          default(0), not null
+#  show_detail_result         :boolean          default(TRUE), not null
+#  hide_old_submission        :boolean          default(FALSE), not null
+#  user_whitelist             :text(65535)
+#  skip_group                 :boolean          default(FALSE)
+#
+# Indexes
+#
+#  index_contests_on_start_time_and_end_time  (start_time,end_time)
 #
 
 class Contest < ApplicationRecord
@@ -29,6 +35,8 @@ class Contest < ApplicationRecord
   has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
   has_many :compilers, :through => :ban_compilers, :as => :with_compiler
 
+  has_many :announcements, :dependent => :destroy
+
   validates :start_time, :presence => true
   validates :end_time, :presence => true
   validates_numericality_of :freeze_minutes, :greater_than_or_equal_to => 0
@@ -38,5 +46,13 @@ class Contest < ApplicationRecord
 
   def freeze_after
     end_time - freeze_minutes * 60
+  end
+
+  def is_started?
+    Time.now >= start_time
+  end
+
+  def is_running?
+    Time.now >= start_time && end_time > Time.now
   end
 end

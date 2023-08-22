@@ -25,11 +25,15 @@
     <% @contests.each do |contest| %>
       <tr>
         <td><%= contest.title %></td>
-        <td><%= link_to 'Participate', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
-        <% if Time.now > contest.end_time %>
+        <td style="text-align: right;">
+          <%= link_to contest.is_running? ? 'Participate' : 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %>
+        </td>
+        <% if Time.now >= contest.end_time %>
           <td>Ended</td>
-        <% elsif Time.now > contest.start_time %>
+        <% elsif contest.is_started? %>
           <td>Ready</td>
+        <% elsif Time.now >= contest.start_time - 1.days %>
+          <td>Upcoming</td>
         <% else %>
           <td>Not yet</td>
         <% end %>

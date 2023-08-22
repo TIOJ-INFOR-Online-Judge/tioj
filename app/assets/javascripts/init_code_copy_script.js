@@ -6,8 +6,6 @@
 		divs.forEach((div, idx, _) => initialize(div))
 
 		function initialize(div) {
-			console.log(div)
-
 			let btn = div.getElementsByClassName("copy-group-btn")[0]
 			let code = div.getElementsByClassName("copy-group-code")[0]
 

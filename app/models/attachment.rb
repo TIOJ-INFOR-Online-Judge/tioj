@@ -8,6 +8,10 @@
 #  created_at :datetime
 #  updated_at :datetime
 #
+# Indexes
+#
+#  index_attachments_on_article_id  (article_id)
+#
 
 class Attachment < ApplicationRecord
   belongs_to :article

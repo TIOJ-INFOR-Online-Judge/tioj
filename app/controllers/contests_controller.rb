@@ -5,7 +5,6 @@ class ContestsController < ApplicationController
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
   layout :set_contest_layout, only: [:show, :dashboard, :dashboard_update]
-  helper_method :is_started?
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -187,8 +186,9 @@ class ContestsController < ApplicationController
   def create
     params[:contest][:compiler_ids] ||= []
     @contest = Contest.new(contest_params)
+    @ban_compiler_ids = params[:contest][:compiler_ids].map{|x| x.to_i}.to_set
     respond_to do |format|
-      if !check_tasks?
+      if !tasks_valid?
         format.html { render action: 'new' }
         format.json { render json: @contest.errors, status: :unprocessable_entity }
       elsif @contest.save
@@ -203,16 +203,28 @@ class ContestsController < ApplicationController
 
   def update
     params[:contest][:compiler_ids] ||= []
+    @ban_compiler_ids = params[:contest][:compiler_ids].map{|x| x.to_i}.to_set
     respond_to do |format|
-      if !check_tasks?
-        format.html { render action: 'new' }
-        format.json { render json: @contest.errors, status: :unprocessable_entity }
-      elsif @contest.update(contest_params)
-        format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
-        format.json { head :no_content }
-      else
+      if !tasks_valid?
         format.html { render action: 'edit' }
         format.json { render json: @contest.errors, status: :unprocessable_entity }
+      else
+        begin
+          ret = @contest.update(contest_params)
+        rescue ActiveRecord::RecordNotUnique
+          params[:contest][:contest_problem_joints_attributes].each {|key, val| val.delete(:id)}
+          ActiveRecord::Base.transaction do
+            @contest.contest_problem_joints.destroy_all()
+            ret = @contest.update(contest_params)
+          end
+        end
+        if ret
+          format.html { redirect_to @contest, notice: 'Contest was successfully updated.' }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @contest.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -234,27 +246,29 @@ class ContestsController < ApplicationController
     @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
   end
 
-  def check_tasks?
-    def l_check(val)
-      unless Problem.exists?(val['problem_id'].to_i)
-        @contest.errors.add(:problems, val['problem_id'] + ' does not exist')
-        return true
-      end
+  def tasks_valid?
+    problem_params = contest_params[:contest_problem_joints_attributes]&.values
+    return true if problem_params.nil?
+    problems = problem_params.map { |val| Integer(val['problem_id'], exception: false) }
+    if problems.any?{ |e| e.nil? }
+      @contest.errors.add(:problems, '- Invalid problem')
       return false
     end
-    if contest_params[:contest_problem_joints_attributes].nil?
-      return true
+    if problems.size != problems.to_set.size
+      @contest.errors.add(:problems, '- Duplicate problems')
+      return false
     end
-    ret = contest_params[:contest_problem_joints_attributes].to_unsafe_h.map { |key, val| l_check(val) }
-    return !ret.any?
-  end
-
-  def is_started?
-    Time.now >= @contest.start_time or current_user&.admin?
+    valid_problems = Problem.where(id: problems).pluck(:id)
+    if problems.size != valid_problems.size
+      invalid_problems = problems - valid_problems
+      @contest.errors.add(:problems, 'not exist: ' + invalid_problems.join(', '))
+      return false
+    end
+    return true
   end
 
   def check_started!
-    unless is_started?
+    unless @contest.is_started? || current_user&.admin?
       flash[:notice] = 'Contest has not yet started.'
       redirect_to @contest
       return
@@ -267,6 +281,7 @@ class ContestsController < ApplicationController
       :id,
       :title,
       :description,
+      :description_before_contest,
       :start_time,
       :end_time,
       :contest_type,
@@ -275,6 +290,7 @@ class ContestsController < ApplicationController
       :freeze_minutes,
       :show_detail_result,
       :hide_old_submission,
+      :skip_group,
       :user_whitelist,
       compiler_ids: [],
       contest_problem_joints_attributes: [

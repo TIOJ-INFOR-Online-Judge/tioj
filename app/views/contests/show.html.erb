@@ -1,4 +1,15 @@
 <% set_page_title @contest.title %>
+
+<% if current_user&.admin %>
+  <div class="row">
+    <div class="col-md-12">
+      <div>
+        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), :class => "btn btn-info btn-xs" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <h4 class='page-header'>
   Contest Name : <%= @contest.title %>
 </h4>
@@ -36,14 +47,31 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Description</h1>
+<% if not @contest.is_started? %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">Description</h1>
+    </div>
+    <div class="panel-body">
+      <%= markdown(@contest.description_before_contest) %>
+    </div>
   </div>
-  <div class="panel-body">
-    <%= markdown(@contest.description) %>
+<% end %>
+
+<% if @contest.is_started? || current_user&.admin %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <% if !@contest.is_started? %>
+        <h1 class="panel-title">Description during contest (preview)</h1>
+      <% else %>
+        <h1 class="panel-title">Description</h1>
+      <% end %>
+    </div>
+    <div class="panel-body">
+      <%= markdown(@contest.description) %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <% if current_user&.admin %>
   <div style="margin-bottom:10px;">
@@ -61,7 +89,7 @@
     <h1 class="panel-title">Tasks</h1>
   </div>
   <div class="panel-body">
-    <% if is_started? %>
+    <% if @contest.is_started? || current_user&.admin? %>
       <% @tasks.each_with_index do |task, index| %>
         <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
         <br>

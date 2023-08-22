@@ -10,13 +10,10 @@
 #  updated_at             :datetime
 #  input                  :text(16777215)
 #  output                 :text(16777215)
-#  example_input          :text(16777215)
-#  example_output         :text(16777215)
 #  hint                   :text(16777215)
 #  visible_state          :integer          default("public")
 #  sjcode                 :text(4294967295)
 #  interlib               :text(4294967295)
-#  old_pid                :integer
 #  specjudge_type         :integer          not null
 #  interlib_type          :integer          not null
 #  specjudge_compiler_id  :bigint
@@ -28,6 +25,19 @@
 #  judge_between_stages   :boolean          default(FALSE)
 #  default_scoring_args   :string(255)
 #  strict_mode            :boolean          default(FALSE)
+#  skip_group             :boolean          default(FALSE)
+#  ranklist_display_score :boolean          default(FALSE)
+#  code_length_limit      :integer          default(5000000)
+#
+# Indexes
+#
+#  index_problems_on_name                   (name)
+#  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
+#  index_problems_on_visible_state          (visible_state)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (specjudge_compiler_id => compilers.id)
 #
 
 require 'test_helper'

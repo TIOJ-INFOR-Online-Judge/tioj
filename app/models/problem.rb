@@ -14,7 +14,6 @@
 #  visible_state          :integer          default("public")
 #  sjcode                 :text(4294967295)
 #  interlib               :text(4294967295)
-#  old_pid                :integer
 #  specjudge_type         :integer          not null
 #  interlib_type          :integer          not null
 #  specjudge_compiler_id  :bigint
@@ -26,6 +25,19 @@
 #  judge_between_stages   :boolean          default(FALSE)
 #  default_scoring_args   :string(255)
 #  strict_mode            :boolean          default(FALSE)
+#  skip_group             :boolean          default(FALSE)
+#  ranklist_display_score :boolean          default(FALSE)
+#  code_length_limit      :integer          default(5000000)
+#
+# Indexes
+#
+#  index_problems_on_name                   (name)
+#  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
+#  index_problems_on_visible_state          (visible_state)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (specjudge_compiler_id => compilers.id)
 #
 
 class Problem < ApplicationRecord
@@ -37,6 +49,7 @@ class Problem < ApplicationRecord
   acts_as_taggable_on :tags, :solution_tags
 
   has_many :submissions, :dependent => :destroy
+  has_many :old_submissions, :dependent => :destroy
 
   has_many :contest_problem_joints, :dependent => :destroy
   has_many :contests, :through => :contest_problem_joints
@@ -60,6 +73,8 @@ class Problem < ApplicationRecord
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
+
+  validates :code_length_limit, numericality: { in: 1..16777216 }
 
   validates :score_precision, numericality: { in: 0..6 }
   validates :num_stages, numericality: { in: 1..10 }

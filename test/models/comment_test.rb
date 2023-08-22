@@ -11,6 +11,11 @@
 #  updated_at   :datetime
 #  user_visible :boolean          default(FALSE)
 #
+# Indexes
+#
+#  index_comments_on_post_id  (post_id)
+#  index_comments_on_user_id  (user_id)
+#
 
 require 'test_helper'
 
