@@ -1,0 +1,19 @@
+<%= form_for @role do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @role.errors, item: 'Role'} %>
+
+  <div class="form-group">
+    <%= f.label :name, 'Role Name' %> <br>
+    <%= f.text_field :name, :class => 'form-control', :placeholder => 'Role Name' %>
+  </div>
+  <%# <div class="form-group"> %>
+  <%#   <%= f.label :ip, 'IP Address' %1> <br> %>
+  <%#   <%= f.text_field :ip, :class => 'form-control', :placeholder => 'IP Address' %1> %>
+  <%# </div> %>
+  <%# <div class="form-group"> %>
+  <%#   <%= f.label :key, 'Secure Key' %1> <br> %>
+  <%#   <%= f.text_field :key, :class => 'form-control', :placeholder => 'Secure Key' %1> %>
+  <%# </div> %>
+  <div class="form-group">
+    <%= f.submit :class=>"btn btn-primary "%>
+  </div>
+<% end %>

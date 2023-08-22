@@ -1,0 +1,24 @@
+<h4 class="page-header" >Roles</h4>
+<%= link_to 'New Role', new_role_path, :class => "btn btn-success btn-sm" %>
+<table class = "table table-hover table-striped table-condensed">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <%# <th>IP Address</th> %>
+      <%# <th>Key</th> %>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @roles.each do |role| %>
+      <tr>
+        <td><%= role.name %></td>
+        <th>
+          <%= link_to 'Edit', edit_role_path(role), :class => 'btn btn-info btn-xs' %>
+          <%= link_to 'Destroy', role_path(role), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+        </th>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
