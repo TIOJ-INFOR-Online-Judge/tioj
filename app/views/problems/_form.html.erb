@@ -163,6 +163,10 @@
     </div>
   </div>
   <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
+    <%= f.text_field :specjudge_compile_args, class: 'form-control flat' %>
+  </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
     <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
     <div class="collapse" id="sjDescription" style="height: auto;">
       <div class="panel panel-default">

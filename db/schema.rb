@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_02_023419) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_28_115840) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -261,6 +261,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_02_023419) do
     t.boolean "skip_group", default: false
     t.boolean "ranklist_display_score", default: false
     t.integer "code_length_limit", default: 5000000
+    t.string "specjudge_compile_args"
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"

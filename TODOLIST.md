@@ -1,7 +1,7 @@
 - [ ] Batch upload testdata
 - [x] Testdata download for admin
 - [x] Testdata compression (#19)
-- [ ] User-specified compilation flags (special judge / user program) (#25)
+- [x] User-specified compilation flags (special judge / user program) (#25)
 - [x] Disable sign up in settings
 - [x] Pre-contest notice & UI color
 - [x] Upload submission by file + non-UTF-8 code

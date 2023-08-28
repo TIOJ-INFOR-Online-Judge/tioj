@@ -28,6 +28,7 @@
 #  skip_group             :boolean          default(FALSE)
 #  ranklist_display_score :boolean          default(FALSE)
 #  code_length_limit      :integer          default(5000000)
+#  specjudge_compile_args :string(255)
 #
 # Indexes
 #
