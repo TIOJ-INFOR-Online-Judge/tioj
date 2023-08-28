@@ -36,11 +36,13 @@ import './globals/users';
 // helpers
 import './helpers/init_code_copy_script'
 import { buttonCheckboxSetup } from './helpers/button_checkbox_setup';
-window.buttonCheckboxSetup = buttonCheckboxSetup
+window.buttonCheckboxSetup = buttonCheckboxSetup;
 
 // pages
 import { initContestRanklist, initContestCable } from './pages/contests/main';
 import { initSubmissionCable } from './pages/submissions/main';
-window.initContestRanklist = initContestRanklist
-window.initContestCable = initContestCable
-window.initSubmissionCable = initSubmissionCable
+import { initProblemForm } from './pages/problems/main';
+window.initContestRanklist = initContestRanklist;
+window.initContestCable = initContestCable;
+window.initSubmissionCable = initSubmissionCable;
+window.initProblemForm = initProblemForm;
