@@ -106,4 +106,13 @@ module ContestsHelper
     res.each_value {|x| x.each {|item| item[:state].pop}} if rule == 'ioi_new'
     {result: res, participants: participants.to_a, first_ac: first_ac}
   end
+
+  def problem_index_text(index)
+    text = ''
+    while index >= 26
+      text = (65 + index % 26).chr + text
+      index = index / 26 - 1
+    end
+    return 'p' + (65 + index % 26).chr + text
+  end
 end

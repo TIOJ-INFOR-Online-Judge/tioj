@@ -121,7 +121,7 @@
     <div class="panel-body">
       <% if @contest.is_started? || current_user&.admin? %>
         <% @tasks.each_with_index do |task, index| %>
-          <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
+          <%= link_to (problem_index_text(index) + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
           <br>
         <% end %>
       <% else %>

@@ -7,7 +7,7 @@
     <th>Username</th>
     <th>Nickname</th>
     <% @tasks.each_with_index do |task, index| %>
-      <th><%= link_to ('p' + (65+index).chr), contest_problem_path(@contest, task) %></th>
+      <th><%= link_to problem_index_text(index), contest_adaptive_polymorphic_path([task]) %></th>
     <% end %>
     <% if @contest.type_acm? %>
       <th>Solv</th>

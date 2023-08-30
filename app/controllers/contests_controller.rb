@@ -5,7 +5,7 @@ class ContestsController < ApplicationController
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
-  layout :set_contest_layout, only: [:show, :edit, :dashboard, :dashboard_update, :sign_in]
+  layout :set_contest_layout, only: [:show, :edit, :dashboard, :sign_in]
 
   def set_contest_task
     redirect_to contest_path(@contest)

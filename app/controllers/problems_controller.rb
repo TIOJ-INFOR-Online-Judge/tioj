@@ -240,6 +240,7 @@ class ProblemsController < ApplicationController
       :num_stages,
       :specjudge_type,
       :specjudge_compiler_id,
+      :specjudge_compile_args,
       :judge_between_stages,
       :default_scoring_args,
       :interlib_type,
