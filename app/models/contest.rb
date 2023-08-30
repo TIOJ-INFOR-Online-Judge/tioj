@@ -15,7 +15,6 @@
 #  freeze_minutes             :integer          default(0), not null
 #  show_detail_result         :boolean          default(TRUE), not null
 #  hide_old_submission        :boolean          default(FALSE), not null
-#  user_whitelist             :text(65535)
 #  skip_group                 :boolean          default(FALSE)
 #  description_before_contest :text(16777215)
 #  dashboard_during_contest   :boolean          default(TRUE)

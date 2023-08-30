@@ -252,7 +252,6 @@ class ContestsController < ApplicationController
       :show_detail_result,
       :hide_old_submission,
       :skip_group,
-      :user_whitelist,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,

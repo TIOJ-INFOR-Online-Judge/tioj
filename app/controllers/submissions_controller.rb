@@ -244,11 +244,6 @@ class SubmissionsController < ApplicationController
       redirect_to contest_path(@contest), alert: 'You are not registered in this contest.'
       return
     end
-    # TODO: delete user_whitelist to registration
-    if Regexp.new(@contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-      redirect_to contest_problem_path(@contest, @problem), notice: 'You are not allowed to submit in this contest.'
-      return
-    end
   end
 
   def check_problem_visibility

@@ -82,11 +82,6 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :user_whitelist, 'Users that are allowed to submit in this contest, in regex' %>
-    <%= f.text_field :user_whitelist, class: 'form-control flat' %>
-  </div>
-
-  <div class="form-group">
     <%= f.label :dashboard_during_contest, class: 'checkbox' do %>
       <%= f.check_box :dashboard_during_contest, 'data-toggle': 'checkbox' %>
       Enable dashboard during contest
