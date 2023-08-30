@@ -191,16 +191,29 @@ class ContestRegistrationsController < InheritedResources::Base
   end
 
   def create
-    @user = User.where(username: params[:username]).first
-    if @user
-      begin
-        @contest.contest_registrations.create(user: @user, approved: true)
-        redirect_to contest_contest_registrations_path(@contest), notice: "User was successfully registered."
-      rescue ActiveRecord::RecordNotUnique
-        redirect_to contest_contest_registrations_path(@contest), alert: "User already registered."
+    if params[:use_regex] == '1'
+      pat = Regexp.new(params[:username])
+      new_registrations = User.all.pluck(:id, :username).filter{|x| pat.match(x[1])}.map{|x|
+        {user_id: x[0], contest_id: @contest.id, approved: true}
+      }
+      if new_registrations.empty?
+        redirect_to contest_contest_registrations_path(@contest), alert: "User not found."
+      else
+        ContestRegistration.import(new_registrations, on_duplicate_key_update: [:approved])
+        redirect_to contest_contest_registrations_path(@contest), notice: "Users were successfully registered."
       end
     else
-      redirect_to contest_contest_registrations_path(@contest), alert: "User not found."
+      @user = User.where(username: params[:username]).first
+      if @user
+        begin
+          @contest.contest_registrations.create(user: @user, approved: true)
+          redirect_to contest_contest_registrations_path(@contest), notice: "User was successfully registered."
+        rescue ActiveRecord::RecordNotUnique
+          redirect_to contest_contest_registrations_path(@contest), alert: "User already registered."
+        end
+      else
+        redirect_to contest_contest_registrations_path(@contest), alert: "User not found."
+      end
     end
   end
 

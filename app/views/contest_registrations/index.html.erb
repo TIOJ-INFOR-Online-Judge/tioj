@@ -45,8 +45,12 @@
 
 <%= form_with url: contest_contest_registrations_path(@contest), class: 'form-inline' do |f| %>
   <div class="form-group">
-    <%= f.label :username, "Register a user" %>
-    <%= f.text_field :username, placeholder: "Enter Username", class: 'form-control input-sm flat' %>
+    <%= f.label :username, "Register user(s)" %>
+    <%= f.text_field :username, placeholder: "Enter Username or Regex", class: 'form-control input-sm flat' %>
+    <%= f.label :use_regex, class: 'checkbox' do %>
+      <%= f.check_box :use_regex, 'data-toggle': 'checkbox' %>
+      Register all matched users (by regex)
+    <% end %>
   </div>
   <%= f.submit 'Submit', class: 'btn btn-success btn-xs' %>
 <% end %>
