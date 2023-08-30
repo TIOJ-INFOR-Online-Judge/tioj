@@ -8,6 +8,6 @@ class ContestRegistrationsTest < ApplicationSystemTestCase
   test "visiting the index" do
     sign_in users(:adminOne)
     visit contest_contest_registrations_url(@contest)
-    assert_selector "h1", text: "Contest registrations"
+    assert_selector "h4", text: "Contest users"
   end
 end

@@ -58,7 +58,7 @@ gem 'mathjax-rails-3'
 gem 'acts-as-taggable-on'
 
 # Active Admin, db admin tool: https://github.com/gregbell/active_admin
-gem 'activeadmin'
+gem 'activeadmin', '~> 2'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -102,6 +102,5 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'webdrivers'
   gem 'puma'
 end
