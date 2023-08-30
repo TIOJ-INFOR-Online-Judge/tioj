@@ -28,11 +28,12 @@
             <tr>
               <% if contest.is_running? %>
                 <td><strong><%= contest.title %></strong></td>
-                <td style="text-align: right;"><%= link_to 'Participate', contest, class: 'btn btn-xs btn-danger', target: '_blank' %></td>
               <% else %>
                 <td><%= contest.title %></td>
-                <td style="text-align: right;"><%= link_to 'View', contest, class: 'btn btn-xs btn-primary', target: '_blank' %></td>
               <% end %>
+              <td style="text-align: right;">
+                <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
+              </td>
               <% if contest.is_ended? %>
                 <td style="white-space: nowrap;">Ended</td>
                 <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>

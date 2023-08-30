@@ -26,7 +26,7 @@
       <tr>
         <td><%= contest.title %></td>
         <td style="text-align: right;">
-          <%= link_to contest.is_running? ? 'Participate' : 'View', contest, class: 'btn btn-xs btn-primary', target: '_blank' %>
+          <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
         </td>
         <% if contest.is_ended? %>
           <td>Ended</td>

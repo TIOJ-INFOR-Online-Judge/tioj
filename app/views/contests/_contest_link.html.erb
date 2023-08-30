@@ -1,0 +1,8 @@
+<% is_running = contest.is_running? && contest.user_can_submit?(current_user) %>
+<% text = is_running ? 'Participate' : 'View' %>
+<% color = is_running ? 'btn-danger' : 'btn-primary' %>
+<% if contest.default_single_contest && !current_user&.admin? %>
+  <%= link_to text, single_contest_path(contest), class: 'btn btn-xs ' + color, target: '_blank' %>
+<% else %>
+  <%= link_to text, contest, class: 'btn btn-xs ' + color, target: '_blank' %>
+<% end %>

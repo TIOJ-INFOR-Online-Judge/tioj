@@ -102,6 +102,10 @@
       <%= f.check_box :hide_old_submission, 'data-toggle': 'checkbox' %>
       Hide old submissions in contest problems
     <% end %>
+    <%= f.label :default_single_contest, class: 'checkbox' do %>
+      <%= f.check_box :default_single_contest, 'data-toggle': 'checkbox' %>
+      Always go to Single Contest page by default for non-admin users
+    <% end %>
   </div>
 
   <div class="form-group">

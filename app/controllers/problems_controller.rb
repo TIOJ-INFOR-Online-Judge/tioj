@@ -202,7 +202,7 @@ class ProblemsController < ApplicationController
     return if effective_admin?
     raise_not_found if @problem.visible_invisible?
     if @problem.visible_contest?
-      raise_not_found unless @contest&.is_started? && @contest.problems.exists?(@problem)
+      raise_not_found unless @contest&.is_started? && @contest.problems.exists?(@problem.id)
     end
   end
 
