@@ -95,6 +95,7 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
     return key_a.compare(key_b);
   }));
   let children = tbody.children();
+  if (children.length === 0) return;
   let rank = 0;
   let color = 0;
   let color_map = ['warning', 'success', 'info'];
@@ -120,7 +121,7 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
 }
 
 export function contestRanklistReorder(data, timestamp) {
-  if (data.contest_type == 'acm') {
+  if (data.contest_type === 'acm') {
     reorderTableInternal(
       data,
       timestamp,
