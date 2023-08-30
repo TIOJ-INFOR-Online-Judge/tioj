@@ -146,6 +146,7 @@ class ContestRegistrationsController < InheritedResources::Base
         @form.account_table.each{|x| csv << x}
       end
       @data_csv = ERB::Util.url_encode(@data_csv)
+      helpers.notify_contest_channel @contest.id
       render 'batch_create_result', notice: 'Contest users were successfully created.'
     else
       render action: 'batch_new'
@@ -174,6 +175,7 @@ class ContestRegistrationsController < InheritedResources::Base
       redirect_to contest_contest_registrations_path(@contest), alert: 'Invalid action.'
       return
     end
+    helpers.notify_contest_channel @contest.id
     redirect_to contest_contest_registrations_path(@contest), notice: msg
   end
 
@@ -200,6 +202,7 @@ class ContestRegistrationsController < InheritedResources::Base
         redirect_to contest_contest_registrations_path(@contest), alert: "User not found."
       else
         ContestRegistration.import(new_registrations, on_duplicate_key_update: [:approved])
+        helpers.notify_contest_channel @contest.id
         redirect_to contest_contest_registrations_path(@contest), notice: "Users were successfully registered."
       end
     else
@@ -207,6 +210,7 @@ class ContestRegistrationsController < InheritedResources::Base
       if @user
         begin
           @contest.contest_registrations.create(user: @user, approved: true)
+          helpers.notify_contest_channel @contest.id
           redirect_to contest_contest_registrations_path(@contest), notice: "User was successfully registered."
         rescue ActiveRecord::RecordNotUnique
           redirect_to contest_contest_registrations_path(@contest), alert: "User already registered."
@@ -225,6 +229,7 @@ class ContestRegistrationsController < InheritedResources::Base
       @registration.update(approved: true)
       msg = 'Registration was successfully approved.'
     end
+    helpers.notify_contest_channel @contest.id
     redirect_to contest_contest_registrations_path(@contest), notice: msg
   end
 
@@ -236,6 +241,7 @@ class ContestRegistrationsController < InheritedResources::Base
       @registration.destroy
       msg = 'Registration was successfully deleted.'
     end
+    helpers.notify_contest_channel @contest.id
     redirect_to contest_contest_registrations_path(@contest), notice: msg
   end
 

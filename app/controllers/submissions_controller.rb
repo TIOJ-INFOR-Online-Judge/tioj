@@ -55,7 +55,7 @@ class SubmissionsController < ApplicationController
 
   def download_raw
     if params[:inline] == '1'
-      send_data @submission.code_content.code, filename: "#{@submission.id}#{@submission.compiler.extension}", disposition: 'inline', type: 'text/plain'
+      send_data @submission.code_content.code, filename: "#{@submission.id}#{@submission.compiler.extension}", disposition: 'inline', type: 'text/plain; charset=utf-8'
     else
       send_data @submission.code_content.code, filename: "#{@submission.id}#{@submission.compiler.extension}"
     end

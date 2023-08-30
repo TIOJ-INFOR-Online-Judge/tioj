@@ -123,6 +123,8 @@ class ApplicationController < ActionController::Base
       contest_id = contest_param && contest_param.to_i
       @contest = Contest.find(contest_id)
     end
+    # used in ActionCable
+    session[:current_single_contest] = @layout == :single_contest ? @contest&.id : nil
   end
 
   def set_contest_layout

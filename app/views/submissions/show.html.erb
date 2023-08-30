@@ -32,7 +32,7 @@
 
 <p>
 <%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-default btn-xs' %>
-<% if Rails.configuration.x.settings.dig(:old_submission_views) and @submission.old_submission %>
+<% if Rails.configuration.x.settings.dig(:old_submission_views) && @submission.old_submission && @layout != :single_contest %>
   <% if @show_old %>
     <%= link_to 'View New Results', submission_path(@submission), class: 'btn btn-default btn-xs' %>
   <% else %>
@@ -275,8 +275,8 @@
   <div id="user-code" class="panel panel-default">
     <div class="panel-heading">
       <div class="pull-right" style="position: relative; top: -0.8rem">
-        <%= link_to 'View Raw', raw_submission_path(@submission, inline: 1), class: 'btn btn-info btn-xs' %>
-        <%= link_to 'Download', raw_submission_path(@submission), class: 'btn btn-info btn-xs' %>
+        <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-xs' %>
       </div>
       <h1 class="panel-title">Code</h1>
     </div>
