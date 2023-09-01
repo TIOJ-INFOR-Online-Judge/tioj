@@ -11,7 +11,7 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     super
     resource.generate_random_avatar
-    resource.save!
+    resource.save # errors would have already happened and rendered in super
   end
 
   def update
