@@ -29,12 +29,15 @@ if grep -q 'Ubuntu' /etc/*-release; then
   sudo apt -y update
   sudo apt -y install software-properties-common
   sudo apt-add-repository -y ppa:rael-gc/rvm
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | sudo tee /usr/share/keyrings/yarnkey.gpg >/dev/null
+  sudo mkdir -p /etc/apt/keyrings
+  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
   echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  curl -fsSL https://deb.nodesource.com/setup_19.x | sudo -E bash -
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
+  sudo apt -y update
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       git cmake ninja-build g++-11 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
