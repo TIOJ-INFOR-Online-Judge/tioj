@@ -11,7 +11,7 @@
 #  input                  :text(16777215)
 #  output                 :text(16777215)
 #  hint                   :text(16777215)
-#  visible_state          :integer          default("public")
+#  visible_state          :integer          default("invisible")
 #  sjcode                 :text(4294967295)
 #  interlib               :text(4294967295)
 #  specjudge_type         :integer          not null
