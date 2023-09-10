@@ -9,9 +9,9 @@ module ContestsHelper
 
   def contest_type_short_desc_map
     {
-      "ioi" => "IOI style",
-      "ioi_new" => "New IOI style",
-      "acm" => "ACM style",
+      "ioi" => "IOI",
+      "ioi_new" => "New IOI",
+      "acm" => "ACM",
     }
   end
 

@@ -11,7 +11,7 @@ module SingleContestAuthenticationConcern
     if @layout == :single_contest
       ret = get_single_contest_user
       return nil if ret.nil?
-      return @contest.user_registered?(ret) ? ret : nil
+      return @contest.user_register_status(ret) ? ret : nil
     end
     super
   end

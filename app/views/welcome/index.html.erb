@@ -10,7 +10,7 @@
       <%= render 'articles/table', articles: @bulletins %>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-lg-12">
     <div class="well well-lg">
       <h5>Recent Contests<small class="pull-right"><%= link_to "Show all", contests_path %></small></h5>
       <table class="table table-hover table-striped">
@@ -18,9 +18,12 @@
           <tr>
             <th>Title</th>
             <th></th>
-            <th>Status</th>
             <% if user_signed_in? %>
+              <th>Registered?</th>
+              <th></th>
             <% end %>
+            <th>Status</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -34,6 +37,10 @@
               <td style="text-align: right;">
                 <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
               </td>
+              <% if user_signed_in? %>
+                <td><%= render partial: 'contests/register_status', locals: {status: @registrations[contest.id], text: true} %></td>
+                <td><%= render partial: 'contests/register_button', locals: {contest: contest, status: @registrations[contest.id], standalone: false} %></td>
+              <% end %>
               <% if contest.is_ended? %>
                 <td style="white-space: nowrap;">Ended</td>
                 <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
@@ -53,7 +60,7 @@
       </table>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-lg-12">
     <div class="well well-lg">
       <h5>Ranked Coders<small class="pull-right"><%= link_to "Show all", users_path %></small></h5>
       <table class="table table-hover table-striped">

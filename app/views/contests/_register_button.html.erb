@@ -1,0 +1,14 @@
+<% if contest.can_register? %>
+  <% btn_class = standalone ? 'btn-lg' : 'btn-xs' %>
+  <% if standalone %>
+    <div class="pull-right">
+  <% end %>
+    <% if status.nil? %>
+      <%= button_to "Register", register_contest_path(contest), method: :post, class: 'btn btn-success ' + btn_class, form: {style: 'display: inline'} %>
+    <% else %>
+      <%= button_to "Unregister", register_contest_path(contest), method: :post, class: 'btn btn-danger ' + btn_class, form: {style: 'display: inline'}, params: {cancel: 1} %>
+    <% end %>
+  <% if standalone %>
+    </div>
+  <% end %>
+<% end %>
