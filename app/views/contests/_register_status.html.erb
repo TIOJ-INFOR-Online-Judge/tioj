@@ -1,7 +1,7 @@
 <% if status.nil? %>
-  <span class="glyphicon glyphicon-remove text-danger"></span> <% if text %>Not registered<% end %>
+  <span class="glyphicon glyphicon-remove text-danger<% unless text %> align-middle<% end %>"></span> <% if text %>Not registered<% end %>
 <% elsif status %>
-  <span class="glyphicon glyphicon-ok text-success"></span> <% if text %>Registered<% end %>
+  <span class="glyphicon glyphicon-ok text-success<% unless text %> align-middle<% end %>"></span> <% if text %>Registered<% end %>
 <% else %>
-  <span class="glyphicon glyphicon-play text-warning"></span> <% if text %>Pending approval<% end %>
+  <span class="glyphicon glyphicon-play text-warning<% unless text %> align-middle<% end %>"></span> <% if text %>Pending approval<% end %>
 <% end %>

@@ -16,7 +16,7 @@
         <th>Registered?</th>
       <% end %>
       <th>Start Time</th>
-      <th>End Time</th>
+      <th>Length</th>
       <th>Style</th>
       <th>Dashboard</th>
       <% if current_user&.admin? %>
@@ -48,7 +48,7 @@
           </td>
         <% end %>
         <td><%= contest.start_time.to_fs(:clean_min) %></td>
-        <td><%= contest.end_time.to_fs(:clean_min) %></td>
+        <td><%= duration_text(contest.end_time - contest.start_time) %></td>
         <td><%= contest_type_short_desc_map[contest.contest_type] %></td>
         <td><%= contest.dashboard_during_contest ? "Yes" : "No" %></td>
         <% if current_user&.admin? %>
