@@ -31,12 +31,13 @@ module SingleContestAuthenticationConcern
     if @layout == :single_contest
       return if user_signed_in?
       redirect_to sign_in_single_contest_path(@contest)
+      return
     end
     super
   end
 
  private
-  
+
   def get_single_contest_user
     user_id = session.dig(:single_contest, @contest.id, :user_id)
     return nil if user_id.nil?

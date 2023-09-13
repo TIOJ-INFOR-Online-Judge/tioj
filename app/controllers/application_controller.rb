@@ -84,9 +84,11 @@ class ApplicationController < ActionController::Base
   def authenticate_user_and_running_if_single_contest!
     if @layout == :single_contest
       authenticate_user!
+      return if performed?
       unless @contest.is_running?
         flash[:alert] = 'Contest is not running.'
         redirect_to single_contest_path(@contest)
+        return
       end
     end
   end
