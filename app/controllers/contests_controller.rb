@@ -162,7 +162,7 @@ class ContestsController < ApplicationController
       respond_to do |format|
         begin
           entry.save!
-          format.html { redirect_back fallback_location: root_path, notice: @contest.require_approval? ? 'Registration request sent, approval pending.' : 'Successfully registered.' }
+          format.html { redirect_back fallback_location: root_path, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
           format.json { head :no_content }
         rescue ActiveRecord::RecordNotUnique
           format.html { redirect_back fallback_location: root_path, alert: 'Registration failed.' }

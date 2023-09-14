@@ -20,7 +20,7 @@
 </h4>
 
 <div class="row">
-  <div class="col-sm-6 col-lg-3">
+  <div class="col-sm-6 <% if @layout == :single_contest %>col-lg-4<% else %>col-lg-3<% end %>">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Start / End</h1>
@@ -46,26 +46,32 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-3">
+  <div class="<% if @layout == :single_contest %>col-sm-12 col-lg-4<% else %>col-sm-6 col-lg-3<% end %>">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Register Before</h1>
       </div>
       <div class="panel-body">
         <%= @contest.effective_register_before.to_fs(:clean) %>
+        <% unless @layout == :single_contest %>
+          <br>
+          <%= register_mode_desc_map[@contest.register_mode] %>
+        <% end %>
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-lg-2">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Registration Status</h1>
-      </div>
-      <div class="panel-body">
-        <%= render partial: 'register_status', locals: {status: @register_status, text: true} %>
+  <% unless @layout == :single_contest %>
+    <div class="col-sm-6 col-lg-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Registration Status</h1>
+        </div>
+        <div class="panel-body">
+          <%= render partial: 'register_status', locals: {status: @register_status, text: true} %>
+        </div>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
 <% if effective_admin? || !(@contest.is_started? && @contest.user_can_submit?(current_user)) %>
