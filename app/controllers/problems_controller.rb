@@ -53,7 +53,7 @@ class ProblemsController < ApplicationController
     unless current_user&.admin?
       @problems = @problems.joins(:roles)
       p = @problems.where(visible_state: Problem.visible_states[:public])
-      p = p.or(@problems.joins(:roles).where(roles: current_user.roles))
+      p = p.or(@problems.where(roles: current_user.roles))
       @problems = p
     end
     if not params[:tag].blank?

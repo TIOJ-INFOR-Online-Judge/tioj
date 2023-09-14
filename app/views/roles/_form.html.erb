@@ -1,9 +1,30 @@
-<%= form_for @role do |f| %>
+<%= form_for(@role) do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @role.errors, item: 'Role'} %>
 
   <div class="form-group">
     <%= f.label :name, 'Role Name' %> <br>
     <%= f.text_field :name, :class => 'form-control', :placeholder => 'Role Name' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :problem_ids, 'Problems' %> <br>
+    <!-- need a more elegant way to send request -->
+    <% Problem.all.each do |prob| %>
+      <div class="row">
+        <div class="col-md-1">
+          <%= check_box_tag 'role[problem_ids][]', prob.id, @role.problems.include?(prob) %>
+        </div>
+
+        <div class="col-md-1">
+          <%= prob.id %>
+        </div>
+        <div class="col-md-1">
+          <%= prob.name %>
+        </div>
+
+      </div>
+    <% end %>
+    <%= hidden_field_tag 'role[problem_ids][]', '' %>
   </div>
 
   <div class="form-group">
@@ -18,6 +39,9 @@
 
         <div class="col-md-1">
           <%= user.username %>
+        </div>
+        <div class="col-md-1">
+          <%= user.nickname %>
         </div>
         <div class="col-md-1">
           <%= user.name %>
