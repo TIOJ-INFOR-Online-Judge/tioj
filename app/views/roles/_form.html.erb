@@ -5,15 +5,35 @@
     <%= f.label :name, 'Role Name' %> <br>
     <%= f.text_field :name, :class => 'form-control', :placeholder => 'Role Name' %>
   </div>
-  <%# <div class="form-group"> %>
-  <%#   <%= f.label :ip, 'IP Address' %1> <br> %>
-  <%#   <%= f.text_field :ip, :class => 'form-control', :placeholder => 'IP Address' %1> %>
-  <%# </div> %>
-  <%# <div class="form-group"> %>
-  <%#   <%= f.label :key, 'Secure Key' %1> <br> %>
-  <%#   <%= f.text_field :key, :class => 'form-control', :placeholder => 'Secure Key' %1> %>
-  <%# </div> %>
+
   <div class="form-group">
-    <%= f.submit :class=>"btn btn-primary "%>
+    <%= f.label :user_ids, 'Members' %> <br>
+    <!-- optionally, select non-admin? -->
+    <!-- need a more elegant way to send request -->
+    <% User.all.each do |user| %>
+      <div class="row">
+        <div class="col-md-1">
+          <%= check_box_tag 'role[user_ids][]', user.id, @role.users.include?(user) %>
+        </div>
+
+        <div class="col-md-1">
+          <%= user.username %>
+        </div>
+        <div class="col-md-1">
+          <%= user.name %>
+        </div>
+        <div class="col-md-1">
+          <%= user.email %>
+        </div>
+
+      </div>
+    <% end %>
+    <%= hidden_field_tag 'role[user_ids][]', '' %>
+  </div>
+
+  <hr>
+
+  <div class="form-group">
+    <%= f.submit :class=>"btn btn-primary"%>
   </div>
 <% end %>

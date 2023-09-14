@@ -1,5 +1,9 @@
 <h4 class="page-header" >Roles</h4>
-<%= link_to 'New Role', new_role_path, :class => "btn btn-success btn-sm" %>
+
+<% if current_user&.admin? then %>
+  <%= link_to 'New Role', new_role_path, :class => "btn btn-success btn-sm" %>
+<% end %>
+
 <table class = "table table-hover table-striped table-condensed">
   <thead>
     <tr>
@@ -13,8 +17,10 @@
         <td><%= role.name %></td>
         <th>
           <%= link_to 'View', role, :class => 'btn btn-xs btn-primary' %>
-          <%= link_to 'Edit', edit_role_path(role), :class => 'btn btn-info btn-xs' %>
-          <%= link_to 'Destroy', role_path(role), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+          <% if current_user&.admin? then %>
+            <%= link_to 'Edit', edit_role_path(role), :class => 'btn btn-info btn-xs' %>
+            <%= link_to 'Destroy', role_path(role), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+          <% end %>
         </th>
       </tr>
     <% end %>
