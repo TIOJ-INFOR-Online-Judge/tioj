@@ -25,3 +25,5 @@
  *= require blueimp-file-upload/css/jquery.fileupload
  *= require blueimp-file-upload/css/jquery.fileupload-ui
  */
+ 
+ @import 'custom_styles.css';
