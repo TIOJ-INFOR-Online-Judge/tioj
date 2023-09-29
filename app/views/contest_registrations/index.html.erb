@@ -1,0 +1,136 @@
+<div class="pull-right">
+  <%= link_to "Generate contest users", batch_new_contest_contest_registrations_path(@contest), class: 'btn btn-lg btn-success' %>
+</div>
+<h4>Contest users</h4>
+
+<% if @contest_users %>
+  <% alert_tag class: 'alert-warning' do %>
+    Deleting a contest user <strong>WILL</strong> delete all their submissions.
+  <% end %>
+
+  <table class="table table-hover table-striped table-condensed">
+    <tr>
+      <th></th>
+      <th>Username</th>
+      <th>Nickname</th>
+      <th>
+        <%= button_to 'Delete All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'delete_contest_users'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'} %>
+      </th>
+    </tr>
+    <% @contest_users.each do |item| %>
+    <tr>
+      <% user = item.user %>
+      <td><%= image_tag user.avatar.mini_thumb.to_s, class: 'img-rounded' %></td>
+      <td>
+        <%= user.username %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-warning" data-toggle="tooltip" data-placement="right" title="This contest user shadows a normal user."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
+      <td><%= user.nickname %></td>
+      <td>
+        <%= link_to 'Edit', edit_contest_contest_user_path(@contest, user), class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, data: {confirm: 'Are you sure to delete? This will permanently delete all their submissions.'}, class:'btn btn-xs btn-danger' %>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+<% else %>
+  No contest users.
+<% end %>
+
+<hr style="border-top: 3px solid #ddd">
+
+<h4>Registered users</h4>
+
+<%= form_with url: contest_contest_registrations_path(@contest), class: 'form-inline' do |f| %>
+  <div class="form-group">
+    <%= f.label :username, "Register user(s)" %>
+    <%= f.text_field :username, placeholder: "Enter Username or Regex", class: 'form-control input-sm flat' %>
+    <%= f.label :use_regex, class: 'checkbox' do %>
+      <%= f.check_box :use_regex, 'data-toggle': 'checkbox' %>
+      Register all matched users (by regex)
+    <% end %>
+  </div>
+  <%= f.submit 'Submit', class: 'btn btn-success btn-xs' %>
+<% end %>
+
+<% if @registered_users %>
+  <% alert_tag do %>
+    Unregistering a user won't delete their existing submissions.
+  <% end %>
+
+  <table class="table table-hover table-striped table-condensed">
+    <tr>
+      <th></th>
+      <th>Username</th>
+      <th>Nickname</th>
+      <th>
+        <%= button_to 'Unregister All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'unregister_all'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all users?'} %>
+      </th>
+    </tr>
+    <% @registered_users.each do |item| %>
+    <tr>
+      <% user = item.user %>
+      <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
+      <td>
+        <%= link_to user.username, user_path(user) %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
+      <td><%= user.nickname %></td>
+      <td>
+        <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-danger' %>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+<% else %>
+  No currently registered users.
+<% end %>
+
+<hr style="border-top: 3px solid #ddd">
+
+<h4>Unapproved registrations</h4>
+
+<% if @unapproved_users %>
+  <% alert_tag class: 'alert-warning' do %>
+    Deleting the registration will allow the user to register again.
+  <% end %>
+
+  <table class="table table-hover table-striped table-condensed">
+    <tr>
+      <th></th>
+      <th>Username</th>
+      <th>Nickname</th>
+      <th>
+        <%= button_to 'Approve All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'approve_all'}, class: 'btn btn-xs btn-info', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to approve all registrations?'} %>
+        <%= button_to 'Delete All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'delete_unapproved'}, class: 'btn btn-xs btn-danger', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete all unapproved registrations?'} %>
+      </th>
+    </tr>
+    <% @unapproved_users.each do |item| %>
+    <tr>
+      <% user = item.user %>
+      <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
+      <td>
+        <%= link_to user.username, user_path(user) %>
+        <% if @duplicate_names.include?(user.username) %>
+          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+        <% end %>
+      </td>
+      <td><%= user.nickname %></td>
+      <td>
+        <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-info' %>
+        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+<% else %>
+  No currently unapproved registrations.
+<% end %>
+
+<script>
+$(() => { $('[data-toggle="tooltip"]').tooltip(); })
+</script>

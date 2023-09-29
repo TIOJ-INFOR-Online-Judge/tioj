@@ -1,9 +1,20 @@
 ActiveAdmin.register Article do
   permit_params :title, :content, :era, :pinned, :category
-  includes :user
+  includes :user  
+
+  index do
+    selectable_column
+    id_column
+    column :title
+    column :era
+    column :user
+    actions
+  end
+
   preserve_default_filters!
   remove_filter :attachments
   filter :id
+
   # See permitted parameters documentation:
   # https://github.com/gregbell/active_admin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #

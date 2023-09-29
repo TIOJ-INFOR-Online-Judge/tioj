@@ -2,7 +2,7 @@ module ProblemsHelper
   def topcoder(problem)
     submission = (problem.submissions.select(:user_id)
         .where(contest_id: nil, result: 'AC')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)).first
+        .order(score: :desc, total_time: :asc, total_memory: :asc, code_length: :asc, id: :asc)).first
     return User.find_by_id(submission.user_id) if submission
     return nil if submission.blank?
   end
@@ -10,7 +10,7 @@ module ProblemsHelper
   def topcoders(problems)
     topcoder_clause = (Submission.select(:user_id)
         .where(contest_id: nil, result: 'AC').where('problem_id = problems.id')
-        .order(score: :desc, total_time: :asc, total_memory: :asc).order("LENGTH(code) ASC").order(id: :asc)
+        .order(score: :desc, total_time: :asc, total_memory: :asc, code_length: :asc, id: :asc)
         .limit(1).to_sql)
     problem_ids = problems.map(&:id)
     lst = Problem.select(:id, "(#{topcoder_clause}) topcoder").where(id: problem_ids).to_a
@@ -34,7 +34,7 @@ module ProblemsHelper
     all = problem.submissions.where(contest_id: nil)
     ac = all.where(result: 'AC').count
     all = all.count
-    ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
+    ac_page = link_to ac, controller: :submissions, action: :index, problem_id: problem.id, filter_status: "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
@@ -49,7 +49,7 @@ module ProblemsHelper
   def submissions_ac_ratio_with_infor(problem, attr_map)
     all = attr_map[problem.id].sub_cnt
     ac = attr_map[problem.id].sub_ac
-    ac_page = link_to ac, :controller => :submissions, :action => :index, :problem_id => problem.id, :filter_status => "AC"
+    ac_page = link_to ac, controller: :submissions, action: :index, problem_id: problem.id, filter_status: "AC"
     all_page = link_to all, problem_submissions_path(problem.id)
     return raw ( ratio_text(ac, all) + " (" + ac_page + "/" + all_page + ")" )
   end
@@ -75,8 +75,8 @@ module ProblemsHelper
   end
 
   def tag_list_html(problem)
-    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-default' } +
-         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
+    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-default' } +
+         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
   end
 
   def specjudge_type_desc_map

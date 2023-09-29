@@ -79,6 +79,24 @@ module ApplicationHelper
     raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
   end
 
+  def alert_tag(opts={}, &block)
+    dismissible = opts.fetch(:dismissible, true)
+    cls = opts.fetch(:class, 'alert-info')
+    cls += ' alert-dismissible' if dismissible
+    cls = ' ' + cls if cls[0] != ' '
+    ret = raw '<div class="alert' + cls + '" role="alert">'
+    if dismissible
+      ret += raw <<~HTML
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+      </button>
+      HTML
+    end
+    ret += capture(&block) + raw('</div>')
+    concat(ret)
+  end
+
   def score_str(x)
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end
@@ -104,5 +122,59 @@ module ApplicationHelper
     end
     @page_title = "#{@page_title} | #{site_name}"
     content_for :title, @page_title
+  end
+
+  def to_us(x)
+    return x.to_i * 1000000 + x.usec
+  end
+
+  def notify_contest_channel(contest_id, user_id = nil)
+    return unless contest_id
+    ActionCable.server.broadcast("ranklist_update_#{contest_id}", {})
+    if user_id.nil?
+      ActionCable.server.broadcast("ranklist_update_#{contest_id}_global", {})
+    else
+      ActionCable.server.broadcast("ranklist_update_#{contest_id}_#{user_id}", {})
+    end
+  end
+
+  def strip_contest_prefix(x)
+    x = x + '/' if /^\/single_contest\/([0-9]+)$/.match(x)
+    pat = /^\/single_contest\/([0-9]+)\//
+    m1 = pat.match(request.original_fullpath)
+    m2 = pat.match(x)
+    return x unless m1 && m2 && m1[1] == m2[1]
+    prefix = 'a://a'
+    parsed = URI.parse(prefix + x)
+    ret = URI.parse(prefix + x).route_from(prefix + request.original_fullpath).to_s
+    ret = '?' if ret == '' && !request.query_string.empty?
+    ret
+  end
+
+  def contest_adaptive_polymorphic_path(records, options = {})
+    strip_prefix = options.delete(:strip_prefix)
+    if @contest
+      ret = polymorphic_path([@contest] + records, options)
+      if @layout == :single_contest
+        ret = ret.gsub(/^\/contests/, '/single_contest')
+        ret = strip_contest_prefix(ret) unless strip_prefix == false
+      end
+      ret
+    else
+      polymorphic_path(records, options)
+    end
+  end
+
+  def contest_adaptive_paginate(objects)
+    if @layout == :single_contest
+      html = paginate objects, params: { only_path: true }
+      doc = Nokogiri::HTML::DocumentFragment.parse html
+      doc.css('a').each do |el|
+        el['href'] = strip_contest_prefix(el['href']) if el['href']
+      end
+      raw doc.to_s
+    else
+      paginate objects
+    end
   end
 end

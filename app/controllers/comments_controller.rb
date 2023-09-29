@@ -81,15 +81,15 @@ class CommentsController < ApplicationController
   def check_post_create
     check_problem_allow_create
     # disable comment on contests
-    unless user_signed_in? and current_user.admin?
+    unless effective_admin?
       if @contest
-        redirect_to contest_posts_path(@contest), :alert => "Comments not allowed in contest."
+        redirect_to contest_posts_path(@contest), alert: "Comments not allowed in contest."
       end
     end
   end
 
   def check_user!
-    if not current_user.admin? and (@contest or (@comment and current_user.id != @comment.user_id))
+    if not effective_admin? and (@contest or (@comment and current_user.id != @comment.user_id))
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action:'index'
       return

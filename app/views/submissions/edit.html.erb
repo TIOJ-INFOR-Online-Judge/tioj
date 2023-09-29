@@ -2,10 +2,5 @@
 
 <%= render 'form' %>
 
-<% if @contest.blank? %>
-  <%= link_to 'Show Submission', @submission, :class => 'btn btn-primary btn-xs' %>
-  <%= link_to 'Back to Submissions List', submissions_path, :class => 'btn btn-default btn-xs' %>
-<% else %>
-  <%= link_to 'Show Submission', contest_submission_path(@contest, @submission), :class => 'btn btn-primary btn-xs' %>
-  <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
-<% end %>
+<%= link_to 'Show Submission', contest_adaptive_polymorphic_path([@submission]), class: 'btn btn-primary btn-xs' %>
+<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-default btn-xs' %>

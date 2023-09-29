@@ -3,10 +3,10 @@
 
 <div class="form-inline">
   <div class="form-group">
-    <label for="quick_user_id">Find User</label>
-    <input id="quick_user_id" type="text" class="form-control input-sm flat" placeholder="Enter Username"/>
+    <label for="goto_user_id">Find User</label>
+    <input id="goto_user_id" type="text" class="form-control input-sm flat" placeholder="Enter Username"/>
   </div>
-  <button type="submit" id="find_user" class="btn btn-inverse btn-xs">Search</button>
+  <a href="#" id="goto_user" class="btn btn-inverse btn-xs">Search</a>
 </div>
 
 <%= paginate(@users) %>
@@ -28,12 +28,12 @@
     <% @users.each_with_index do |user, idx| %>
       <tr>
         <td><% offset = [params[:page].to_i, 1].max %><%= (offset-1) * 25 + idx + 1 %></td>
-        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(user) %></td>
+        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
         <td><%= link_to user.username, user_path(user) %></td>
         <td><%= user.nickname %></td>
         <!--<td><% user.email %></td>-->
         <% unless user.motto.blank? %>
-          <td><%= user.motto %></td>
+          <td><div class="motto"><%= user.motto %></div></td>
         <% else %>
           <td></td>
         <% end %>

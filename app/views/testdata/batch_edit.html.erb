@@ -5,7 +5,7 @@ The testdata list of each testdata set won't change after reordering.</p>
 
 <%= form_tag batch_edit_problem_testdata_path(@problem) do %>
   <% if @testdata.map{|x| x.errors.any?}.any? %>
-    <div id="error_explanation" class="alert alert-danger" role="alert">
+    <% alert_tag class: 'alert-danger', dismissible: false do %>
       <strong><%= pluralize(@testdata.sum{|x| x.errors.count}, "error") %> prohibited this testdatum from being saved:</strong>
       <ul>
         <% @testdata.each do |td| %>
@@ -14,18 +14,18 @@ The testdata list of each testdata set won't change after reordering.</p>
           <% end %>
         <% end %>
       </ul>
-    </div>
+    <% end %>
   <% end %>
 
   <table class="table table-hover table-striped table-condensed">
     <tr>
-      <th style="vertical-align: middle;">Input</th>
-      <th style="vertical-align: middle;">Output</th>
-      <th style="vertical-align: middle;">TL</th>
-      <th style="vertical-align: middle;">ML (VSS)</th>
-      <th style="vertical-align: middle;">ML (RSS)</th>
-      <th style="vertical-align: middle;">OL</th>
-      <th style="vertical-align: middle;">Position</th>
+      <th class="align-middle">Input</th>
+      <th class="align-middle">Output</th>
+      <th class="align-middle">TL</th>
+      <th class="align-middle">ML (VSS)</th>
+      <th class="align-middle">ML (RSS)</th>
+      <th class="align-middle">OL</th>
+      <th class="align-middle">Position</th>
       <th>
         Same as above?<br>
         <a onclick="checkAll('.cls-same-as-above', true)" class="btn btn-default btn-xs">Check all</a>
@@ -47,27 +47,27 @@ The testdata list of each testdata set won't change after reordering.</p>
             <%= strip_uuid(td.test_output_identifier) %>
           </td>
           <td>
-            <%= f.number_field :time_limit, :class => 'form-control flat input-sm', :style => 'max-width: 12em;', :data => {:td_id => td.id.to_s} %>
+            <%= f.number_field :time_limit, class: 'form-control flat input-sm', style: 'max-width: 12em;', data: {td_id: td.id.to_s} %>
           </td>
           <td>
-            <%= f.number_field :vss_limit, :class => 'form-control flat input-sm', :style => 'max-width: 12em;', :data => {:td_id => td.id.to_s} %>
+            <%= f.number_field :vss_limit, class: 'form-control flat input-sm', style: 'max-width: 12em;', data: {td_id: td.id.to_s} %>
           </td>
           <td>
-            <%= f.number_field :rss_limit, :class => 'form-control flat input-sm', :style => 'max-width: 12em;', :data => {:td_id => td.id.to_s} %>
+            <%= f.number_field :rss_limit, class: 'form-control flat input-sm', style: 'max-width: 12em;', data: {td_id: td.id.to_s} %>
           </td>
           <td>
-            <%= f.number_field :output_limit, :class => 'form-control flat input-sm', :style => 'max-width: 12em;', :data => {:td_id => td.id.to_s} %>
+            <%= f.number_field :output_limit, class: 'form-control flat input-sm', style: 'max-width: 12em;', data: {td_id: td.id.to_s} %>
           </td>
           <td>
-            <%= f.number_field :position, :class => 'form-control flat input-sm', :style => 'max-width: 9em;', :data => {:td_id => td.id.to_s} %>
+            <%= f.number_field :position, class: 'form-control flat input-sm', style: 'max-width: 9em;', data: {td_id: td.id.to_s} %>
           </td>
           <td>
             <% if index > 0 %>
-              <%= f.check_box :form_same_as_above, :class => 'cls-same-as-above', :data => {:td_id_tag => td.id.to_s} %>
+              <%= f.check_box :form_same_as_above, class: 'cls-same-as-above', data: {td_id_tag: td.id.to_s} %>
             <% end %>
           </td>
           <td>
-            <%= f.check_box :form_delete, :class => 'cls-delete' %>
+            <%= f.check_box :form_delete, class: 'cls-delete' %>
         <% end %>
           </td>
       </tr>
@@ -75,7 +75,7 @@ The testdata list of each testdata set won't change after reordering.</p>
   </table>
 
   <div class="actions">
-    <%= submit_tag 'Submit', :class => 'btn btn-success btn-lg' %>
+    <%= submit_tag 'Submit', class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>
 
@@ -91,4 +91,4 @@ function checkAll(x, check) {
 }
 </script>
 
-<%= link_to 'Back to Testdata', problem_testdata_path, :class => 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Testdata', problem_testdata_path, class: 'btn btn-default btn-xs' %>

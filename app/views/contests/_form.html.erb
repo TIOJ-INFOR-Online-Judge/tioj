@@ -9,83 +9,102 @@
 
   <div class="form-group">
     <%= f.label :title %>
-    <%= f.text_field :title, :class => 'form-control flat' %>
+    <%= f.text_field :title, class: 'form-control flat' %>
   </div>
 
-  <div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert">
-      <span aria-hidden="true">&times;</span>
-      <span class="sr-only">Close</span>
-    </button>
-    <strong>Oh Geez! </strong><%= "If datetime picker isn't available, an example time format is `1996-12-19T16:39:57`." %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= render 'contest_type_chooser', f: f %>
+      </div>
+    </div>
+  
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= render 'register_mode_chooser', f: f %>
+      </div>
+    </div>
   </div>
+
+  <% alert_tag do %>
+    <strong>Oh Geez! </strong><%= "If datetime picker isn't available, an example time format is `1996-12-19T16:39:57`." %>
+  <% end %>
 
   <div class="row">
     <div class="col-md-4">
       <div class="form-group">
-        <%= render 'contest_type_chooser', :f => f %>
+        <%= f.label :register_before %>
+        <%= f.datetime_local_field :register_before, class: 'form-control flat', type: 'datetime-local' %>
       </div>
     </div>
 
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :start_time %>
-        <%= f.datetime_local_field :start_time, :class => 'form-control flat', :type => 'datetime-local' %>
+        <%= f.datetime_local_field :start_time, class: 'form-control flat', type: 'datetime-local' %>
       </div>
     </div>
 
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :end_time %>
-        <%= f.datetime_local_field :end_time, :class => 'form-control flat', :type => 'datetime-local' %>
+        <%= f.datetime_local_field :end_time, class: 'form-control flat', type: 'datetime-local' %>
       </div>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :description, 'Description (only available after the contest is started)' %>
-    <%= f.text_area :description, :class => 'form-control flat', :rows => "9" %>
+    <%= f.label :description, help_collapse_toggle('Description in contest', 'contestDescription') %>
+    <div class="collapse" id="contestDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small" style="line-height: 1.4;">
+          This description will be shown to users that are able to submit to this contest after the contest is started (also after the contest is ended).<br>
+          For unregistered users (only if registration is required) or guest users, "Description before contest" is shown even after the contest is started.
+        </div>
+      </div>
+    </div>
+    <%= f.text_area :description, class: 'form-control flat', rows: "9" %>
   </div>
 
   <div class="form-group">
-    <%= f.label :description_before_contest, 'Before-contest description (publicly available before contest)' %>
-    <%= f.text_area :description_before_contest, :class => 'form-control flat', :rows => "9" %>
+    <%= f.label :description_before_contest, 'Description before contest' %>
+    <%= f.text_area :description_before_contest, class: 'form-control flat', rows: "9" %>
   </div>
 
   <div class="form-group">
     <%= f.label :cd_time, 'Submission CD time' %>
-    <%= f.number_field :cd_time, :min => 0, :max => 3600, :class => 'form-control flat', :required => true, :value => @contest.cd_time %>
+    <%= f.number_field :cd_time, min: 0, max: 3600, class: 'form-control flat', required: true, value: @contest.cd_time %>
   </div>
 
   <div class="form-group">
     <%= f.label :freeze_minutes, 'Scoreboard freezing period (in minutes, 0 to disable freezing)' %>
-    <%= f.number_field :freeze_minutes, :min => 0, :class => 'form-control flat', :required => true, :value => @contest.freeze_minutes %>
+    <%= f.number_field :freeze_minutes, min: 0, class: 'form-control flat', required: true, value: @contest.freeze_minutes %>
   </div>
 
   <div class="form-group">
-    <%= f.label :user_whitelist, 'Users that are allowed to submit in this contest, in regex' %>
-    <%= f.text_field :user_whitelist, :class => 'form-control flat' %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :disable_discussion do %>
-      <%= f.check_box :disable_discussion %>
+    <%= f.label :dashboard_during_contest, class: 'checkbox' do %>
+      <%= f.check_box :dashboard_during_contest, 'data-toggle': 'checkbox' %>
+      Enable dashboard during contest
+    <% end %>
+    <%= f.label :disable_discussion, class: 'checkbox' do %>
+      <%= f.check_box :disable_discussion, 'data-toggle': 'checkbox' %>
       Disable global and problem discussion during the contest
     <% end %>
-    <br>
-    <%= f.label :show_detail_result do %>
-      <%= f.check_box :show_detail_result %>
+    <%= f.label :show_detail_result, class: 'checkbox' do %>
+      <%= f.check_box :show_detail_result, 'data-toggle': 'checkbox' %>
       Show detailed result of each testdata
     <% end %>
-    <br>
-    <%= f.label :skip_group do %>
-      <%= f.check_box :skip_group %>
+    <%= f.label :skip_group, class: 'checkbox' do %>
+      <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
       Skip the remaining testdata in the task if any of the testdata got non-AC
     <% end %>
-    <br>
-    <%= f.label :hide_old_submission do %>
-      <%= f.check_box :hide_old_submission %>
+    <%= f.label :hide_old_submission, class: 'checkbox' do %>
+      <%= f.check_box :hide_old_submission, 'data-toggle': 'checkbox' %>
       Hide old submissions in contest problems
+    <% end %>
+    <%= f.label :default_single_contest, class: 'checkbox' do %>
+      <%= f.check_box :default_single_contest, 'data-toggle': 'checkbox' %>
+      Always go to Single Contest page by default for non-admin users
     <% end %>
   </div>
 
@@ -102,37 +121,32 @@
     <% end %>
   </div>
 
-   <div class="alert alert-success alert-dismissible" role="alert">
-     <button type="button" class="close" data-dismiss="alert">
-       <span aria-hidden="true">&times;</span>
-       <span class="sr-only">Close</span>
-     </button>
-     <strong>Oh Geez! </strong> <%= "Make sure tasks are set to `visible during contest`." %>
-   </div>
+  <% alert_tag class: 'alert-success' do %>
+    <strong>Oh Geez! </strong> <%= "Make sure tasks are set to `visible during contest`." %>
+  <% end %>
 
-   <%= f.fields_for :contest_problem_joints do |t| %>
-     <div class="form-group">
-       <div class="row">
-         <div class="col-md-1">
+  <%= f.fields_for :contest_problem_joints do |t| %>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-1">
           <%= t.label :task %>
-         </div>
-         <div class="col-md-2">
-          <%= t.number_field :problem_id, :class => 'form-control flat', :autocomplete => "off" %>
-         </div>
-         <div class="col-md-3">
-          <%= t.link_to_remove "Remove this task", :class => "btn btn-danger" %>
-         </div>
+        </div>
+        <div class="col-md-2">
+          <%= t.number_field :problem_id, class: 'form-control flat', autocomplete: "off" %>
+        </div>
+        <div class="col-md-3">
+          <%= t.link_to_remove "Remove this task", class: "btn btn-danger" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%= f.link_to_add "Add a task", :contest_problem_joints, class: "btn btn-warning" %>
 
-       </div>
-     </div>
-   <% end %>
-   <%= f.link_to_add "Add a task", :contest_problem_joints, :class => "btn btn-warning" %>
+  <hr>
 
-   <hr>
-
-   <div class="actions">
-       <%= f.submit :class => "btn btn-success btn-lg"%>
-   </div>
+  <div class="actions">
+    <%= f.submit class: "btn btn-success btn-lg"%>
+  </div>
 <% end %>
 
-<script> button_checkbox_setup() </script>
+<script>buttonCheckboxSetup()</script>

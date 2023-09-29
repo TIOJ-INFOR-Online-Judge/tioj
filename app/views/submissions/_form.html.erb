@@ -1,30 +1,56 @@
 <% if @submission.persisted? %>
   <% set_page_title "Edit submission - " + @submission.id.to_s %>
+  <% form_target = [@submission] %>
 <% else %>
   <% set_page_title "New Submission - " + @problem.id.to_s + " - " + @problem.name %>
+  <% form_target = [@problem, @submission] %>
 <% end %>
-<%= form_for [@problem, @submission] do |f| %>
+
+<% check_upload = false %>
+<% form_html = {multipart: true} %>
+<% if @submission.code_content.code %>
+  <% @submission.code_content.code = @submission.code_content.code_utf8 %>
+  <% if not @submission.code_content.code.valid_encoding? %>
+    <% @submission.code_content.code = '' %>
+    <% check_upload = true %>
+    <% form_html[:onsubmit] = 'return check_upload();' %>
+  <% end %>
+<% end %>
+
+<%= form_for form_target, url: contest_adaptive_polymorphic_path(form_target), html: form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
   <div class="form-group">
-    <%= render 'compiler_chooser', :f => f %>
+    <%= render 'compiler_chooser', f: f %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :code %>
-    <%= f.text_area :code, :class => 'form-control flat code-input', :rows => "15", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
-  </div>
-
-  <% if @contest_id %>
-    <div class="field">
-      <%= hidden_field_tag :contest_id, @contest_id %>
+  <%= f.fields_for :code_content do |t| %>
+    <div class="form-group">
+      <%= t.label :code %>
+      <%= t.text_area :code, class: 'form-control flat code-input', rows: "12", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
     </div>
   <% end %>
+
+  <div class="form-group">
+    <%= f.label :code_file, 'Or, upload a file (overrides the code above):' %>
+    <%= f.file_field :code_file, class: 'form-control flat' %>
+  </div>
 
   <hr>
 
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <%= f.submit class: 'btn btn-success btn-lg', id: 'form-submit-button' %>
   </div>
 <% end %>
 
+<% if check_upload %>
+<script>
+function check_upload() {
+  let ret = document.getElementById('submission_code_file').files.length > 0 || confirm('Upload file is not set and the code in the text input will be used instead. Confirm?');
+  if (!ret) { <%# rails-ujs uses a setTimeout of 13ms to disable the button, so we also need to use it %>
+    setTimeout(function(){ document.getElementById('form-submit-button').removeAttribute('disabled'); }, 100);
+  }
+  return ret;
+}
+</script>
+<% end %>

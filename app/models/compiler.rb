@@ -9,6 +9,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  order       :integer
+#  extension   :string(255)
 #
 # Indexes
 #
@@ -17,6 +18,6 @@
 
 class Compiler < ApplicationRecord
   has_many :submissions
-  has_many :ban_compilers, :dependent => :destroy
-  has_many :contests, :through => :ban_compilers
+  has_many :ban_compilers, dependent: :destroy
+  has_many :contests, through: :ban_compilers
 end

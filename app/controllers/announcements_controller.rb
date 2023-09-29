@@ -1,7 +1,7 @@
 class AnnouncementsController < InheritedResources::Base
   actions :index, :create, :edit, :update, :destroy # no :show & :new
-  before_action :set_contest, only: [:create, :index]
   before_action :set_announcement, only: [:edit, :update, :destroy]
+  before_action :redirect_contest, only: [:edit]
   before_action :set_paths, only: [:create, :update, :destroy]
   before_action :authenticate_admin!
   layout :set_contest_layout, only: [:index, :edit]
@@ -28,15 +28,15 @@ class AnnouncementsController < InheritedResources::Base
 
   private
 
-  def set_contest
-    @contest = Contest.find(params[:contest_id]) if params[:contest_id]
-  end
-
   def set_announcement
     @announcement = Announcement.find(params[:id])
-    @contest = @announcement.contest
-    if @contest
-      raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
+    raise_not_found if @contest && @contest.id != @announcement.contest_id
+    @contest ||= @announcement.contest
+  end
+
+  def redirect_contest
+    if @layout != :contest and @announcement.contest_id
+      redirect_to URI::join(contest_url(@contest) + '/', request.fullpath[1..]).to_s
     end
   end
 

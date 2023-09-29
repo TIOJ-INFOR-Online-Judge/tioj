@@ -29,13 +29,19 @@ if grep -q 'Ubuntu' /etc/*-release; then
   sudo apt -y update
   sudo apt -y install software-properties-common
   sudo apt-add-repository -y ppa:rael-gc/rvm
+  sudo mkdir -p /etc/apt/keyrings
+  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
+  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+  echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
+  sudo apt -y update
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       git cmake ninja-build g++-11 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs redis-server \
+      imagemagick nodejs yarn redis-server \
       libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev \
       ghc python2 python3-numpy python3-pil
   if [ "$UBUNTU_DIST" != "22.04" ]; then
@@ -52,7 +58,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
   sudo pacman -Syu --noconfirm --needed \
-      base-devel git cmake ninja mariadb nodejs redis boost \
+      base-devel git cmake ninja mariadb nodejs yarn redis boost \
       ghc python-numpy python-pillow
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
@@ -120,6 +126,9 @@ sudo chmod 755 $PASSENGER_LOG
 export rvmsudo_secure_path=1
 rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished"
 MAKEFLAGS='-j4' bundle install
+
+# Install yarn packages
+yarn install --frozen-lockfile
 
 # Setup database
 cat <<EOF > config/database.yml

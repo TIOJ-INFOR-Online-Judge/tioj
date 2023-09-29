@@ -1,6 +1,6 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :judge_server, :current_user
+    identified_by :judge_server, :current_user, :single_contest
     
     def initialize(*args)
       super
@@ -19,7 +19,7 @@ module ApplicationCable
           self.judge_server = judge_server
         end
       else
-        self.current_user = find_user
+        self.single_contest, self.current_user = find_single_contest_and_user
       end
     end
 
@@ -44,19 +44,33 @@ module ApplicationCable
     def find_judge_server
       key = request.params['key']
       version = request.params['version']
-      reject_unauthorized_connection if not key
-      reject_unauthorized_connection if (not version or Gem::Version.new(version) < Gem::Version.new('1.2.0'))
+      reject_unauthorized_connection if not key or not version
+      n_version = Gem::Version.new(version)
+      reject_unauthorized_connection unless n_version >= Gem::Version.new('2.0.0') && n_version < Gem::Version.new('3')
       judge = JudgeServer.find_by(key: key)
       reject_unauthorized_connection if not judge or (not (judge.ip || "").empty? and judge.ip != request.remote_ip)
       judge
     end
 
-    def find_user
-      user_id = cookies.encrypted[:_tioj_session]&.dig('warden.user.user.key', 0, 0)
-      reject_unauthorized_connection if not user_id
-      user = User.find(user_id)
-      reject_unauthorized_connection if not user
-      user
+    def find_single_contest_and_user
+      contest_id = request.headers['HTTP_SINGLECONTESTID']
+      if contest_id
+        contest = Contest.find_by(id: contest_id.to_i)
+        reject_unauthorized_connection unless contest
+      else
+        session_contest_id = request.session&.dig('current_single_contest')
+        contest = session_contest_id.nil? ? nil : Contest.find_by(id: session_contest_id)
+      end
+
+      if contest
+        user_id = request.session&.dig('single_contest', contest.id, :user_id)
+      else
+        user_id = request.session&.dig('warden.user.user.key', 0, 0)
+      end
+      return [contest, nil] unless user_id
+      user = UserBase.find_by(id: user_id)
+      reject_unauthorized_connection unless user
+      [contest, user]
     end
   end
 end

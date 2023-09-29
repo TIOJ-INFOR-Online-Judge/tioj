@@ -1,0 +1,40 @@
+# == Schema Information
+#
+# Table name: submission_testdata_results
+#
+#  id            :bigint           not null, primary key
+#  submission_id :bigint
+#  position      :integer
+#  result        :string(255)
+#  time          :decimal(12, 3)
+#  rss           :integer
+#  score         :decimal(18, 6)
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  vss           :integer
+#  message_type  :string(255)
+#  message       :text(16777215)
+#
+# Indexes
+#
+#  index_submission_testdata_results_on_submission_id               (submission_id)
+#  index_submission_testdata_results_on_submission_id_and_position  (submission_id,position) UNIQUE
+#
+
+ac_1:
+ submission: ac
+ position: 0
+ result: AC
+ time: 1
+ vss: 2080
+ rss: 1000
+ score: 100
+
+ac_2:
+ submission: ac
+ position: 1
+ result: AC
+ time: 2
+ vss: 2000
+ rss: 1040
+ score: 100

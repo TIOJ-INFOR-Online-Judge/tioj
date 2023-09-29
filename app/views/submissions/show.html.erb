@@ -31,28 +31,20 @@
 <% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
 
 <p>
-<% if @contest.blank? %>
-  <%= link_to 'Back to Submissions List', submissions_path, :class => 'btn btn-default btn-xs' %>
-<% else %>
-  <%= link_to 'Back to Submissions List', contest_submissions_path(@contest), :class => 'btn btn-default btn-xs' %>
-<% end %>
-<% if Rails.configuration.x.settings.dig(:old_submission_views) and @submission.old_submission %>
+<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-default btn-xs' %>
+<% if Rails.configuration.x.settings.dig(:old_submission_views) && @submission.old_submission && @layout != :single_contest %>
   <% if @show_old %>
-    <%= link_to 'View New Results', submission_path(@submission), :class => 'btn btn-default btn-xs' %>
+    <%= link_to 'View New Results', submission_path(@submission), class: 'btn btn-default btn-xs' %>
   <% else %>
-    <%= link_to 'View Old Results', old_submission_path(@submission), :class => 'btn btn-default btn-xs' %>
+    <%= link_to 'View Old Results', old_submission_path(@submission), class: 'btn btn-default btn-xs' %>
   <% end %>
 <% end %>
-<% if current_user&.admin? && !@show_old %>
-  <%= form_with url: rejudge_submission_path(@submission), :html => {:style => 'display: inline;'} do |f| %>
-    <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+<% if effective_admin? && !@show_old %>
+  <%= form_with url: rejudge_submission_path(@submission), html: {style: 'display: inline;'} do |f| %>
+    <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
   <% end %>
-  <% if @contest.blank? %>
-    <%= link_to 'Edit', edit_submission_path(@submission), :class => 'btn btn-info btn-xs' %>
-  <% else %>
-    <%= link_to 'Edit', edit_contest_submission_path(@contest, @submission), :class => 'btn btn-info btn-xs' %>
-  <% end %>
-  <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+  <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), class: 'btn btn-info btn-xs' %>
+  <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
 <% end %>
 </p>
 <% infor_obj = @show_old ? @submission.old_submission : @submission %>
@@ -79,11 +71,7 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-md-3">
-        <% if @submission.contest_id.blank? %>
-          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, problem_path(@submission.problem) %>
-        <% else %>
-          <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_problem_path(@submission.contest_id, @submission.problem) %>
-        <% end %>
+        <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_adaptive_polymorphic_path([@submission.problem]) %>
       </div>
       <div id="total-time" class="col-md-2">
         <%= infor_obj.total_time.to_i %>
@@ -94,7 +82,7 @@
       <div class="col-md-3">
         <span id="verdict"><%= @verdict[infor_obj.result] %></span>
         <% if will_update %>
-          <img id="waiting-icon" src="/images/icons/svg/waiting.svg" style="width:20px;">
+          <img id="waiting-icon" src="/images/icons/waiting.svg" style="width:20px;">
         <% end %>
       </div>
       <div id="total-score" class="col-md-2">
@@ -116,7 +104,7 @@
       <table class="table table-condensed table-align-middle">
         <% problem = @submission.problem %>
         <% num_tasks = problem.testdata.count %>
-        <% testsets = problem.testdata_sets.order(id: :asc) %>
+        <% testsets = problem.subtasks.order(id: :asc) %>
         <% show_cons = testsets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
         <thead>
           <tr>
@@ -131,8 +119,8 @@
           </tr>
         </thead>
         <tbody>
-          <% td_set_obj = @show_old ? @submission.old_submission : @submission %>
-          <% task_results = td_set_obj.calc_td_set_scores.index_by{|x| x[:position]} %>
+          <% task_results = @show_old ? @submission.old_submission.calc_subtask_result : @submission.get_subtask_result %>
+          <% task_results = task_results.index_by{|x| x[:position]} %>
           <% testsets.order(id: :asc).each_with_index do |s, i| %>
             <tr>
               <td><%= i + 1 %></td>
@@ -240,8 +228,8 @@
         </table>
       </div>
     <% else %>
-      <div class="collapse in" id="collapseTestdata">
-        &nbsp; Individual testdata result is hidden during contest.
+      <div class="collapse in" id="collapseTestdata" style="margin: 0.4rem; padding-left: 1rem;">
+        Individual testdata result is hidden.
       </div>
     <% end %> <%# if @show_detail %>
   </div>
@@ -249,12 +237,14 @@
 
 <div class="well well-sm">
   <div class="row">
-    <div class="col-md-2">
-      <strong>Submitter:</strong>
-    </div>
-    <div class="col-md-2">
-      <%= link_to @submission.user.username, user_path(@submission.user) %>
-    </div>
+    <% if @layout != :single_contest %>
+      <div class="col-md-2">
+        <strong>Submitter:</strong>
+      </div>
+      <div class="col-md-2">
+        <%= link_to @submission.user.username, user_path(@submission.user) %>
+      </div>
+    <% end %>
     <div class="col-md-2">
       <strong>Compiler:</strong>
     </div>
@@ -265,12 +255,12 @@
       <strong>Code Length:</strong>
     </div>
     <div class="col-md-2">
-      <%= number_to_human_size(@submission.code.bytesize) %>
+      <%= number_to_human_size(@submission.code_length) %>
     </div>
   </div>
 </div>
 
-<% if current_user&.admin? or current_user&.id == @submission.user_id %>
+<% if effective_admin? or current_user&.id == @submission.user_id %>
   <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
     <div class="panel-heading">
         <h1 class="panel-title">Compilation Error Message</h1>
@@ -282,9 +272,30 @@
       </span>
     </div>
   </div>
-  <pre class="line-numbers"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= @submission.code %></code></pre> 
-  <!-- <button type="button" id="copy_btn" class="btn btn-info btn-xs" style="float:right"> copy code </button> -->
-  <!-- <script> init_code_copy_script() </script> -->
+  <div id="user-code" class="panel panel-default">
+    <div class="panel-heading">
+      <div class="pull-right" style="position: relative; top: -0.8rem">
+        <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-xs' %>
+        <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-xs' %>
+      </div>
+      <h1 class="panel-title">Code</h1>
+    </div>
+    <% code_utf8 = @submission.code_content.code_utf8 %>
+    <% if code_utf8.valid_encoding? %>
+      <div class="panel-body" style="padding: 0;">
+        <% code_length_thresh = 32.kilobyte %>
+        <% if code_utf8.bytesize > code_length_thresh %>
+          <div style="margin: 0.3rem; margin-left: 1.2rem; margin-top: 0.5rem">Code truncated to 32 KiB. Click Download or View Raw to get the full source code.</div>
+          <% code_utf8 = code_utf8.truncate_bytes(code_length_thresh) %>
+        <% end %>
+        <pre class="line-numbers code-block" style="margin: 0; width: 100%; min-height: 44px;"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= code_utf8 %></code></pre>
+      </div>
+    <% else %>
+      <div class="panel-body">
+        This code contains non-UTF-8 byte sequences. Click Download or View Raw to get the source code.
+      </div>
+    <% end %>
+  </div>
 <% end %>
 
 <% if will_update %>
@@ -295,107 +306,14 @@ var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
 var panel_class_map = <%= raw(panel_class_map.to_json) %>;
 var row_class_map = <%= raw(row_class_map.to_json) %>;
 
-function hsv_to_rgb(h, s, v) {
-  h /= 360; s /= 100; v /= 100;
-  var h_i = Math.floor(h*6);
-  var f = h*6 - h_i;
-  var p = v * (1 - s);
-  var q = v * (1 - f*s);
-  var t = v * (1 - (1 - f) * s);
-  var r = 0, b = 0, g = 0;
-  if (h_i == 0) r=v, g=t, b=p;
-  if (h_i == 1) r=q, g=v, b=p;
-  if (h_i == 2) r=p, g=v, b=t;
-  if (h_i == 3) r=p, g=q, b=v;
-  if (h_i == 4) r=t, g=p, b=v;
-  if (h_i == 5) r=v, g=p, b=q;
-  r = Math.floor(r*255).toString(16).padStart(2, '0');
-  g = Math.floor(g*255).toString(16).padStart(2, '0');
-  b = Math.floor(b*255).toString(16).padStart(2, '0');
-  return '#' + r + g + b;
-}
-
-function color_map(scale) {
-  scale = scale < 0 ? 0 : scale > 1 ? 1 : scale;
-  scale = scale < 0.5 ? 0.5 - 2 * (0.5 - scale) ** 2 : 0.5 + 2 * (scale - 0.5) ** 2;
-  return hsv_to_rgb(scale * 120, 100, 85 - 40 * scale);
-}
-
-function score_str(str) {
-  return String(str).replace(/\.0$/, '');
-}
-
-function time_str(str) {
-  str = parseFloat(str).toFixed(1)
-  pad = 6 - str.length;
-  if (pad > 0) str = '<span style="visibility: hidden;">' + '0'.repeat(pad) + '</span>' + str;
-  return str;
-}
-
-function updateTask(data) {
-  for (var td_set of data['td_set_scores']) {
-    var pos = td_set['position'];
-    if (td_set['finished']) {
-      $('#subtask-score-bg-' + pos).css('background-color', color_map(td_set['ratio']));
-      $('#subtask-score-' + pos).text(score_str(td_set['score']));
-    }
-  }
-  for (var td of data['tasks']) {
-    var pos = td['position'];
-    $('#td-time-' + pos).html(time_str(td['time']));
-    $('#td-vss-' + pos).text(td['vss']);
-    $('#td-rss-' + pos).text(td['rss']);
-    $('#td-score-' + pos).text(score_str(td['score']));
-    $('#td-verdict-' + pos).text(verdict[td['result']]);
-    if (row_class_map[td['result']]) $('#td-row-' + pos).addClass(row_class_map[td['result']]);
-    if (td['message_type'] && td['message']) {
-      $('#td-message-row-' + pos).removeClass('no-display');
-      $('#td-row-' + pos + ' .indicator').removeClass('no-display');
-      if (td['message_type'] == 'html') {
-        $('#td-message-' + pos).html(td['message']);
-      } else {
-        $('#td-message-' + pos).html('<pre class="pre-scrollable" style="margin: 0;"><code class=""></code></pre>');
-        $('#td-message-' + pos + ' code').text(td['message']);
-      }
-    }
-  }
-}
-
-function updateResult(data) {
-  var to_wait = waiting_verdicts.includes(data['result']);
-  $('#verdict').text(verdict[data['result']]);
-  $('#waiting-icon').toggleClass('no-display', !to_wait);
-  $('#overall-result').attr('class', 'panel ' + (panel_class_map[data['result']] || 'panel-default'));
-  if (['CE', 'CLE', 'ER'].includes(data['result'])) $('#ce-message').removeClass('no-display');
-  if (no_task_verdicts.includes(data['result'])) {
-    $('#subtask-results').addClass('no-display');
-    $('#testdata-results').addClass('no-display');
-  }
-  if (data['message']) {
-    $('#ce-message-content').removeClass('no-display');
-    $('#ce-message-none').addClass('no-display');
-    $('#ce-message-content code').text(data['message']);
-  }
-  if (data['total_time']) $('#total-time').text(data['total_time'])
-  if (data['total_memory']) $('#total-memory').text(data['total_memory'])
-  if ('score' in data) $('#total-score').text(score_str(data['score']));
-  if (!to_wait) App.cable.disconnect();
-}
-
+initSubmissionCable();
 $(document).ready(function() {
-  subscribeSubmission(<%= @submission.id %>, function(data) {
-    if ('result' in data) {
-      updateResult(data);
-    } else {
-      updateTask(data);
-    }
-  });
+  subscribeSubmission(<%= @submission.id %>, updateSubmissionDetail);
 });
 </script>
 <% end %>
 
-<%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs' %>
 
-<%= javascript_include_tag         "/codehighlighter/prism.js" %>
-<%= stylesheet_link_tag         "/codehighlighter/prism.css" %>
-
+<%= javascript_include_tag "prism" %>
+<%= stylesheet_link_tag "prism" %>

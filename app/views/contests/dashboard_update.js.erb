@@ -1,4 +1,3 @@
-
-$('#dashboard_table_body').html(' <%= escape_javascript(render partial: "dashboard_table", locals: {} ) %> ')
-$('#last-update-div').text('Last Update: <%= Time.now.to_s(:clean) %>')
+$('#dashboard_table').html('<%= escape_javascript(render partial: "dashboard_table", locals: {}) %>')
+initContestRanklist(<%= raw(@data.to_json) %>);
 MathJax.typeset()

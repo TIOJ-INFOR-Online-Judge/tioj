@@ -12,24 +12,24 @@
   <% form_target = @announcement %>
 <% end %>
 
-<%= semantic_form_for form_target, :html => { :class => "form-inline" } do |f| %>
+<%= semantic_form_for form_target, html: { class: "form-inline" } do |f| %>
   <div class="row">
     <div class="col-lg-3">
       <div class="form-group" style="display: unset;">
         <%= f.label :title %><br>
-        <%= f.text_field :title, :class => "form-control input-sm flat", :style => "width: 100%;" %><br>
+        <%= f.text_field :title, class: "form-control input-sm flat", style: "width: 100%;" %><br>
       </div>
     </div>
     <div class="col-lg-6">
       <div class="form-group" style="display: unset;">
         <%= f.label :body %><br>
-        <%= f.text_field :body, :class => "form-control input-sm flat", :style => "width: 100%;" %><br>
+        <%= f.text_field :body, class: "form-control input-sm flat", style: "width: 100%;" %><br>
       </div>
     </div>
   </div>
 
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-xs' %>
+    <%= f.submit class: 'btn btn-success btn-xs' %>
   </div>
 <% end %>
 <br>
@@ -55,12 +55,12 @@
         <td><%= raw anno.title %></td>
         <td><%= raw anno.body %></td>
         <td style="width: 0; white-space: nowrap;">
-          <%= link_to 'Edit', edit_announcement_path(anno), :class => 'btn btn-info btn-xs' %>
-          <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+          <%= link_to 'Edit', contest_adaptive_polymorphic_path([anno], action: :edit), class: 'btn btn-info btn-xs' %>
+          <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to 'Back to Home', root_path, :class => 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Home', root_path, class: 'btn btn-default btn-xs' %>

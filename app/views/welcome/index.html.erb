@@ -1,13 +1,13 @@
 <div class="row">
   <div class="col-lg-12">
-    <% if current_user&.admin %>
+    <% if current_user&.admin? %>
       <div>
-        <%= link_to "Alter Announcement", announcements_path, :class => "btn btn-info btn-xs" %>
+        <%= link_to "Alter Announcement", announcements_path, class: "btn btn-info btn-xs" %>
       </div>
     <% end %>
     <div class="well well-lg">
       <h5>Bulletin Board<small class="pull-right"><%= link_to "Show all", articles_path %></small></h5>
-      <%= render 'articles/table', :articles => @bulletins %>
+      <%= render 'articles/table', articles: @bulletins %>
     </div>
   </div>
   <div class="col-lg-6">
@@ -28,12 +28,13 @@
             <tr>
               <% if contest.is_running? %>
                 <td><strong><%= contest.title %></strong></td>
-                <td style="text-align: right;"><%= link_to 'Participate', contest, :class => 'btn btn-xs btn-danger', :target => '_blank' %></td>
               <% else %>
                 <td><%= contest.title %></td>
-                <td style="text-align: right;"><%= link_to 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %></td>
               <% end %>
-              <% if Time.now >= contest.end_time %>
+              <td style="text-align: right;">
+                <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
+              </td>
+              <% if contest.is_ended? %>
                 <td style="white-space: nowrap;">Ended</td>
                 <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
               <% elsif contest.is_started? %>
@@ -69,7 +70,7 @@
           <% @users.each_with_index do |f, idx| %>
               <tr>
               <td><%= idx + 1 %></td>
-              <td><%= link_to image_tag(f.avatar.mini_thumb.to_s, :class => "img-rounded"), {:controller => 'users', :action => :show, :id => f.id} %></td>
+              <td><%= link_to image_tag(f.avatar.mini_thumb.to_s, class: "img-rounded"), {controller: 'users', action: :show, id: f.id} %></td>
               <td><%= link_to f.username, user_path(f) %></td>
               <td><%= f.ac %></td>
               <td><%= ac_ratio_by_user_with_infor(f) %></td>

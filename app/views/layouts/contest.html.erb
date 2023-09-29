@@ -7,7 +7,7 @@
   <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">
     <div class="container-fluid">
       <div class="navbar-header">
-        <%= link_to image_tag("banner_0_green.png", :alt => ('TIOJ #contest %s' % @contest.title), :style => "padding-left: 15px; padding-right: 20px;", :skip_pipeline => true), contest_path(@contest), :class => "nav-brand" %>
+        <%= link_to image_tag("banner_contest.png", alt: "TIOJ contest - #{@contest.title}", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), contest_path(@contest), class: "nav-brand" %>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -20,16 +20,19 @@
           <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
           <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
           <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
-          <li><%= link_to "Dashboard", {:controller => :contests, :action => :dashboard, :id => @contest.id} %></li>
+          <li><%= link_to "Dashboard", dashboard_contest_path(@contest) %></li>
           <% if current_user %>
-            <li><%= link_to(current_user.username, user_path(current_user)) %></li>
-            <li><%= link_to('Sign out', destroy_user_session_path, :method => :delete) %></li>
+            <% if current_user.admin? %>
+              <li><%= link_to "Users & Registrations", contest_contest_registrations_path(@contest) %></li>
+            <% end %>
+            <li><%= link_to current_user.username, user_path(current_user) %></li>
+            <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
           <% else %>
-            <li><%= link_to('Sign in', new_session_path(:user)) %> </li>
+            <li><%= link_to "Sign in", new_session_path(:user) %> </li>
             <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
               <!-- ioic feature: allow register? -->
               <% if ENV["ALLOW_REGISTER"] == 'allow' %>
-                <li><%= link_to('Sign up', new_registration_path(:user)) %></li>
+                <li><%= link_to "Sign up", new_registration_path(:user) %></li>
               <% end %>
             <% end %>
           <% end %>

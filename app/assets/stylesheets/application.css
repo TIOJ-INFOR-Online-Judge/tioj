@@ -8,17 +8,20 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require bootstrap_import
+ *= require bootstrap
+ *= require bootstrap-select
+ *= require flat-ui
+ *
  *= require_tree .
+ *= stub active_admin
+ *= stub prism
  *= require_self
  *
- *= require custom_styles
+ *= require tablesorter/dist/css/theme.blue
+ *= require tablesorter/dist/css/jquery.tablesorter.pager.min
  *
- *= require jquery-tablesorter/theme.blue
- *= require jquery-tablesorter/addons/pager/jquery.tablesorter.pager
+ *= require animate.css/animate.min
  *
- *= require animate
- *
- *= require jquery.fileupload
- *= require jquery.fileupload-ui
+ *= require blueimp-file-upload/css/jquery.fileupload
+ *= require blueimp-file-upload/css/jquery.fileupload-ui
  */

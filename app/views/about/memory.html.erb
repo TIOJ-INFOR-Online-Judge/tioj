@@ -24,7 +24,7 @@
   <p>
   As an example, the following program will use approximately 200 MiB of VSS and only a little RSS:
   </p>
-  <pre class="line-numbers"><code class="language-cpp"><%= <<-EOF
+  <pre class="line-numbers code-block"><code class="language-cpp"><%= <<-EOF
 #include <cstdlib>
 #include <cstring>
 #define SIZE (50*1024*1024) // 50 MiB
@@ -61,7 +61,7 @@ EOF
   <p>
   And the following program will use approximately 250 MiB of both VSS and RSS:
   </p>
-  <pre class="line-numbers"><code class="language-cpp"><%= <<-EOF
+  <pre class="line-numbers code-block"><code class="language-cpp"><%= <<-EOF
 #include <cstdlib>
 #include <cstring>
 #include <vector>
@@ -126,7 +126,7 @@ EOF
 
 </div>
 
-<%= link_to 'Back', :back, :class => 'btn btn-xs btn-default' %>
+<%= link_to 'Back', :back, class: 'btn btn-xs btn-default' %>
 
-<%= javascript_include_tag         "/codehighlighter/prism.js" %>
-<%= stylesheet_link_tag         "/codehighlighter/prism.css" %>
+<%= javascript_include_tag "prism" %>
+<%= stylesheet_link_tag "prism" %>

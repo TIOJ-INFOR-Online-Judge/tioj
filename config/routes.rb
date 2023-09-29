@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :announcements
 
-  devise_for :users, :controllers => {:registrations => "registrations", :passwords => "users/passwords"}
+  devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
 
   scope 'admin' do
@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :submissions do
     member do
       post 'rejudge'
+      get 'raw', to: 'submissions#download_raw'
       get 'old', to: 'submissions#show_old' if Rails.configuration.x.settings.dig(:old_submission_views)
     end
   end
@@ -43,20 +44,58 @@ Rails.application.routes.draw do
   end
 
   resources :contests do
-    resources :submissions
-    resources :problems
+    resources :submissions do
+      get 'raw', to: 'submissions#download_raw', on: :member
+    end
+    resources :problems, except: [:index, :create, :new] do
+      resources :submissions, only: [:index, :create, :new]
+    end
     resources :announcements
     resources :posts do
       resources :comments, except: [:index]
     end
 
+    resources :contest_registrations, only: [:index, :create, :update, :destroy] do
+      collection do
+        get 'batch_new'
+        post 'batch_new', to: 'contest_registrations#batch_create'
+        post 'batch_op'
+      end
+    end
+
+    resources :contest_users, only: [] do
+      member do
+        get 'edit', to: 'contest_registrations#edit_contest_user'
+        patch 'edit', to: 'contest_registrations#update_contest_user'
+      end
+    end
+
     member do
       post 'set_contest_task'
+      post 'register'
       get 'dashboard'
       get 'dashboard_update'
     end
   end
-  resources :contest_problem_joints
+
+  resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
+    resources :submissions, only: [:index, :create, :new, :show] do
+      get 'raw', to: 'submissions#download_raw', on: :member
+    end
+    resources :problems, only: [:show] do
+      resources :submissions, only: [:index, :create, :new]
+    end
+    resources :posts, only: [:index, :create, :new]
+
+    member do
+      get 'dashboard'
+      get 'dashboard_update'
+      # custom user session
+      get 'users/sign_in', as: :sign_in, to: 'contests#sign_in'
+      post 'users/sign_in', as: :sign_in_post, to: 'contests#sign_in_post'
+      delete 'users/sign_out', as: :sign_out, to: 'contests#sign_out'
+    end
+  end
 
   resources :articles
   resources :testdata, only: [:show]
@@ -83,8 +122,8 @@ Rails.application.routes.draw do
 
   get 'about' => 'about#index', as: :about
 
-  get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false, :id => /[0-9]+/
-  get 'problems/*file' => redirect{ |path, req| "/#{path[:file]}"}, :format => false
+  get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, format: false, id: /[0-9]+/
+  get 'problems/*file' => redirect{ |path, req| "/#{path[:file]}"}, format: false
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

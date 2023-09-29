@@ -8,15 +8,15 @@
   <%= markdown_no_html(comment.content) %>
 </div>
 <div class="comment_footer small">
-  <% if !(current_user&.admin?) and not comment.user_visible %>
-    anonymous - <%= comment.created_at.to_s(:clean) %>
+  <% if !effective_admin? && !comment.user_visible %>
+    anonymous - <%= comment.created_at.to_fs(:clean) %>
   <% elsif commenter == nil %>
-    deleted account - <%= comment.created_at.to_s(:clean) %>
+    deleted account - <%= comment.created_at.to_fs(:clean) %>
   <% else %>
-    <%= link_to commenter.username, user_path(commenter) %> - <%= comment.created_at.to_s(:clean) %>
+    <%= link_to commenter.username, user_path(commenter) %> - <%= comment.created_at.to_fs(:clean) %>
   <% end %>
 </div>
-<% if current_user&.admin? or (current_user&.id == comment.user_id and not @contest) %>
-  <%= link_to "Edit", edit_polymorphic_path(comment_object), :class=>'btn btn-primary btn-xs' %>
-  <%= link_to "Delete", polymorphic_path(comment_object), :method => :delete, data:{confirm:"Sure?"}, :class=>'btn btn-danger btn-xs' %>
+<% if effective_admin? or (current_user&.id == comment.user_id and not @contest) %>
+  <%= link_to "Edit", edit_polymorphic_path(comment_object), class:'btn btn-primary btn-xs' %>
+  <%= link_to "Delete", polymorphic_path(comment_object), method: :delete, data:{confirm:"Sure?"}, class:'btn btn-danger btn-xs' %>
 <% end %>

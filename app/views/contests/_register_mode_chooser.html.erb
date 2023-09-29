@@ -1,0 +1,3 @@
+<%= f.label :register_mode %><br>
+<%= f.select :register_mode, Contest.register_modes.keys.map.with_index {|x, index| ["[#{index}] #{register_mode_desc_map[x]}", x]},
+  {}, {class: 'form-control flat'} %>

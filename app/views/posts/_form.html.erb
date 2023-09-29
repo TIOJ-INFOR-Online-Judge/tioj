@@ -6,40 +6,46 @@
   <% @post.user_visible = @contest == nil %>
 <% end %>
 
-<% form_target = @postable ? [@postable, @post] : @post %>
-<%= form_for form_target do |f| %>
+<% if @contest %>
+  <% form_target = @post %>
+  <% form_url = contest_adaptive_polymorphic_path([@post]) %>
+<% else %>
+  <% form_target = @postable ? [@postable, @post] : @post %>
+  <% form_url = @postable ? [@postable, @post] : @post %>
+<% end %>
+<%= form_for form_target, url: form_url do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @post.errors, item: 'post'} %>
 
   <div class="form-group">
     <%= f.label :title, "Title:" %> <br />
-    <%= f.text_field :title, :class=> 'form-control', :placeholder=>'Title' %>
+    <%= f.text_field :title, class: 'form-control', placeholder:'Title' %>
   </div>
   <% if not @contest %>
     <div class="form-group">
       <%= f.label :post_type %>
-      <%= f.select :post_type, @post_types, {}, {:class => 'form-control flat'} %>
+      <%= f.select :post_type, @post_types, {}, {class: 'form-control flat'} %>
     </div>
   <% end %>
   <div class="form-group">
     <%= f.label :content, raw('Content: (all characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %>
-    <%= f.text_area :content, :class=> 'form-control flat', :rows => 6, :placeholder=>'Content'%>
+    <%= f.text_area :content, class: 'form-control flat', rows: 6, placeholder:'Content'%>
   </div>
-  <% if not @contest or current_user.admin? %>
+  <% if allow_set_visibility %>
     <div class="form-group">
-      <%= f.label :global_visible do %>
-        <%= f.check_box :global_visible %>
+      <%= f.label :global_visible, class: 'checkbox' do %>
+        <%= f.check_box :global_visible, 'data-toggle': 'checkbox' %>
         Visible to anyone<% if @contest %> (pinned) <% end %>
       <% end %>
     </div>
     <div class="form-group">
-      <%= f.label :user_visible do %>
-        <%= f.check_box :user_visible %>
+      <%= f.label :user_visible, class: 'checkbox' do %>
+        <%= f.check_box :user_visible, 'data-toggle': 'checkbox' %>
         Username visible to anyone
       <% end %>
     </div>
   <% end %>
   <div class="form-group">
-    <%= f.submit :class=>"btn btn-primary" %>
+    <%= f.submit class:"btn btn-primary" %>
   </div>
 <% end %>
 

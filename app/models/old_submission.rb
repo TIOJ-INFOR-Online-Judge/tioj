@@ -23,13 +23,13 @@
 class OldSubmission < ApplicationRecord
   belongs_to :problem
   belongs_to :submission
-  has_many :old_submission_tasks, dependent: :delete_all
+  has_many :old_submission_testdata_results, dependent: :delete_all
 
-  def calc_td_set_scores
-    score_map = old_submission_tasks.map { |t| [t.position, t.score] }.to_h
+  def calc_subtask_result
+    score_map = old_submission_testdata_results.map { |t| [t.position, t.score] }.to_h
     num_tasks = problem.testdata.count
     skip_group = problem.skip_group
-    problem.testdata_sets.order(id: :asc).map.with_index{|s, index|
+    problem.subtasks.order(id: :asc).map.with_index{|s, index|
       lst = s.td_list_arr(num_tasks)
       set_result = score_map.values_at(*lst)
       finished = skip_group ? set_result.any? : set_result.all?

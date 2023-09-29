@@ -26,10 +26,10 @@ The problem will be removed from this list once you solved it again.
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
           <td>
             <div style="float:left"><%= link_to problem.name, problem_path(problem.id) %></div>
-            <div style="float:right"><%= raw problem.tags.map{ |a| link_to a, problems_tag_path(a.name), :class => 'btn btn-xs btn-default' }.join(" ") %></div>
+            <div style="float:right"><%= raw problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-default' }.join(" ") %></div>
           </td>
           <td>
-            <%= link_to 'View changed submissions', changed_submissions_user_path(@user, problem_id: problem.id), :class => 'btn btn-success btn-xs' %>
+            <%= link_to 'View changed submissions', changed_submissions_user_path(@user, problem_id: problem.id), class: 'btn btn-success btn-xs' %>
           </td>
         </tr>
       <% end %>

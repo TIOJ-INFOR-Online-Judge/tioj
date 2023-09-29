@@ -1,0 +1,82 @@
+<%= render partial: "shared/errors", locals: {errors: @form.errors, item: 'contest user'} %>
+
+<h4>Generate contest users</h4>
+
+<%= form_with model: @form, url: batch_new_contest_contest_registrations_path(@contest) do |f| %>
+
+  <% alert_tag do %>
+    <ul>
+      <li>Use <code>printf</code>-style formatting for username & nickname format. For example, if (start, end) = (1, 10), <code>user%03d</code> will yield <code>user001</code>, <code>user002</code>, ...,  <code>user010</code>.</li>
+      <li>Contest users can only login from the <%= link_to 'Single Contest page', single_contest_path(@contest) %>.</li>
+      <li>Passwords will be randomly generated from alphanumeric characters, excluding <code>01iloIO</code>.</li>
+      <li>It is fine to use the same username / nickname as a regular user or a contest user in another contest. However, normal users with a same username as a contest user in this contest will not be able to login from the Single Contest page.</li>
+    </ul>
+  <% end %>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :num_start, 'User number start' %>
+        <%= f.number_field :num_start, min: 1, max: 1024, class: 'form-control flat' %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :num_end, 'User number end' %>
+        <%= f.number_field :num_end, min: 1, max: 1024, class: 'form-control flat' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :username_format %>
+        <%= f.text_field :username_format, class: 'form-control flat', maxlength: 32 %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :nickname_format %>
+        <%= f.text_field :nickname_format, class: 'form-control flat', maxlength: 32 %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :password_length %>
+        <%= f.number_field :password_length, min: 4, max: 32, class: 'form-control flat' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :account_file, raw('Alternatively, upload a CSV file using <a href="/static/contest_users.csv">this format</a> (overrides the options above):') %>
+    <%= f.file_field :account_file, class: 'form-control flat' %>
+  </div>
+
+  <% alert_tag do %>
+    Avatar can either be:
+    <ul>
+      <li>Leave empty, resulting in randomly generated avatars</li>
+      <li>An image file, resulting in the same avatar for every generated user</li>
+      <li>A ZIP file containing the avatars for every user. The filenames (extension excluded) should be the same as the usernames.</li>
+    </ul>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :avatar, 'Avatar(s)' %>
+    <%= f.file_field :avatar, class: 'form-control flat' %>
+  </div>
+
+  <hr>
+
+  <div class="actions">
+    <%= f.submit "Submit", class: "btn btn-success btn-lg"%>
+  </div>
+<% end %>
+
+<div>
+  <%= link_to "Back to contest registrations", contest_contest_registrations_path(@contest), class: 'btn btn-default btn-xs' %>
+</div>

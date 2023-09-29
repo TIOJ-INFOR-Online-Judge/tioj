@@ -1,0 +1,39 @@
+<% content_for :icon do %>
+<link rel="shortcut icon" href="/images/favicon_co.ico">
+<% end %>
+
+<% content_for :navbar do %>
+<div style="background-color:#402030">
+  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#402030">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <%= link_to @contest.title, strip_contest_prefix(single_contest_path(@contest)), class: "navbar-brand" %>
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbar-collapse-01">
+        <ul class="nav navbar-nav navbar-left">
+          <% if current_user %>
+            <% if @contest.is_running? %>
+              <li><%= link_to "Contest Tasks", strip_contest_prefix(single_contest_path(@contest)) %></li>
+              <li><%= link_to "My Submissions", strip_contest_prefix(single_contest_submissions_path(@contest)) %></li>
+              <li><%= link_to "Q & A", strip_contest_prefix(single_contest_posts_path(@contest)) %></li>
+              <li><%= link_to "Dashboard", strip_contest_prefix(dashboard_single_contest_path(@contest)) %></li>
+            <% end %>
+            <li><p class="navbar-text"><%= current_user.username %></p></li>
+            <li><%= link_to('Sign out', strip_contest_prefix(sign_out_single_contest_path(@contest)), method: :delete) %></li>
+          <% else %>
+            <li><%= link_to('Sign in', strip_contest_prefix(sign_in_single_contest_path(@contest))) %></li>
+          <% end %>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div>
+  </nav><!-- /navbar -->
+</div>
+<% end %>
+
+<%= render template: "layouts/base" %>

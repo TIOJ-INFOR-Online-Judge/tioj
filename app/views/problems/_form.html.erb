@@ -4,14 +4,14 @@
   <% set_page_title "New problem" %>
 <% end %>
 
-<%= nested_form_for @problem, :html => {:class => 'form', :id => 'problem-form'} do |f| %>
+<%= nested_form_for @problem, html: {class: 'form', id: 'problem-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @problem.errors, item: 'problem'} %>
 
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <%= f.label :name %>
-        <%= f.text_field :name, :class => 'form-control flat' %>
+        <%= f.text_field :name, class: 'form-control flat' %>
       </div>
     </div>
   </div>
@@ -20,13 +20,13 @@
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :tag_list, "Tags" %>
-        <%= f.text_field :tag_list, value: @problem.tag_list.to_s, :class => 'tagsinput' %>
+        <%= f.text_field :tag_list, value: @problem.tag_list.to_s, class: 'tagsinput' %>
       </div>
     </div>
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :solution_tag_list, "Solution Tags" %>
-        <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, :class => 'tagsinput' %>
+        <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, class: 'tagsinput' %>
       </div>
     </div>
     <script>
@@ -36,27 +36,27 @@
       <div class="form-group">
         <%= f.label :visible_state %>
         <%= f.select :visible_state, Problem.visible_states.keys.map.with_index {|x, index| ["[#{index}] #{visible_state_desc_map[x].capitalize}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
   </div>
 
   <div class="form-group">
     <%= f.label :description %>
-        <%= f.text_area :description, :class => 'form-control flat', :rows => '9' %>
+        <%= f.text_area :description, class: 'form-control flat', rows: '9' %>
   </div>
 
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :input, "Input Format" %>
-        <%= f.text_area :input, :class => 'form-control flat', :rows => '7' %>
+        <%= f.text_area :input, class: 'form-control flat', rows: '7' %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :output, "Output Format" %>
-        <%= f.text_area :output, :class => 'form-control flat', :rows => '7' %>
+        <%= f.text_area :output, class: 'form-control flat', rows: '7' %>
       </div>
     </div>
   </div>
@@ -65,33 +65,33 @@
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
-          <%= t.label :input, "Sample Input", :class => "sample_input" %>
-          <%= t.text_area :input, :class => 'form-control flat code-input', :rows => '7' %>
+          <%= t.label :input, "Sample Input", class: "sample_input" %>
+          <%= t.text_area :input, class: 'form-control flat code-input', rows: '7' %>
         </div>
       </div>
       <div class="col-md-6">
         <div class="form-group">
-          <%= t.label :output, "Sample Output", :class => "sample_output" %>
-          <%= t.link_to_remove "Remove this sample testdatum", :class => "btn btn-danger pull-right", :name => "testdatum_remove" %>
-          <%= t.text_area :output, :class => 'form-control flat code-input', :rows => '7' %>
+          <%= t.label :output, "Sample Output", class: "sample_output" %>
+          <%= t.link_to_remove "Remove this sample testdatum", class: "btn btn-danger pull-right", name: "testdatum_remove" %>
+          <%= t.text_area :output, class: 'form-control flat code-input', rows: '7' %>
         </div>
       </div>
     </div>
   <% end %>
 
-  <%= f.link_to_add "Add sample testdatum", :sample_testdata, :class => "btn btn-warning", :id => "testdatum_add" %>
+  <%= f.link_to_add "Add sample testdatum", :sample_testdata, class: "btn btn-warning", id: "testdatum_add" %>
 
   <div class="row">
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :hint, "Hints" %>
-        <%= f.text_area :hint, :class => 'form-control flat', :rows => '3' %>
+        <%= f.text_area :hint, class: 'form-control flat', rows: '3' %>
       </div>
     </div>
     <div class="col-md-6">
       <div class="form-group">
         <%= f.label :source, "Problem Source" %>
-        <%= f.text_area :source, :class => 'form-control flat', :rows => '3' %>
+        <%= f.text_area :source, class: 'form-control flat', rows: '3' %>
       </div>
     </div>
   </div>
@@ -99,7 +99,7 @@
   <div class="form-group">
     <%= f.label :discussion_visibility %>
     <%= f.select :discussion_visibility, Problem.discussion_visibilities.keys.map.with_index {|x, index| ["[#{index}] #{discussion_visibility_desc_map[x]}", x]},
-      {}, {:class => 'form-control flat'} %>
+      {}, {class: 'form-control flat'} %>
   </div>
 
   <div class="form-group">
@@ -120,14 +120,14 @@
       <div class="form-group">
         <%= f.label :specjudge_type, "Judge Type" %>
         <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-4">
       <div class="form-group">
         <%= f.label :interlib_type, "Interactive Library Type" %>
         <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
-          {}, {:class => 'form-control flat'} %>
+          {}, {class: 'form-control flat'} %>
       </div>
     </div>
     <div class="col-md-4">
@@ -142,173 +142,172 @@
             </div>
           </div>
         </div>
-        <%= f.number_field :num_stages, :in => 1..10, :class => 'form-control flat', :required => true %>
+        <%= f.number_field :num_stages, in: 1..10, class: 'form-control flat', required: true %>
       </div>
     </div>
   </div>
 
-  <% if @problem.specjudge_type and not @problem.specjudge_none? %>
-    <div class="row">
-      <div class="col-md-8">
-        <div class="form-group">
-          <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
-          <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
-              {}, {:class => 'form-control flat'} %>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <%= f.label :score_precision %>
-          <%= f.number_field :score_precision, :in => 0..6, :class => 'form-control flat', :required => true %>
-        </div>
+  <div class="row visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <div class="col-md-8">
+      <div class="form-group">
+        <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
+        <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
+            {}, {class: 'form-control flat'} %>
       </div>
     </div>
-    <div class="form-group">
-      <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
-      <div class="collapse" id="sjDescription" style="height: auto;">
-        <div class="panel panel-default">
-          <div class="panel-body small">
-            <% if @problem.specjudge_old? %>
-              Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
-              <div style="line-height: 1.3;">
-                <code>argv[1]</code>: path to user's output<br>
-                <code>argv[2]</code>: path to testdata input<br>
-                <code>argv[3]</code>: path to testdata output (answer)<br>
-                <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
-                <code>argv[5]</code>: path to source code<br>
-                <code>argv[6]</code>: current stage number<br>
-              </div>
-              Notes:
-              <ul style="line-height: 1.4;">
-                <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
-                <li>
-                  If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
-                  <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
-                </li>
-              </ul>
-            <% elsif @problem.specjudge_new? %>
-              This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
-              The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
-              <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
-                input_file: 'path_to_testdata_input',
-                answer_file: 'path_to_testdata_answer',
-                user_output_file: 'path_to_user_output',
-                user_code_file: 'path_to_user_source_code',
-                problem_id: 1234,
-                submission_id: 123456,
-                contest_id: -1,
-                submitter_id: 123,
-                submitter_name: 'username',
-                submitter_nickname: 'nickname',
-                submission_time: 1656430000000000,
-                compiler: 'c++14/python2/etc.',
-                testdata_index: 0,
-                current_stage: 0,
-                original_verdict: 'TLE',
-                message_type: '',
-                message: '',
-                limits: {
-                  time_us: 1000000,
-                  vss_kib: 262144,
-                  rss_kib: 0,
-                  output_kib: 262144,
-                },
-                stats: {
-                  exit_code: 0,
-                  real_us: 512345,
-                  user_us: 412345,
-                  sys_us: 98765,
-                  max_vss_kib: 80004,
-                  max_rss_kib: 68488,
-                },
-              }) %></pre>
-              The program must output a JSON object to stdout with the following fields (all fields are optional; see below for more details):
-              <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
-                verdict: 'AC',
-                score: '1.35',
-                time_us: 123456,
-                vss_kib: 66888,
-                rss_kib: 44888,
-                message_type: 'text',
-                message: 'meow',
-              }) %></pre>
-              Notes:
-              <ul style="line-height: 1.4;">
-                <li><code>original_verdict</code> will be an empty string if user's program terminated normally.</li>
-                <li><code>contest_id</code> will be -1 if it is not a contest submission.</li>
-                <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
-                <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
-                <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
-                <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
-                <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
-                <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
-                <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior.</li>
-              </ul>
-            <% end %>
-            <div style="line-height: 1.4;">
-              <code>#include "testlib.h"</code> (<a href="https://github.com/MikeMirzayanov/testlib/tree/6daa79fdc9c2b113be8d40f828e3dc81e67ce33d">docs</a>) and <code>#include "nlohmann/json.hpp"</code> (<a href="https://github.com/nlohmann/json/tree/v3.10.5">docs</a>) are provided for C++ special judge programs. If you're using <code>testlib</code>, note that the <code>argv</code> format of TIOJ is different from that required by the library, thus some preprocessing is needed before calling <code>registerTestlibCmd</code>.
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :score_precision %>
+        <%= f.number_field :score_precision, in: 0..6, class: 'form-control flat', required: true %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
+    <%= f.text_field :specjudge_compile_args, class: 'form-control flat' %>
+  </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
+    <div class="collapse" id="sjDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small">
+          <div class="visibility-specjudge visibility-specjudge-old">
+            Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
+            <div style="line-height: 1.3;">
+              <code>argv[1]</code>: path to user's output<br>
+              <code>argv[2]</code>: path to testdata input<br>
+              <code>argv[3]</code>: path to testdata output (answer)<br>
+              <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
+              <code>argv[5]</code>: path to source code<br>
+              <code>argv[6]</code>: current stage number<br>
             </div>
-          </div>
-        </div>
-      </div>
-      <%= f.text_area :sjcode, :class => 'form-control flat code-input', :rows => '7' %>
-    </div>
-    <div class="form-group">
-      <%= f.label :judge_between_stages do %>
-        <%= f.check_box :judge_between_stages %>
-        Invoke special judge between stages (only applicable if number of stages &gt; 1)
-      <% end %>
-    </div>
-  <% else %>
-    <div class="form-group">
-      <%= f.label :default_scoring_args, help_collapse_toggle('Arguments of default scoring program', 'scoringArgsDescription') %>
-      <div class="collapse" id="scoringArgsDescription" style="height: auto;">
-        <div class="panel panel-default">
-          <div class="panel-body small">
-            Pass arguments to the default scoring program for different comparison behavior. Possible arguments:<br>
+            Notes:
             <ul style="line-height: 1.4;">
-              <li><code>line</code> (or simply left blank): Compare two files line-by-line. Two lines are considered matched if they are the same after removing all trailing whitespaces. Trailing lines containing only whitespaces are ignored. This is the behavior of old TIOJ.<br></li>
-              <li><code>strict</code>: Byte-wise comparison.<br></li>
-              <li><code>white-diff</code>: Compare two files line-by-line. Two lines are considered matched if the list of non-empty, whitespace-separated "words" is the same. Trailing lines containing only whitespaces are ignored. This is the behavior of CMS white-diff comparator.<br></li>
-              <li><code>float-diff [absolute/relative/absolute-relative] [threshold]</code>: Similar to <code>white-diff</code>, but two words are also considered matched if the answer is a floating-point number (specifically, parsable by <code>std::stold</code> and contains at least one of the following characters: <code>.eExXnN</code>), and the absolute and/or relative error of the user's output is less than or equal to the given threshold.<br></li>
-              <li><code>verbose</code>: Send a message indicating the incorrect output position to the user. Can be prepended to the above options.</li>
+              <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
+              <li>
+                If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
+                <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
+              </li>
             </ul>
           </div>
+          <div class="visibility-specjudge visibility-specjudge-new">
+            This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
+            The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
+            <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
+              input_file: 'path_to_testdata_input',
+              answer_file: 'path_to_testdata_answer',
+              user_output_file: 'path_to_user_output',
+              user_code_file: 'path_to_user_source_code',
+              problem_id: 1234,
+              submission_id: 123456,
+              contest_id: -1,
+              submitter_id: 123,
+              submitter_name: 'username',
+              submitter_nickname: 'nickname',
+              submission_time: 1656430000000000,
+              compiler: 'c++14/python2/etc.',
+              testdata_index: 0,
+              current_stage: 0,
+              original_verdict: 'TLE',
+              message_type: '',
+              message: '',
+              limits: {
+                time_us: 1000000,
+                vss_kib: 262144,
+                rss_kib: 0,
+                output_kib: 262144,
+              },
+              stats: {
+                exit_code: 0,
+                real_us: 512345,
+                user_us: 412345,
+                sys_us: 98765,
+                max_vss_kib: 80004,
+                max_rss_kib: 68488,
+              },
+            }) %></pre>
+            The program must output a JSON object to stdout with the following fields (all fields are optional; see below for more details):
+            <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
+              verdict: 'AC',
+              score: '1.35',
+              time_us: 123456,
+              vss_kib: 66888,
+              rss_kib: 44888,
+              message_type: 'text',
+              message: 'meow',
+            }) %></pre>
+            Notes:
+            <ul style="line-height: 1.4;">
+              <li><code>original_verdict</code> will be an empty string if user's program terminated normally.</li>
+              <li><code>contest_id</code> will be -1 if it is not a contest submission.</li>
+              <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
+              <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
+              <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
+              <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
+              <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
+              <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
+              <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior.</li>
+            </ul>
+          </div>
+          <div style="line-height: 1.4;">
+            <code>#include "testlib.h"</code> (<a href="https://github.com/MikeMirzayanov/testlib/tree/6daa79fdc9c2b113be8d40f828e3dc81e67ce33d">docs</a>) and <code>#include "nlohmann/json.hpp"</code> (<a href="https://github.com/nlohmann/json/tree/v3.10.5">docs</a>) are provided for C++ special judge programs. If you're using <code>testlib</code>, note that the <code>argv</code> format of TIOJ is different from that required by the library, thus some preprocessing is needed before calling <code>registerTestlibCmd</code>.
+          </div>
         </div>
       </div>
-      <%= f.text_field :default_scoring_args, :class => 'form-control flat' %>
     </div>
-  <% end %>
+    <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
+  </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <%= f.label :judge_between_stages, class: 'checkbox' do %>
+      <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
+      Invoke special judge between stages (only applicable if number of stages &gt; 1)
+    <% end %>
+  </div>
 
-  <% if @problem.interlib_header? %>
-    <div class="form-group">
-      <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
-      <%= f.text_area :interlib, :class => 'form-control flat code-input', :rows => '7' %>
+  <div class="form-group visibility-specjudge visibility-specjudge-none">
+    <%= f.label :default_scoring_args, help_collapse_toggle('Arguments of default scoring program', 'scoringArgsDescription') %>
+    <div class="collapse" id="scoringArgsDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small">
+          Pass arguments to the default scoring program for different comparison behavior. Possible arguments:<br>
+          <ul style="line-height: 1.4;">
+            <li><code>line</code> (or simply left blank): Compare two files line-by-line. Two lines are considered matched if they are the same after removing all trailing whitespaces. Trailing lines containing only whitespaces are ignored. This is the behavior of old TIOJ.<br></li>
+            <li><code>strict</code>: Byte-wise comparison.<br></li>
+            <li><code>white-diff</code>: Compare two files line-by-line. Two lines are considered matched if the list of non-empty, whitespace-separated "words" is the same. Trailing lines containing only whitespaces are ignored. This is the behavior of CMS white-diff comparator.<br></li>
+            <li><code>float-diff [absolute/relative/absolute-relative] [threshold]</code>: Similar to <code>white-diff</code>, but two words are also considered matched if the answer is a floating-point number (specifically, parsable by <code>std::stold</code> and contains at least one of the following characters: <code>.eExXnN</code>), and the absolute and/or relative error of the user's output is less than or equal to the given threshold.<br></li>
+            <li><code>verbose</code>: Send a message indicating the incorrect output position to the user. Can be prepended to the above options.</li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
-      <%= f.text_area :interlib_impl, :class => 'form-control flat code-input', :rows => '7' %>
-    </div>
-  <% end %>
+    <%= f.text_field :default_scoring_args, class: 'form-control flat' %>
+  </div>
+
+  <div class="form-group visibility-interlib visibility-interlib-header">
+    <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
+    <%= f.text_area :interlib, class: 'form-control flat code-input', rows: '7' %>
+  </div>
+  <div class="form-group visibility-interlib visibility-interlib-header">
+    <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
+    <%= f.text_area :interlib_impl, class: 'form-control flat code-input', rows: '7' %>
+  </div>
 
   <div class="form-group">
     <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
-    <%= f.number_field :code_length_limit, :in => 1..16777216, :class => 'form-control flat', :required => true %>
+    <%= f.number_field :code_length_limit, in: 1..16777216, class: 'form-control flat', required: true %>
   </div>
 
   <div class="form-group">
-    <%= f.label :ranklist_display_score do %>
-      <%= f.check_box :ranklist_display_score %>
+    <%= f.label :ranklist_display_score, class: 'checkbox' do %>
+      <%= f.check_box :ranklist_display_score, 'data-toggle': 'checkbox' %>
       Display score in ranklist
     <% end %>
-    <br>
-    <%= f.label :skip_group do %>
-      <%= f.check_box :skip_group %>
+    <%= f.label :skip_group, class: 'checkbox' do %>
+      <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
       Skip the remaining testdata in the task if any of the testdata got non-AC
     <% end %>
-    <br>
-    <%= f.label :strict_mode do %>
-      <%= f.check_box :strict_mode %>
+    <%= f.label :strict_mode, class: 'checkbox' do %>
+      <%= f.check_box :strict_mode, 'data-toggle': 'checkbox' %>
       Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
     <% end %>
     <div class="collapse" id="strictModeDescription" style="height: auto;">
@@ -326,41 +325,41 @@
   </div>
 
   <%= f.label nil, raw("Testdata Sets (testdata no. starts from 0, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)") %><br>
-  <%= f.fields_for :testdata_sets do |t| %>
+  <%= f.fields_for :subtasks do |t| %>
     <div class="form-group">
       <div class="row">
         <div class="col-md-2">
           <%= t.label :td_list, "Testdata list:" %>
         </div>
         <div class="col-md-2">
-          <%= t.text_field :td_list, :pattern => '\d+(-\d+)?(,\d+(-\d+)?)*', :class => 'form-control flat', :required => true %>
+          <%= t.text_field :td_list, pattern: '\d+(-\d+)?(,\d+(-\d+)?)*', class: 'form-control flat', required: true %>
         </div>
         <div class="col-md-1">
           <%= t.label :td_list, "Constraints:" %>
         </div>
         <div class="col-md-3">
-          <%= t.text_field :constraints, :class => 'form-control flat' %>
+          <%= t.text_field :constraints, class: 'form-control flat' %>
         </div>
         <div class="col-md-1">
           <%= t.label :score, "Score:" %>
         </div>
         <div class="col-md-1">
-          <%= t.number_field :score, :in => 0..100000, :step => :any, :class => 'form-control flat', :required => true %>
+          <%= t.number_field :score, in: 0..100000, step: :any, class: 'form-control flat', required: true %>
         </div>
         <div class="col-md-1">
-          <%= t.link_to_remove "Remove this range", :class => 'btn btn-danger' %>
+          <%= t.link_to_remove "Remove this range", class: 'btn btn-danger' %>
         </div>
       </div>
     </div>
   <% end %>
-  <%= f.link_to_add "Add a range", :testdata_sets, :class => 'btn btn-warning' %>
+  <%= f.link_to_add "Add a range", :subtasks, class: 'btn btn-warning' %>
 
   <br><br>
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
         <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
-        <%= f.text_field :verdict_ignore_td_list, :class => 'form-control flat' %>
+        <%= f.text_field :verdict_ignore_td_list, class: 'form-control flat' %>
       </div>
     </div>
   </div>
@@ -368,22 +367,7 @@
   <hr>
   <div class="actions">
     <span class="flex-container-bottom-align">
-      <%= f.submit :class => 'btn btn-success btn-lg', :id => 'submit-btn' %>
-      <% if @isNewProblem == true %>
-        &nbsp;
-        <span class="fancy-checkbox">
-          <input type="checkbox" id="disable-fool-proof" autocomplete="off" />
-          <div class="btn-group">
-            <label for="disable-fool-proof" class="btn btn-xs btn-default">
-              <span class="glyphicon glyphicon-ok"></span>
-              <span></span>
-            </label>
-            <label for="disable-fool-proof" class="btn btn-xs btn-default">
-              Disable fool-proof of repeat submit
-            </label>
-          </div>
-        </span>
-      <% end %>
+      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
     </span>
   </div>
 <% end %>
@@ -398,27 +382,5 @@
 </style>
 
 <script>
-  $(document).on('nested:fieldRemoved',function(event){
-    event.field.find("input").removeAttr("min max required");
-  });
-  button_checkbox_setup();
+  initProblemForm();
 </script>
-
-<% if @isNewProblem == true %>
-  <script>
-    const btn = document.getElementById('submit-btn')
-    window.addEventListener('load', function () {
-      btn.disabled = false
-    });
-
-    const form = document.getElementById('problem-form')
-    form.addEventListener('submit', function () {
-      const switc = document.getElementById('disable-fool-proof')
-      // disable the submit button for 10 sec if `disable fool proof` button is not checked
-      if (!switc.checked) {
-        btn.disabled = true
-        setTimeout(() => btn.disabled = false, 10000)
-      }
-    })
-  </script>
-<% end %>

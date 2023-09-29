@@ -19,13 +19,3 @@
 #
 #  fk_rails_...  (compiler_id => compilers.id)
 #
-
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-#one:
-#  contest_id: 
-#  compiler_id: 
-#
-#two:
-#  contest_id: 
-#  compiler_id: 

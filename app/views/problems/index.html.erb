@@ -6,8 +6,8 @@
   <% end %>
 </h4>
 
-<% if current_user&.admin %>
-  <%= link_to 'New Problem', new_problem_path, :class => 'btn btn-success btn-sm' %><br>
+<% if current_user&.admin? %>
+  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success btn-sm' %><br>
 <% end %>
 
 <form class="form-inline search-form" accept-charset="UTF-8" method="get">
@@ -48,7 +48,7 @@ window.onpageshow = function(e){
       <th class="text-center">TopCoder</th>
       <th>AC Ratio (user)</th>
       <th>AC (submission)</th>
-      <% if current_user&.admin %>
+      <% if current_user&.admin? %>
         <th>Visibility</th>
       <% end %>
       <% if user_signed_in? %><th></th><% end %>
@@ -59,7 +59,7 @@ window.onpageshow = function(e){
     <% problem_a = @problems.to_a %>
     <% topcoders = topcoders(problem_a) %>
     <% problem_a.each do |problem| %>
-      <% if current_user&.admin or problem.visible_public? %>
+      <% if current_user&.admin? or problem.visible_public? %>
         <tr>
           <td><%= user_problem_status_with_infor(problem, @attr_map) if user_signed_in? %></td>
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
@@ -71,21 +71,21 @@ window.onpageshow = function(e){
             <% begin %>
               <% tcoder = topcoders[problem.id] %>
               <% if tcoder %>
-                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(tcoder) %>
+                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(tcoder) %>
               <% end %>
             <% end %>
           </td>
           <td><%= users_ac_ratio_with_infor(problem, @attr_map) %></td>
           <td><%= submissions_ac_ratio_with_infor(problem, @attr_map) %></td>
-          <% if current_user&.admin %>
+          <% if current_user&.admin? %>
             <td><%= problem.visible_state.capitalize %></td>
           <% end %>
           <% if user_signed_in? %>
             <td style="white-space: nowrap;">
               <% if current_user.admin? %>
-                <%= link_to 'Edit', edit_problem_path(problem), :class => 'btn btn-info btn-xs' %>
+                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-xs' %>
               <% end %>
-              <%= link_to 'Submit', new_problem_submission_path(problem), :class => 'btn btn-success btn-xs' %>
+              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-xs' %>
             </td>
           <% end %>
         </tr>

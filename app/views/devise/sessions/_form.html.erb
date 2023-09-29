@@ -1,0 +1,30 @@
+<h4 class="page-header">Sign in</h4>
+<div class="col-xs-12 col-md-6 col-lg-3">
+<%= form_for(resource, as: resource_name, url: url) do |f| %>
+  <div class="form-group">
+    <%= f.label :username %>
+    <%= f.text_field :username, autofocus: true, class: "form-control flat" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password, autocomplete: "off", class: "form-control flat" %>
+  </div>
+
+  <% if is_devise && devise_mapping.rememberable? -%>
+    <div class="form-group">
+      <%= f.label :remember_me, class: 'checkbox' do %>
+        <%= f.check_box :remember_me, 'data-toggle': 'checkbox' %>
+        Remember me
+      <% end %>
+    </div>
+  <% end -%>
+
+  <div>
+    <%= f.submit "Sign in", class: 'btn btn-success btn-lg' %>
+  </div>
+<% end %>
+<% if is_devise %>
+<%= render "devise/shared/links" %>
+<% end %>
+</div>

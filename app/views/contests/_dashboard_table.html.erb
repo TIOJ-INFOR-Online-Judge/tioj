@@ -1,103 +1,48 @@
-<% @scores.each_with_index do |s, index| %>
-  <% case s[2] %>
-  <% when @color[0] %>
-    <tr class="warning">
-  <% when @color[1] %>
-    <tr class="success">
-  <% when @color[2] %>
-    <tr class="info">
-  <% else %>
-    <tr>
-  <% end %>
-    <td><%= s[-1] %></td>
-    <td><%= link_to image_tag(s[0].avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(s[0]) %></td>
-    <td><%= link_to s[0].username, user_path(s[0]) %></td>
-    <td><%= s[0].nickname %></td>
-    <% if user_signed_in? and current_user.admin? %>
-    <td><%= s[0].name %></td>
+<thead>
+  <tr>
+    <th>Rank</th>
+    <% if @layout != :single_contest %>
+      <th></th>
+    <% end %>
+    <th>Username</th>
+    <th>Nickname</th>
+    <% @tasks.each_with_index do |task, index| %>
+      <th><%= link_to problem_index_text(index), contest_adaptive_polymorphic_path([task]) %></th>
     <% end %>
     <% if @contest.type_acm? %>
-      <% s[3].each do |t|%>
-        <td>
-          <% if t[2] %>
-            <span style="color:#008000;"><strong><%= t[0].to_s %><small><%= "/" + t[1].to_s %></small></strong></span>
-          <% elsif t[1] >= 0 %>
-            <span class="text-success"><strong><%= t[0].to_s %></strong></span><small><%= "/" + t[1].to_s %></small>
-          <% elsif t[0] > 0 %>
-            <% if t[3] > 0 %>
-              <span class="text-danger"><strong><%= t[0].to_s %></strong></span>+<span style="color:#888;"><strong><%= t[3].to_s %></strong></span>
-            <% else %>
-              <span class="text-danger"><strong><%= t[0].to_s %></strong></span>
-            <% end %>
-          <% else %>
-            <% if t[3] > 0 %>
-              0+<span style="color:#888;"><strong><%= t[3].to_s %></strong></span>
-            <% else %>
-              <%= '-' %>
-            <% end %>
-          <% end %>
-        </td>
-      <% end %>
-      <td><%= s[2].to_s %></td>
-      <td><%= s[4] %></td>
-    <% elsif @contest.type_ioicamp? %>
-      <% s[3].each do |t|%>
-        <td class="display-switch-score">
-          <% if t[:first] %>
-          <span style="color:#008000;">
-          <% elsif t[:score] > 0 %>
-          <span class="text-success">
-          <% elsif t[:total_attm] > 0 %>
-          <span class="text-danger">
-          <% else %>
-          <span>
-          <% end %>
-            <% if t[:score] > 0 %>
-              <strong><%= score_str(t[:score]) %></strong>
-            <% else %>
-              -
-            <% end %>
-          </span>
-          <% if t[:total_attm] > 0 or t[:pending_attm] > 0 %>
-            <small><strong>
-                /<%= t[:total_attm].to_s %>
-              <% if t[:pending_attm] > 0 %>
-                <span style="color:#888;">+<%= t[:pending_attm].to_s %></span>
-              <% end %>
-            </strong></small>
-          <% end %>
-        </td>
-        <td class="display-switch-penalty">
-          <span>
-            <% if t[:score] > 0 %>
-              <% if t[:penalty_attm] > 0 %>
-              <span class="text-danger">
-              <% else %>
-              <span>
-              <% end %>
-                <strong>
-                  <%= t[:penalty_attm].to_s %>
-                </strong>
-              </span>
-              /<small style="color:#888;"><strong><%= t[:tm] == -1 ? "-" : t[:tm].to_s %></strong></small>
-            <% else %>
-              -
-            <% end %>
-            </span>
-        </td>
-      <% end %>
-      <td><%= score_str(s[2]) %></td>
-      <td><%= s[4] %></td>
+      <th>Solv</th>
+      <th>Penalty</th>
     <% else %>
-      <% s[1].each do |t|%>
-        <td>
-          <%= sprintf("%g", t[0]) %>
-          <% if t[1] > 0 %>
-            <small><span style="color:#888;">+<%= t[1] %></span></small>
-          <% end %>
-        </td>
-      <% end %>
-      <td><%= sprintf("%g", s[2]) %></td>
+      <th>Total</th>
     <% end %>
   </tr>
-<% end %>
+</thead>
+<tbody id="dashboard_table_body">
+  <% @participants.each do |usr| %>
+    <tr id="row_user_<%= usr.id %>">
+      <td id="cell_rank_<%= usr.id %>" class="highlight-if-self"></td>
+      <% if @layout != :single_contest %>
+        <td>
+          <% if usr.type == 'ContestUser' %>
+            <%= image_tag usr.avatar.mini_thumb.to_s, class: 'img-rounded' %>
+          <% else %>
+            <%= link_to image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(usr) %>
+          <% end %>
+        </td>
+        <td class="highlight-if-self"><%= link_to usr.username, user_path(usr) %></td>
+      <% else %>
+        <td class="highlight-if-self"><%= usr.username %></td>
+      <% end %>
+      <td class="highlight-if-self"><%= usr.nickname %></td>
+      <% @tasks.each do |t|%>
+        <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
+      <% end %>
+      <% if @contest.type_acm? %>
+        <td id="cell_solved_<%= usr.id %>"></td>
+        <td id="cell_penalty_<%= usr.id %>"></td>
+      <% else %>
+        <td id="cell_score_<%= usr.id %>"></td>
+      <% end %>
+    </tr>
+  <% end %>
+</tbody>

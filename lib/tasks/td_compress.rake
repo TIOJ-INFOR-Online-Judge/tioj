@@ -24,7 +24,7 @@ namespace :td do
   task :compress_problem, [:problem_id] => :environment do |task, args|
     compress_problem args[:problem_id]
   end
-  task :compress_all => :environment do |task, args|
+  task compress_all: :environment do |task, args|
     Problem.all.each do |x|
       compress_problem x.id
     end

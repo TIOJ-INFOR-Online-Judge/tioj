@@ -1,0 +1,9 @@
+<% if !@contest || (@contest.is_running? && @contest.user_can_submit?(current_user)) %>
+  <div class="col-md-2">
+    <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { class: 'btn btn-success btn-xs btn-block' } %>
+  </div>
+<% elsif @problem.visible_public? %><%# @layout != :single_contest %>
+  <div class="col-md-2">
+    <%= link_to 'Submit out of contest', new_problem_submission_path(@problem), { class: 'btn btn-success btn-xs btn-block' } %>
+  </div>
+<% end %>

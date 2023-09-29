@@ -26,12 +26,12 @@
 class Post < ApplicationRecord
   enum :post_type, {discuss: 0, solution: 1, issue: 2}, prefix: :type
 
-  belongs_to :user
+  belongs_to :user, class_name: 'UserBase'
   belongs_to :postable, optional: true, polymorphic: true
   has_many :comments, dependent: :destroy
 
-  validates_length_of :title, :in => 0..30
-  validates_length_of :content, :in => 0..65536
+  validates_length_of :title, in: 0..30
+  validates_length_of :content, in: 0..65536
 
   accepts_nested_attributes_for :comments
 end

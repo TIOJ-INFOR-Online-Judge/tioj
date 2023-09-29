@@ -2,13 +2,17 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_action :store_location
   before_action :set_verdict_hash
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_layout_and_contest
+  before_action :store_location
   before_action :set_anno
   mattr_accessor :verdict
   mattr_accessor :v2i
   mattr_accessor :i2v
+  helper_method :effective_admin?
+
+  include SingleContestAuthenticationConcern
 
   @@verdict = {
     "AC" => "Accepted",
@@ -50,25 +54,40 @@ class ApplicationController < ActionController::Base
   end
 
   def store_location
-    if (request.fullpath != "/users/sign_in" &&
-        request.fullpath != "/users/sign_out"&&
-        request.fullpath != "/users/password"&&
-        request.fullpath != "/users/sign_up" &&
-        !request.xhr?)
-      session[:previous_url] = request.fullpath
+    if @layout == :single_contest
+      unless /^\/single_contest\/[0-9]+\/users\/sign_(in|out)/.match(request.fullpath) || request.xhr?
+        session[:single_contest] ||= {}
+        session[:single_contest][@contest.id] ||= {}
+        session[:single_contest][@contest.id][:previous_url] = request.fullpath
+      end
+    else
+      unless /^\/users\/sign_(in|out|up)/.match(request.fullpath) || request.xhr?
+        session[:previous_url] = request.fullpath
+      end
     end
   end
+
   def after_sign_in_path_for(resource)
     session[:previous_url] || root_path
   end
 
-protected
+ protected
   def authenticate_admin!
     authenticate_user!
     if not current_user.admin?
       flash[:alert] = 'Insufficient User Permissions.'
-      redirect_to action:'index'
+      redirect_to action: 'index'
       return
+    end
+  end
+
+  def authenticate_user_and_running_if_single_contest!
+    if @layout == :single_contest
+      authenticate_user!
+      unless @contest.is_running?
+        flash[:alert] = 'Contest is not running.'
+        redirect_to single_contest_path(@contest)
+      end
     end
   end
 
@@ -84,17 +103,36 @@ protected
     end
   end
 
-  def set_contest_layout
-    if @contest.blank?
-      "application"
+  def set_layout_and_contest
+    if /^\/contests\/[0-9]+/.match(request.fullpath)
+      @layout = :contest
+    elsif /^\/single_contest\/[0-9]+/.match(request.fullpath)
+      @layout = :single_contest
     else
-      "contest"
+      @layout = :application
     end
+
+    if @layout == :application
+      @contest = nil
+    else
+      if controller_name == 'contests'
+        contest_param = params[:id]
+      else
+        contest_param = @layout == :contest ? params[:contest_id] : params[:single_contest_id]
+      end
+      contest_id = contest_param && contest_param.to_i
+      @contest = Contest.find(contest_id)
+    end
+    # used in ActionCable
+    session[:current_single_contest] = @layout == :single_contest ? @contest&.id : nil
+  end
+
+  def set_contest_layout
+    @layout.to_s
   end
 
   def set_anno
-    contest_param = controller_name == 'contests' ? params[:id] : params[:contest_id]
-    contest_id = contest_param && contest_param.to_i
+    contest_id = @layout == :application ? nil : @contest&.id
     @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
   end
 
@@ -116,7 +154,7 @@ protected
   end
 
   def reduce_td_list(str, sz)
-    TestdataSet.td_list_str_to_arr(str, sz).chunk_while{|x, y|
+    Subtask.td_list_str_to_arr(str, sz).chunk_while{|x, y|
       x + 1 == y
     }.map{|x|
       x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
@@ -125,7 +163,7 @@ protected
 
   def inverse_td_list(prob)
     sz = prob.testdata.count
-    prob.testdata_sets.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}
+    prob.subtasks.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}
         .flatten(1).group_by(&:first).map{|x, y| [x, y.map(&:last)]}.to_h
   end
 
@@ -137,7 +175,7 @@ protected
     raise ActionController::RoutingError.new('')
   end
 
-  public
+ public
 
   def self.shellsplit_safe(line)
     # adapted from shellwords library
@@ -146,7 +184,6 @@ protected
     field = String.new
     line.scan(/\G\s*(?>([^\s\\\'\"]+)|'([^\']*)'|"((?:[^\"\\]|\\.)*)"|(\\.?)|(\S))(\s|\z)?/m) do
       |word, sq, dq, esc, garbage, sep|
-      p [word, sq, dq, esc, garbage, sep]
       field << (word || sq || (dq && dq.gsub(/\\([$`"\\\n])/, '\\1')) || esc.gsub(/\\(.)/, '\\1')) if not garbage
       if sep
         words << field

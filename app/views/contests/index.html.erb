@@ -1,8 +1,8 @@
 <% set_page_title "Contests" %>
 <h4 class="page-header">Contests</h4>
 
-<% if current_user&.admin %>
-  <%= link_to 'New Contest', new_contest_path, :class => 'btn btn-success btn-sm' %>
+<% if current_user&.admin? %>
+  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn-sm' %>
   <br>
 <% end %>
 <%= paginate @contests %>
@@ -15,7 +15,7 @@
       <th>Start Time</th>
       <th>End Time</th>
       <th>Contest Type</th>
-      <% if current_user&.admin %>
+      <% if current_user&.admin? %>
         <th></th>
       <% end %>
     </tr>
@@ -26,9 +26,9 @@
       <tr>
         <td><%= contest.title %></td>
         <td style="text-align: right;">
-          <%= link_to contest.is_running? ? 'Participate' : 'View', contest, :class => 'btn btn-xs btn-primary', :target => '_blank' %>
+          <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
         </td>
-        <% if Time.now >= contest.end_time %>
+        <% if contest.is_ended? %>
           <td>Ended</td>
         <% elsif contest.is_started? %>
           <td>Ready</td>
@@ -37,13 +37,13 @@
         <% else %>
           <td>Not yet</td>
         <% end %>
-        <td><%= contest.start_time.to_s(:clean) %></td>
-        <td><%= contest.end_time.to_s(:clean) %></td>
-        <td><%= contest.contest_type %> style</td>
-        <% if current_user&.admin %>
+        <td><%= contest.start_time.to_fs(:clean) %></td>
+        <td><%= contest.end_time.to_fs(:clean) %></td>
+        <td><%= contest_type_short_desc_map[contest.contest_type] %> / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
+        <% if current_user&.admin? %>
           <td>
-            <%= link_to 'Edit', edit_contest_path(contest), :class => 'btn btn-info btn-xs' %>
-            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-danger btn-xs' %>
+            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-xs' %>
+            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
           </td>
         <% end %>
       </tr>

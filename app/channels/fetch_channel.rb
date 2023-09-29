@@ -7,18 +7,18 @@ class FetchChannel < ApplicationCable::Channel
   def td_result(data)
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
-    update_task_results(data[:results], submission)
+    update_td_results(data[:results], submission)
   end
 
   def submission_result(data)
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
-      submission.update(:result => data[:verdict])
+      submission.update(result: data[:verdict])
       ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
       return
     end
-    update_task_results(data[:td_results], submission) if data[:td_results]
+    update_td_results(data[:td_results], submission) if data[:td_results]
     update_hash = {}
     if data[:message]
       update_hash[:message] = data[:message]
@@ -30,9 +30,9 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
     else
-      tasks = submission.submission_tasks
-      update_hash[:total_time] = tasks.map{|i| i.time}.sum.round(0)
-      update_hash[:total_memory] = tasks.map{|i| i.rss}.max || 0
+      tds = submission.submission_testdata_results
+      update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
+      update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
     retry_op do |is_first|
       submission.reload if not is_first
@@ -41,6 +41,7 @@ class FetchChannel < ApplicationCable::Channel
       end
     end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
+    notify_contest_channel(submission.contest_id, submission.user_id)
   end
 
   def report_queued(data)
@@ -82,15 +83,15 @@ class FetchChannel < ApplicationCable::Channel
     problem = submission.problem
     user = submission.user
     td_count = problem.testdata.count
-    verdict_ignore_set = TestdataSet.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
+    verdict_ignore_set = Subtask.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
     priority = (submission.contest ? 100000000 : 0) - submission.id
     data = {
       submission_id: submission.id,
       contest_id: submission.contest_id || -1,
       priority: priority,
       compiler: submission.compiler.name,
-      time: submission.created_at.to_i * 1000000 + submission.created_at.usec,
-      code: submission.code.to_s,
+      time: submission.created_at_usec,
+      code_base64: Base64.strict_encode64(submission.code_content.code),
       skip_group: problem.skip_group || submission.contest&.skip_group || false,
       user: {
         id: user.id,
@@ -101,8 +102,9 @@ class FetchChannel < ApplicationCable::Channel
         id: problem.id,
         specjudge_type: Problem.specjudge_types[problem.specjudge_type],
         specjudge_compiler: problem.specjudge_compiler&.name,
-        interlib_type: Problem.interlib_types[problem.interlib_type],
+        specjudge_compile_args: problem.specjudge_compile_args || "",
         sjcode: problem.sjcode || "",
+        interlib_type: Problem.interlib_types[problem.interlib_type],
         interlib: problem.interlib || "",
         interlib_impl: problem.interlib_impl || "",
         strict_mode: problem.strict_mode,
@@ -113,7 +115,7 @@ class FetchChannel < ApplicationCable::Channel
       td: problem.testdata.map.with_index { |t, index|
         {
           id: t.id,
-          updated_at: t.updated_at.to_i * 1000000 + t.updated_at.usec,
+          updated_at: t.timestamp,
           time: t.time_limit * 1000, # us
           vss: t.vss_limit || 0,
           rss: t.rss_limit || 0,
@@ -123,7 +125,7 @@ class FetchChannel < ApplicationCable::Channel
           verdict_ignore: verdict_ignore_set.include?(index),
         }
       },
-      tasks: problem.testdata_sets.map { |s|
+      tasks: problem.subtasks.map { |s|
         {
           positions: s.td_list_arr(td_count),
           score: (s.score * BigDecimal('1e+6')).to_i,
@@ -139,7 +141,7 @@ class FetchChannel < ApplicationCable::Channel
 
   private
 
-  def update_task_results(data, submission)
+  def update_td_results(data, submission)
     results = data.map { |res|
       {
         submission_id: submission.id,
@@ -153,26 +155,26 @@ class FetchChannel < ApplicationCable::Channel
         message: res[:message],
       }
     }
-    SubmissionTask.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    td_set_scores = submission.calc_td_set_scores
-    score = td_set_scores.sum{|x| x[:score]}
+    SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
+    subtask_scores = submission.calc_subtask_result
+    score = subtask_scores.sum{|x| x[:score]}
     max_score = BigDecimal('1e+12') - 1
     score = score.clamp(-max_score, max_score).round(6)
     retry_op do |is_first|
       submission.reload if not is_first
       submission.with_lock do
         return if not ['Validating', 'received'].include?(submission.result)
-        submission.update(:score => score)
+        submission.update_self_with_subtask_result({score: score}, subtask_scores)
       end
     end
-    ActionCable.server.broadcast("submission_#{submission.id}", {td_set_scores: td_set_scores, tasks: results})
+    ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
+    ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
   end
 
   def retry_op(retry_times=4, interval=0.3)
     is_first = true
     begin
-      raise ActiveRecord::Deadlocked if retry_times == 4
       yield(is_first)
     rescue ActiveRecord::Deadlocked => e
       retry_times -= 1

@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   end
 
   def show
-    set_user
     @problems = Problem.select(:id).order(id: :asc)
     tried = @user.submissions.select(:problem_id).group(:problem_id)
     ac = @user.submissions.select(:problem_id).where(result: 'AC').group(:problem_id)
@@ -62,11 +61,11 @@ class UsersController < ApplicationController
     begin
       @user = User.friendly.find(params[:id])
       if @user.blank?
-        redirect_to users_path, :alert => "Username '#{params[:id]}' not found."
+        redirect_to users_path, alert: "Username '#{params[:id]}' not found."
         return
       end
     rescue ActiveRecord::RecordNotFound => e
-      redirect_to users_path, :alert => "Username '#{params[:id]}' not found."
+      redirect_to users_path, alert: "Username '#{params[:id]}' not found."
       return
     end
   end

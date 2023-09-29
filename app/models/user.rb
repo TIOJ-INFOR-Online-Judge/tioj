@@ -3,7 +3,7 @@
 # Table name: users
 #
 #  id                     :bigint           not null, primary key
-#  email                  :string(255)      default(""), not null
+#  email                  :string(255)
 #  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
@@ -25,70 +25,98 @@
 #  name                   :string(255)
 #  last_submit_time       :datetime
 #  last_compiler_id       :bigint
+#  type                   :string(255)      default("User"), not null
+#  contest_id             :bigint
 #
 # Indexes
 #
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_last_compiler_id      (last_compiler_id)
-#  index_users_on_nickname              (nickname) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_username              (username) UNIQUE
+#  index_users_on_contest_id                     (contest_id)
+#  index_users_on_last_compiler_id               (last_compiler_id)
+#  index_users_on_type_and_email                 (type,email) UNIQUE
+#  index_users_on_type_and_nickname              (type,nickname) UNIQUE
+#  index_users_on_type_and_reset_password_token  (type,reset_password_token) UNIQUE
+#  index_users_on_type_and_username              (type,username)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (contest_id => contests.id)
 #  fk_rails_...  (last_compiler_id => compilers.id)
 #
 
 require 'file_size_validator'
-class User < ApplicationRecord
-  has_many :submissions, :dependent => :destroy
-  has_many :posts, :dependent => :destroy
-  has_many :comments, :dependent => :destroy
-  has_many :articles, :dependent => :destroy
+
+class UserBase < ApplicationRecord
+  self.table_name = "users"
+
+  has_many :submissions, dependent: :destroy, foreign_key: :user_id
+  has_many :posts, dependent: :destroy, foreign_key: :user_id
+  has_many :comments, dependent: :destroy, foreign_key: :user_id
+
+  has_many :contest_registrations, dependent: :destroy, foreign_key: :user_id
+  has_many :registered_contests, source: :contest, through: :contest_registrations
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  if Rails.configuration.x.settings.dig(:disable_registration)
-    devise :database_authenticatable, :rememberable, :trackable, :validatable
-  else
-    devise :database_authenticatable, :registerable, :rememberable, :trackable, :validatable
-  end
+  devise :database_authenticatable, :rememberable, :trackable
+  devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
+
+  validates_presence_of :username, :nickname
+  validates_length_of :nickname, in: 1..12
+  validates_length_of :username, in: 3..20
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
-    #:presence => true,
-    :file_size => {
-      :maximum => 5.megabytes.to_i
+    #presence: true,
+    file_size: {
+      maximum: 5.megabytes.to_i
     }
 
   attr_accessor :login
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
     else
       where(conditions).first
     end
   end
 
-  validates_presence_of :username, :nickname
+  def generate_random_avatar
+    Tempfile.create(['', '.png']) do |tmpfile|
+      Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
+      self.avatar = tmpfile
+    end
+  end
+end
+
+class User < UserBase
+  devise :validatable
+
+  has_many :articles, dependent: :destroy
+
   validates :username,
-    :uniqueness => {:case_sensitive => false},
-    :username_convention => true,
+    uniqueness: {case_sensitive: false},
+    username_convention: true,
     on: :create
 
-  validates :school, :presence => true, :length => {:minimum => 1}
-  validates :gradyear, :presence => true, :inclusion => 1..1000
-  validates :name, :presence => true, :length => {:in => 1..12}
+  validates :school, presence: true, length: {in: 1..64}
+  validates :gradyear, presence: true, inclusion: 1..3000
+  validates :name, presence: true, length: {in: 1..12}
 
   validates_uniqueness_of :nickname
-  validates_length_of :nickname, :in => 1..12
-  validates_length_of :username, :in => 3..20
-  validates_length_of :motto, :maximum => 75
+  validates_length_of :motto, maximum: 75
 
   extend FriendlyId
   friendly_id :username
+end
+
+class ContestUser < UserBase
+  belongs_to :contest
+  validates :username,
+    uniqueness: {case_sensitive: false, scope: :contest_id},
+    username_convention: true
+  validates_uniqueness_of :nickname, scope: :contest_id
 end

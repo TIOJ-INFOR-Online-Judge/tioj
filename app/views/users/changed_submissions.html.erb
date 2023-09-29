@@ -23,7 +23,7 @@
       <option value="CE">Compilation Error</option>
     </select>
   </div>
-  <% if current_user&.admin %>
+  <% if current_user&.admin? %>
     <div class="form-group">
       <label for="all_user">
         <input id="all_user" type="checkbox" name="all_user" value="1">List all users' submissions
@@ -50,7 +50,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Old Score</th>
       <th>Compiler</th>
       <th>Submit Time</th>
-      <% if current_user&.admin %>
+      <% if current_user&.admin? %>
          <th></th>
       <% end %>
     </tr>
@@ -66,11 +66,11 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= verdict_text submission.old_submission.result %></td>
         <td><%= sprintf("%g", submission.old_submission.score) %></td>
         <td><%= submission.compiler.name %></td>
-        <td><%= submission.created_at.to_s(:clean) %></td>
-        <% if current_user&.admin %>
+        <td><%= submission.created_at.to_fs(:clean) %></td>
+        <% if current_user&.admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
             <% end %>
           </td>
         <% end %>

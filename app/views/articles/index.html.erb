@@ -2,15 +2,15 @@
 <h4 class="page-header">Bulletin <small>#<%= @era %></small></h4>
 
 <p>
-  <%= select_tag :era_select, options_for_select(@era_list.map{ |x| [x,x] }, @era), :class => "form-control" %>
+  <%= select_tag :era_select, options_for_select(@era_list.map{ |x| [x,x] }, @era), class: "form-control" %>
 </p>
 
 
-<% if current_user&.admin %>
+<% if current_user&.admin? %>
   <p>
   <div class="row">
     <div class="col-md-2">
-      <%= link_to 'New Article', new_article_path(:era => @era), :class => "btn btn-success btn-sm btn-block" %>
+      <%= link_to 'New Article', new_article_path(era: @era), class: "btn btn-success btn-sm btn-block" %>
     </div>
   </div>
   </p>
@@ -21,14 +21,14 @@
   <div class="panel-heading">
     <h5 class="panel-title">Announcements</h5>
   </div>
-  <%= render 'table', :articles => @articles %>
+  <%= render 'table', articles: @articles %>
 </div>
 
 <div class="panel panel-default">
   <div class="panel-heading">
     <h5 class="panel-title">Course Materials</h5>
   </div>
-  <%= render 'table', :articles => @courses %>
+  <%= render 'table', articles: @courses %>
 </div>
 
 <script>

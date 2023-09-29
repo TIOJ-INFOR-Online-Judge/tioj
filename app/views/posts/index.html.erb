@@ -8,33 +8,33 @@
 <% if @problem %>
 <div class="row" style="margin-bottom: 10px;">
   <div class="col-md-2">
-    <%= link_to 'Back to Problem', problem_path(@problem), :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Problem', problem_path(@problem), class: 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>
 <% end %>
 
 <div class="actions">
-  <% if user_signed_in? and (current_user.admin? or not @problem or @problem.discussion_enabled?) %>
+  <% if user_signed_in? and (effective_admin? or not @problem or @problem.discussion_enabled?) %>
     <% if @contest %>
-      <% if current_user.admin? %>
-        <%= link_to "New Announcement", new_contest_post_path(@contest), :class => "btn btn-success"%>
+      <% if effective_admin? %>
+        <%= link_to "New Announcement", contest_adaptive_polymorphic_path([:post], action: :new), class: "btn btn-success"%>
       <% else %>
-        <%= link_to "New Question", new_contest_post_path(@contest), :class => "btn btn-success"%>
+        <%= link_to "New Question", contest_adaptive_polymorphic_path([:post], action: :new), class: "btn btn-success"%>
       <% end %>
     <% elsif @problem %>
-      <%= link_to "New Post", new_problem_post_path(@problem), :class => "btn btn-success" %>
+      <%= link_to "New Post", new_problem_post_path(@problem), class: "btn btn-success" %>
     <% else %>
-      <%= link_to "New Post", new_post_path, :class => "btn btn-success"%>
+      <%= link_to "New Post", new_post_path, class: "btn btn-success"%>
     <% end %>
   <% end %>
 </div>
 
-<%= paginate @posts %>
+<%= contest_adaptive_paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
     <div class="post well<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
-      <%= render partial: 'show_post', :locals => {:post => post}  %>
+      <%= render partial: 'show_post', locals: {post: post}  %>
     </div>
   <% end %>
 </div> <!-- posts div -->
-<%= paginate @posts%>
+<%= contest_adaptive_paginate @posts %>

@@ -16,23 +16,24 @@
 
 <h4 class="page-header">
   Submissions
+  <% if @contest %>
+    <small><%= @contest.title %></small>
+  <% end %>
   <% if @problem %>
     <small>Problem #<%= @problem.id %></small>
-  <% end %>
-  <% if @contest %>
-    <small>Contest #<%= @contest.id %></small>
   <% end %>
 </h4>
 
 <% if @problem %>
-  <%= link_to 'Submit to Problem', new_problem_submission_path(@problem), :class => "btn btn-success btn-xs" %>
+  <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
+  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-xs" %>
 <% else %>
   <div class="form-inline">
     <div class="form-group">
       <label for="quick_prob_id">Quick Submit</label>
       <input style="width:150px" id="quick_prob_id" type="number" class="form-control input-sm flat" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
     </div>
-    <button type="submit" id="quick_submit" class="btn btn-success btn-xs">Submit</button>
+    <a href="#" id="quick_submit" class="btn btn-success btn-xs">Submit</a>
   </div>
 <% end %>
 
@@ -76,7 +77,9 @@ $("button:not([type='submit'])").attr("type", "button");
     <tr>
       <th>#</th>
       <th>PID</th>
-      <th>Submitter</th>
+      <% if @layout != :single_contest %>
+        <th>Submitter</th>
+      <% end %>
       <th>Time</th>
       <th>Memory</th>
       <th>Verdict</th>
@@ -84,7 +87,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Code Length</th>
       <th>Score</th>
       <th>Submit Time</th>
-      <% if current_user&.admin %>
+      <% if effective_admin? %>
          <th></th>
       <% end %>
     </tr>
@@ -93,25 +96,22 @@ $("button:not([type='submit'])").attr("type", "button");
     <% @submissions.each do |submission| %>
       <tr>
         <% waiting_submissions.append(submission.id) if waiting_verdicts.include?(submission.result) %>
-        <% if submission.contest_id.blank? %>
-          <td><%= link_to submission.id, submission_path(submission) %></td>
-          <td><%= link_to submission.problem_id, problem_path(submission.problem) %></td>
-        <% else %>
-          <td><%= link_to submission.id, contest_submission_path(submission.contest_id, submission) %></td>
-          <td><%= link_to submission.problem_id, contest_problem_path(submission.contest_id, submission.problem) %></td>
+        <td><%= link_to submission.id, contest_adaptive_polymorphic_path([submission]) %></td>
+        <td><%= link_to submission.problem_id, contest_adaptive_polymorphic_path([submission.problem]) %></td>
+        <% if @layout != :single_contest %>
+          <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
         <% end %>
-        <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
         <td id="time-<%= submission.id %>"><%= submission.total_time.to_i %></td>
         <td id="memory-<%= submission.id %>"><%= submission.total_memory.to_i %></td>
         <td id="verdict-<%= submission.id %>" class="<%= verdict_class_map[submission.result] %>"><%= submission.result %></td>
         <td><%= submission.compiler.name %></td>
-        <td><%= number_to_human_size(submission.code.bytesize) %></td>
+        <td><%= number_to_human_size(submission.code_length) %></td>
         <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>
-        <td><%= submission.created_at.to_s(:clean) %></td>
-        <% if current_user&.admin %>
+        <td><%= submission.created_at.to_fs(:clean) %></td>
+        <% if effective_admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', :class => 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
             <% end %>
           </td>
         <% end %>
@@ -119,26 +119,15 @@ $("button:not([type='submit'])").attr("type", "button");
     <% end %>
   </tbody>
 </table>
-<%= paginate @submissions %>
+<%= contest_adaptive_paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
 <script>
 var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
-function score_str(str) {
-  return String(str).replace(/\.0$/, '');
-}
-
-function updateResult(data) {
-  var id = data['id'];
-  $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
-  if (data['total_time']) $('#time-' + id).text(data['total_time']);
-  if (data['total_memory']) $('#memory-' + id).text(data['total_memory']);
-  if ('score' in data) $('#score-' + id).text(score_str(data['score']));
-}
-
+initSubmissionCable();
 $(document).ready(function() {
-  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateResult);
+  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
 });
 </script>
 <% end %>

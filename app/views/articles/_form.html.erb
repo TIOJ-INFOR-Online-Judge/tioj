@@ -9,7 +9,7 @@
 
   <div class="form-group">
     <%= f.label :pinned, "Pin to top" %><br>
-    <div class="switch switch-square"
+    <div class="make-switch switch-square"
       data-on-label="<i class='fui-check'></i>"
       data-off-label="<i class='fui-cross'></i>">
       <%= f.check_box :pinned %>
@@ -18,38 +18,38 @@
 
   <div class="form-group">
     <%= f.label :category %>
-    <%= f.select :category, [["Announcements", 0], ["Course Materials", 1]], {}, {:class => 'form-control flat'} %>
+    <%= f.select :category, [["Announcements", 0], ["Course Materials", 1]], {}, {class: 'form-control flat'} %>
   </div>
 
   <div class="form-group">
     <%= f.label :title %>
-    <%= f.text_field :title, :class => 'form-control flat' %>
+    <%= f.text_field :title, class: 'form-control flat' %>
   </div>
 
   <div class="form-group">
     <%= f.label :content %>
-    <%= f.text_area :content, :class => 'form-control flat', :rows => '9' %>
+    <%= f.text_area :content, class: 'form-control flat', rows: '9' %>
   </div>
 
   <label>Attachments</label>
   <%= f.fields_for :attachments do |a| %>
     <div class="form-group">
-      <%= a.text_field :path, :disabled => true, :class => 'form-control flat' %>
+      <%= a.text_field :path, disabled: true, class: 'form-control flat' %>
       <div class="row">
         <div class="col-md-4">
-          <%= a.file_field :path, :class => 'form-control flat' %>
+          <%= a.file_field :path, class: 'form-control flat' %>
         </div>
         <div class="col-md-4">
-          <%= a.link_to_remove "Remove this attachment", :class => 'btn btn-danger btn-xs' %>
+          <%= a.link_to_remove "Remove this attachment", class: 'btn btn-danger btn-xs' %>
         </div>
       </div>
     </div>
   <% end %>
-  <%= f.link_to_add "Add an attachment", :attachments, :class => 'btn btn-warning' %>
+  <%= f.link_to_add "Add an attachment", :attachments, class: 'btn btn-warning' %>
 
   <div class="form-group">
-    <%= f.label :public do %>
-      <%= f.check_box :public %>
+    <%= f.label :public, class: 'checkbox' do %>
+      <%= f.check_box :public, 'data-toggle': 'checkbox' %>
       Public to anyone
     <% end %>
   </div>
@@ -59,6 +59,6 @@
   <hr>
 
   <div class="actions">
-    <%= f.submit :class => 'btn btn-success btn-lg' %>
+    <%= f.submit class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>

@@ -24,6 +24,7 @@ class RegistrationsController < Devise::RegistrationsController
     else
       redirect_to root_path, alert: 'Registration is not allowed!'
     end
+    # TODO: check resource.generate_random_avatar
   end
 
   def update

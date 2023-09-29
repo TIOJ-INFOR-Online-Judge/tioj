@@ -1,3 +1,3 @@
 <%= f.label :contest_type %><br>
 <%= f.select :contest_type, Contest.contest_types.keys.map.with_index {|x, index| ["[#{index}] #{contest_type_desc_map[x]}", x]},
-  {}, {:class => 'form-control flat'} %>
+  {}, {class: 'form-control flat'} %>

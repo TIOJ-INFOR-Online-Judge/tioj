@@ -1,5 +1,5 @@
 <% set_page_title @problem.id.to_s + " - " + @problem.name %>
-<% hide_old_submission = (not current_user&.admin?) && @contest&.hide_old_submission %>
+<% hide_old_submission = (!effective_admin? && @contest&.hide_old_submission) || @layout == :single_contest %>
 
 <h4 class="page-header">
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
@@ -7,44 +7,40 @@
 
 <p>
 <div class="row">
+  <%= render 'submit_button' %>
   <div class="col-md-2">
-    <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
+    <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), class: 'btn btn-info btn-xs btn-block' %>
   </div>
-  <% if not hide_old_submission %>
+  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
     <div class="col-md-2">
-      <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.start_time <= Time.now and @contest.end_time >= Time.now) %>
-    <div class="col-md-2">
-      <%= link_to 'Discussion / Solution', problem_posts_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
+      <%= link_to 'Discussion / Solution', problem_posts_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
     </div>
   <% end %>
   <% if not hide_old_submission %>
     <div class="col-md-2">
-      <%= link_to 'Ranklist', ranklist_problem_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
+      <%= link_to 'Ranklist', ranklist_problem_path(@problem), class: 'btn btn-inverse btn-xs btn-block' %>
     </div>
   <% end %>
   <div class="col-md-2">
-    <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_path(@contest), :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_adaptive_polymorphic_path([]), class: 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>
-<% if current_user&.admin? %>
+<% if effective_admin? %>
   <div class="row" style="padding-top:10px;">
     <div class="col-md-2">
-      <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
+      <%= link_to 'Edit', edit_problem_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
     </div>
     <div class="col-md-2">
-      <%= link_to 'Manage Testdata', problem_testdata_path(@problem), :class => 'btn btn-warning btn-xs btn-block' %>
+      <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-xs btn-block' %>
     </div>
     <div class="col-md-2">
       <%= form_with url: rejudge_problem_path(@problem) do |f| %>
-        <%= f.submit 'Rejudge', :data => {:confirm => 'Are you really going to rejudge the whole problem?'}, :class => 'btn btn-inverse btn-xs btn-block' %>
+        <%= f.submit 'Rejudge', data: {confirm: 'Are you really going to rejudge the whole problem?'}, class: 'btn btn-inverse btn-xs btn-block' %>
       <% end %>
     </div>
     <div class="col-md-2">
       <%= form_with url: delsub_problem_path(@problem) do |f| %>
-        <%= f.submit 'Delete all submissions', :data => {:confirm => 'Are you really going to delete ALL submissions to this problem?'}, :class => 'btn btn-danger btn-xs btn-block' %>
+        <%= f.submit 'Delete all submissions', data: {confirm: 'Are you really going to delete ALL submissions to this problem?'}, class: 'btn btn-danger btn-xs btn-block' %>
       <% end %>
     </div>
   </div>
@@ -61,13 +57,13 @@
         <div class="panel-body">
           <% tcoder = topcoder(@problem) %>
           <% if tcoder %>
-            <div class="row">
-              <div class="col-md-5">
-                <%= link_to image_tag(tcoder.avatar.thumb.to_s, :class => "img-thumbnail img-responsive"), user_path(tcoder) %>
+            <div class="bs5-row">
+              <div class="bs5-col-lg bs5-col-lg-auto">
+                <%= link_to image_tag(tcoder.avatar.thumb.to_s, class: "img-thumbnail img-responsive"), user_path(tcoder) %>
               </div>
-              <div class="col-md-7">
+              <div class="bs5-col-lg">
                 <%= link_to tcoder.nickname, user_path(tcoder) %><br>
-                <blockquote><dfn><%= tcoder.motto %></dfn></blockquote>
+                <blockquote class="motto"><dfn><%= tcoder.motto %></dfn></blockquote>
               </div>
             </div>
           <% end %>
@@ -153,9 +149,7 @@
           <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
           <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
         </div>
-        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
-          <%= raw sample.input.gsub(/\n/, '<br/>') %>
-        </div>
+        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
       </div>
     </div>
     <div class="col-md-6">
@@ -164,9 +158,7 @@
           <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
           <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
         </div>
-        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;">
-          <%= raw sample.output.gsub(/\n/, '<br/>') %>
-        </div>
+        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
       </div>
     </div>
   </div>
@@ -200,7 +192,7 @@
     <h1 class="panel-title">Subtasks</h1>
   </div>
   <table class="table table-hover table-striped table-condensed">
-    <% show_cons = @problem.testdata_sets.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
+    <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
     <thead>
       <tr>
         <th width="5%">No.</th>
@@ -211,7 +203,7 @@
         <th width="15%">Score</th>
       </tr>
     </thead>
-    <% @problem.testdata_sets.order(id: :asc).each_with_index do |s, i| %>
+    <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
       <tr>
         <td><%= i + 1 %></td>
         <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
@@ -274,26 +266,8 @@
 </div>
 
 <div class="row">
+  <%= render 'submit_button' %>
   <div class="col-md-2">
-    <%= link_to 'Submit', {:controller => :submissions, :action => :new, :problem_id => @problem.id, :contest_id => @contest}, { :class => 'btn btn-success btn-xs btn-block' } %>
-  </div>
-  <% if not hide_old_submission %>
-    <div class="col-md-2">
-      <%= link_to 'Status', problem_submissions_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
-      <%= link_to 'Ranklist', ranklist_problem_path(@problem), :class => 'btn btn-inverse btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <% if current_user&.admin? %>
-    <div class="col-md-2">
-      <%= link_to 'Edit', edit_problem_path(@problem), :class => 'btn btn-info btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
-      <%= link_to 'Manage Testdata', problem_testdata_path(@problem), :class => 'btn btn-warning btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <div class="col-md-2">
-    <%= link_to 'Back to Top', '#', :class => 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs btn-block' %>
   </div>
 </div>

@@ -6,21 +6,10 @@
 <%= stylesheet_link_tag    "application", media: "all" %>
 <%= javascript_include_tag "application" %>
 <%= csrf_meta_tags %>
-<script>
-MathJax = ({
-  tex: {
-    inlineMath: [ ['$','$'], ['\\(','\\)'] ],
-    processEscapes: true
-  }
-});
-</script>
-<%= mathjax_tag :component => 'tex-svg-full.js' %>
+<script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']]}};</script>
+<%= mathjax_tag component: 'tex-svg-full.js' %>
 <%= yield :icon %>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-#page-content{ padding-left: 40px; padding-right: 40px; padding-bottom: 40px; }
-.page-header{ margin: 10px 0 15px; }
-</style>
 </head>
 
 <body>
@@ -28,34 +17,25 @@ MathJax = ({
 
 <div class="container-fluid" id="page-content">
   <% if not @annos.empty? %>
-    <div class="alert alert-info alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span>
-      </button>
+    <% alert_tag do %>
       <% @annos.each_with_index do |anno, index| %>
         <strong><%= raw anno.title %></strong> <%= raw anno.body %><% if index != @annos.size - 1 %><br><% end %>
       <% end %>
-    </div>
+    <% end %>
   <% end %>
+
   <% if notice %>
-    <div class="alert alert-success alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span>
-      </button>
+    <% alert_tag class: 'alert-success' do %>
       <strong>Oh Geez! </strong> <%= notice %>
-    </div>
+    <% end %>
   <% end %>
+
   <% if alert %>
-    <div class="alert alert-danger alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span>
-      </button>
+    <% alert_tag class: 'alert-danger' do %>
       <strong>Oh No! </strong> <%= alert %>
-    </div>
+    <% end %>
   <% end %>
+  <%# TODO: Add session:trim cronjob to Dockerfile & installation script %>
   <%= yield %>
 </div>
 

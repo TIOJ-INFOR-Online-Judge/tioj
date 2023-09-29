@@ -19,9 +19,9 @@
 #
 
 one:
-  title: MyString
-  body: MyString
+  title: MyString1
+  body: MyString1
 
 two:
-  title: MyString
-  body: MyString
+  title: MyString2
+  body: MyString2

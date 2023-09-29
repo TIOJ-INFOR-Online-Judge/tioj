@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   include PostFilteringConcern
-
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user_and_running_if_single_contest!, only: [:index]
   before_action :set_posts, :check_contest_and_problem
   before_action :check_post_create, only: [:new, :create]
   before_action :set_post_types, only: [:new, :create, :edit, :update]
@@ -9,10 +9,13 @@ class PostsController < ApplicationController
   before_action :check_params!, only: [:create, :update]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
+  helper_method :allow_edit
+  helper_method :allow_set_visibility
+
   # GET /posts
   # GET /posts.json
   def index
-    @posts = @posts.order("updated_at DESC").page(params[:page]).includes(:user).preload(comments: :user)
+    @posts = @posts.page(params[:page]).includes(:user).preload(comments: :user)
     if @contest
       @title = "Q & A"
     elsif @problem
@@ -81,6 +84,14 @@ class PostsController < ApplicationController
 
   private
 
+  def allow_edit(post)
+    effective_admin? || (current_user&.id == post.user_id && !@contest)
+  end
+
+  def allow_set_visibility
+    !@contest || effective_admin?
+  end
+
   def check_post_create
     check_problem_allow_create
   end
@@ -115,7 +126,7 @@ class PostsController < ApplicationController
 
   def check_user!
     @post = @posts.find(params[:id])
-    unless current_user&.admin? or (current_user&.id == @post.user_id and not @contest)
+    unless allow_edit(@post)
       flash[:alert] = 'Insufficient User Permissions.'
       redirect_to action: 'index'
       return
@@ -123,10 +134,12 @@ class PostsController < ApplicationController
   end
 
   def check_params!
-    return if current_user&.admin?
-    params[:post][:global_visible] = '0' if @contest
+    unless allow_set_visibility
+      params[:post][:global_visible] = '0' if @contest
+      params[:post][:user_visible] = '0' if @contest
+    end
     if not @post_types.map{|x| x[1]}.include?(params[:post][:post_type])
-      flash[:alert] = 'Insufficient User Permissions.'
+      flash[:alert] = 'Invalid post type.'
       redirect_to action: 'index'
       return
     end

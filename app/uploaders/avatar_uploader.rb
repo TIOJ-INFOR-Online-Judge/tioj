@@ -21,15 +21,15 @@ class AvatarUploader < CarrierWave::Uploader::Base
   end
 
   version :square do
-    process :resize_to_fit => [500,500]
+    process resize_to_fit: [500,500]
   end
 
-  version :thumb, :from_version => :square do
-    process :resize_to_fill => [100,100]
+  version :thumb, from_version: :square do
+    process resize_to_fill: [100,100]
   end
 
-  version :mini_thumb, :from_version => :thumb do
-    process :resize_to_fill => [30,30]
+  version :mini_thumb, from_version: :thumb do
+    process resize_to_fill: [30,30]
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -41,7 +41,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  # process :scale => [200, 300]
+  # process scale: [200, 300]
   #
   # def scale(width, height)
   #   # do something
@@ -49,7 +49,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
 
   # Create different versions of your uploaded files:
   # version :thumb do
-  #   process :resize_to_fit => [50, 50]
+  #   process resize_to_fit: [50, 50]
   # end
 
   # Add a white list of extensions which are allowed to be uploaded.

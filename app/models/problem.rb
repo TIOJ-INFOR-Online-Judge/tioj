@@ -28,6 +28,7 @@
 #  skip_group             :boolean          default(FALSE)
 #  ranklist_display_score :boolean          default(FALSE)
 #  code_length_limit      :integer          default(5000000)
+#  specjudge_compile_args :string(255)
 #
 # Indexes
 #
@@ -48,26 +49,26 @@ class Problem < ApplicationRecord
 
   acts_as_taggable_on :tags, :solution_tags
 
-  has_many :submissions, :dependent => :destroy
-  has_many :old_submissions, :dependent => :destroy
+  has_many :submissions, dependent: :destroy
+  has_many :old_submissions, dependent: :destroy
 
-  has_many :contest_problem_joints, :dependent => :destroy
-  has_many :contests, :through => :contest_problem_joints
+  has_many :contest_problem_joints, dependent: :destroy
+  has_many :contests, through: :contest_problem_joints
 
-  has_many :ban_compilers, :as => :with_compiler, :dependent => :destroy
-  has_many :compilers, :through => :ban_compilers, :as => :with_compiler
+  has_many :ban_compilers, as: :with_compiler, dependent: :destroy
+  has_many :compilers, through: :ban_compilers, as: :with_compiler
 
-  has_many :testdata, -> { order(position: :asc) }, :dependent => :destroy
-  accepts_nested_attributes_for :testdata, :allow_destroy => true, :reject_if => :all_blank
+  has_many :testdata, -> { order(position: :asc) }, dependent: :destroy
+  accepts_nested_attributes_for :testdata, allow_destroy: true, reject_if: :all_blank
 
-  has_many :testdata_sets, dependent: :delete_all
-  accepts_nested_attributes_for :testdata_sets, :allow_destroy => true, :reject_if => :all_blank
+  has_many :subtasks, dependent: :delete_all
+  accepts_nested_attributes_for :subtasks, allow_destroy: true, reject_if: :all_blank
 
-  has_many :posts, :as => :postable, :dependent => :destroy
-  accepts_nested_attributes_for :posts, :allow_destroy => true, :reject_if => :all_blank
+  has_many :posts, as: :postable, dependent: :destroy
+  accepts_nested_attributes_for :posts, allow_destroy: true, reject_if: :all_blank
 
   has_many :sample_testdata, dependent: :destroy
-  accepts_nested_attributes_for :sample_testdata, :allow_destroy => true, :reject_if => :all_blank
+  accepts_nested_attributes_for :sample_testdata, allow_destroy: true, reject_if: :all_blank
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
 

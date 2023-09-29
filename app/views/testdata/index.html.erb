@@ -1,7 +1,7 @@
 <h4 class="page-header">Listing testdata of Problem #<%= @problem.id%>. <%= @problem.name %></h4>
 
-<%= link_to 'New Testdatum', new_problem_testdatum_path, :class => 'btn btn-success btn-sm' %>
-<%= link_to 'Batch Edit Testdata', batch_edit_problem_testdata_path, :class => 'btn btn-success btn-sm' %>
+<%= link_to 'New Testdatum', new_problem_testdatum_path, class: 'btn btn-success btn-sm' %>
+<%= link_to 'Batch Edit Testdata', batch_edit_problem_testdata_path, class: 'btn btn-success btn-sm' %>
 
 <table class = "table table-hover table-striped table-condensed">
   <thead>
@@ -26,19 +26,19 @@
         <td><%= index %></td>
         <td><%= testdatum.test_input.blank? ? "Nil" : strip_uuid(testdatum.test_input_identifier) %></td>
         <td style="text-align: right;">
-          <%= link_to 'Download' + (testdatum.input_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'input'), :class => 'btn btn-success btn-xs' %>
+          <%= link_to 'Download' + (testdatum.input_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'input'), class: 'btn btn-success btn-xs' %>
         </td>
         <td><%= testdatum.test_output.blank? ? "Nil" : strip_uuid(testdatum.test_output_identifier) %></td>
         <td style="text-align: right;">
-          <%= link_to 'Download' + (testdatum.output_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'output'), :class => 'btn btn-success btn-xs' %>
+          <%= link_to 'Download' + (testdatum.output_compressed ? " (zstd)" : ""), testdatum_path(testdatum, type: 'output'), class: 'btn btn-success btn-xs' %>
         </td>
         <td><%= testdatum.time_limit %></td>
         <td><%= testdatum.vss_limit || '-' %></td>
         <td><%= testdatum.rss_limit || '-' %></td>
         <td><%= testdatum.output_limit %></td>
         <td>
-          <%= link_to 'Edit', edit_problem_testdatum_path(@problem, testdatum), :class => 'btn btn-info btn-xs' %>
-          <%= link_to 'Destroy', problem_testdatum_path(@problem, testdatum), method: :delete, data: { confirm: 'Are you sure?' }, :class=>'btn btn-xs btn-danger' %>
+          <%= link_to 'Edit', edit_problem_testdatum_path(@problem, testdatum), class: 'btn btn-info btn-xs' %>
+          <%= link_to 'Destroy', problem_testdatum_path(@problem, testdatum), method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
         </td>
       </tr>
     <% end %>
@@ -46,4 +46,4 @@
   </tbody>
 </table>
 
-<%= link_to 'Back to Problem', problem_path(@problem), :class => 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Problem', problem_path(@problem), class: 'btn btn-default btn-xs' %>

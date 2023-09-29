@@ -11,7 +11,7 @@
 <% end %>
   <td><%= link_to item[1] + 1, submission_path(submission) %></td>
   <td><%= link_to submission.id, submission_path(submission) %></td>
-  <td><%= link_to image_tag(submission.user.avatar.mini_thumb.to_s, :class => "img-rounded"), user_path(submission.user) %></td>
+  <td><%= link_to image_tag(submission.user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(submission.user) %></td>
   <td><%= link_to submission.user.nickname, user_path(submission.user) %></td>
   <% if @problem.ranklist_display_score %>
     <td><%= score_str(submission.score) %></td>
@@ -19,6 +19,6 @@
   <td><%= submission.total_time %></td>
   <td><%= submission.total_memory %></td>
   <td><%= submission.compiler.name %></td>
-  <td><%= number_to_human_size(submission.code.bytesize) %></td>
-  <td><%= submission.created_at.to_s(:clean) %></td>
+  <td><%= number_to_human_size(submission.code_length) %></td>
+  <td><%= submission.created_at.to_fs(:clean) %></td>
 </tr>

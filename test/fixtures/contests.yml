@@ -1,0 +1,39 @@
+# == Schema Information
+#
+# Table name: contests
+#
+#  id                         :bigint           not null, primary key
+#  title                      :string(255)
+#  description                :text(16777215)
+#  start_time                 :datetime
+#  end_time                   :datetime
+#  contest_type               :integer
+#  created_at                 :datetime
+#  updated_at                 :datetime
+#  cd_time                    :integer          default(15), not null
+#  disable_discussion         :boolean          default(TRUE), not null
+#  freeze_minutes             :integer          default(0), not null
+#  show_detail_result         :boolean          default(TRUE), not null
+#  hide_old_submission        :boolean          default(FALSE), not null
+#  skip_group                 :boolean          default(FALSE)
+#  description_before_contest :text(16777215)
+#  dashboard_during_contest   :boolean          default(TRUE)
+#  register_mode              :integer          default("no_register"), not null
+#  register_before            :datetime         not null
+#  default_single_contest     :boolean          default(FALSE), not null
+#
+# Indexes
+#
+#  index_contests_on_start_time_and_end_time  (start_time,end_time)
+#
+
+one:
+  title: contestOne
+  description: descriptionOne
+  description_before_contest: descriptionOne
+  start_time: 2023-01-01 12:00
+  end_time: 2023-01-01 15:00
+  register_before: 2023-01-01 12:00
+  contest_type: ioi
+  cd_time: 15
+  disable_discussion: false

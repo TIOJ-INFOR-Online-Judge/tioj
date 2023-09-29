@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_30_050959) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -113,6 +113,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.index ["with_compiler_type", "with_compiler_id"], name: "index_ban_compilers_on_with_compiler_type_and_with_compiler_id"
   end
 
+  create_table "code_contents", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.binary "code", size: :long
+  end
+
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
@@ -132,6 +136,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "order"
+    t.string "extension"
     t.index ["name"], name: "index_compilers_on_name", unique: true
   end
 
@@ -141,6 +146,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["contest_id", "problem_id"], name: "contest_task_ix", unique: true
+  end
+
+  create_table "contest_registrations", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "contest_id", null: false
+    t.boolean "approved", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["contest_id", "approved"], name: "index_contest_registrations_on_contest_id_and_approved"
+    t.index ["contest_id", "user_id"], name: "index_contest_registrations_on_contest_id_and_user_id", unique: true
+    t.index ["user_id", "approved"], name: "index_contest_registrations_on_user_id_and_approved"
   end
 
   create_table "contests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -156,9 +172,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.integer "freeze_minutes", default: 0, null: false
     t.boolean "show_detail_result", default: true, null: false
     t.boolean "hide_old_submission", default: false, null: false
-    t.text "user_whitelist"
     t.boolean "skip_group", default: false
     t.text "description_before_contest", size: :medium
+    t.boolean "dashboard_during_contest", default: true
+    t.integer "register_mode", default: 0, null: false
+    t.datetime "register_before", null: false
+    t.boolean "default_single_contest", default: false, null: false
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
@@ -171,7 +190,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.boolean "online", default: false
   end
 
-  create_table "old_submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "old_submission_id"
     t.integer "position"
     t.string "result"
@@ -180,7 +199,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.integer "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["old_submission_id"], name: "index_old_submission_tasks_on_old_submission_id"
+    t.index ["old_submission_id"], name: "index_old_submission_testdata_results_on_old_submission_id"
   end
 
   create_table "old_submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -242,6 +261,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.boolean "skip_group", default: false
     t.boolean "ranklist_display_score", default: false
     t.integer "code_length_limit", default: 5000000
+    t.string "specjudge_compile_args"
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
@@ -256,7 +276,24 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
-  create_table "submission_tasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "sessions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "session_id", null: false
+    t.text "data", size: :medium
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "index_sessions_on_session_id", unique: true
+    t.index ["updated_at"], name: "index_sessions_on_updated_at"
+  end
+
+  create_table "submission_subtask_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "submission_id", null: false
+    t.binary "result", size: :medium
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["submission_id"], name: "index_submission_subtask_results_on_submission_id", unique: true
+  end
+
+  create_table "submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.integer "position"
     t.string "result"
@@ -268,12 +305,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.integer "vss"
     t.string "message_type"
     t.text "message", size: :medium
-    t.index ["submission_id", "position"], name: "index_submission_tasks_on_submission_id_and_position", unique: true
-    t.index ["submission_id"], name: "index_submission_tasks_on_submission_id"
+    t.index ["submission_id", "position"], name: "index_submission_testdata_results_on_submission_id_and_position", unique: true
+    t.index ["submission_id"], name: "index_submission_testdata_results_on_submission_id"
   end
 
   create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "code", size: :long
     t.string "result", default: "queued"
     t.decimal "score", precision: 18, scale: 6, default: "0.0"
     t.datetime "created_at"
@@ -285,6 +321,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.integer "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
+    t.bigint "code_length", default: 0, null: false
+    t.bigint "code_content_id", null: false
+    t.index ["code_content_id"], name: "index_submissions_on_code_content_id"
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
     t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder", order: { score: :desc }
@@ -295,6 +334,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.index ["result", "contest_id", "id"], name: "index_submissions_fetch"
     t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
     t.index ["user_id"], name: "index_submissions_on_user_id"
+  end
+
+  create_table "subtasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "problem_id"
+    t.decimal "score", precision: 18, scale: 6
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "td_list", null: false
+    t.text "constraints", size: :medium
+    t.index ["problem_id"], name: "index_subtasks_on_problem_id"
   end
 
   create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -337,18 +386,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.boolean "output_compressed", default: false
   end
 
-  create_table "testdata_sets", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "problem_id"
-    t.decimal "score", precision: 18, scale: 6
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string "td_list", null: false
-    t.text "constraints", size: :medium
-    t.index ["problem_id"], name: "index_testdata_sets_on_problem_id"
-  end
-
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "email", default: "", null: false
+    t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
@@ -370,11 +409,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
     t.string "name"
     t.datetime "last_submit_time"
     t.bigint "last_compiler_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.string "type", default: "User", null: false
+    t.bigint "contest_id"
+    t.index ["contest_id"], name: "index_users_on_contest_id"
     t.index ["last_compiler_id"], name: "index_users_on_last_compiler_id"
-    t.index ["nickname"], name: "index_users_on_nickname", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["username"], name: "index_users_on_username", unique: true
+    t.index ["type", "email"], name: "index_users_on_type_and_email", unique: true
+    t.index ["type", "nickname"], name: "index_users_on_type_and_nickname", unique: true
+    t.index ["type", "reset_password_token"], name: "index_users_on_type_and_reset_password_token", unique: true
+    t.index ["type", "username"], name: "index_users_on_type_and_username"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -382,6 +424,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_06_154906) do
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
+  add_foreign_key "submission_subtask_results", "submissions"
+  add_foreign_key "submissions", "code_contents"
   add_foreign_key "submissions", "compilers"
   add_foreign_key "users", "compilers", column: "last_compiler_id"
+  add_foreign_key "users", "contests"
 end

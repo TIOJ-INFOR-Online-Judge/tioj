@@ -1,56 +1,85 @@
 <% set_page_title @contest.title %>
 
-<% if current_user&.admin %>
+<% if @layout != :single_contest %>
   <div class="row">
-    <div class="col-md-12">
-      <div>
-        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), :class => "btn btn-info btn-xs" %>
+    <% if effective_admin? %>
+      <div class="col-md-2">
+        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-xs btn-block" %>
       </div>
+    <% end %>
+    <div class="col-md-2">
+      <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-xs btn-block" %>
     </div>
   </div>
+
+  <% if @contest.can_register? %>
+    <div class="pull-right">
+      <% if @register_status.nil? %>
+        <%= button_to "Register", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-success' %>
+      <% else %>
+        <%= button_to "Unregister", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-danger', form: {style: 'display: inline'}, params: {cancel: 1} %>
+      <% end %>  
+    </div>
+  <% end %>
 <% end %>
 
 <h4 class='page-header'>
-  Contest Name : <%= @contest.title %>
+  <%= @contest.title %>
 </h4>
 
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-3">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h1 class="panel-title">Starts at</h1>
+        <h1 class="panel-title">Start / End</h1>
       </div>
       <div class="panel-body">
-        <%= @contest.start_time.to_s(:clean) %>
+        <%= @contest.start_time.to_fs(:clean) %> ~<br>
+        <%= @contest.end_time.to_fs(:clean) %>
       </div>
     </div>
   </div>
-  <div class="col-md-4">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Ends at</h1>
-      </div>
-      <div class="panel-body">
-        <%= @contest.end_time.to_s(:clean) %>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-4">
+  <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Contest Type</h1>
       </div>
       <div class="panel-body">
-        <%= contest_type_desc_map[@contest.contest_type] %>
+        <%= contest_type_desc_map[@contest.contest_type] %><br>
+        <% if @contest.dashboard_during_contest %>
+          Dashboard<% if @contest.freeze_minutes > 0 %>, freezes <%= pluralize(@contest.freeze_minutes, 'minute') %> before end<% end %>
+        <% else %>
+          No dashboard
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Registration Status</h1>
+      </div>
+      <div class="panel-body">
+        <% if @register_status.nil? %>
+          <span class="glyphicon glyphicon-remove text-danger"></span> Not registered
+        <% elsif @register_status %>
+          <span class="glyphicon glyphicon-ok text-success"></span> Registered
+        <% else %>
+          <span class="glyphicon glyphicon-play text-warning"></span> Pending approval
+        <% end %>
       </div>
     </div>
   </div>
 </div>
 
-<% if not @contest.is_started? %>
+<% if effective_admin? || !(@contest.is_started? && @contest.user_can_submit?(current_user)) %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h1 class="panel-title">Description</h1>
+      <% if effective_admin? %>
+        <h1 class="panel-title">Description before contest</h1>
+      <% else %>
+        <h1 class="panel-title">Description</h1>
+      <% end %>
     </div>
     <div class="panel-body">
       <%= markdown(@contest.description_before_contest) %>
@@ -58,11 +87,11 @@
   </div>
 <% end %>
 
-<% if @contest.is_started? || current_user&.admin %>
+<% if effective_admin? || (@contest.is_started? && @contest.user_can_submit?(current_user)) %>
   <div class="panel panel-default">
     <div class="panel-heading">
-      <% if !@contest.is_started? %>
-        <h1 class="panel-title">Description during contest (preview)</h1>
+      <% if effective_admin? %>
+        <h1 class="panel-title">Description in contest</h1>
       <% else %>
         <h1 class="panel-title">Description</h1>
       <% end %>
@@ -73,38 +102,42 @@
   </div>
 <% end %>
 
-<% if current_user&.admin %>
+<% if effective_admin? %>
   <div style="margin-bottom:10px;">
     <% Problem.visible_states.each do |name, val| %>
-      <%= form_with url: set_contest_task_contest_path(@contest), :html => {:style => 'display: inline;'} do |f| %>
-        <%= f.hidden_field :alter_to, :value => val %>
-        <%= f.submit "Set contest tasks to #{visible_state_desc_map[name.to_s]}", :class => 'btn btn-inverse btn-xs' %>
+      <%= form_with url: set_contest_task_contest_path(@contest), html: {style: 'display: inline;'} do |f| %>
+        <%= f.hidden_field :alter_to, value: val %>
+        <%= f.submit "Set contest tasks to #{visible_state_desc_map[name.to_s]}", class: 'btn btn-inverse btn-xs' %>
       <% end %>
     <% end %>
   </div>
 <% end %>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Tasks</h1>
-  </div>
-  <div class="panel-body">
-    <% if @contest.is_started? || current_user&.admin? %>
-      <% @tasks.each_with_index do |task, index| %>
-        <%= link_to ('p' + (65+index).chr + ' ' + task.id.to_s + '. ' + task.name), contest_problem_path(@contest, task.id) %>
-        <br>
+<% unless @layout == :single_contest && (!user_signed_in? || !@contest.is_running?) %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">Tasks</h1>
+    </div>
+    <div class="panel-body">
+      <% if @contest.is_started? || current_user&.admin? %>
+        <% @tasks.each_with_index do |task, index| %>
+          <%= link_to (problem_index_text(index) + ' ' + task.id.to_s + '. ' + task.name), contest_adaptive_polymorphic_path([task]) %>
+          <br>
+        <% end %>
+      <% else %>
+        <%= 'Contest has not yet started.' %>
       <% end %>
-    <% else %>
-      <%= 'Contest has not yet started.' %>
-    <% end %>
+    </div>
   </div>
-</div>
+<% end %>
 
 <p>
-  <%= link_to 'Dashboard', {:controller => :contests, :action => :dashboard, :id => @contest.id}, {:class => 'btn btn-xs btn-warning'} %>
-  <%= link_to 'Submissions', contest_submissions_path(@contest), :class => 'btn btn-info btn-xs' %>
-  <% if current_user&.admin %>
-    <%= link_to 'Edit', edit_contest_path(@contest), :class => 'btn btn-info btn-xs' %>
+  <%= link_to 'Dashboard', contest_adaptive_polymorphic_path([], action: :dashboard), {class: 'btn btn-xs btn-warning'} %>
+  <%= link_to 'Submissions', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-info btn-xs' %>
+  <% if effective_admin? %>
+    <%= link_to 'Edit', edit_contest_path(@contest), class: 'btn btn-info btn-xs' %>
   <% end %>
-  <%= link_to 'Back to Contests List', contests_path, :class => 'btn btn-default btn-xs' %>
+  <% if @layout != :single_contest %>
+    <%= link_to 'Back to Contests List', contests_path, class: 'btn btn-default btn-xs' %>
+  <% end %>
 </p>
