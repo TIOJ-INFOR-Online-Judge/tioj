@@ -30,12 +30,12 @@
 #
 # Indexes
 #
-#  index_users_on_contest_id                     (contest_id)
-#  index_users_on_last_compiler_id               (last_compiler_id)
-#  index_users_on_type_and_email                 (type,email) UNIQUE
-#  index_users_on_type_and_nickname              (type,nickname) UNIQUE
-#  index_users_on_type_and_reset_password_token  (type,reset_password_token) UNIQUE
-#  index_users_on_type_and_username              (type,username)
+#  index_users_on_contest_id                        (contest_id)
+#  index_users_on_last_compiler_id                  (last_compiler_id)
+#  index_users_on_type_and_contest_id_and_email     (type,contest_id,email) UNIQUE
+#  index_users_on_type_and_contest_id_and_nickname  (type,contest_id,nickname) UNIQUE
+#  index_users_on_type_and_email                    (type,email) UNIQUE
+#  index_users_on_type_and_reset_password_token     (type,reset_password_token) UNIQUE
 #
 # Foreign Keys
 #
