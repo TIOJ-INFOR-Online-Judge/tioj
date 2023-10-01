@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_10_161313) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -413,10 +413,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_10_161313) do
     t.bigint "contest_id"
     t.index ["contest_id"], name: "index_users_on_contest_id"
     t.index ["last_compiler_id"], name: "index_users_on_last_compiler_id"
+    t.index ["type", "contest_id", "email"], name: "index_users_on_type_and_contest_id_and_email", unique: true
+    t.index ["type", "contest_id", "nickname"], name: "index_users_on_type_and_contest_id_and_nickname", unique: true
     t.index ["type", "email"], name: "index_users_on_type_and_email", unique: true
-    t.index ["type", "nickname"], name: "index_users_on_type_and_nickname", unique: true
     t.index ["type", "reset_password_token"], name: "index_users_on_type_and_reset_password_token", unique: true
-    t.index ["type", "username"], name: "index_users_on_type_and_username"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
