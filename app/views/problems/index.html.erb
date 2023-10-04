@@ -24,7 +24,8 @@
   <button type="submit" id="quick_search" class="btn btn-inverse btn-xs">Search</button>
 </form>
 
-<script> <!-- remove empty fields -->
+<%# remove empty fields %>
+<script>
 $(function() {
    $("form.search-form").submit(function() {
       $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");

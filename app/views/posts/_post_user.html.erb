@@ -1,0 +1,8 @@
+<% if post.user == nil %>
+  deleted account
+<% elsif not effective_admin? and not post.user_visible and current_user&.id != post.user_id %>
+  anonymous
+<% else %>
+  <%= render partial: "users/user_link", locals: {user: post.user, content: post.user.username} %>
+<% end %>
+ - <%= post.created_at.to_fs(:clean) %>

@@ -1,4 +1,3 @@
-<% commenter = comment.user %>
 <% comment_object = @postable ? [@postable, post, comment] : [post, comment] %>
 
 <h4 class="comment_title">
@@ -8,13 +7,7 @@
   <%= markdown_no_html(comment.content) %>
 </div>
 <div class="comment_footer small">
-  <% if !effective_admin? && !comment.user_visible %>
-    anonymous - <%= comment.created_at.to_fs(:clean) %>
-  <% elsif commenter == nil %>
-    deleted account - <%= comment.created_at.to_fs(:clean) %>
-  <% else %>
-    <%= link_to commenter.username, user_path(commenter) %> - <%= comment.created_at.to_fs(:clean) %>
-  <% end %>
+  <%= render partial: "post_user", locals: {post: comment} %>
 </div>
 <% if effective_admin? or (current_user&.id == comment.user_id and not @contest) %>
   <%= link_to "Edit", edit_polymorphic_path(comment_object), class:'btn btn-primary btn-xs' %>
