@@ -8,6 +8,11 @@ DB_PASSWORD=${DB_PASSWORD:-SAMPLE_PASSWORD}
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+if [[ "$EUID" -eq 0 ]]; then
+  echo "This script should not be run as root. Instead, run it as a normal user with sudo privilege."
+  exit 1
+fi
+
 if [[ "${SMTP_USERNAME:-}" != "" && "${SMTP_PASSWORD:-}" != "" ]]; then
   echo 'SMTP settings detected. Will enable password recovery.'
 else
@@ -22,9 +27,23 @@ sleep 1
     sleep 30
   done
 } &
+SUDO_PID=$!
+
+# Cleanup job
+function Cleanup {
+  kill $SUDO_PID 2> /dev/null
+  if [[ -n "${PASSENGER_LOG:+1}" ]]; then
+    sudo rm -rf $PASSENGER_LOG
+  fi
+  if [[ -n "${TAIL_PID:+1}" ]]; then
+    sudo rm -rf $TAIL_PID
+  fi
+}
+trap Cleanup EXIT
 
 # Install dependencies
 if grep -q 'Ubuntu' /etc/*-release; then
+  DIST=Ubuntu
   UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
   sudo apt -y update
   sudo apt -y install software-properties-common
@@ -42,7 +61,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
       git cmake ninja-build g++-11 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
       imagemagick nodejs yarn redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev \
+      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev \
       ghc python2 python3-numpy python3-pil
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
@@ -57,40 +76,46 @@ if grep -q 'Ubuntu' /etc/*-release; then
 
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
+  DIST=Arch
   sudo pacman -Syu --noconfirm --needed \
-      base-devel git cmake ninja mariadb nodejs yarn redis boost \
-      ghc python-numpy python-pillow
+      base-devel git mariadb imagemagick nodejs yarn redis libyaml \
+      cmake ninja boost ghc python-numpy python-pillow
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
   curl -L get.rvm.io | sudo bash -
 
-  # build libseccomp, libnl, openssl, sqlite, libbsd with static libs
-  cd "$WORKDIR"
-  mkdir libseccomp libnl openssl sqlite libbsd
+  # build libseccomp, libnl, openssl, sqlite, libbsd, libzstd with static libs
+  mkdir -p "$WORKDIR/build"
+  cd "$WORKDIR/build"
+  mkdir -p libseccomp libnl openssl sqlite libbsd zstd
   cd libseccomp
   curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libseccomp/trunk/PKGBUILD
-  sed -i "s/makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
+  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../libnl
   curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libnl/trunk/PKGBUILD
-  sed -i "s/^options.*$/options=('staticlibs')/" PKGBUILD
+  sed -i "s/^depends.*$/\0\noptions=('staticlibs')/" PKGBUILD
   sed -Ei '/sbindir/, /disable-static/ s/(--d| \\).*//' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../openssl
   curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/openssl/trunk/PKGBUILD
   curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/openssl/trunk/ca-dir.patch
-  sed -i "s/makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
+  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../sqlite
   for i in PKGBUILD license.txt sqlite-lemon-system-template.patch; do
     curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/sqlite/trunk/$i
   done
-  sed -i "s/options=./\0'staticlibs' /; /disable-static/ d" PKGBUILD
+  sed -i "s/^options=./\0'staticlibs' /; /disable-static/ d" PKGBUILD
   makepkg -si --noconfirm
   cd ../libbsd
   curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libbsd/trunk/PKGBUILD
   sed -i "/rm.*libbsd\.a/ d" PKGBUILD
+  makepkg -si --skippgpcheck --nocheck --noconfirm
+  cd ../zstd
+  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/zstd/trunk/PKGBUILD
+  sed -i "s/makedepends.*$/\0\noptions=('staticlibs')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
 
   # Setup mysql
@@ -113,18 +138,18 @@ cd "$WORKDIR"
 git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj.git
 git clone https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git
 
-function Cleanup {
-  sudo rm -rf $PASSENGER_LOG
-}
+# Solve MariaDB incompatibility in Arch
+if [[ "$DIST" == 'Arch' ]]; then
+  sed -i 's/utf8mb4_0900_ai_ci/uca1400_nopad_ai_ci/g' tioj/db/schema.rb
+fi
 
 # Install gems
 cd "$WORKDIR/tioj"
 gem install passenger:'~> 6' -N
 PASSENGER_LOG=$(sudo mktemp -d)
-trap Cleanup EXIT
 sudo chmod 755 $PASSENGER_LOG
 export rvmsudo_secure_path=1
-rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished"
+rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
 MAKEFLAGS='-j4' bundle install
 
 # Install yarn packages
@@ -196,6 +221,7 @@ until stat $PASSENGER_LOG/finished > /dev/null 2>&1; do
   sleep 1
 done
 kill $TAIL_PID
+unset TAIL_PID
 sudo sed -i "s/^.*nobody.*$/user $USER;/" /opt/nginx/conf/nginx.conf
 sudo sed -i 's/http {/\0\n    passenger_app_env production;/' /opt/nginx/conf/nginx.conf
 sudo sed -i "s|^[^#]*server_name.*localhost.*$|\0\n        passenger_enabled on;\n        root $(pwd)/public;\n        client_max_body_size 1024M;\n        location /cable {\n            passenger_app_group_name cable;\n            passenger_force_max_concurrent_requests_per_process 0;\n            passenger_env_var PASSENGER_CABLE 1;\n        }\n|" /opt/nginx/conf/nginx.conf
@@ -244,5 +270,3 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
-
-kill %1
