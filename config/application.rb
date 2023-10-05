@@ -12,7 +12,7 @@ module Tioj
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.time_zone = "Taipei"
-    config.site_name = "TIOJ INFOR Online Judge"
+    config.site_name = "NTU CPC Online Judge"
     begin
       config.x.settings = config_for(:settings)
       if !config.x.settings
