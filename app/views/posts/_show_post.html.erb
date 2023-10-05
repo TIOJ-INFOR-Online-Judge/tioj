@@ -23,7 +23,7 @@
   <% end %>
 </div>
 <div class="post_footer small">
-  <%= render partial: "post_user", locals: {post: post} %>
+  <%= post_user(post) %>
   <% if post.global_visible %>
     (public post)
   <% else %>

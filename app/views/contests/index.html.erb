@@ -30,7 +30,7 @@
       <tr>
         <td><%= contest.title %></td>
         <td style="text-align: right;">
-          <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
+          <%= contest_link(contest) %>
         </td>
         <% if contest.is_ended? %>
           <td>Ended</td>
@@ -43,8 +43,8 @@
         <% end %>
         <% if user_signed_in? %>
           <td style="white-space: nowrap;">
-            <%= render partial: 'contests/register_status', locals: {status: @registrations[contest.id], text: false} %>
-            <%= render partial: 'contests/register_button', locals: {contest: contest, status: @registrations[contest.id], standalone: false} %>
+            <%= contest_register_status(@registrations[contest.id], false) %>
+            <%= contest_register_button(contest, @registrations[contest.id], false) %>
           </td>
         <% end %>
         <td><%= contest.start_time.to_fs(:clean_min) %></td>

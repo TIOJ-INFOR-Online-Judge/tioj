@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <%= render partial: 'register_button', locals: {contest: @contest, status: @register_status, standalone: true} %>
+  <%= contest_register_button(@contest, @register_status, true) %>
 <% end %>
 
 <h4 class='page-header'>
@@ -67,7 +67,7 @@
           <h1 class="panel-title">Registration Status</h1>
         </div>
         <div class="panel-body">
-          <%= render partial: 'register_status', locals: {status: @register_status, text: true} %>
+          <%= contest_register_status(@register_status, true) %>
         </div>
       </div>
     </div>

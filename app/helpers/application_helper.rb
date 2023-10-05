@@ -49,10 +49,6 @@ module ApplicationHelper
     return raw '<span class="glyphicon glyphicon-pushpin"></span>'
   end
 
-  def rejudge_glyph
-    return raw '<span class="glyphicon glyphicon-repeat"></span>'
-  end
-
   def verdict_text(x)
     class_map = {
       "AC" => "text-success",
@@ -110,12 +106,8 @@ module ApplicationHelper
     end
   end
 
-  def visible_state_desc_map
-    {
-      "public" => "public",
-      "contest" => "only visible during contest",
-      "invisible" => "invisible",
-    }
+  def ratio_text(ac, all)
+    return "%.1f%%" % (100.0 * ac / all)
   end
 
   def page_title(title)

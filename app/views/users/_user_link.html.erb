@@ -1,9 +1,0 @@
-<% if @layout == :single_contest %>
-  <%= content %>
-<% elsif user.type != 'ContestUser' %>
-  <%= link_to content, user_path(user) %>
-<% elsif current_user&.admin? %>
-  <%= link_to content, contest_contest_registrations_path(user.contest_id) %>
-<% else %>
-  <%= content %>
-<% end %>

@@ -99,7 +99,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= link_to submission.id, contest_adaptive_polymorphic_path([submission]) %></td>
         <td><%= link_to submission.problem_id, contest_adaptive_polymorphic_path([submission.problem]) %></td>
         <% if @layout != :single_contest %>
-          <td><%= render partial: "users/user_link", locals: {user: submission.user, content: submission.user.nickname} %></td>
+          <td><%= user_link(submission.user, submission.user.nickname) %></td>
         <% end %>
         <td id="time-<%= submission.id %>"><%= submission.total_time.to_i %></td>
         <td id="memory-<%= submission.id %>"><%= submission.total_memory.to_i %></td>

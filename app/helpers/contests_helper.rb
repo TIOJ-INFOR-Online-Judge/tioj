@@ -23,7 +23,9 @@ module ContestsHelper
     }
   end
 
-  def rel_timestamp(submission, start_time)
+  private
+
+  def submission_rel_timestamp(submission, start_time)
     submission.created_at_usec - to_us(start_time)
   end
 
@@ -40,7 +42,7 @@ module ContestsHelper
     else
       item_state[0] += 1
       if submission.result == 'AC'
-        item_state[1] = rel_timestamp(submission, start_time)
+        item_state[1] = submission_rel_timestamp(submission, start_time)
         item_state[2] = 0
       end
     end
@@ -82,6 +84,8 @@ module ContestsHelper
     end
   end
 
+  public
+
   def ranklist_data(submissions, start_time, freeze_start, rule)
     res = Hash.new { |h, k| h[k] = [] }
     participants = Set[]
@@ -99,7 +103,7 @@ module ContestsHelper
       is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
       new_state = func.call(sub, start_time, orig_state, is_waiting)
-      res[key] << {timestamp: rel_timestamp(sub, start_time), state: new_state} unless new_state.nil?
+      res[key] << {timestamp: submission_rel_timestamp(sub, start_time), state: new_state} unless new_state.nil?
       first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, sub.user_id) if sub.result == 'AC'
     end
     res.delete_if { |key, value| value.empty? }
@@ -114,5 +118,59 @@ module ContestsHelper
       index = index / 26 - 1
     end
     return 'p' + (65 + index % 26).chr + text
+  end
+
+  ## --- HTML ---
+
+  def contest_register_button(contest, status, standalone)
+    if contest.can_register?
+      btn_class = standalone ? 'btn-lg' : 'btn-xs'
+      btn_class += status.nil? ? ' btn-success' : ' btn-danger'
+      button_text = status.nil? ? "Register" : "Unregister"
+
+      content_tag(:div, class: 'pull-right') if standalone
+
+      html = button_to(
+          button_text,
+          register_contest_path(contest),
+          method: :post,
+          class: "btn #{btn_class}",
+          form: {style: 'display: inline'},
+          params: status.nil? ? {} : { cancel: 1 },
+      )
+      if standalone
+        content_tag(:div, class: 'pull-right') do
+          html
+        end
+      else
+        html
+      end
+    end
+  end
+
+  def contest_register_status(status, text)
+    status_class = case
+      when status.nil? then 'glyphicon glyphicon-remove text-danger'
+      when status then 'glyphicon glyphicon-ok text-success'
+      else 'glyphicon glyphicon-play text-warning'
+    end
+    status_class += ' align-middle' unless text
+    show_text = case
+      when !text then ''
+      when status.nil? then "Not registered"
+      when status then "Registered"
+      else "Pending approval"
+    end
+
+    content_tag(:span, '', class: status_class) + ' ' + show_text
+  end
+
+  def contest_link(contest)
+    is_running = contest.is_running? && contest.user_can_submit?(current_user)
+    text = is_running ? 'Participate' : 'View'
+    color = is_running ? 'btn-danger' : 'btn-primary'
+
+    dest = contest.default_single_contest && !current_user&.admin? ? single_contest_path(contest) : contest
+    link_to(text, dest, class: 'btn btn-xs ' + color, target: '_blank')
   end
 end

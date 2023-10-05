@@ -22,14 +22,8 @@
     <tr id="row_user_<%= usr.id %>">
       <td id="cell_rank_<%= usr.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
-        <td>
-          <%= render partial: "users/user_link", locals: {
-            user: usr, content: image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded')
-          } %>
-        </td>
-        <td class="highlight-if-self">
-          <%= render partial: "users/user_link", locals: {user: usr, content: usr.username} %>
-        </td>
+        <td><%= user_link(usr, image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded')) %></td>
+        <td class="highlight-if-self"><%= user_link(usr, usr.username) %></td>
       <% else %>
         <td class="highlight-if-self"><%= usr.username %></td>
       <% end %>
