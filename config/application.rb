@@ -13,6 +13,7 @@ module Tioj
     config.load_defaults 7.0
     config.time_zone = "Taipei"
     config.site_name = "TIOJ INFOR Online Judge"
+    config.exceptions_app = self.routes
     begin
       config.x.settings = config_for(:settings)
       if !config.x.settings
