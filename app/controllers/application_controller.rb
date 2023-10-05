@@ -106,9 +106,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout_and_contest
-    if /^\/contests\//.match(request.fullpath)
+    if /^\/contests\/./.match(request.fullpath)
       @layout = :contest
-    elsif /^\/single_contest\//.match(request.fullpath)
+    elsif /^\/single_contest\/./.match(request.fullpath)
       @layout = :single_contest
     else
       @layout = :application
