@@ -1,6 +1,7 @@
 - [ ] Modify rejudge behavior
     - Lower priority
     - Separate contest and non-contest submissions
+- [ ] Virtual judge
 - [ ] Batch upload testdata
 - [ ] Revisit all JSON endpoints
 

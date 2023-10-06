@@ -1,5 +1,5 @@
 import consumer from "../../channels/consumer"
-import { updateSubmissionDetail, updateMultipleSubmissions } from '../../helpers/submission_update'
+import { updateSubmissionDetail, updateMultipleSubmissions } from './submission_update'
 
 export function initSubmissionCable() {
   // id can be integer or array of integers
