@@ -36,6 +36,10 @@
               <% end %>
             <% end %>
           <% end %>
+          <% if current_user&.admin? %>
+            <li><%= link_to "Roles", roles_path %></li>
+            <li><%= link_to "Workers", judge_servers_path %></li>
+          <% end %>
         </ul>
       </div><!-- /.navbar-collapse -->
     </div>

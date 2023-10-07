@@ -79,6 +79,8 @@ class Problem < ApplicationRecord
   validates :score_precision, numericality: { in: 0..6 }
   validates :num_stages, numericality: { in: 1..10 }
 
+  has_and_belongs_to_many :roles
+
   def judge_between_stages_only_if_specjudge
     if specjudge_none? and judge_between_stages
       errors.add(:judge_between_stages, "Can only judge between stages when using special judge")
