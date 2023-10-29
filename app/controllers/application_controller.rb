@@ -106,7 +106,9 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout_and_contest
-    if /^\/contests\/./.match(request.fullpath)
+    if /^\/contests\/./.match(request.fullpath) && !/^\/contests\/new\/?/.match(request.fullpath)
+      # Use arbitrary character here instead of [0-9] to give proper 404 to requests such as /contests/abcde
+      # However, we need to exclude /contests/new
       @layout = :contest
     elsif /^\/single_contest\/./.match(request.fullpath)
       @layout = :single_contest

@@ -1,11 +1,12 @@
+- [ ] GitHub pipeline
 - [ ] Modify rejudge behavior
     - Lower priority
     - Separate contest and non-contest submissions
 - [ ] Virtual judge
 - [ ] Batch upload testdata
 - [ ] Revisit all JSON endpoints
-
-
+- [ ] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
+---
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
     - [ ] Native format
@@ -15,6 +16,7 @@
 - [ ] Judge load balancing
 - [ ] Write basic tests
 - [ ] Add more languages
+- [ ] Consider migrate to Trilogy
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit / interactive lib
 - [ ] Role for problem setter
