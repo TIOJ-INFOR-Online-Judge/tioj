@@ -51,7 +51,7 @@ class ProblemsController < ApplicationController
       @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
     end
     unless current_user&.admin?
-      @problems = @problems.joins(:roles)
+      @problems = @problems.left_outer_joins(:roles)
       p = @problems.where(visible_state: Problem.visible_states[:public])
       p = p.or(@problems.where(roles: current_user.roles)).distinct
       @problems = p
