@@ -50,12 +50,10 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Mount Action Cable outside main process or domain
-#   config.action_cable.mount_path = nil
-  config.action_cable.mount_path = ":8888/cable"
-  config.action_cable.url = 'wss://iscoj.fg.tp.edu.tw:8888/cable'
-  config.web_socket_server_url = "wss://iscoj.fg.tp.edu.tw:8888/cable"
-#   config.action_cable.allowed_request_origins = [ 'http://iscoj.fg.tp.edu.tw', /http:\/\/iscoj.*/ ]
-#  config.action_cable.disable_request_forgery_protection = true
+# config.action_cable.mount_path = nil
+  # config.action_cable.url = 'wss://example.com/cable'
+  # config.action_cable.allowed_request_origins = [ 'http://example.com', /http:\/\/example.*/ ]
+  config.action_cable.disable_request_forgery_protection = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
