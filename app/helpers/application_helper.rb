@@ -49,10 +49,6 @@ module ApplicationHelper
     return raw '<span class="glyphicon glyphicon-pushpin"></span>'
   end
 
-  def rejudge_glyph
-    return raw '<span class="glyphicon glyphicon-repeat"></span>'
-  end
-
   def verdict_text(x)
     class_map = {
       "AC" => "text-success",
@@ -101,12 +97,17 @@ module ApplicationHelper
     number_with_precision(x, strip_insignificant_zeros: true, precision: 6)
   end
 
-  def visible_state_desc_map
-    {
-      "public" => "public",
-      "contest" => "only visible during contest",
-      "invisible" => "invisible",
-    }
+  def duration_text(x)
+    mins = (x + 30) / 60
+    if mins >= 24 * 60
+      '%dd%d:%02d' % [mins / (24 * 60), mins / 60 % 24, mins % 60]
+    else
+      '%d:%02d' % [mins / 60 % 24, mins % 60]
+    end
+  end
+
+  def ratio_text(ac, all)
+    return "%.1f%%" % (100.0 * ac / all)
   end
 
   def page_title(title)

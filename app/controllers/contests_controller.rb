@@ -67,11 +67,13 @@ class ContestsController < ApplicationController
   end
 
   def index
-    @contests = Contest.order("id DESC").page(params[:page])
+    @contests = Contest.order(id: :desc).page(params[:page])
+    @registrations = ContestRegistration.where(contest_id: @contests.map(&:id), user_id: current_user&.id).all
+    @registrations = @registrations.map{|x| [x.contest_id, x.approved]}.to_h
   end
 
   def show
-    @register_status = @contest.contest_registrations.where(user_id: current_user&.id).first&.approved
+    @register_status = @contest.user_register_status(current_user)
   end
 
   def new
@@ -152,7 +154,7 @@ class ContestsController < ApplicationController
     if params[:cancel] == '1'
       @contest.contest_registrations.where(user_id: current_user.id).destroy_all
       respond_to do |format|
-        format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
+        format.html { redirect_back fallback_location: root_path, notice: 'Successfully unregistered.' }
         format.json { head :no_content }
       end
     else
@@ -160,10 +162,10 @@ class ContestsController < ApplicationController
       respond_to do |format|
         begin
           entry.save!
-          format.html { redirect_to @contest, notice: @contest.require_approval? ? 'Registration request sent, approval pending.' : 'Successfully registered.' }
+          format.html { redirect_back fallback_location: root_path, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
           format.json { head :no_content }
         rescue ActiveRecord::RecordNotUnique
-          format.html { redirect_to @contest, alert: 'Registration failed.' }
+          format.html { redirect_back fallback_location: root_path, alert: 'Registration failed.' }
           format.json { render json: @entry.errors, status: :unprocessable_entity }
         end
       end

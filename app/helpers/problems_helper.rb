@@ -19,10 +19,6 @@ module ProblemsHelper
     return topcoders_mp
   end
 
-  def ratio_text(ac, all)
-    return "%.1f%%" % (100.0 * ac / all)
-  end
-
   def users_ac_ratio(problem)
     all = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(contest_id: nil).first.cnt
     ac = problem.submissions.select('COUNT(DISTINCT user_id) cnt').where(contest_id: nil, result: 'AC').first.cnt
@@ -99,6 +95,14 @@ module ProblemsHelper
       "disabled" => "No discussion",
       "readonly" => "Read admin posts only",
       "enabled" => "Allow discussion",
+    }
+  end
+
+  def visible_state_desc_map
+    {
+      "public" => "public",
+      "contest" => "only visible during contest",
+      "invisible" => "invisible",
     }
   end
 end

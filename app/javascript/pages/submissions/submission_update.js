@@ -85,7 +85,8 @@ function updateResult(data, cable) {
   if (data['total_time']) $('#total-time').text(data['total_time'])
   if (data['total_memory']) $('#total-memory').text(data['total_memory'])
   if ('score' in data) $('#total-score').text(score_str(data['score']));
-  if (!to_wait) cable.disconnect();
+  // cable message may not always be in order, so delay disconnect to avoid race
+  if (!to_wait) setTimeout(() => cable.disconnect(), 1000);
 }
 
 export function updateSubmissionDetail(data, cable) {
