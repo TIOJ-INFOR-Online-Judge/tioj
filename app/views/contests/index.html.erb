@@ -12,9 +12,13 @@
       <th>Title</th>
       <th></th>
       <th>Status</th>
+      <% if user_signed_in? %>
+        <th>Registered?</th>
+      <% end %>
       <th>Start Time</th>
-      <th>End Time</th>
-      <th>Contest Type</th>
+      <th>Length</th>
+      <th>Style</th>
+      <th>Dashboard</th>
       <% if current_user&.admin? %>
         <th></th>
       <% end %>
@@ -26,7 +30,7 @@
       <tr>
         <td><%= contest.title %></td>
         <td style="text-align: right;">
-          <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
+          <%= contest_link(contest) %>
         </td>
         <% if contest.is_ended? %>
           <td>Ended</td>
@@ -37,9 +41,16 @@
         <% else %>
           <td>Not yet</td>
         <% end %>
-        <td><%= contest.start_time.to_fs(:clean) %></td>
-        <td><%= contest.end_time.to_fs(:clean) %></td>
-        <td><%= contest_type_short_desc_map[contest.contest_type] %> / <%= contest.dashboard_during_contest ? "dashboard" : "no dashboard" %></td>
+        <% if user_signed_in? %>
+          <td style="white-space: nowrap;">
+            <%= contest_register_status(@registrations[contest.id], false) %>
+            <%= contest_register_button(contest, @registrations[contest.id], false) %>
+          </td>
+        <% end %>
+        <td><%= contest.start_time.to_fs(:clean_min) %></td>
+        <td><%= duration_text(contest.end_time - contest.start_time) %></td>
+        <td><%= contest_type_short_desc_map[contest.contest_type] %></td>
+        <td><%= contest.dashboard_during_contest ? "Yes" : "No" %></td>
         <% if current_user&.admin? %>
           <td>
             <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-xs' %>

@@ -10,7 +10,7 @@
       <%= render 'articles/table', articles: @bulletins %>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-lg-12">
     <div class="well well-lg">
       <h5>Recent Contests<small class="pull-right"><%= link_to "Show all", contests_path %></small></h5>
       <table class="table">
@@ -18,9 +18,11 @@
           <tr>
             <th>Title</th>
             <th></th>
-            <th>Status</th>
             <% if user_signed_in? %>
+              <th>Registered?</th>
             <% end %>
+            <th>Status</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -32,20 +34,26 @@
                 <td><%= contest.title %></td>
               <% end %>
               <td style="text-align: right;">
-                <%= render partial: 'contests/contest_link', locals: {contest: contest} %>
+                <%= contest_link(contest) %>
               </td>
+              <% if user_signed_in? %>
+                <td>
+                  <%= contest_register_status(@registrations[contest.id], false) %>
+                  <%= contest_register_button(contest, @registrations[contest.id], false) %>
+                </td>
+              <% end %>
               <% if contest.is_ended? %>
-                <td style="white-space: nowrap;">Ended</td>
-                <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
+                <td class="text-nowrap">Ended</td>
+                <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
               <% elsif contest.is_started? %>
-                <td style="white-space: nowrap;"><strong>Ready</strong></td>
-                <td style="white-space: nowrap;"><strong>Now</strong></td>
+                <td class="text-nowrap"><strong>Ready</strong></td>
+                <td class="text-nowrap"><strong>Now</strong></td>
               <% elsif Time.now >= contest.start_time - 1.days %>
-                <td class="text-info" style="white-space: nowrap;">Upcoming</td>
-                <td class="text-danger" style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
+                <td class="text-info text-nowrap">Upcoming</td>
+                <td class="text-danger text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
               <% else %>
-                <td class="text-info" style="white-space: nowrap;">Not yet</td>
-                <td style="white-space: nowrap;"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
+                <td class="text-info text-nowrap">Not yet</td>
+                <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
               <% end %>
             </tr>
           <% end %>
@@ -53,7 +61,7 @@
       </table>
     </div>
   </div>
-  <div class="col-lg-6">
+  <div class="col-lg-12">
     <div class="well well-lg">
       <h5>Ranked Coders<small class="pull-right"><%= link_to "Show all", users_path %></small></h5>
       <table class="table">

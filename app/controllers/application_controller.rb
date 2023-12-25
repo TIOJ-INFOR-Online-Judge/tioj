@@ -84,9 +84,11 @@ class ApplicationController < ActionController::Base
   def authenticate_user_and_running_if_single_contest!
     if @layout == :single_contest
       authenticate_user!
+      return if performed?
       unless @contest.is_running?
         flash[:alert] = 'Contest is not running.'
         redirect_to single_contest_path(@contest)
+        return
       end
     end
   end
@@ -104,9 +106,11 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout_and_contest
-    if /^\/contests\/[0-9]+/.match(request.fullpath)
+    if /^\/contests\/./.match(request.fullpath) && !/^\/contests\/new(\/|$)/.match(request.fullpath)
+      # Use arbitrary character here instead of [0-9] to give proper 404 to requests such as /contests/abcde
+      # However, we need to exclude /contests/new
       @layout = :contest
-    elsif /^\/single_contest\/[0-9]+/.match(request.fullpath)
+    elsif /^\/single_contest\/./.match(request.fullpath)
       @layout = :single_contest
     else
       @layout = :application

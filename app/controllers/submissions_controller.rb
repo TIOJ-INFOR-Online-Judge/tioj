@@ -5,6 +5,7 @@ class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
   before_action :set_problem_by_param, only: [:new, :create, :index]
   before_action :check_problem_visibility
+  before_action :check_code_visibility, only: [:download_raw]
   before_action :check_contest_status, only: [:new, :create]
   before_action :set_submissions, only: [:index]
   before_action :redirect_contest, only: [:show, :show_old, :download_raw, :edit]
@@ -250,6 +251,13 @@ class SubmissionsController < ApplicationController
     return if effective_admin? || !@problem
     raise_not_found if @problem.visible_invisible?
     raise_not_found if @problem.visible_contest? && !@contest&.is_started?
+  end
+
+  def check_code_visibility
+    unless effective_admin? || current_user&.id == @submission.user_id
+      redirect_to problem_path(@problem), alert: 'Insufficient User Permissions.'
+      return
+    end
   end
 
   def normalize_code

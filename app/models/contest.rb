@@ -78,12 +78,17 @@ class Contest < ApplicationRecord
     Time.now >= start_time && end_time > Time.now
   end
 
-  def can_register?
-    Time.now < [register_before, end_time].min
+  def effective_register_before
+    [register_before, end_time].min
   end
 
-  def user_registered?(usr)
-    usr && approved_registered_users.exists?(usr.id)
+  def can_register?
+    Time.now < effective_register_before
+  end
+
+  # nil if not registered, false if pending approval, true if registered
+  def user_register_status(usr)
+    contest_registrations.where(user_id: usr&.id).first&.approved
   end
 
   def user_can_submit?(usr)

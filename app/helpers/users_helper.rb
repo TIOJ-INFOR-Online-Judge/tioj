@@ -1,8 +1,4 @@
 module UsersHelper
-  def ratio_text(ac, all)
-    return "%.1f%%" % (100.0 * ac / all)
-  end
-
   def ac_ratio_by_user(user)
     all = user.submissions.where(contest_id: nil).select(:result)
     ac = all.where(result: 'AC').count
@@ -24,5 +20,14 @@ module UsersHelper
 
   def user_problem_tried(user, problem)
     return Submission.exists?(contest_id: nil, user_id: user.id, problem_id: problem.id)
+  end
+
+  def user_link(user, content)
+    case
+      when @layout == :single_contest then content
+      when user.type != 'ContestUser' then link_to(content, user_path(user))
+      when current_user&.admin? then link_to(content, contest_contest_registrations_path(user.contest_id))
+      else content
+    end
   end
 end

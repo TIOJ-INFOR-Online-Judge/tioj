@@ -114,6 +114,10 @@ Rails.application.configure do
 
   # Dump schema after migrations.
   config.active_record.dump_schema_after_migration = true
+
+  # Error if there are pending migrations
+  config.active_record.migration_error = :page_load
+
   # Inserts middleware to perform automatic connection switching.
   # The `database_selector` hash is used to pass options to the DatabaseSelector
   # middleware. The `delay` is used to determine how long to wait after a write
