@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   resources :announcements
+  get 'problems/4475' => redirect('https://aaw.pse.is/5c7yjv', status: 302)
+  get 'submissions/4733' => redirect('https://aaw.pse.is/5c7yjv', status: 302)
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -115,7 +117,6 @@ Rails.application.routes.draw do
 
   get 'about/verdicts' => 'about#verdicts'
   get 'about/memory' => 'about#memory'
-
   get 'fetch/testdata' => 'fetch#testdata'
 
   mathjax 'mathjax'

@@ -1,13 +1,13 @@
 <% content_for :icon do %>
-<link rel="shortcut icon" href="/images/favicon_co.ico">
+<link rel="shortcut icon" href="/images/favicon.ico">
 <% end %>
 
 <% content_for :navbar do %>
-<div style="background-color:#32CD32">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">
+<div style="background-color:#3F2305">
+  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#3F2305">
     <div class="container-fluid">
       <div class="navbar-header">
-        <%= link_to image_tag("banner_contest.png", alt: "TIOJ contest - #{@contest.title}", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), contest_path(@contest), class: "nav-brand" %>
+        <%= link_to image_tag("banner.png", alt: "TIOJ contest - #{@contest.title}", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), contest_path(@contest), class: "nav-brand" %>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>

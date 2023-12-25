@@ -1,43 +1,45 @@
 <% content_for :icon do %>
-<link rel="shortcut icon" href="/images/favicon.ico">
-<% end %>
-
-<% content_for :navbar do %>
-<div style="background-color:#3F2305">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#3F2305">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <%= link_to image_tag("banner.png", alt: "TIOJ", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), root_path, class: "nav-brand" %>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse" id="navbar-collapse-01">
-        <ul class="nav navbar-nav navbar-left">
-          <li><%= link_to "Bulletin", articles_path %></li>
-          <li><%= link_to "Problems", problems_path %></li>
-          <li><%= link_to "Submissions", submissions_path %></li>
-          <li><%= link_to "Contests", contests_path %></li>
-          <li><%= link_to "Discuss", posts_path %></li>
-          <li><%= link_to "About", about_url %></li>
-          <li><%= link_to "Rank", users_path %></li>
-          <% if current_user %>
-            <li><%= link_to current_user.username, user_path(current_user) %></li>
-            <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
-          <% else %>
-            <li><%= link_to "Sign in", new_session_path(:user) %> </li>
-            <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
-              <li><%= link_to "Sign up", new_registration_path(:user) %></li>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <% end %>
+  
+  <% content_for :navbar do %>
+  <div style="background-color:#003365">
+    <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#003365">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <%= link_to image_tag("banner.png", alt: "TIOJ", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), root_path, class: "nav-brand" %>
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse-01">
+          <ul class="nav navbar-nav navbar-left">
+            <li><%= link_to "Bulletin", articles_path %></li>
+            <li><%= link_to "Problems", problems_path %></li>
+            <li><%= link_to "Submissions", submissions_path %></li>
+            <li><%= link_to "Contests", contests_path %></li>
+            <li><%= link_to "Discuss", posts_path %></li>
+            <li><%= link_to "About", about_url %></li>
+            <li><%= link_to "Rank", users_path %></li>
+            <% if current_user %>
+              <li><%= link_to current_user.username, user_path(current_user) %></li>
+              <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
+            <% else %>
+              <li><%= link_to "Sign in", new_session_path(:user) %> </li>
+              <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
+                <li><%= link_to "Sign up", new_registration_path(:user) %></li>
+              <% end %>
             <% end %>
-          <% end %>
-        </ul>
-      </div><!-- /.navbar-collapse -->
-    </div>
-  </nav><!-- /navbar -->
-</div>
-<% end %>
-
-<%= render template: "layouts/base" %>
+          </ul>
+        </div><%# /.navbar-collapse %>
+      </div>
+    </nav><%# /navbar %>
+  </div>
+  <% end %>
+  
+  <%= render template: "layouts/base" %>

@@ -1,5 +1,5 @@
 <% set_page_title "About" %>
-<h4 class="page-header">About TIOJ <small>INFOR Online Judge <%= Tioj::VERSION %></small></h4>
+<h4 class="page-header">About ISCOJ <small>powered by TIOJ infor online judge</small></h4>
 <h5>Site Info</h5>
 <div class="well">
 This site is powered by Ruby on Rails! <br >
@@ -7,45 +7,37 @@ TIOJ Github Repo: <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj">http
 Judge System Github Repo: <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge">https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge</a> <br>
 Still in development, any issues or pull requests are welcomed. <br >
 </div>
-<h5>Contributors</h5>
+
+<h4>Iscoj History</h4>
+<h5>建北電資28屆（一四）</h5>
 <div class="well">
-  Developers: <br >
-  建資25<sup>th</sup> 蕭從恩(joshua5201)<br>
-  建資25<sup>th</sup> 陳家陞(qitar888)<br >
-  建資25<sup>th</sup> 江懿友(silverneko) <br>
-  Debugger and Adviser: <br>
-  建電34<sup>th</sup> 丁安立(anlialtting) <br>
-  Contributor: <br>
-  IOI 29<sup>th</sup> 吳聖福(adrien1018, Yihda Yol) <br>
-  IOI 29<sup>th</sup> 蘇柏瑄(briansu) <br>
-  INFOR 29<sup>th</sup> 陳冠宇(edisonhello) <br>
+在前任學術長AaW的協助下，一四學術世宗與網管晴架設了本OJ，並修改了部分介面以及將原先青島OJ的題目搬運到此OJ上。原有的青島OJ系統則正式退役，移到 <a href="https://fgiscoj.fg.tp.edu.tw">https://fgiscoj.fg.tp.edu.tw/</a> 網址上。
 </div>
-<h4>History</h4>
-<h5>2014.8</h5>
+
+<h5>建北電資27屆（一三）</h5>
 <div class="well">
-正式版網頁上線。將舊TIOJ的題目資料migrate過來。
+在一三學術長 AaW 接手伺服器後的暑假，伺服器便出現了大幅當機狀況。由於當初架設紀錄幾乎沒有留下，AaW只能嘗試自行復原。<br>
+在中間經歷停機風波之後，AaW以及北資一三成立的伺服器團隊將整台伺服器進行通盤檢查，並且將設定檔案補全，提高系統韌性。並且建立傳承文檔，將伺服器完整傳承給予學弟妹使用。<br>
+另外，由於青島OJ系統先天的缺陷，AaW 也架設了 CMS 比賽系統來主持學術上機考。並且開始研究將OJ轉移到其他系統上。
 </div>
-<h5>2014.7</h5>
+
+<h5>建北電資26屆（一二）</h5>
 <div class="well">
-測試版網頁上線，於建中暑期程式設計快樂營作為練習平台。
+<blockquote>
+FN花了12個小時就把某人拖了很久的OJ架了出來，實在有夠牛逼!
+因此身為本OJ的第一題，請你輸出一行宣揚FN做事的效率!<br>
+--- FN與他的OJ, 原 ISCOJ 4444 題序
+</blockquote>
+由 FN 以及 lemonilemon 學長架設青島OJ系統。在OJ剛架設的前幾個月，一二的學長們出了大量優質題目，
+並且將平台初取名為 FN & Lemonilemon Judge。後來幾經改名，卻仍無法定名。
+然而，由於架設倉促，該系統時常當機，十分不穩定。
 </div>
-<h5>2014.5</h5>
+
+
+<h5>緣起</h5>
 <div class="well">
-建電34<sup>th</sup>的丁安立(anlialtting)加入開發團隊。
+一直以來，建北電資皆有架設OJ平台的需求。原先百九學術長裘莉便已經使用簡易的自架主機主持上機考，百十以及一一也曾經使用社辦的伺服器架設青島OJ系統。
+但是，隨著社辦伺服器被學校沒收，比賽平台便沒了著落。在一一時期，只能先將上機考改於 codeforces 平台上舉行。
+於是，一二接幹之後，在北資雪溱老師的協助下，便開始嘗試於北一女提供的伺服器架設OJ。
 </div>
-<h5>2014.4</h5>
-<div class="well">
-建資25<sup>th</sup>的江懿友(silverneko)加入開發團隊。
-於即將踏入五月時資料庫換到MySQL2。
-</div>
-<h5>2014.1</h5>
-<div class="well">
-於2014年農曆除夕夜前建資25<sup>th</sup>的陳家陞(qitar888)與蕭從恩(joshua5201)商討TIOJ復站事宜，<br>
-後以時下最新的Rails4搭配預設的SQLite3做為資料庫開工。
-</div>
-<h5>源起</h5>
-<div class="well">
-  在資訊社有悠久傳統的TIOJ(Temporary INFOR Online Judge)，蒐集了上千題優秀題目，是許多人啟蒙及增強實力的平台。<br />
-  因為系統老舊故障，有兩屆的時間建中校隊只能到處找別人的Judge寫題目。也由於缺乏一個穩定的培訓環境，導致校隊培訓不易。
-  <br>只能借用建中65<sup>th</sup>黃凱祺學長架的step5權做校隊培訓Judge，但是step5畢竟是新架的OnlineJudge，缺乏歷屆學長辛苦搜集來的題目們，所以考完學測的建資25<sup>th</sup>們便揪團試著將TIOJ復站。
-</div>
+
