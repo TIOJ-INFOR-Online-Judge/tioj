@@ -1,4 +1,4 @@
-[TIOJ INFOR Online Judge](http://tioj.ck.tp.edu.tw/)
+[ISCOJ Online Judge](http://iscoj.fg.tp.edu.tw/)
 ==
 
 ## Installation guide
