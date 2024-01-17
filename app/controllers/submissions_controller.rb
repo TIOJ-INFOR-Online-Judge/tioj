@@ -66,6 +66,26 @@ class SubmissionsController < ApplicationController
       redirect_to action:'index'
       return
     end
+    unless current_user.admin? or (current_user.roles & @problem.roles).any?
+      if @problem.visible_invisible?
+        redirect_to action:'index'
+        return
+      elsif @problem.visible_contest?
+        if params[:contest_id].blank?
+          redirect_to action:'index'
+          return
+        end
+        contest = Contest.find(params[:contest_id])
+        unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
+          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
+          return
+        end
+        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
+          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+          return
+        end
+      end
+    end
     @submission = Submission.new
     @submission.code_content = CodeContent.new
     @contest_id = params[:contest_id]
@@ -88,6 +108,31 @@ class SubmissionsController < ApplicationController
     user.update(last_compiler_id: params[:submission][:compiler_id])
 
     raise_not_found unless @problem
+    if params[:problem_id].blank?
+      redirect_to action: 'index'
+      return
+    end
+    unless current_user.admin? or (current_user.roles & @problem.roles).any?
+      if @problem.visible_invisible?
+        redirect_to action: 'index'
+        return
+      elsif @problem.visible_contest?
+        if params[:contest_id].blank?
+          redirect_to action:'index'
+          return
+        end
+        contest = Contest.find(params[:contest_id])
+        unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
+          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
+          return
+        end
+        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
+          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+          return
+        end
+      end
+    end
+    params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
 
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
@@ -140,6 +185,18 @@ class SubmissionsController < ApplicationController
   end
 
   def set_submissions
+    if @problem
+      unless current_user&.admin or (current_user.roles & @problem.roles).any?
+        if @problem.visible_contest?
+          if params[:contest_id].blank? or not (@contest&.is_running? and @contest.problems.exists?(@problem.id))
+            redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+          end
+        elsif @problem.visible_invisible?
+          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        end
+      end
+    end
+
     @submissions = Submission
     @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
     if @contest
@@ -164,7 +221,10 @@ class SubmissionsController < ApplicationController
     else
       @submissions = @submissions.where(contest_id: nil)
       unless effective_admin?
-        @submissions = @submissions.joins(:problem).where(problem: {visible_state: :public})
+        @submissions = @submissions.joins(:problem).left_outer_joins(problem: :roles)
+        s = @submissions.where(problem: {visible_state: :public})
+        s = s.or(@submissions.where(problem: {roles: current_user&.roles})).distinct
+        @submissions = s
       end
     end
     @submissions = @submissions.where(problem_id: params[:filter_problem]) if not params[:filter_problem].blank?
@@ -180,13 +240,21 @@ class SubmissionsController < ApplicationController
   def set_submission
     @submission = Submission.find(params[:id])
     @problem = @submission.problem
-    raise_not_found if @contest && @contest.id != @submission.contest_id
-    @contest ||= @submission.contest
+    @contest = @submission.contest
+    unless current_user&.admin? or (current_user.roles & @problem.roles).any?
+      if @problem.visible_contest?
+        raise_not_found if not @contest
+      elsif @problem.visible_invisible?
+        raise_not_found
+      end
+    end
     if @contest
-      unless effective_admin?
-        # TODO: Add an option to still hide submission after contest
+      raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
+      unless current_user&.admin? or (current_user.roles & @problem.roles).any?
         raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
-        raise_not_found unless @contest.is_ended? or current_user&.id == @submission.user_id
+        if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
+          raise_not_found if current_user&.id != @submission.user_id
+        end
       end
     end
   end

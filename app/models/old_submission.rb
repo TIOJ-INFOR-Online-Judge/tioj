@@ -17,7 +17,7 @@
 #  index_old_submissions_on_problem_id             (problem_id)
 #  index_old_submissions_on_problem_id_and_result  (problem_id,result)
 #  index_old_submissions_on_submission_id          (submission_id) UNIQUE
-#  index_old_submissions_topcoder                  (problem_id,result,score DESC,total_time,total_memory)
+#  index_old_submissions_topcoder                  (problem_id,result,score,total_time,total_memory)
 #
 
 class OldSubmission < ApplicationRecord

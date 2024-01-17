@@ -24,45 +24,45 @@ services:
       - MAIL_SENDER
       - ALLOW_REGISTER
     volumes:
-      - /srv/ioic_tioj/web-td:/tioj/td
-      - /srv/ioic_tioj/web-log:/tioj/log
-      - /srv/ioic_tioj/public:/tioj/public
+      - /srv/ioic2024_tioj/web-td:/tioj/td
+      - /srv/ioic2024_tioj/web-log:/tioj/log
+      - /srv/ioic2024_tioj/public:/tioj/public
     depends_on:
       - db
     networks:
       - app
     ports:
-      - "4000:4000"
+      - "4002:4000"
     logging: *default-logging
-    container_name: ioic2023_tioj_web
+    container_name: ioic2024_tioj_web
     restart: always
   db:
     image: mysql:8.0
     volumes:
-      - /srv/ioic_tioj/db:/var/lib/mysql
+      - /srv/ioic2024_tioj/db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE=tioj_production
     networks:
       - app
     logging: *default-logging
-    container_name: ioic2023_tioj_db
+    container_name: ioic2024_tioj_db
     restart: always
   judge:
     build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#ddb2f430eb7b6a4561ed23c1ef2ad94fcafc5b22
     environment:
-      TIOJ_URL: "http://localhost:4000"
+      TIOJ_URL: "http://localhost:4002"
       TIOJ_KEY: $FETCH_KEY
     volumes:
-      - /srv/ioic_tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
-      - /srv/ioic_tioj/judge-testdata:/var/lib/tioj-judge/testdata
+      - /srv/ioic2024_tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
+      - /srv/ioic2024_tioj/judge-testdata:/var/lib/tioj-judge/testdata
     tmpfs:
       - /tmp:exec
     privileged: true
     network_mode: host
     pid: host
     logging: *default-logging
-    container_name: ioic2023_tioj_judge
+    container_name: ioic2024_tioj_judge
     restart: always
 
 networks:

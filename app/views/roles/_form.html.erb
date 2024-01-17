@@ -1,0 +1,63 @@
+<%= form_for(@role) do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @role.errors, item: 'Role'} %>
+
+  <div class="form-group">
+    <%= f.label :name, 'Role Name' %> <br>
+    <%= f.text_field :name, :class => 'form-control', :placeholder => 'Role Name' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :problem_ids, 'Problems' %> <br>
+    <!-- need a more elegant way to send request -->
+    <% Problem.all.each do |prob| %>
+      <div class="row">
+        <div class="col-md-1">
+          <%= check_box_tag 'role[problem_ids][]', prob.id, @role.problems.include?(prob) %>
+        </div>
+
+        <div class="col-md-1">
+          <%= prob.id %>
+        </div>
+        <div class="col-md-1">
+          <%= prob.name %>
+        </div>
+
+      </div>
+    <% end %>
+    <%= hidden_field_tag 'role[problem_ids][]', '' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :user_ids, 'Members' %> <br>
+    <!-- optionally, select non-admin? -->
+    <!-- need a more elegant way to send request -->
+    <% User.all.each do |user| %>
+      <div class="row">
+        <div class="col-md-1">
+          <%= check_box_tag 'role[user_ids][]', user.id, @role.users.include?(user) %>
+        </div>
+
+        <div class="col-md-1">
+          <%= user.username %>
+        </div>
+        <div class="col-md-1">
+          <%= user.nickname %>
+        </div>
+        <div class="col-md-1">
+          <%= user.name %>
+        </div>
+        <div class="col-md-1">
+          <%= user.email %>
+        </div>
+
+      </div>
+    <% end %>
+    <%= hidden_field_tag 'role[user_ids][]', '' %>
+  </div>
+
+  <hr>
+
+  <div class="form-group">
+    <%= f.submit :class=>"btn btn-primary"%>
+  </div>
+<% end %>

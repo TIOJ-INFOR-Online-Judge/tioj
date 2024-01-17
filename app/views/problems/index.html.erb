@@ -74,6 +74,19 @@ window.onpageshow = function(e){
                 <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(tcoder) %>
               <% end %>
             <% end %>
+          <% end %>
+        </td>
+        <td><%= users_ac_ratio_with_infor(problem, @attr_map) %></td>
+        <td><%= submissions_ac_ratio_with_infor(problem, @attr_map) %></td>
+        <% if current_user&.admin %>
+          <td><%= problem.visible_state.capitalize %></td>
+        <% end %>
+        <% if user_signed_in? %>
+          <td style="white-space: nowrap;">
+            <% if current_user.admin? %>
+              <%= link_to 'Edit', edit_problem_path(problem), :class => 'btn btn-info btn-xs' %>
+            <% end %>
+            <%= link_to 'Submit', new_problem_submission_path(problem), :class => 'btn btn-success btn-xs' %>
           </td>
           <td><%= users_ac_ratio_with_infor(problem, @attr_map) %></td>
           <td><%= submissions_ac_ratio_with_infor(problem, @attr_map) %></td>

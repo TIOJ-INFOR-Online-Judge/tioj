@@ -60,9 +60,16 @@ class ProblemsController < ApplicationController
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_name])
       @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
     end
+    unless current_user&.admin?
+      @problems = @problems.left_outer_joins(:roles)
+      p = @problems.where(visible_state: Problem.visible_states[:public])
+      p = p.or(@problems.where(roles: current_user.roles)).distinct
+      @problems = p
+    end
     if not params[:tag].blank?
       @problems = @problems.tagged_with(params[:tag])
     end
+
 
     @problems = @problems.order(id: :asc).page(params[:page]).per(100)
 
@@ -202,9 +209,14 @@ class ProblemsController < ApplicationController
 
   def check_visibility!
     return if effective_admin?
-    raise_not_found if @problem.visible_invisible?
-    if @problem.visible_contest?
-      raise_not_found unless @contest&.is_started? && @contest.problems.exists?(@problem.id)
+    unless current_user&.admin || (current_user.roles & @problem.roles).any?
+      if @problem.visible_contest?
+        if params[:contest_id].blank? or not (@contest&.is_running? and @contest.problems.exists?(@problem.id))
+          redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+        end
+      elsif @problem.visible_invisible?
+        redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
+      end
     end
   end
 
