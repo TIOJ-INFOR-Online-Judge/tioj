@@ -46,3 +46,7 @@ window.initContestRanklist = initContestRanklist;
 window.initContestCable = initContestCable;
 window.initSubmissionCable = initSubmissionCable;
 window.initProblemForm = initProblemForm;
+
+// IOICamp
+import { ioicampContestDashboardMain } from './helpers/ioicamp_contest_switch';
+window.ioicampContestDashboardMain = ioicampContestDashboardMain;

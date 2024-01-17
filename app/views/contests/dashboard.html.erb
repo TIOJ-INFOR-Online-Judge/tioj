@@ -28,7 +28,7 @@
   <div id="ranklist_time_slider"></div>
 </div>
 
-<table id="dashboard_table" class="table table-hover table-align-middle">
+<table id="dashboard_table" class="table table-hover table-align-middle dashboard-table">
   <%= render partial: 'dashboard_table', locals: {} %>
 </table>
 
@@ -45,3 +45,7 @@
 initContestRanklist(<%= raw(@data.to_json) %>);
 initContestCable(<%= raw(@contest.id) %>);
 </script>
+
+<% if @contest.type_ioicamp? %>
+  <script> ioicampContestDashboardMain() </script>
+<% end %>

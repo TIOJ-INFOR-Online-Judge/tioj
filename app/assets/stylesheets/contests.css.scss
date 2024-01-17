@@ -7,6 +7,14 @@
   align-items: center;
 }
 
+.dashboard-table.dashboard-show-score .display-switch-penalty {
+  display: none;
+}
+
+.dashboard-table.dashboard-show-penalty .display-switch-score {
+  display: none;
+}
+
 div.offline-indicator {
   display: inline-block;
   width: 15px;

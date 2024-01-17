@@ -1,11 +1,33 @@
 <thead>
   <tr>
+    <th colspan=<%= ((user_signed_in? and current_user.admin?) ? 5 : 4) - 1 %> class="text-center"></th>
+    <th colspan=<%= @tasks.length + 2 %> class="text-center" align="left">
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <% if @contest.type_ioicamp? %>
+          <small class="display-switch-score">Score / Total Tries</small>
+          <small class="display-switch-penalty">Last Score update / Penalty Tries</small>
+          &nbsp;
+          <div class="switch"
+              data-on-label="score"
+              data-off-label="penalty" id="display_switch_div">
+            <input id="display_switch" autocomplete=off type="checkbox" name="display_switch" checked>
+          </div>
+        <% end %>
+      </div>
+    </th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tr>
     <th>Rank</th>
     <% if @layout != :single_contest %>
       <th></th>
     <% end %>
     <th>Username</th>
     <th>Nickname</th>
+    <% if user_signed_in? and current_user.admin? %>
+      <th>Name</th>
+    <% end %>
     <% @tasks.each_with_index do |task, index| %>
       <th><%= link_to problem_index_text(index), contest_adaptive_polymorphic_path([task]) %></th>
     <% end %>
@@ -14,6 +36,9 @@
       <th>Penalty</th>
     <% else %>
       <th>Total</th>
+      <% if @contest.type_ioicamp? %>
+        <th>Penalty</th>
+      <% end %>
     <% end %>
   </tr>
 </thead>
@@ -34,11 +59,17 @@
         <td class="highlight-if-self"><%= usr.username %></td>
       <% end %>
       <td class="highlight-if-self"><%= usr.nickname %></td>
+      <% if user_signed_in? and current_user.admin? %>
+        <td><%= usr.name %></td>
+      <% end %>
       <% @tasks.each do |t|%>
         <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
       <% end %>
       <% if @contest.type_acm? %>
         <td id="cell_solved_<%= usr.id %>"></td>
+        <td id="cell_penalty_<%= usr.id %>"></td>
+      <% elsif @contest.type_ioicamp? %>
+        <td id="cell_score_<%= usr.id %>"></td>
         <td id="cell_penalty_<%= usr.id %>"></td>
       <% else %>
         <td id="cell_score_<%= usr.id %>"></td>

@@ -105,8 +105,8 @@ module ContestsHelper
 
       if nscore > item_state[0]
         item_state[0] = nscore
-        item_state[2] += item_state[4]
-        item_state[4] = 0
+        item_state[2] += item_state[4] - 1
+        item_state[4] = 1
         item_state[3] = rel_timestamp(submission, start_time)
       end
     end

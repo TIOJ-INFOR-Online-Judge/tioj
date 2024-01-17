@@ -11,30 +11,50 @@ Array.prototype.compare = function (arr){
 }
 
 function ioicampCellText(current, user_state, first_ac) {
-  // state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update, subtask_scores]
+  // state: app/helpers/contests_helper.rb
   let text = '-';
   if (current) {
-    const value = new Decimal(current.state[0]);
-    text = value.toString();
-    if (current.state[3] !== null) { // at least one successful attempt
-      if (!first_ac) {
-        text = '<span class="text-success"><strong>' + text + '</strong></span>'
-      }
-      else {
-        text = '<span style="color:#008000"><strong>' + text + '</strong></span>'
-      }
-      const penalty = Math.floor(current.state[3] / 60000000);
+    const score = new Decimal(current.state[0]);
+    const penalty = Math.floor(current.state[3] / 60000000);
+    user_state.score = user_state.score.add(score);
+    user_state.tot_penalty += penalty + 20 * current.state[2];
+    user_state.last_updated = Math.max(user_state.last_updated, current.state[3]);
 
-      user_state.score = user_state.score.add(value);
-      user_state.tot_penalty += penalty + 20 * (current.state[2] - 1);
-      user_state.last_updated = Math.max(user_state.last_updated, current.state[3]);
-    } else if (current.state[4]) { // at least one attempts but no successful one
-        text = '<span class="text-danger"><strong>' + text + '</strong></span>';
+    function getScore() {
+      let ret = score.toString();
+      if (current.state[3] !== null) { // at least one successful attempt
+        if (!first_ac) {
+          ret = '<span class="text-success"><strong>' + ret + '</strong></span>'
+        }
+        else {
+          ret = '<span style="color:#008000"><strong>' + ret + '</strong></span>'
+        }
+
+      } else if (current.state[4]) { // at least one attempts but no successful one
+          ret = '<span class="text-danger"><strong>' + ret + '</strong></span>';
+      }
+
+      const attempts = current.state[2] + current.state[4];
+      ret += '<small>/' + attempts + '</small>';
+      ret = '<span class="display-switch-score">' + ret + '</span>';
+      return ret;
     }
-
-    const attempts = current.state[2] + current.state[4];
-    text += '<small>/' + attempts + '</small>';
-    if (current.state[1]) {
+    function getPenalty() {
+      let ret = '-';
+      if (current.state[3] !== null) { // at least one successful attempt
+        ret = '<span class="text-success">' + penalty + '</span>';
+        if (current.state[2] > 0) { // has penalty submissions
+          ret += '<small class="text-danger">/<strong>' + current.state[2] + '</strong></small>'
+        }
+        else {
+          ret += '<small>/' + current.state[2] + '</small>';
+        }
+      }
+      ret = '<span class="display-switch-penalty">' + ret + '</span>';
+      return ret;
+    }
+    text = getScore() + getPenalty();
+    if (current.state[1]) { // has waiting submissions
       text += '+<span style="color:#888;"><strong>' + current.state[1] + '</strong></span>';
     }
   }
@@ -162,7 +182,7 @@ export function contestRanklistReorder(data, timestamp) {
     reorderTableInternal(
       data,
       timestamp,
-      {socre: new Decimal(0), tot_penalty: 0, last_updated: -1},
+      {score: new Decimal(0), tot_penalty: 0, last_updated: -1},
       ioicampCellText,
       ioicampRowSummary
     )

@@ -28,7 +28,7 @@
 #
 
 class Contest < ApplicationRecord
-  enum :contest_type, {gcj: 0, ioi: 1, acm: 2, ioicamp: 3}, prefix: :type
+  enum :contest_type, {ioi: 0, ioi_new: 1, acm: 2, ioicamp: 3}, prefix: :type
   enum :register_mode, {no_register: 0, free_register: 1, require_approval: 2}
 
   has_many :contest_problem_joints, dependent: :destroy
