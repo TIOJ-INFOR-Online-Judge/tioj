@@ -70,7 +70,6 @@ class ProblemsController < ApplicationController
       @problems = @problems.tagged_with(params[:tag])
     end
 
-
     @problems = @problems.order(id: :asc).page(params[:page]).per(100)
 
     problem_ids = @problems.map(&:id).to_a
@@ -209,7 +208,7 @@ class ProblemsController < ApplicationController
 
   def check_visibility!
     return if effective_admin?
-    unless current_user&.admin || (current_user.roles & @problem.roles).any?
+    unless current_user&.can_view?(@problem)
       if @problem.visible_contest?
         if params[:contest_id].blank? or not (@contest&.is_running? and @contest.problems.exists?(@problem.id))
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'

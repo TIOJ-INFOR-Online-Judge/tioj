@@ -57,7 +57,7 @@ class UserBase < ApplicationRecord
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 
-  has_and_belongs_to_many :roles
+  has_and_belongs_to_many :roles, foreign_key: :user_id
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -91,6 +91,13 @@ class UserBase < ApplicationRecord
       Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
       self.avatar = tmpfile
     end
+  end
+
+  def can_view?(problem)
+    if not problem
+      return false
+    end
+    self.admin or (self.roles & problem.roles).any?
   end
 end
 
