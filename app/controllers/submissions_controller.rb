@@ -132,7 +132,7 @@ class SubmissionsController < ApplicationController
         end
       end
     end
-    params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
+    # params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
 
     @submission = Submission.new(submission_params)
     @submission.user_id = current_user.id
