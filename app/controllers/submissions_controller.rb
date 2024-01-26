@@ -315,6 +315,7 @@ class SubmissionsController < ApplicationController
   end
 
   def check_problem_visibility
+    return if current_user&.can_view?(@problem)
     return if effective_admin? || !@problem
     raise_not_found if @problem.visible_invisible?
     raise_not_found if @problem.visible_contest? && !@contest&.is_started?

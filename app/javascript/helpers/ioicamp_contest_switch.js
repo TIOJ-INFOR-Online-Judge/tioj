@@ -5,6 +5,7 @@ export function ioicampContestDashboardMain(){
 	SWITCH.onchange = function() {
 		update(SWITCH.checked);
 	};
+	update(SWITCH.checked);
 
 	function update(state) {
 		if (!state) {
