@@ -11,7 +11,7 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     if ENV["ALLOW_REGISTER"] == 'allow'
       super
-      resource.remote_avatar_url = "http://avatar.3sd.me/100"
+      resource.generate_random_avatar
       resource.save
     elsif ENV["ALLOW_REGISTER"]&.start_with?('token_')
       if params[:register_token] != ENV["ALLOW_REGISTER"]
@@ -19,7 +19,7 @@ class RegistrationsController < Devise::RegistrationsController
         return
       end
       super
-      resource.remote_avatar_url = "http://avatar.3sd.me/100"
+      resource.generate_random_avatar
       resource.save
     else
       redirect_to root_path, alert: 'Registration is not allowed!'
