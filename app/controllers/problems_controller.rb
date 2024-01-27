@@ -210,7 +210,8 @@ class ProblemsController < ApplicationController
     return if effective_admin?
     unless current_user&.can_view?(@problem)
       if @problem.visible_contest?
-        if params[:contest_id].blank? or not (@contest&.is_running? and @contest.problems.exists?(@problem.id))
+        tmp_register_status = @contest.contest_registrations.where(user_id: current_user&.id).first&.approved
+        if not (@contest&.is_started? and @contest.problems.exists?(@problem.id) and tmp_register_status)
           redirect_back fallback_location: root_path, :notice => 'Insufficient User Permissions.'
         end
       elsif @problem.visible_invisible?

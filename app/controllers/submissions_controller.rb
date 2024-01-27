@@ -66,26 +66,26 @@ class SubmissionsController < ApplicationController
       redirect_to action:'index'
       return
     end
-    unless current_user&.can_view?(@problem)
-      if @problem.visible_invisible?
-        redirect_to action:'index'
-        return
-      elsif @problem.visible_contest?
-        if params[:contest_id].blank?
-          redirect_to action:'index'
-          return
-        end
-        contest = Contest.find(params[:contest_id])
-        unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
-          return
-        end
-      end
-    end
+    # unless current_user&.can_view?(@problem)
+    #   if @problem.visible_invisible?
+    #     redirect_to action:'index'
+    #     return
+    #   elsif @problem.visible_contest?
+    #     if params[:contest_id].blank?
+    #       redirect_to action:'index'
+    #       return
+    #     end
+    #     contest = Contest.find(params[:contest_id])
+    #     unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
+    #       redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
+    #       return
+    #     end
+    #     if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
+    #       redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+    #       return
+    #     end
+    #   end
+    # end
     @submission = Submission.new
     @submission.code_content = CodeContent.new
     @contest_id = params[:contest_id]
@@ -112,26 +112,26 @@ class SubmissionsController < ApplicationController
       redirect_to action: 'index'
       return
     end
-    unless current_user&.can_view?(@problem)
-      if @problem.visible_invisible?
-        redirect_to action: 'index'
-        return
-      elsif @problem.visible_contest?
-        if params[:contest_id].blank?
-          redirect_to action:'index'
-          return
-        end
-        contest = Contest.find(params[:contest_id])
-        unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
-          redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
-          return
-        end
-        if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
-          redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
-          return
-        end
-      end
-    end
+    # unless current_user&.can_view?(@problem)
+    #   if @problem.visible_invisible?
+    #     redirect_to action: 'index'
+    #     return
+    #   elsif @problem.visible_contest?
+    #     if params[:contest_id].blank?
+    #       redirect_to action:'index'
+    #       return
+    #     end
+    #     contest = Contest.find(params[:contest_id])
+    #     unless @contest&.is_running? and @contest.problems.exists?(@problem.id)
+    #       redirect_to contest_problem_path(contest, @problem), notice: 'Contest ended, cannot submit.'
+    #       return
+    #     end
+    #     if Regexp.new(contest.user_whitelist, Regexp::IGNORECASE).match(current_user.username).nil?
+    #       redirect_to contest_problem_path(contest, @problem), notice: 'You are not allowed to submit in this contest.'
+    #       return
+    #     end
+    #   end
+    # end
     # params[:submission][:code] = submission_params[:code].encode(submission_params[:code].encoding, universal_newline: true)
 
     @submission = Submission.new(submission_params)
