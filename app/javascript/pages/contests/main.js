@@ -47,6 +47,7 @@ export function initContestRanklist(data) {
 export function initContestCable(id) {
   let lastUpdate = 0;
   let requestPending = false;
+  const UPDATE_TIME = 10000; // in millisecond, default 1000
   consumer.subscriptions.create({
     channel: "RanklistUpdateChannel",
     id: id
@@ -54,7 +55,7 @@ export function initContestCable(id) {
     received: (data) => {
       if (requestPending) return;
       let now = Date.now();
-      if (now >= lastUpdate + 1000) {
+      if (now >= lastUpdate + UPDATE_TIME) {
         $('#refresh').trigger('click');
         lastUpdate = now;
       } else {
@@ -63,7 +64,7 @@ export function initContestCable(id) {
           $('#refresh').trigger('click');
           lastUpdate = Date.now();
           requestPending = false;
-        }, lastUpdate + 1000 - now);
+        }, lastUpdate + UPDATE_TIME - now);
       }
     },
     connected: () => {
