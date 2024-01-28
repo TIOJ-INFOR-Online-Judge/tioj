@@ -47,7 +47,7 @@ export function initContestRanklist(data) {
 export function initContestCable(id) {
   let lastUpdate = 0;
   let requestPending = false;
-  const UPDATE_TIME = 10000; // in millisecond, default 1000
+  const UPDATE_TIME = 60000; // in millisecond, default 1000
   consumer.subscriptions.create({
     channel: "RanklistUpdateChannel",
     id: id
