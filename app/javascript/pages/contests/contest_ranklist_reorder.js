@@ -182,7 +182,7 @@ export function contestRanklistReorder(data, timestamp) {
     reorderTableInternal(
       data,
       timestamp,
-      {score: new Decimal(0), tot_penalty: 0, last_updated: -1},
+      {score: new Decimal(0), tot_penalty: 0, last_updated: 0},
       ioicampCellText,
       ioicampRowSummary
     )
