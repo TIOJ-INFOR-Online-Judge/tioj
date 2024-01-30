@@ -1,6 +1,7 @@
 class SubmissionsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authenticate_user_and_running_if_single_contest!, only: [:index, :show, :new, :create]
+  # before_action :authenticate_user_and_running_if_single_contest!, only: [:index, :show, :new, :create]
+  before_action :authenticate_user_and_started_if_single_contest!, only: [:index, :show, :new, :create]
   before_action :authenticate_admin!, only: [:rejudge, :edit, :update, :destroy]
   before_action :set_submission, only: [:rejudge, :show, :show_old, :download_raw, :edit, :update, :destroy]
   before_action :set_problem_by_param, only: [:new, :create, :index]

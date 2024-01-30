@@ -91,6 +91,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_user_and_started_if_single_contest!
+    if @layout == :single_contest
+      authenticate_user!
+      unless @contest.is_started?
+        flash[:alert] = 'Contest is not yet started.'
+        redirect_to single_contest_path(@contest)
+      end
+    end
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up) do |u|
       u.permit(:school, :gradyear, :name, :email, :nickname, :username, :password, :password_confirmation, :remember_me)
