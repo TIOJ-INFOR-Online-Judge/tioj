@@ -56,9 +56,30 @@ class ContestsController < ApplicationController
       freeze: helpers.to_us(@contest.freeze_after),
       current: helpers.to_us(Time.now.clamp(@contest.start_time, @contest.end_time)),
     }
+    dc_bot_userlist = {}
+    dc_bot_userlist_tmp = User.where(id: @data[:participants]).pluck(:id, :nickname, :username)
+    dc_bot_userlist_tmp.each do |user_data|
+      dc_bot_userlist[user_data[0]] = { nickname: user_data[1], username: user_data[2]}
+    end
+    dc_bot_tasks = {}
+    @tasks.pluck(:id, :name).each { |task_data| dc_bot_tasks[task_data[0]] = task_data[1] }
+    @dc_bot = {
+      contest: {
+        contest_type: @contest.contest_type,
+        tasks: dc_bot_tasks,
+        task_order: @tasks.pluck(:id),
+        title: @contest.title,
+      },
+      users: dc_bot_userlist,
+      first_ac: @data[:first_ac],
+      scores: c_submissions.order(:created_at).map { |sub| { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score } },
+    }
   end
 
   def dashboard
+    if request.format.json?
+      render :json => @dc_bot
+    end
   end
 
   def dashboard_update

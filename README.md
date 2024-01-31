@@ -26,6 +26,7 @@ https://github.com/ioicamp/tioj/pulls
     comment: 好像已經不存在 `.form-group > select` 的元素了(?)
 - [ ] Translated verdict
 - [X] Add dashboard.json endpoint (氣球機 discord bot)
+- [X] Judge problem 的 contest visibility 的行為改成要比賽進行中且 user 為 register 才能看
 
 ### 每屆都會改的
 

@@ -85,7 +85,7 @@ module ContestsHelper
   end
 
   def ioicamp_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update, subtask_scores]
+    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update]
     if item_state.nil?
       item_state = [BigDecimal(0), 0, 0, nil, 0, nil]
     end
