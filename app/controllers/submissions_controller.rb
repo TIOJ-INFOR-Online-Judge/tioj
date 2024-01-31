@@ -210,7 +210,8 @@ class SubmissionsController < ApplicationController
           @submissions = @submissions.where('submissions.created_at < ?', @contest.freeze_after)
         end
         # TODO: Add an option to still hide submission after contest
-        unless @contest.is_ended?
+        # IOICAMP: Make the submissions only show self's sub.
+        # unless @contest.is_ended?
           # only self submission
           if user_signed_in?
             @submissions = @submissions.where(user_id: current_user.id)
@@ -218,7 +219,7 @@ class SubmissionsController < ApplicationController
             @submissions = Submission.none
             return
           end
-        end
+        # end
       end
     else
       @submissions = @submissions.where(contest_id: nil)
