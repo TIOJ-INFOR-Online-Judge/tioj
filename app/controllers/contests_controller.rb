@@ -84,7 +84,7 @@ class ContestsController < ApplicationController
 
   def dashboard
     if request.format.json?
-      authenticate_user!
+      authenticate_admin!
       render :json => @dc_bot
     end
   end
