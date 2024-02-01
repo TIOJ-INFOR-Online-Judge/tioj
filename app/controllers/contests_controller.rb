@@ -72,7 +72,13 @@ class ContestsController < ApplicationController
       },
       users: dc_bot_userlist,
       first_ac: @data[:first_ac],
-      scores: c_submissions.order(:created_at).map { |sub| { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score } },
+      scores: c_submissions.order(:created_at).map do |sub|
+        if ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= @contest.freeze_after
+          { result: 'Waiting' }
+        else
+          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score }
+        end
+      end,
     }
   end
 
