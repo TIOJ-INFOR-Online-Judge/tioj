@@ -57,7 +57,7 @@ class ContestsController < ApplicationController
       current: helpers.to_us(Time.now.clamp(@contest.start_time, @contest.end_time)),
     }
     dc_bot_userlist = {}
-    dc_bot_userlist_tmp = User.where(id: @data[:participants]).pluck(:id, :nickname, :username)
+    dc_bot_userlist_tmp = @participants.pluck(:id, :nickname, :username)
     dc_bot_userlist_tmp.each do |user_data|
       dc_bot_userlist[user_data[0]] = { nickname: user_data[1], username: user_data[2]}
     end
@@ -78,6 +78,7 @@ class ContestsController < ApplicationController
 
   def dashboard
     if request.format.json?
+      authenticate_user!
       render :json => @dc_bot
     end
   end
