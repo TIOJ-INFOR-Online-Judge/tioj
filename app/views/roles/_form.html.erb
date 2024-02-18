@@ -11,14 +11,14 @@
     <!-- need a more elegant way to send request -->
     <% Problem.all.each do |prob| %>
       <div class="row">
-        <div class="col-md-1">
+        <div class="col-sm-1">
           <%= check_box_tag 'role[problem_ids][]', prob.id, @role.problems.include?(prob) %>
         </div>
 
-        <div class="col-md-1">
+        <div class="col-sm-1">
           <%= prob.id %>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm">
           <%= prob.name %>
         </div>
 
@@ -33,20 +33,20 @@
     <!-- need a more elegant way to send request -->
     <% User.all.each do |user| %>
       <div class="row">
-        <div class="col-md-1">
+        <div class="col-sm-1">
           <%= check_box_tag 'role[user_ids][]', user.id, @role.users.include?(user) %>
         </div>
 
-        <div class="col-md-1">
+        <div class="col-sm-2">
           <%= user.username %>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm-2">
           <%= user.nickname %>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm-2">
           <%= user.name %>
         </div>
-        <div class="col-md-1">
+        <div class="col-sm">
           <%= user.email %>
         </div>
 
