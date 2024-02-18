@@ -243,21 +243,13 @@ class SubmissionsController < ApplicationController
   def set_submission
     @submission = Submission.find(params[:id])
     @problem = @submission.problem
-    @contest = @submission.contest
-    unless current_user&.can_view?(@problem)
-      if @problem.visible_contest?
-        raise_not_found if not @contest
-      elsif @problem.visible_invisible?
-        raise_not_found
-      end
-    end
+    raise_not_found if @contest && @contest.id != @submission.contest_id
+    @contest ||= @submission.contest
     if @contest
-      raise_not_found if params[:contest_id] && @contest.id != params[:contest_id].to_i
-      unless current_user&.can_view?(@problem)
+      unless effective_admin?
         raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
-        if Time.now <= @contest.end_time #and Time.now >= @contest.start_time
-          raise_not_found if current_user&.id != @submission.user_id
-        end
+        # IOICAMP: Make the submissions only show self's sub.
+        raise_not_found unless current_user&.id == @submission.user_id
       end
     end
   end
