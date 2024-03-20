@@ -145,7 +145,8 @@ fi
 
 # Install gems
 cd "$WORKDIR/tioj"
-gem install passenger:'~> 6' -N
+passenger_version="$(grep -Po ' passenger \(\K\d.*(?=\))' Gemfile.lock | head -1)"
+gem install passenger:"$passenger_version" -N
 PASSENGER_LOG=$(sudo mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
 export rvmsudo_secure_path=1
