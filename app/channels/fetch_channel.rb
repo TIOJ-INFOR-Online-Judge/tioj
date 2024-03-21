@@ -40,6 +40,7 @@ class FetchChannel < ApplicationCable::Channel
         submission.update(**update_hash)
       end
     end
+    update_hash.delete(:message)
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
     notify_contest_channel(submission.contest_id, submission.user_id)
   end
