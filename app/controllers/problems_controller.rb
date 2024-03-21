@@ -33,7 +33,7 @@ class ProblemsController < ApplicationController
   end
 
   def rejudge
-    subs = Submission.where(problem_id: params[:id])
+    subs = Submission.where(problem_id: params[:id], contest_id: @contest ? @contest.id : nil)
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
     subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)

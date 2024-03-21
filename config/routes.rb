@@ -43,11 +43,13 @@ Rails.application.routes.draw do
     resources :comments, except: [:index]
   end
 
+  # normal contest
   resources :contests do
     resources :submissions do
       get 'raw', to: 'submissions#download_raw', on: :member
     end
     resources :problems, except: [:index, :create, :new] do
+      post 'rejudge', on: :member
       resources :submissions, only: [:index, :create, :new]
     end
     resources :announcements
@@ -78,6 +80,7 @@ Rails.application.routes.draw do
     end
   end
 
+  # single contest
   resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
     resources :submissions, only: [:index, :create, :new, :show] do
       get 'raw', to: 'submissions#download_raw', on: :member
