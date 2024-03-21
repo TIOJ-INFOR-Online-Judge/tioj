@@ -19,7 +19,8 @@ class SubmissionsController < ApplicationController
 
   def rejudge
     @submission.submission_testdata_results.delete_all
-    @submission.update_self_with_subtask_result({result: "queued", score: 0, total_time: nil, total_memory: nil, message: nil})
+    priority = @submission.contest_id ? Submission::PRIORITY[:rejudge_contest] : Submission::PRIORITY[:rejudge_normal]
+    @submission.update_self_with_subtask_result({result: "queued", priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil})
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'rejudge', submission_id: @submission.id})
     helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
     redirect_back fallback_location: root_path
@@ -95,6 +96,7 @@ class SubmissionsController < ApplicationController
     @submission.problem = @problem
     @submission.contest = @contest
     @submission.generate_subtask_result
+    @submission.priority = @contest ? Submission::PRIORITY[:contest] : Submission::PRIORITY[:normal]
     respond_to do |format|
       if @submission.save
         redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)

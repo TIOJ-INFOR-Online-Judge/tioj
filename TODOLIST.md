@@ -1,5 +1,5 @@
 - [ ] GitHub pipeline
-- [ ] Modify rejudge behavior
+- [x] Modify rejudge behavior
     - Lower priority
     - Separate contest and non-contest submissions
 - [ ] Virtual judge

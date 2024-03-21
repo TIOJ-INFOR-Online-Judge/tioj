@@ -57,7 +57,7 @@ class FetchChannel < ApplicationCable::Channel
   def fetch_submission(data)
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
+      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
       flag = false
       if submission
         retry_op(3) do |is_first|
@@ -84,7 +84,7 @@ class FetchChannel < ApplicationCable::Channel
     user = submission.user
     td_count = problem.testdata.count
     verdict_ignore_set = Subtask.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
-    priority = (submission.contest ? 100000000 : 0) - submission.id
+    priority = submission.priority * (2 ** 32) - submission.id
     data = {
       submission_id: submission.id,
       contest_id: submission.contest_id || -1,

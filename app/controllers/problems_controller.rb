@@ -37,7 +37,8 @@ class ProblemsController < ApplicationController
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
     subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)
-    subs.update_all(result: "queued", score: 0, total_time: nil, total_memory: nil, message: nil)
+    priority = @contest ? Submission::PRIORITY[:batch_rejudge_contest] : Submission::PRIORITY[:batch_rejudge_normal]
+    subs.update_all(result: 'queued', priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil)
     subtask_results.update_all(result: subs.first.calc_subtask_result) if subs.first
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|
