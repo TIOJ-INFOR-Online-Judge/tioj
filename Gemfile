@@ -16,6 +16,9 @@ gem 'mysql2'
 # gem 'rubyzip'
 
 # Use SCSS for stylesheets
+gem 'sass-rails'
+gem 'bootstrap-sass', '~> 3'
+gem 'popper_js'
 gem 'sassc-rails'
 
 # Use jsbuilding-rails for JavaScript

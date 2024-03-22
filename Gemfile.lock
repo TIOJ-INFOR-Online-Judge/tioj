@@ -95,10 +95,15 @@ GEM
     arbre (1.6.0)
       activesupport (>= 3.0.0, < 7.1)
       ruby2_keywords (>= 0.0.2, < 1.0)
+    autoprefixer-rails (10.4.16.0)
+      execjs (~> 2)
     bcrypt (3.1.19)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
+    bootstrap-sass (3.4.1)
+      autoprefixer-rails (>= 5.2.1)
+      sassc (>= 2.0.0)
     builder (3.2.4)
     bullet (7.0.7)
       activesupport (>= 3.0.0)
@@ -259,6 +264,7 @@ GEM
     passenger (6.0.18)
       rack
       rake (>= 0.8.1)
+    popper_js (2.11.8)
     psych (5.1.0)
       stringio
     public_suffix (5.0.3)
@@ -320,6 +326,8 @@ GEM
     ruby2_keywords (0.0.5)
     rubyntlm (0.6.3)
     rubyzip (2.3.2)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -394,6 +402,7 @@ DEPENDENCIES
   acts_as_list
   annotate
   bootsnap
+  bootstrap-sass (~> 3)
   bullet
   capybara
   carrierwave
@@ -412,6 +421,7 @@ DEPENDENCIES
   omniauth
   omniauth-facebook
   passenger (~> 6)
+  popper_js
   puma
   rails (~> 7)
   rdoc (~> 6)
@@ -419,6 +429,7 @@ DEPENDENCIES
   redis (~> 4)
   rubyzip
   sass-rails
+  sassc-rails
   sdoc
   selenium-webdriver
   sentry-rails

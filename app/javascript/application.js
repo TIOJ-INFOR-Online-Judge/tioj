@@ -21,9 +21,9 @@ import './vendor/jquery_nested_form';
 // tablesorter
 import 'tablesorter/dist/js/jquery.tablesorter';
 import 'tablesorter/dist/js/extras/jquery.tablesorter.pager.min';
-import './vendor/pager-custom-controls';
+import './vendor/pager-custom-controls'
 
-// file upload
+// file uploadr
 import 'blueimp-file-upload';
 import 'blueimp-tmpl';
 
