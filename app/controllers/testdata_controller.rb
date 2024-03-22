@@ -81,6 +81,8 @@ class TestdataController < ApplicationController
   def batch_update
     params = batch_update_params
     prev = {}
+
+
     params_arr = @testdata.map.with_index do |td, index|
       now = params[:td][td.id.to_s]
       cur = now.except(:form_same_as_above)
@@ -90,6 +92,8 @@ class TestdataController < ApplicationController
       prev[:form_delete] = cur[:form_delete]
       [td.id, prev.clone]
     end
+
+
     orig_order_mp = @testdata.map(&:id).map.with_index.to_h
     to_delete = params_arr.filter{|x| x[1][:form_delete].to_i != 0}.map{|x| x[0]}
     params_arr = params_arr.filter{|x| x[1][:form_delete].to_i == 0}.sort_by{|x|
