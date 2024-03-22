@@ -292,7 +292,8 @@ $(function () { $('#testdata-form').submit(function (event) {
                   $('#progress-text-update').text('Processing...');
                 } else if (now - lastUpdate >= 500) {
                   var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
-                  byterate = byterate * 0.7 + curByterate * 0.3;
+                  evt.byterate = byterate * 0.7 + curByterate * 0.3;
+                  byterate = evt.byterate;
                   evt.byterate = curByterate;
                   lastUpdate = now;
                   prevLoaded = evt.loaded;
