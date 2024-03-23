@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   resources :problems do
     resources :testdata do
       collection do
+        post 'batch_create', to: 'testdata#batch_create'
+
         get 'batch_edit'
         post 'batch_edit', to: 'testdata#batch_update'
       end

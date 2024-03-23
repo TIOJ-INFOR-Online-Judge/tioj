@@ -34,6 +34,20 @@ class TestdataController < ApplicationController
   end
 
   def create
+    @testdatum = @problem.testdata.build(testdatum_params)
+
+    respond_to do |format|
+      if @testdatum.save
+        format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
+        #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: @testdatum.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def batch_create
 
     testdata_errors = []
     #print testdatum_params_list.size

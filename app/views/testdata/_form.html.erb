@@ -1,4 +1,4 @@
-<%= form_for [@problem, @testdatum], html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
+<%= form_for [@problem, @testdatum],url: :batch_create_problem_testdata, html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
   <div class="form-group">
