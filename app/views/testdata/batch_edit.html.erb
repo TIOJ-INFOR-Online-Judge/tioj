@@ -1,7 +1,7 @@
 <h4 class="page-header">Editing testdata of Problem #<%= @problem.id%>. <%= @problem.name %></h4>
 
 <p>Position values can be arbitrary integers. The testdata will be ordered by increasing (new position value, original position value).<br>
-The testdata list of each testdata set wont change after reordering.</p>
+The testdata list of each testdata set won't change after reordering.</p>
 
 <%= form_tag batch_edit_problem_testdata_path(@problem) do %>
   <% if @testdata.map{|x| x.errors.any?}.any? %>

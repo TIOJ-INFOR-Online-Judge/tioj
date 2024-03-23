@@ -1,6 +1,7 @@
 <h4 class="page-header">Listing testdata of Problem #<%= @problem.id%>. <%= @problem.name %></h4>
 
 <%= link_to 'New Testdatum', new_problem_testdatum_path, class: 'btn btn-success btn-sm' %>
+<%= link_to 'Batch Update Testdata', batch_create_edit_problem_testdata_path, class: 'btn btn-success btn-sm'%>
 <%= link_to 'Batch Edit Testdata', batch_edit_problem_testdata_path, class: 'btn btn-success btn-sm' %>
 
 <table class = "table table-hover table-striped table-condensed">

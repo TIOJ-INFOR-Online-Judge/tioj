@@ -1,40 +1,21 @@
-<%= form_for [@problem, @testdatum],url: :batch_create_problem_testdata, html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
+<%= form_for [@problem, @testdatum], html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
   <div class="form-group">
-    <%= f.label :test_input_list, "Input testdata" %>
+    <%= f.label :test_input, "Input testdata" %>
     <% if @testdatum.test_input %>
       <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_input_list, :class => 'form-control flat', multiple: true , onchange: "updateInputFile(event)"%>
+    <%= f.file_field :test_input, class: 'form-control flat' %>
   </div>
 
   <div class="form-group">
-    <%= f.label :test_output_list, "Output testdata" %>
+    <%= f.label :test_output, "Output testdata" %>
     <% if @testdatum.test_output %>
       <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_output_list, :class => 'form-control flat', multiple: true, onchange: 'updateOutputFile(event)' %>
+    <%= f.file_field :test_output, class: 'form-control flat' %>
   </div>
-
-  <div class="form-group">
-    <div class="fold-header">
-      Input/Output files info
-      <%= button_tag '展開/收起',id: 'testdata-fold-button', class: 'btn btn-default btn-xs', type: "button"%>
-    </div>
-    <div class="testdata-table">
-      <table id="folded-testdata-group"  class="table">
-        <td>Input 0, output 0</td>
-      </table>
-      <table id="fold-table" style="display:none;" class="table">
-        <tr>
-        <td>nothing input</td>
-        <td>nothing output</td>
-        </tr>
-      </table>
-    </div>
-  </div>
-
   <div class="form-group">
     <%= f.label :time_limit, "Time Limit" %>
     <%= f.number_field :time_limit, class: 'form-control flat' %>
@@ -60,64 +41,20 @@
     <div class="actions" style="margin-right: 1em; flex: 0 0 0%;">
       <%= f.submit class: 'btn btn-success btn-lg' %>
     </div>
-    <div style="flex: 1 0 0%; ">
-      <% ["inputzip", "outputzip", "update"].each do |data|%>
-      <div class="fade" id="progress-fade-<%= data%>" style="flex: 1 0 0%;">
-        <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
-          <div id="progress-inner-bar-<%= data%>" class="progress-bar progress-bar-success" style="width: 0%;"></div>
-        </div>
-        <div id="progress-text-<%= data%>" class="progress-extended small"></div>
+    <div class="fade" id="progress-fade" style="flex: 1 0 0%;">
+      <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
+        <div id="progress-inner-bar" class="progress-bar progress-bar-success" style="width: 0%;"></div>
       </div>
-      <%end%>
+      <div id="progress-text" class="progress-extended small"></div>
     </div>
   </div>
+
 <% end %>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+
 <script>
-$("#testdata-fold-button") .click( () => {
-  $("#fold-table") .toggle();
-})
-var InputFileList = [];
-var OutputFileList = [];
-
-
-function refreshFileListTable() {
-  //console.log( 'refresh');
-  document.getElementById('folded-testdata-group').innerHTML =
-        "<td>" + 'Input ' + InputFileList.length + ', output ' + OutputFileList.length + "</td>";
-
-  let tmpTable = document.getElementById('fold-table');
-  tmpTable.innerHTML = '';
-  for( let idx = 0; idx < Math.max( InputFileList.length, OutputFileList.length ); idx++ ){
-    let tmpRow = tmpTable.insertRow();
-    let tmpCell = tmpRow.insertCell();
-    tmpCell.innerHTML = InputFileList[idx] ? InputFileList[idx].name : ' ';
-    tmpCell = tmpRow.insertCell();
-    tmpCell.innerHTML = OutputFileList[idx] ? OutputFileList[idx].name : ' ';
-    //console.log( OutputFileList[idx] ? OutputFileList[idx].name : ' ' );
-  }
-}
-
-function updateOutputFile(event) {
-  //console.log( "update Output");
-  OutputFileList = Array.from( event['target']['files'] ) .sort() .filter( (file) => {
-    return file.name.endsWith('.out');
-  })
-  //console.log( OutputFileList[0] );
-  refreshFileListTable();
-}
-
-function updateInputFile(event) {
-  //console.log( "update Input");
-  InputFileList = Array.from( event['target']['files'] ) .sort() .filter( (file) => {
-    return file.name.endsWith('.in');
-  });
-  refreshFileListTable();
-}
-</script>
-<script>
-$(function () { $('#testdata-form').submit(function (event) {
+$(function () {
+ $('#testdata-form').submit(function (event) {
     event.preventDefault();
     var _formatFileSize = function (bytes) {
       if (typeof bytes !== 'number') {
@@ -164,169 +101,52 @@ $(function () { $('#testdata-form').submit(function (event) {
         '/s'
       );
     };
-
-    //console.log( this.elements['testdatum_test_input_list']['files'])
-    var FileInput  = Array.from( this.elements['testdatum_test_input_list']['files'] ) .sort() .filter( (file) => {
-      return file.name.endsWith('.in');
-    });
-    var FileOutput = Array.from( this.elements['testdatum_test_output_list']['files'] ) .sort() .filter( (file) => {
-      return file.name.endsWith('.out');
-    });
-    if( FileInput.length != FileOutput.length ){
-      alert('Number of input files and output files are not equal.');
-      //refresh the page
-      location.reload();
-      return;
-    }
-    if( FileInput.length == 0 ){
-      alert('No input files.');
-      //refresh the page
-      location.reload();
-      return;
-    }
-
-    for( let idx = 0; idx < FileInput.length; idx++ ){
-      if( FileInput[idx].name.replace('.in', '') != FileOutput[idx].name.replace('.out', '') ){
-        alert('Input file name and output file name are not equal.');
-        //refresh the page
-        location.reload();
-        return;
-      }
-    }
-
-    var tmpData = new FormData(this);
-    var formData = new FormData();
-
-    var testInputZip = new JSZip();
-    var testOutputZip = new JSZip();
-
-
-
-    for( let [key, value] of tmpData.entries() ){
-      if( key == 'testdatum[test_input_list][]' || key == 'testdatum[test_output_list][]' ){
-        continue;
-      }
-      formData.append(key, value);
-    }
-    /*
-    FileInput.forEach( (file) => {
-      formData.append('testdatum[test_input_list][]', file);
-    });
-    */
-    FileInput.forEach( (file) => {
-      testInputZip.file(file.name, file, {compression: "DEFLATE"});
-    });
-
-
-
-    /*
-    FileOutput.forEach( (file) => {
-      formData.append('testdatum[test_output_list][]', file);
-    });
-    */
-    FileOutput.forEach( (file) => {
-      testOutputZip.file(file.name, file, {compression: "DEFLATE"});
-    });
-
-    console.log(FileOutput);
-    // get the sum of the FileOutput Size
-    var totalOutputSize = FileOutput.reduce( (sum, file) => {
-      return sum + file.size;
-    }, 0);
-    console.log(totalOutputSize);
-
-    var totalInputSize = FileInput.reduce( (sum, file) => {
-      return sum + file.size;
-    }, 0);
-    console.log(totalInputSize);
-
-    let Url = $(this).attr('action');
-    console.log(Url);
-    Promise.all([
-      testInputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
-        // console.log("input zip", progress.percent);
-        $('#progress-fade-inputzip').addClass('in');
-        $('#progress-inner-bar-inputzip').width( progress.percent + '%' );
-        $('#progress-text-inputzip').text( `input files zipping: ${Math.round( progress.percent )}%` );
-        if ( progress.percent == 100 ) {
-          $('#progress-text-inputzip').text( `input zip File complete` );
-        }
-      }),
-      testOutputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
-        // console.log("output zip", progress.percent);
-        $('#progress-fade-outputzip').addClass('in');
-        $('#progress-inner-bar-outputzip').width( progress.percent + '%' );
-        $('#progress-text-outputzip').text( `output files zipping: ${Math.round( progress.percent )}%` );
-        if ( progress.percent == 100 ) {
-          $('#progress-text-outputzip').text( `output zip File complete` );
-        }
-      })
-    ]).then(function(results) {
-        var inputContent = results[0];
-        var outputContent = results[1];
-        // console.log(inputContent);
-        // console.log(outputContent);
-        // console.log( inputContent.size );
-
-        formData.append('testdatum[test_input_list]', inputContent, 'input.zip');
-        formData.append('testdatum[test_output_list]', outputContent, 'output.zip');
-
-
-        var lastUpdate = (new Date().getTime()) - 500;
-        var byterate = 0.0;
-        var prevLoaded = 0;
-        $.ajax({
-          type: 'POST',
-          url: Url,
-          data: formData,
-          processData: false,
-          contentType: false,
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.onprogress = function(evt) {
-              if (evt.lengthComputable) {
-                var now = new Date().getTime();
-                $('#progress-fade-update').addClass('in');
-                if (evt.loaded == evt.total) {
-                  $('#progress-inner-bar-update').width('100%');
-                  $('#progress-text-update').text('Processing...');
-                } else if (now - lastUpdate >= 500) {
-                  var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
-                  evt.byterate = byterate * 0.7 + curByterate * 0.3;
-                  byterate = evt.byterate;
-                  evt.byterate = curByterate;
-                  lastUpdate = now;
-                  prevLoaded = evt.loaded;
-                  $('#progress-text-update').text(_renderProgress(evt));
-                  $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
-                }
-              }
-            };
-            return xhr;
-          },
-          success: function (data) {
-            document.open();
-            document.write(data);
-            document.close();
-          },
-          error: function (xhr, status, error) {
-            $('#progress-fade-update').removeClass('in');
-            $('#progress-inner-bar-update').width('0%');
-          },
-          abort: function() {
-            $('#progress-fade-update').removeClass('in');
-            $('#progress-inner-bar-update').width('0%');
-          },
-        });
+    var formData = new FormData(this);
+    var lastUpdate = (new Date().getTime()) - 500;
+    var byterate = 0.0;
+    var prevLoaded = 0;
+    $.ajax({
+      type: 'POST',
+      url: $(this).attr('action'),
+      data: formData,
+      processData: false,
+      contentType: false,
+      xhr: function() {
+        var xhr = new window.XMLHttpRequest();
+        xhr.upload.onprogress = function(evt) {
+          if (evt.lengthComputable) {
+            var now = new Date().getTime();
+            $('#progress-fade').addClass('in');
+            if (evt.loaded == evt.total) {
+              $('#progress-inner-bar').width('100%');
+              $('#progress-text').text('Processing...');
+            } else if (now - lastUpdate >= 500) {
+              var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
+              byterate = byterate * 0.7 + curByterate * 0.3;
+              evt.byterate = curByterate;
+              lastUpdate = now;
+              prevLoaded = evt.loaded;
+              $('#progress-text').text(_renderProgress(evt));
+              $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
+            }
+          }
+        };
+        return xhr;
+      },
+      success: function (data) {
+        document.open();
+        document.write(data);
+        document.close();
+      },
+      error: function (xhr, status, error) {
+        $('#progress-fade').removeClass('in');
+        $('#progress-inner-bar').width('0%');
+      },
+      abort: function() {
+        $('#progress-fade').removeClass('in');
+        $('#progress-inner-bar').width('0%');
+      },
     });
   });
 });
 </script>
-
-<style>
-.testdata-table {
-  margin-top: 1em;
-  margin-bottom: 1em;
-  background: #fff;
-}
-</style>
