@@ -12,9 +12,6 @@ gem 'bootsnap', require: false
 # Use mysql2 as the database for Active Record
 gem 'mysql2'
 
-# Use rubyzip to zip files
-# gem 'rubyzip'
-
 # Use SCSS for stylesheets
 gem 'sass-rails'
 gem 'bootstrap-sass', '~> 3'

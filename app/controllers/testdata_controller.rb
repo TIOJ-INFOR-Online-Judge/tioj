@@ -5,7 +5,6 @@ class TestdataController < ApplicationController
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
 
-  require 'zip'
   COMPRESS_THRESHOLD = 128 * 1024
 
   def index
@@ -47,21 +46,20 @@ class TestdataController < ApplicationController
     end
   end
 
-  def batch_create_edit
+  def batch_new
     @testdatum = @problem.testdata.build
   end
-  def batch_create
 
+  def batch_create
     begin
       testdata_errors = []
       testdatum_params_list, test_input_folder, test_output_folder = unzip_testdatum_params_list
     rescue StandardError => e
       respond_to do |format|
-        format.html { render action: 'batch_create_edit' }
+        format.html { render action: 'batch_new' }
         format.json { render json: e.message, status: :unprocessable_entity }
       end
     end
-
 
     testdatum_params_list.each do |testdatum_params|
       @testdatum = @problem.testdata.build(testdatum_params.to_h)
@@ -74,14 +72,13 @@ class TestdataController < ApplicationController
     remove_folder(test_input_folder)
     remove_folder(test_output_folder)
 
-
     respond_to do |format|
       if testdata_errors.empty?
         format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
         #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
       else
-          format.html { render action: 'new' }
-          format.json { render json: testdata_errors, status: :unprocessable_entity }
+        format.html { render action: 'new' }
+        format.json { render json: testdata_errors, status: :unprocessable_entity }
       end
     end
   end
@@ -108,7 +105,6 @@ class TestdataController < ApplicationController
     params = batch_update_params
     prev = {}
 
-
     params_arr = @testdata.map.with_index do |td, index|
       now = params[:td][td.id.to_s]
       cur = now.except(:form_same_as_above)
@@ -118,7 +114,6 @@ class TestdataController < ApplicationController
       prev[:form_delete] = cur[:form_delete]
       [td.id, prev.clone]
     end
-
 
     orig_order_mp = @testdata.map(&:id).map.with_index.to_h
     to_delete = params_arr.filter{|x| x[1][:form_delete].to_i != 0}.map{|x| x[0]}
