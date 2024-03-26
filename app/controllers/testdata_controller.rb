@@ -52,8 +52,16 @@ class TestdataController < ApplicationController
   end
   def batch_create
 
-    testdata_errors = []
-    testdatum_params_list, test_input_folder, test_output_folder = unzip_testdatum_params_list
+    begin
+      testdata_errors = []
+      testdatum_params_list, test_input_folder, test_output_folder = unzip_testdatum_params_list
+    rescue StandardError => e
+      respond_to do |format|
+        format.html { render action: 'batch_create_edit' }
+        format.json { render json: e.message, status: :unprocessable_entity }
+      end
+    end
+
 
     testdatum_params_list.each do |testdatum_params|
       @testdatum = @problem.testdata.build(testdatum_params.to_h)
@@ -221,7 +229,18 @@ class TestdataController < ApplicationController
     FileUtils.remove_entry folder_path
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+
+
+  def is_zip?(file_path)
+    begin
+      Zip::File.open(file_path)
+    rescue StandardError => e
+      return false
+    end
+    return true
+  end
+  # Never trust parameters from the scary internet, only allow the white list through. 
+  # and check if the file is a zip file
   def unzip_testdatum_params_list
     new_params = params.require(:testdatum).permit(
       :problem_id,
@@ -232,6 +251,9 @@ class TestdataController < ApplicationController
       :test_input_list,
       :test_output_list,
     )
+    unless is_zip?(new_params[:test_input_list].path) and is_zip?(new_params[:test_output_list].path)
+      raise StandardError.new("Only zip files are allowed")
+    end
 
     test_input_folder = unzip_folder(new_params[:test_input_list].path)
     test_output_folder = unzip_folder(new_params[:test_output_list].path)
