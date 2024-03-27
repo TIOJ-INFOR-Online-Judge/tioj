@@ -90,6 +90,13 @@ module ProblemsHelper
     }
   end
 
+  def summary_type_desc_map
+    {
+      "none" => "Default summary (sum of scores / time, max of RSS)",
+      "custom" => "Custom summary",
+    }
+  end
+
   def discussion_visibility_desc_map
     {
       "disabled" => "No discussion",

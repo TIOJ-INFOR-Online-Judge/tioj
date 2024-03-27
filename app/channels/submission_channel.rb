@@ -39,7 +39,7 @@ class SubmissionChannel < ApplicationCable::Channel
         end
       }) if with_detail
     end
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", [:id, :score, :result, :total_time, :total_memory].map{|attr|
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", [:id, :score, :result, :total_time, :total_memory, :message].map{|attr|
       [attr, submission.read_attribute(attr)]
     }.to_h)
   end

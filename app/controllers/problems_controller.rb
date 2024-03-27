@@ -176,6 +176,7 @@ class ProblemsController < ApplicationController
   end
 
   def recalc_score
+    return if @problem.summary_custom?
     num_tds = @problem.testdata.count
     subtasks = @problem.subtasks
     contests_map = @problem.contests.all.index_by(&:id)
@@ -242,13 +243,16 @@ class ProblemsController < ApplicationController
       :specjudge_type,
       :specjudge_compiler_id,
       :specjudge_compile_args,
+      :sjcode,
       :judge_between_stages,
       :default_scoring_args,
       :interlib_type,
-      :sjcode,
       :interlib,
       :interlib_impl,
       :code_length_limit,
+      :summary_type,
+      :summary_compiler_id,
+      :summary_code,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,

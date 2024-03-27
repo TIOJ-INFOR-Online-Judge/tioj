@@ -31,7 +31,7 @@ module ContestsHelper
 
   # return item_state
   def acm_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [attempts, ac_usec, is_first_ac, waiting]
+    # state: [attempts, ac_usec, waiting]
     if item_state.nil?
       item_state = [0, nil, 0]
     end
@@ -64,7 +64,7 @@ module ContestsHelper
   end
 
   def ioi_new_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [score, has_sub, waiting]
+    # state: [score, has_sub, waiting, subtask_scores]
     if item_state.nil?
       item_state = [BigDecimal(0), false, 0, nil]
     end

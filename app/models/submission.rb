@@ -118,7 +118,7 @@ class Submission < ApplicationRecord
     subtask_scores ||= calc_subtask_result
     if submission_subtask_result
       submission_subtask_result.update(result: subtask_scores)
-      update(**update_hash)
+      update(**update_hash) unless update_hash.empty?
     else
       update(**update_hash, submission_subtask_result: SubmissionSubtaskResult.new(result: subtask_scores))
     end
