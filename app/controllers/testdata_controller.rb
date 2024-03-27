@@ -4,7 +4,7 @@ class TestdataController < ApplicationController
   before_action :set_testdatum, only: [:show, :edit, :update, :destroy]
   before_action :set_testdata, only: [:batch_edit, :batch_update]
   helper_method :strip_uuid
-  
+
   COMPRESS_THRESHOLD = 128 * 1024
 
   def index
@@ -46,6 +46,43 @@ class TestdataController < ApplicationController
     end
   end
 
+  def batch_new
+    @testdatum = @problem.testdata.build
+  end
+
+  def batch_create
+    begin
+      testdata_errors = []
+      testdatum_params_list, test_input_folder, test_output_folder = unzip_testdatum_params_list
+    rescue StandardError => e
+      respond_to do |format|
+        format.html { render action: 'batch_new' }
+        format.json { render json: e.message, status: :unprocessable_entity }
+      end
+    end
+
+    testdatum_params_list.each do |testdatum_params|
+      @testdatum = @problem.testdata.build(testdatum_params.to_h)
+      if not @testdatum.save
+        testdata_errors << @testdatum.errors
+      end
+    end
+
+    #remove the temp folder
+    remove_folder(test_input_folder)
+    remove_folder(test_output_folder)
+
+    respond_to do |format|
+      if testdata_errors.empty?
+        format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
+        #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
+      else
+        format.html { render action: 'new' }
+        format.json { render json: testdata_errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def edit
   end
 
@@ -67,6 +104,7 @@ class TestdataController < ApplicationController
   def batch_update
     params = batch_update_params
     prev = {}
+
     params_arr = @testdata.map.with_index do |td, index|
       now = params[:td][td.id.to_s]
       cur = now.except(:form_same_as_above)
@@ -76,6 +114,7 @@ class TestdataController < ApplicationController
       prev[:form_delete] = cur[:form_delete]
       [td.id, prev.clone]
     end
+
     orig_order_mp = @testdata.map(&:id).map.with_index.to_h
     to_delete = params_arr.filter{|x| x[1][:form_delete].to_i != 0}.map{|x| x[0]}
     params_arr = params_arr.filter{|x| x[1][:form_delete].to_i == 0}.sort_by{|x|
@@ -168,7 +207,97 @@ class TestdataController < ApplicationController
     tmpfile
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+
+  def unzip_folder(zip_file_path)
+    tmp_folder = Dir.mktmpdir # create a temp folder
+
+    Zip::File.open(zip_file_path) do |zip|
+      zip.each do |entry|
+        # Extract to file/directory/symlink
+        entry.extract("#{tmp_folder}/#{entry.name}")
+      end
+    end
+    tmp_folder
+  end
+
+  def remove_folder(folder_path)
+    FileUtils.remove_entry folder_path
+  end
+
+
+
+  def is_zip?(file_path)
+    begin
+      Zip::File.open(file_path)
+    rescue StandardError => e
+      return false
+    end
+    return true
+  end
+  # Never trust parameters from the scary internet, only allow the white list through. 
+  # and check if the file is a zip file
+  def unzip_testdatum_params_list
+    new_params = params.require(:testdatum).permit(
+      :problem_id,
+      :time_limit,
+      :rss_limit,
+      :vss_limit,
+      :output_limit,
+      :test_input_list,
+      :test_output_list,
+    )
+    unless is_zip?(new_params[:test_input_list].path) and is_zip?(new_params[:test_output_list].path)
+      raise StandardError.new("Only zip files are allowed")
+    end
+
+    test_input_folder = unzip_folder(new_params[:test_input_list].path)
+    test_output_folder = unzip_folder(new_params[:test_output_list].path)
+
+
+    test_input = Dir.foreach(test_input_folder)
+                  .reject{ |item| item == '.' or item == '..' }
+                  .select{ |item| item.end_with?(".in") }
+                  .map{ |file_name| File.join(test_input_folder, file_name) }
+                  .sort{ |a, b| a <=> b}
+                  .map{ |file_name| File.open(file_name, 'rb')}
+    test_output = Dir.foreach(test_output_folder)
+                  .reject{ |item| item == '.' or item == '..' }
+                  .select{ |item| item.end_with?(".out") }
+                  .map{ |file_name| File.join(test_output_folder, file_name) }
+                  .sort{ |a, b| a <=> b}
+                  .map{ |file_name| File.open(file_name, 'rb') }
+
+    # making the zip file to be like the fileList
+
+    new_params_list = []
+
+
+    new_params.delete(:test_input_list)
+    new_params.delete(:test_output_list)
+
+    new_params_list = test_input.zip(test_output).map do |item1, item2|
+      new_params.dup.tap do |params|
+        params[:test_input] = item1
+        params[:test_output] = item2
+
+
+        if params[:test_input]
+          params[:input_compressed] = false
+          if (params[:test_input]).size >= COMPRESS_THRESHOLD
+            params[:input_compressed] = compress_file(params[:test_input])
+          end
+        end
+        if params[:test_output]
+          params[:output_compressed] = false
+          if (params[:test_output]).size >= COMPRESS_THRESHOLD
+            params[:output_compressed] = compress_file(params[:test_output])
+          end
+        end
+      end
+    end
+    return new_params_list, test_input_folder, test_output_folder
+  end
+
   def testdatum_params
     new_params = params.require(:testdatum).permit(
       :problem_id,
