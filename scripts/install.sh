@@ -90,32 +90,32 @@ elif grep -q 'Arch Linux' /etc/*-release; then
   cd "$WORKDIR/build"
   mkdir -p libseccomp libnl openssl sqlite libbsd zstd
   cd libseccomp
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libseccomp/trunk/PKGBUILD
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libseccomp/-/raw/main/PKGBUILD
+  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../libnl
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libnl/trunk/PKGBUILD
-  sed -i "s/^depends.*$/\0\noptions=('staticlibs')/" PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libnl/-/raw/main/PKGBUILD
+  sed -i "s/^depends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   sed -Ei '/sbindir/, /disable-static/ s/(--d| \\).*//' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../openssl
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/openssl/trunk/PKGBUILD
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/openssl/trunk/ca-dir.patch
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs')/" PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/ca-dir.patch
+  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../sqlite
   for i in PKGBUILD license.txt sqlite-lemon-system-template.patch; do
-    curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/sqlite/trunk/$i
+    curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/sqlite/-/raw/main/$i
   done
-  sed -i "s/^options=./\0'staticlibs' /; /disable-static/ d" PKGBUILD
+  sed -i "s/^options=./\0'staticlibs' !'lto' /; /disable-static/ d" PKGBUILD
   makepkg -si --noconfirm
   cd ../libbsd
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/libbsd/trunk/PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libbsd/-/raw/main/PKGBUILD
   sed -i "/rm.*libbsd\.a/ d" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../zstd
-  curl -O https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/zstd/trunk/PKGBUILD
-  sed -i "s/makedepends.*$/\0\noptions=('staticlibs')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/zstd/-/raw/main/PKGBUILD
+  sed -i "s/makedepends.*$/\0\noptions=('staticlibs' !'lto')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
 
   # Setup mysql
@@ -145,7 +145,8 @@ fi
 
 # Install gems
 cd "$WORKDIR/tioj"
-gem install passenger:'~> 6' -N
+passenger_version="$(grep -Po ' passenger \(\K\d.*(?=\))' Gemfile.lock | head -1)"
+gem install passenger:"$passenger_version" -N
 PASSENGER_LOG=$(sudo mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
 export rvmsudo_secure_path=1
