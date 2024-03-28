@@ -91,7 +91,7 @@ class TestdataController < ApplicationController
     end
 
     respond_to do |format|
-      if testdata_errors.empty?
+      if @testdata_errors.empty?
         format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
         format.json { head :no_content }
       else

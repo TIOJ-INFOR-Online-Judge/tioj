@@ -1,11 +1,11 @@
 function hsv_to_rgb(h, s, v) {
   h /= 360; s /= 100; v /= 100;
-  var h_i = Math.floor(h*6);
-  var f = h*6 - h_i;
-  var p = v * (1 - s);
-  var q = v * (1 - f*s);
-  var t = v * (1 - (1 - f) * s);
-  var r = 0, b = 0, g = 0;
+  let h_i = Math.floor(h*6);
+  let f = h*6 - h_i;
+  let p = v * (1 - s);
+  let q = v * (1 - f*s);
+  let t = v * (1 - (1 - f) * s);
+  let r = 0, b = 0, g = 0;
   if (h_i == 0) r=v, g=t, b=p;
   if (h_i == 1) r=q, g=v, b=p;
   if (h_i == 2) r=p, g=v, b=t;
@@ -36,8 +36,8 @@ function time_str(str) {
 }
 
 function updateSubtask(data) {
-  for (var subtask of data['subtask_scores']) {
-    var pos = subtask['position'];
+  for (let subtask of data['subtask_scores']) {
+    let pos = subtask['position'];
     if (subtask['finished']) {
       $('#subtask-score-bg-' + pos).css('background-color', color_map(subtask['ratio']));
       $('#subtask-score-' + pos).text(score_str(subtask['score']));
@@ -46,8 +46,8 @@ function updateSubtask(data) {
 }
 
 function updateTestdata(data) {
-  for (var td of data['testdata']) {
-    var pos = td['position'];
+  for (let td of data['testdata']) {
+    let pos = td['position'];
     $('#td-time-' + pos).html(time_str(td['time']));
     $('#td-vss-' + pos).text(td['vss']);
     $('#td-rss-' + pos).text(td['rss']);
@@ -68,7 +68,7 @@ function updateTestdata(data) {
 }
 
 function updateResult(data, cable) {
-  var to_wait = waiting_verdicts.includes(data['result']);
+  let to_wait = waiting_verdicts.includes(data['result']);
   $('#verdict').text(verdict[data['result']]);
   $('#waiting-icon').toggleClass('no-display', !to_wait);
   $('#overall-result').attr('class', 'panel ' + (panel_class_map[data['result']] || 'panel-default'));
@@ -102,7 +102,7 @@ export function updateSubmissionDetail(data, cable) {
 }
 
 export function updateMultipleSubmissions(data, cable) {
-  var id = data['id'];
+  let id = data['id'];
   $('#verdict-' + id).attr('class', verdict_class_map[data['result']] || '').text(data['result']);
   if (data['total_time']) $('#time-' + id).text(data['total_time']);
   if (data['total_memory']) $('#memory-' + id).text(data['total_memory']);
