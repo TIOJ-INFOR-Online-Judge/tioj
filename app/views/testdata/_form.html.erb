@@ -105,6 +105,8 @@ $(function () {
     var lastUpdate = (new Date().getTime()) - 500;
     var byterate = 0.0;
     var prevLoaded = 0;
+    var oldUrl = window.location.href;
+    var xhr = null;
     $.ajax({
       type: 'POST',
       url: $(this).attr('action'),
@@ -112,7 +114,7 @@ $(function () {
       processData: false,
       contentType: false,
       xhr: function() {
-        var xhr = new window.XMLHttpRequest();
+        xhr = new window.XMLHttpRequest();
         xhr.upload.onprogress = function(evt) {
           if (evt.lengthComputable) {
             var now = new Date().getTime();
@@ -133,15 +135,15 @@ $(function () {
         };
         return xhr;
       },
-      success: function (data) {
-        document.open();
-        document.write(data);
-        document.close();
-      },
-      error: function (xhr, status, error) {
-        $('#progress-fade').removeClass('in');
-        $('#progress-inner-bar').width('0%');
-      },
+        success: function (data, status, nxhr) {
+          if (xhr.responseURL != oldUrl) {
+            window.history.pushState({}, null, xhr.responseURL);
+          }
+          document.querySelector('html').innerHTML = nxhr.responseText;
+        },
+        error: function (nxhr, status, error) {
+          document.querySelector('html').innerHTML = nxhr.responseText;
+        },
       abort: function() {
         $('#progress-fade').removeClass('in');
         $('#progress-inner-bar').width('0%');

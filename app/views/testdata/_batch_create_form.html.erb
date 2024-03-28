@@ -2,19 +2,8 @@
   <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
   <div class="form-group">
-    <%= f.label :test_input_list, "Input testdata" %>
-    <% if @testdatum.test_input %>
-      <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
-    <% end %>
-    <%= f.file_field :test_input_list, :class => 'form-control flat', multiple: true , onchange: "updateInputFile(event)"%>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :test_output_list, "Output testdata" %>
-    <% if @testdatum.test_output %>
-      <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
-    <% end %>
-    <%= f.file_field :test_output_list, :class => 'form-control flat', multiple: true, onchange: 'updateOutputFile(event)' %>
+    <%= f.label :testdata_file_list, "Testdata" %>
+    <%= f.file_field :testdata_file_list, :class => 'form-control flat', multiple: true, onchange: "updateTestdataFile(event)" %>
   </div>
   
   <div id="testdata-list" class="panel panel-default">
@@ -64,44 +53,48 @@
       <%= f.submit class: 'btn btn-success btn-lg' %>
     </div>
     <div style="flex: 1 0 0%; ">
-      <% ["inputzip", "outputzip", "update"].each do |data|%>
-      <div class="fade" id="progress-fade-<%= data%>" style="flex: 1 0 0%;">
-        <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
-          <div id="progress-inner-bar-<%= data%>" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+      <% ["filezip", "update"].each do |data|%>
+        <div class="fade" id="progress-fade-<%= data %>" style="flex: 1 0 0%;">
+          <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
+            <div id="progress-inner-bar-<%= data %>" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+          </div>
+          <div id="progress-text-<%= data %>" class="progress-extended small"></div>
         </div>
-        <div id="progress-text-<%= data%>" class="progress-extended small"></div>
-      </div>
-      <%end%>
+      <% end %>
     </div>
   </div>
 <% end %>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
 <script>
-var input_file_list = [];
-var output_file_list = [];
+var file_list = [];
 var file_pairs = [];
 
 function buildIOCorrespondence() {
   file_pairs = [];
   const suffix_map = new Map(); // name -> idx
   const prefix_map = new Map(); // name -> idx
-  for (let idx = 0; idx < output_file_list.length; idx++) {
-    let name = output_file_list[idx].name;
+  var input_file_list = [];
+  for (let idx = 0; idx < file_list.length; idx++) {
+    let name = file_list[idx].name;
     if (name.endsWith('.out') || name.endsWith('.ans')) {
       suffix_map.set(name.slice(0, -4), idx);
     } else if (name.startsWith('out')) {
       prefix_map.set(name.slice(3), idx);
+    } else {
+      input_file_list.push(idx);
     }
   }
-  const out_set = new Set();
-  for (let idx = 0; idx < input_file_list.length; idx++) {
-    let name = input_file_list[idx].name;
+  const used_set = new Set();
+  for (let i = 0; i < input_file_list.length; i++) {
+    let idx = input_file_list[i];
+    let name = file_list[idx].name;
     if (name.endsWith('.in')) {
       let out_name = name.slice(0, -3);
       if (suffix_map.has(out_name)) {
         let out_idx = suffix_map.get(out_name);
-        out_set.add(out_idx);
+        used_set.add(idx);
+        used_set.add(out_idx);
         file_pairs.push([idx, out_idx]);
         continue;
       }
@@ -109,15 +102,15 @@ function buildIOCorrespondence() {
       let out_name = name.slice(2);
       if (prefix_map.has(out_name)) {
         let out_idx = prefix_map.get(out_name);
-        out_set.add(out_idx);
+        used_set.add(idx);
+        used_set.add(out_idx);
         file_pairs.push([idx, out_idx]);
         continue;
       }
     }
-    file_pairs.push([idx, null]);
   }
-  for (let idx = 0; idx < output_file_list.length; idx++) {
-    if (!out_set.has(idx)) {
+  for (let idx = 0; idx < file_list.length; idx++) {
+    if (!used_set.has(idx)) {
       file_pairs.push([null, idx]);
     }
   }
@@ -141,34 +134,19 @@ function refreshFileListTable() {
   for (let idx = 0; idx < file_pairs.length; idx++){
     let tmpRow = tmpTable.insertRow();
     let tmpCell = tmpRow.insertCell();
-    let ok = true;
     if (file_pairs[idx][0] === null) {
       tmpCell.innerHTML = '<span class="text-danger" style="font-style:italic;">unmatched</span>';
-      ok = false;
+      tmpRow.classList.add('warning');
     } else {
-      tmpCell.innerText = input_file_list[file_pairs[idx][0]].name;
+      tmpCell.innerText = file_list[file_pairs[idx][0]].name;
     }
     tmpCell = tmpRow.insertCell();
-    if (file_pairs[idx][1] === null) {
-      tmpCell.innerHTML = '<span class="text-danger" style="font-style:italic;">unmatched</span>';
-      ok = false;
-    } else {
-      tmpCell.innerText = output_file_list[file_pairs[idx][1]].name;
-    }
-    if (!ok) {
-      tmpRow.classList.add('warning');
-    }
+    tmpCell.innerText = file_list[file_pairs[idx][1]].name;
   }
 }
 
-function updateOutputFile(event) {
-  output_file_list = Array.from(event.target.files);
-  buildIOCorrespondence();
-  refreshFileListTable();
-}
-
-function updateInputFile(event) {
-  input_file_list = Array.from(event.target.files);
+function updateTestdataFile(event) {
+  file_list = Array.from(event.target.files);
   buildIOCorrespondence();
   refreshFileListTable();
 }
@@ -221,126 +199,98 @@ $(function () { $('#testdata-form').submit(function (event) {
       );
     };
 
-    var FileInput  = Array.from( this.elements['testdatum_test_input_list']['files'] ) .sort() .filter( (file) => {
-      return file.name.endsWith('.in');
-    });
-    var FileOutput = Array.from( this.elements['testdatum_test_output_list']['files'] ) .sort() .filter( (file) => {
-      return file.name.endsWith('.out');
-    });
-    if( FileInput.length != FileOutput.length ){
-      alert('Number of input files and output files are not equal.');
-      return;
-    }
-    if( FileInput.length == 0 ){
+    var filtered_list = file_pairs.filter((pair) => pair[0] !== null);
+    if (filtered_list.length == 0){
       alert('No input files.');
       return;
     }
-    for( let idx = 0; idx < FileInput.length; idx++ ){
-      if( FileInput[idx].name.replace('.in', '') != FileOutput[idx].name.replace('.out', '') ){
-        alert('Input file name and output file name are not equal.');
-        return;
-      }
+    if (filtered_list.length > 256){
+      alert('Can only upload 256 testdata at once.');
+      return;
     }
 
     var tmpData = new FormData(this);
     var formData = new FormData();
 
-    var testInputZip = new JSZip();
-    var testOutputZip = new JSZip();
-
-    for( let [key, value] of tmpData.entries() ){
-      if( key == 'testdatum[test_input_list][]' || key == 'testdatum[test_output_list][]' ){
-        continue;
-      }
+    var zipFile = new JSZip();
+    var td_pairs = [];
+    for (let [key, value] of tmpData.entries()) {
+      if (key == 'testdatum[testdata_file_list][]') continue;
       formData.append(key, value);
     }
-    FileInput.forEach( (file) => {
-      testInputZip.file(file.name, file, {compression: "DEFLATE"});
+    var totalSize = 0;
+    const MAX_SIZE = 2 * 1024 * 1024 * 1024;
+    filtered_list.forEach((pair) => {
+      zipFile.file(file_list[pair[0]].name, file_list[pair[0]], {compression: "DEFLATE"});
+      zipFile.file(file_list[pair[1]].name, file_list[pair[1]], {compression: "DEFLATE"});
+      if (file_list[pair[0]].size + file_list[pair[1]].size > MAX_SIZE) {
+        alert('Individual testdatum should not exceed 2 GiB.');
+        return;
+      }
+      totalSize += file_list[pair[0]].size + file_list[pair[1]].size;
+      td_pairs.push([file_list[pair[0]].name, file_list[pair[1]].name]);
     });
-    FileOutput.forEach( (file) => {
-      testOutputZip.file(file.name, file, {compression: "DEFLATE"});
-    });
+    formData.append('testdatum[testdata_pairs]', JSON.stringify(td_pairs));
 
-    // get the sum of the FileOutput Size
-    var totalOutputSize = FileOutput.reduce( (sum, file) => {
-      return sum + file.size;
-    }, 0);
+    let url = $(this).attr('action');
+    var oldUrl = window.location.href;
+    var xhr = null;
+    zipFile.generateAsync({type: "blob"}, function updateCallback(progress) {
+      $('#progress-fade-filezip').addClass('in');
+      $('#progress-inner-bar-filezip').width(progress.percent + '%');
+      $('#progress-text-filezip').text(`Compressing files: ${Math.round( progress.percent )}%`);
+      if (progress.percent == 100) {
+        $('#progress-text-filezip').text(`File compression complete`);
+      }
+    }).then(function(zippedFile) {
+      formData.append('testdatum[testdata_file_list]', zippedFile, 'td.zip');
 
-    var totalInputSize = FileInput.reduce( (sum, file) => {
-      return sum + file.size;
-    }, 0);
-
-    let Url = $(this).attr('action');
-    Promise.all([
-      testInputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
-        $('#progress-fade-inputzip').addClass('in');
-        $('#progress-inner-bar-inputzip').width( progress.percent + '%' );
-        $('#progress-text-inputzip').text( `input files zipping: ${Math.round( progress.percent )}%` );
-        if ( progress.percent == 100 ) {
-          $('#progress-text-inputzip').text( `input zip File complete` );
-        }
-      }),
-      testOutputZip.generateAsync({type:"blob"}, function updateCallback(progress) {
-        $('#progress-fade-outputzip').addClass('in');
-        $('#progress-inner-bar-outputzip').width( progress.percent + '%' );
-        $('#progress-text-outputzip').text( `output files zipping: ${Math.round( progress.percent )}%` );
-        if ( progress.percent == 100 ) {
-          $('#progress-text-outputzip').text( `output zip File complete` );
-        }
-      })
-    ]).then(function(results) {
-        var inputContent = results[0];
-        var outputContent = results[1];
-
-        formData.append('testdatum[test_input_list]', inputContent, 'input.zip');
-        formData.append('testdatum[test_output_list]', outputContent, 'output.zip');
-
-        var lastUpdate = (new Date().getTime()) - 500;
-        var byterate = 0.0;
-        var prevLoaded = 0;
-        $.ajax({
-          type: 'POST',
-          url: Url,
-          data: formData,
-          processData: false,
-          contentType: false,
-          xhr: function() {
-            var xhr = new window.XMLHttpRequest();
-            xhr.upload.onprogress = function(evt) {
-              if (evt.lengthComputable) {
-                var now = new Date().getTime();
-                $('#progress-fade-update').addClass('in');
-                if (evt.loaded == evt.total) {
-                  $('#progress-inner-bar-update').width('100%');
-                  $('#progress-text-update').text('Processing...');
-                } else if (now - lastUpdate >= 500) {
-                  var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
-                  evt.byterate = byterate * 0.7 + curByterate * 0.3;
-                  byterate = evt.byterate;
-                  evt.byterate = curByterate;
-                  lastUpdate = now;
-                  prevLoaded = evt.loaded;
-                  $('#progress-text-update').text(_renderProgress(evt));
-                  $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
-                }
+      var lastUpdate = (new Date().getTime()) - 500;
+      var byterate = 0.0;
+      var prevLoaded = 0;
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhr: function() {
+          xhr = new window.XMLHttpRequest();
+          xhr.upload.onprogress = function(evt) {
+            if (evt.lengthComputable) {
+              var now = new Date().getTime();
+              $('#progress-fade-update').addClass('in');
+              if (evt.loaded == evt.total) {
+                $('#progress-inner-bar-update').width('100%');
+                $('#progress-text-update').text('Processing...');
+              } else if (now - lastUpdate >= 500) {
+                var curByterate = ((evt.loaded - prevLoaded) / (now - lastUpdate)) * 1000;
+                evt.byterate = byterate * 0.7 + curByterate * 0.3;
+                byterate = evt.byterate;
+                evt.byterate = curByterate;
+                lastUpdate = now;
+                prevLoaded = evt.loaded;
+                $('#progress-text-update').text(_renderProgress(evt));
+                $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
               }
-            };
-            return xhr;
-          },
-          success: function (data) {
-            document.open();
-            document.write(data);
-            document.close();
-          },
-          error: function (xhr, status, error) {
-            $('#progress-fade-update').removeClass('in');
-            $('#progress-inner-bar-update').width('0%');
-          },
-          abort: function() {
-            $('#progress-fade-update').removeClass('in');
-            $('#progress-inner-bar-update').width('0%');
-          },
-        });
+            }
+          };
+          return xhr;
+        },
+        success: function (data, status, nxhr) {
+          if (xhr.responseURL != oldUrl) {
+            window.history.pushState({}, null, xhr.responseURL);
+          }
+          document.querySelector('html').innerHTML = nxhr.responseText;
+        },
+        error: function (nxhr, status, error) {
+          document.querySelector('html').innerHTML = nxhr.responseText;
+        },
+        abort: function() {
+          $('#progress-fade-update').removeClass('in');
+          $('#progress-inner-bar-update').width('0%');
+        },
+      });
     });
   });
 });

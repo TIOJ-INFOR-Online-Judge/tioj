@@ -6,6 +6,7 @@ class TestdataController < ApplicationController
   helper_method :strip_uuid
 
   COMPRESS_THRESHOLD = 128 * 1024
+  TESTDATUM_LIMIT = 2 * 1024 * 1024 * 1024
 
   def index
     @testdata = @problem.testdata
@@ -38,7 +39,7 @@ class TestdataController < ApplicationController
     respond_to do |format|
       if @testdatum.save
         format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
-        #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
+        format.json { head :no_content }
       else
         format.html { render action: 'new' }
         format.json { render json: @testdatum.errors, status: :unprocessable_entity }
@@ -47,37 +48,43 @@ class TestdataController < ApplicationController
   end
 
   def batch_new
-    @testdatum = @problem.testdata.build
+    @testdatum = @problem.testdata.build # placeholder for form creation
   end
 
   def batch_create
+    @testdatum = @problem.testdata.build # placeholder for form creation
+
+    testdata_errors = []
     begin
-      testdata_errors = []
-      testdatum_params_list, test_input_folder, test_output_folder = unzip_testdatum_params_list
-    rescue StandardError => e
+      Dir.mktmpdir do |tmp_folder|
+        unzip_testdata(tmp_folder).each do |testdatum_params|
+          logger.fatal testdatum_params.to_h
+          testdatum = @problem.testdata.build(testdatum_params.to_h)
+          unless testdatum.save
+            logger.fatal testdatum.errors
+            testdata_errors << testdatum.errors
+          end
+        end
+      end
+    rescue StandardError
+      message = 'Invalid request'
       respond_to do |format|
-        format.html { render action: 'batch_new' }
+        format.html { render action: 'batch_new', alert: message }
+        format.json { render json: message, status: :unprocessable_entity }
+      end
+    rescue BadRequest => e
+      respond_to do |format|
+        format.html { render action: 'batch_new', alert: e.message }
         format.json { render json: e.message, status: :unprocessable_entity }
       end
     end
 
-    testdatum_params_list.each do |testdatum_params|
-      @testdatum = @problem.testdata.build(testdatum_params.to_h)
-      if not @testdatum.save
-        testdata_errors << @testdatum.errors
-      end
-    end
-
-    #remove the temp folder
-    remove_folder(test_input_folder)
-    remove_folder(test_output_folder)
-
     respond_to do |format|
       if testdata_errors.empty?
         format.html { redirect_to problem_testdata_path(@problem), notice: 'Testdatum was successfully created.' }
-        #format.json { render action: 'show', status: :created, location: prob_testdata_path(@problem, @testdatum) }
+        format.json { head :no_content }
       else
-        format.html { render action: 'new' }
+        format.html { render action: 'batch_new' }
         format.json { render json: testdata_errors, status: :unprocessable_entity }
       end
     end
@@ -195,107 +202,71 @@ class TestdataController < ApplicationController
     false
   end
 
-  def decompress_file(f)
-    tmpfile = Tempfile.new(binmode: true)
-    File.open(f, 'rb') do |origfile|
-      stream = Zstd::StreamingDecompress.new
-      while (buffer = origfile.read(1024 * 1024)) do
-        tmpfile.write(stream.decompress(buffer))
+  def compressed_td_params(params)
+    if params[:test_input]
+      params[:input_compressed] = false
+      if params[:test_input].size >= COMPRESS_THRESHOLD
+        params[:input_compressed] = compress_file(params[:test_input])
       end
     end
-    tmpfile.close
-    tmpfile
-  end
-
-
-  def unzip_folder(zip_file_path)
-    tmp_folder = Dir.mktmpdir # create a temp folder
-
-    Zip::File.open(zip_file_path) do |zip|
-      zip.each do |entry|
-        # Extract to file/directory/symlink
-        entry.extract("#{tmp_folder}/#{entry.name}")
+    if params[:test_output]
+      params[:output_compressed] = false
+      if params[:test_output].size >= COMPRESS_THRESHOLD
+        params[:output_compressed] = compress_file(params[:test_output])
       end
     end
-    tmp_folder
+    logger.fatal params
+    params
   end
 
-  def remove_folder(folder_path)
-    FileUtils.remove_entry folder_path
-  end
-
-
-
-  def is_zip?(file_path)
-    begin
-      Zip::File.open(file_path)
-    rescue StandardError => e
-      return false
-    end
-    return true
-  end
   # Never trust parameters from the scary internet, only allow the white list through. 
   # and check if the file is a zip file
-  def unzip_testdatum_params_list
-    new_params = params.require(:testdatum).permit(
+  def unzip_testdata(tmp_folder)
+    checked_params = params.require(:testdatum).permit(
       :problem_id,
       :time_limit,
       :rss_limit,
       :vss_limit,
       :output_limit,
-      :test_input_list,
-      :test_output_list,
+      :testdata_file_list,
+      :testdata_pairs,
     )
-    unless is_zip?(new_params[:test_input_list].path) and is_zip?(new_params[:test_output_list].path)
-      raise StandardError.new("Only zip files are allowed")
+    logger.fatal checked_params[:testdata_pairs]
+    td_pairs = JSON.parse(checked_params[:testdata_pairs])
+    unless td_pairs.is_a?(Array) and td_pairs.size <= 256 and td_pairs.all?{|x| x.is_a?(Array) and x.size == 2 and x.all?{|y| y.is_a?(String)}}
+      raise BadRequest.new(), "Invalid testdata pairs"
     end
 
-    test_input_folder = unzip_folder(new_params[:test_input_list].path)
-    test_output_folder = unzip_folder(new_params[:test_output_list].path)
-
-
-    test_input = Dir.foreach(test_input_folder)
-                  .reject{ |item| item == '.' or item == '..' }
-                  .select{ |item| item.end_with?(".in") }
-                  .map{ |file_name| File.join(test_input_folder, file_name) }
-                  .sort{ |a, b| a <=> b}
-                  .map{ |file_name| File.open(file_name, 'rb')}
-    test_output = Dir.foreach(test_output_folder)
-                  .reject{ |item| item == '.' or item == '..' }
-                  .select{ |item| item.end_with?(".out") }
-                  .map{ |file_name| File.join(test_output_folder, file_name) }
-                  .sort{ |a, b| a <=> b}
-                  .map{ |file_name| File.open(file_name, 'rb') }
-
-    # making the zip file to be like the fileList
-
-    new_params_list = []
-
-
-    new_params.delete(:test_input_list)
-    new_params.delete(:test_output_list)
-
-    new_params_list = test_input.zip(test_output).map do |item1, item2|
-      new_params.dup.tap do |params|
-        params[:test_input] = item1
-        params[:test_output] = item2
-
-
-        if params[:test_input]
-          params[:input_compressed] = false
-          if (params[:test_input]).size >= COMPRESS_THRESHOLD
-            params[:input_compressed] = compress_file(params[:test_input])
-          end
+    td_pair_obj = []
+    Zip::File.open(checked_params[:testdata_file_list].path) do |zip|
+      td_pairs.each do |infile, outfile|
+        # check if the file exists
+        in_entry = zip.find_entry(infile)
+        out_entry = zip.find_entry(outfile)
+        if in_entry.nil? or out_entry.nil?
+          raise BadRequest.new(), "File not found"
         end
-        if params[:test_output]
-          params[:output_compressed] = false
-          if (params[:test_output]).size >= COMPRESS_THRESHOLD
-            params[:output_compressed] = compress_file(params[:test_output])
-          end
+        if in_entry.size + out_entry.size >= TESTDATUM_LIMIT
+          raise BadRequest.new(), "Individual testdata should not exceed 2 GiB"
         end
+        in_dest = "#{tmp_folder}/#{in_entry.name}"
+        out_dest = "#{tmp_folder}/#{out_entry.name}"
+        in_entry.extract(in_dest)
+        out_entry.extract(out_dest)
+        td_pair_obj << [File.open(in_dest, 'rb'), File.open(out_dest, 'rb')]
       end
     end
-    return new_params_list, test_input_folder, test_output_folder
+
+    # generate testdata params
+    checked_params.delete(:testdata_file_list)
+    checked_params.delete(:testdata_pairs)
+    logger.fatal checked_params
+    td_pair_obj.map do |in_file, out_file|
+      params = checked_params.dup
+      params[:test_input] = in_file
+      params[:test_output] = out_file
+      compressed_td_params(params)
+    end
   end
 
   def testdatum_params
@@ -308,19 +279,9 @@ class TestdataController < ApplicationController
       :vss_limit,
       :output_limit,
     )
-    if new_params[:test_input]
-      new_params[:input_compressed] = false
-      if new_params[:test_input].size >= COMPRESS_THRESHOLD
-        new_params[:input_compressed] = compress_file(new_params[:test_input])
-      end
-    end
-    if new_params[:test_output]
-      new_params[:output_compressed] = false
-      if new_params[:test_output].size >= COMPRESS_THRESHOLD
-        new_params[:output_compressed] = compress_file(new_params[:test_output])
-      end
-    end
-    new_params
+    x = compressed_td_params(new_params)
+    logger.fatal x
+    x
   end
 
   def batch_update_params
