@@ -57,12 +57,19 @@ class TestdataController < ApplicationController
     testdata_errors = []
     begin
       Dir.mktmpdir do |tmp_folder|
-        unzip_testdata(tmp_folder).each do |testdatum_params|
-          logger.fatal testdatum_params.to_h
-          testdatum = @problem.testdata.build(testdatum_params.to_h)
-          unless testdatum.save
-            logger.fatal testdatum.errors
-            testdata_errors << testdatum.errors
+        checked_params, td_pair_dest = unzip_testdata(tmp_folder)
+        td_pair_dest.each do |in_dest, out_dest|
+          # generate testdata params
+          testdatum_params = checked_params.dup
+          File.open(in_dest) do |in_file|
+            File.open(out_dest) do |out_file|
+              testdatum_params[:test_input] = in_file
+              testdatum_params[:test_output] = out_file
+              testdatum = @problem.testdata.build(compressed_td_params(testdatum_params))
+              unless testdatum.save
+                testdata_errors << testdatum.errors
+              end
+            end
           end
         end
       end
@@ -215,7 +222,6 @@ class TestdataController < ApplicationController
         params[:output_compressed] = compress_file(params[:test_output])
       end
     end
-    logger.fatal params
     params
   end
 
@@ -231,13 +237,12 @@ class TestdataController < ApplicationController
       :testdata_file_list,
       :testdata_pairs,
     )
-    logger.fatal checked_params[:testdata_pairs]
     td_pairs = JSON.parse(checked_params[:testdata_pairs])
     unless td_pairs.is_a?(Array) and td_pairs.size <= 256 and td_pairs.all?{|x| x.is_a?(Array) and x.size == 2 and x.all?{|y| y.is_a?(String)}}
       raise BadRequest.new(), "Invalid testdata pairs"
     end
 
-    td_pair_obj = []
+    td_pair_dest = []
     Zip::File.open(checked_params[:testdata_file_list].path) do |zip|
       td_pairs.each do |infile, outfile|
         # check if the file exists
@@ -253,20 +258,13 @@ class TestdataController < ApplicationController
         out_dest = "#{tmp_folder}/#{out_entry.name}"
         in_entry.extract(in_dest)
         out_entry.extract(out_dest)
-        td_pair_obj << [File.open(in_dest, 'rb'), File.open(out_dest, 'rb')]
+        td_pair_dest << [in_dest, out_dest]
       end
     end
 
-    # generate testdata params
     checked_params.delete(:testdata_file_list)
     checked_params.delete(:testdata_pairs)
-    logger.fatal checked_params
-    td_pair_obj.map do |in_file, out_file|
-      params = checked_params.dup
-      params[:test_input] = in_file
-      params[:test_output] = out_file
-      compressed_td_params(params)
-    end
+    return checked_params, td_pair_dest
   end
 
   def testdatum_params
@@ -279,9 +277,7 @@ class TestdataController < ApplicationController
       :vss_limit,
       :output_limit,
     )
-    x = compressed_td_params(new_params)
-    logger.fatal x
-    x
+    compressed_td_params(new_params)
   end
 
   def batch_update_params
