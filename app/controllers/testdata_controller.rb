@@ -48,13 +48,11 @@ class TestdataController < ApplicationController
   end
 
   def batch_new
-    @testdatum = @problem.testdata.build # placeholder for form creation
+    @testdata_errors = ActiveModel::Errors.new(self)
   end
 
   def batch_create
-    @testdatum = @problem.testdata.build # placeholder for form creation
-
-    testdata_errors = []
+    @testdata_errors = ActiveModel::Errors.new(self)
     begin
       Dir.mktmpdir do |tmp_folder|
         checked_params, td_pair_dest = unzip_testdata(tmp_folder)
@@ -67,23 +65,29 @@ class TestdataController < ApplicationController
               testdatum_params[:test_output] = out_file
               testdatum = @problem.testdata.build(compressed_td_params(testdatum_params))
               unless testdatum.save
-                testdata_errors << testdatum.errors
+                testdatum.errors.full_messages.each do |msg|
+                  @testdata_errors.add(:base, msg)
+                end
               end
             end
           end
         end
       end
-    rescue StandardError
-      message = 'Invalid request'
+    rescue ArgumentError => e
+      @testdata_errors.add(:base, e.message)
       respond_to do |format|
-        format.html { render action: 'batch_new', alert: message }
-        format.json { render json: message, status: :unprocessable_entity }
-      end
-    rescue BadRequest => e
-      respond_to do |format|
-        format.html { render action: 'batch_new', alert: e.message }
+        format.html { render action: 'batch_new' }
         format.json { render json: e.message, status: :unprocessable_entity }
       end
+      return
+    rescue StandardError
+      # invalid zip file
+      @testdata_errors.add(:base, 'Invalid request')
+      respond_to do |format|
+        format.html { render action: 'batch_new' }
+        format.json { render json: message, status: :unprocessable_entity }
+      end
+      return
     end
 
     respond_to do |format|
@@ -239,7 +243,7 @@ class TestdataController < ApplicationController
     )
     td_pairs = JSON.parse(checked_params[:testdata_pairs])
     unless td_pairs.is_a?(Array) and td_pairs.size <= 256 and td_pairs.all?{|x| x.is_a?(Array) and x.size == 2 and x.all?{|y| y.is_a?(String)}}
-      raise BadRequest.new(), "Invalid testdata pairs"
+      raise ArgumentError.new("Invalid testdata pairs")
     end
 
     td_pair_dest = []
@@ -249,10 +253,10 @@ class TestdataController < ApplicationController
         in_entry = zip.find_entry(infile)
         out_entry = zip.find_entry(outfile)
         if in_entry.nil? or out_entry.nil?
-          raise BadRequest.new(), "File not found"
+          raise ArgumentError.new("File not found")
         end
         if in_entry.size + out_entry.size >= TESTDATUM_LIMIT
-          raise BadRequest.new(), "Individual testdata should not exceed 2 GiB"
+          raise ArgumentError.new("Individual testdata should not exceed 2 GiB")
         end
         in_dest = "#{tmp_folder}/#{in_entry.name}"
         out_dest = "#{tmp_folder}/#{out_entry.name}"

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     resources :testdata do
       collection do
         get 'batch_new'
-        post 'batch_create'
+        post 'batch_new', to: 'testdata#batch_create'
 
         get 'batch_edit'
         post 'batch_edit', to: 'testdata#batch_update'

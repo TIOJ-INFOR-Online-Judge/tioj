@@ -1,5 +1,5 @@
-<%= form_for [@problem, @testdatum], url: :batch_create_problem_testdata, html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
-  <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
+<%= form_for [@problem, @problem.testdata.build], url: :batch_new_problem_testdata, html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @testdata_errors, item: 'testdatum'} %>
 
   <div class="form-group">
     <%= f.label :testdata_file_list, "Testdata" %>
