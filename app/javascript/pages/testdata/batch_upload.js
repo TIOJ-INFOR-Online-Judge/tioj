@@ -11,9 +11,9 @@ function buildIOCorrespondence() {
   const input_file_list = [];
   for (let idx = 0; idx < file_list.length; idx++) {
     const name = file_list[idx].name;
-    if (name.endsWith('.out') || name.endsWith('.ans')) {
-      suffix_map.set(name.slice(0, -4), idx);
-    } else if (name.startsWith('out')) {
+    if (name.endsWith('out') || name.endsWith('ans')) {
+      suffix_map.set(name.slice(0, -3), idx);
+    } else if (name.startsWith('out') || name.startsWith('ans')) {
       prefix_map.set(name.slice(3), idx);
     } else {
       input_file_list.push(idx);
@@ -23,8 +23,8 @@ function buildIOCorrespondence() {
   for (let i = 0; i < input_file_list.length; i++) {
     let idx = input_file_list[i];
     const name = file_list[idx].name;
-    if (name.endsWith('.in')) {
-      const out_name = name.slice(0, -3);
+    if (name.endsWith('in')) {
+      const out_name = name.slice(0, -2);
       if (suffix_map.has(out_name)) {
         const out_idx = suffix_map.get(out_name);
         used_set.add(idx);
