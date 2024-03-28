@@ -7,6 +7,18 @@
 <%= nested_form_for @problem, html: {class: 'form', id: 'problem-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @problem.errors, item: 'problem'} %>
 
+
+<div class="panel with-nav-tabs panel-problem-settings">
+  <div class="panel-heading">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#general-settings-tab" data-toggle="tab">General Settings</a></li>
+      <li><a href="#judge-settings-tab" data-toggle="tab">Judge Settings</a></li>
+    </ul>
+  </div>
+  <div class="panel-body">
+    <div class="tab-content">
+<div class="tab-pane fade in active" id="general-settings-tab">
+
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
@@ -101,7 +113,9 @@
     <%= f.select :discussion_visibility, Problem.discussion_visibilities.keys.map.with_index {|x, index| ["[#{index}] #{discussion_visibility_desc_map[x]}", x]},
       {}, {class: 'form-control flat'} %>
   </div>
+</div>
 
+<div class="tab-pane fade" id="judge-settings-tab">
   <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
@@ -425,6 +439,11 @@
       </div>
     </div>
   </div>
+
+</div>
+    </div>
+  </div>
+</div>
 
   <hr>
   <div class="actions">
