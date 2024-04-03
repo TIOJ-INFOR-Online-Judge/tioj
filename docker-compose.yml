@@ -43,48 +43,6 @@ services:
     networks:
       - app
     logging: *default-logging
-  judge:
-    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#ddb2f430eb7b6a4561ed23c1ef2ad94fcafc5b22
-    environment:
-      TIOJ_URL: "http://localhost:4000"
-      TIOJ_KEY: $FETCH_KEY
-    volumes:
-      - /srv/tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
-      - /srv/tioj/judge-testdata:/var/lib/tioj-judge/testdata
-    tmpfs:
-      - /tmp:exec
-    privileged: true
-    network_mode: host
-    pid: host
-    logging: *default-logging
 
-  judge4:
-    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#ddb2f430eb7b6a4561ed23c1ef2ad94fcafc5b22
-    environment:
-      TIOJ_URL: "http://localhost:4000"
-      TIOJ_KEY: $FETCH_KEY_4
-    volumes:
-      - /srv/tioj/judge4-td-pool:/var/lib/tioj-judge/td-pool
-      - /srv/tioj/judge4-testdata:/var/lib/tioj-judge/testdata
-    tmpfs:
-      - /tmp:exec
-    privileged: true
-    network_mode: host
-    pid: host
-    logging: *default-logging
-  judge2:
-    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#ddb2f430eb7b6a4561ed23c1ef2ad94fcafc5b22
-    environment:
-      TIOJ_URL: "http://localhost:4000"
-      TIOJ_KEY: $FETCH_KEY_2
-    volumes:
-      - /srv/tioj/judge2-td-pool:/var/lib/tioj-judge/td-pool
-      - /srv/tioj/judge2-testdata:/var/lib/tioj-judge/testdata
-    tmpfs:
-      - /tmp:exec
-    privileged: true
-    network_mode: host
-    pid: host
-    logging: *default-logging
 networks:
   app:
