@@ -25,3 +25,8 @@ shared:
 
   # Old submission views (default: false)
   old_submission_views: false
+
+  proxy_judge:
+    codeforces:
+      username: tioj_vjudge
+      password: secure_password

@@ -48,7 +48,7 @@
 
 class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
-  enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
+  enum :specjudge_type, {none: 0, old: 1, new: 2, proxy: 3}, prefix: :specjudge
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :summary_type, {none: 0, custom: 1}, prefix: :summary
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion

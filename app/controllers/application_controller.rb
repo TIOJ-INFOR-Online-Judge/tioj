@@ -30,6 +30,8 @@ class ApplicationController < ActionController::Base
     "queued" => "Waiting for judge server",
     "received" => "Queued in judge server",
     "Validating" => "Validating",
+    "SendingProxy" => "Sending to proxy judge",
+    "WaitingProxy" => "Waiting for proxy judge",
   }
   @@v2i = {
     "AC" => 0,
