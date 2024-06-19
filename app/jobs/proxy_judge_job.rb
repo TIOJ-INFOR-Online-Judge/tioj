@@ -20,6 +20,8 @@ class ProxyJudgeJob < ApplicationJob
 
     if problem.proxy_judge_type == 'CF' then
       @proxy = Judges::CF.new()
+    elsif problem.proxy_judge_type == 'POJ' then
+      @proxy = Judges::POJ.new()
     else
       raise 'Unknown problem.proxy_judge_type'
     end
