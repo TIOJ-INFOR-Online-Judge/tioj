@@ -19,7 +19,7 @@ class Judges::CF
   end
 
   def logged_in?(page)
-    page.search("a[href$='/logout']:not([class])").any? {|a| a.text == 'Logout'}
+    page.search("a[href$='/logout']:not([class])").any? { |a| a.text == 'Logout' }
   end
 
   def logged_in_get(url)
@@ -30,52 +30,54 @@ class Judges::CF
     page
   end
 
-  def submit(problem_id, language, source_code)
+  def submit!(problem_id, language, source_code)
+    language_regexp =  /.*GNU G\+\+20.*/ # TODO lookup this value by param language
     page = logged_in_get('https://codeforces.com/problemset/submit')
-    form = page.forms.find {|f| f.has_field? 'source'}
+    form = page.forms.find { |f| f.has_field? 'source' }
     form.submittedProblemCode = problem_id
     form.source = source_code
-    form.field_with(name: 'programTypeId').options.each do |o|
-      if o.text =~ language then
-        o.select
-      end
-    end
+    form.field_with(name: 'programTypeId').options
+      .find { |o| o.text =~ language_regexp }
+      .select
     page = form.submit
     status_row = page.search('tr[data-submission-id]').first.search('td')
-    # Rails.logger.info(status_row[0])
     @submission_path = status_row[0].search('a')[0]['href']
-    # Rails.logger.info(@submission_path)
     page.search('script').text =~ /submitted successfully/
   end
 
   def done?
-    page = logged_in_get("https://codeforces.com/#{@submission_path}")
-    # Rails.logger.info(page.search('tr.highlighted-row'))
-    last_submission_row = page.search('.datatable tr')[1]
-    @status = Hash[
-      %w(run_id username problem_name language verdict time memory send_time judged_time favorite compare)
-      .zip last_submission_row.search('td').map{|td| td.text.strip}
-    ]
-    # Rails.logger.info("THIS IS THE STATUS!!!")
-    # Rails.logger.info(@status)
-
-    @verdict = @status["verdict"]
-    @verdict = @verdict.split.map(&:capitalize).join(' ')
-    # Rails.logger.info(@verdict)
-    if @verdict.include? "Accepted"
-      @verdict = "AC"
-    elsif @verdict.include? "Wrong Answer"
-      @verdict = "WA"
-    elsif @verdict.include? "Time Limit Exceeded"
-      @verdict = "TLE"
-    elsif @verdict.include? "Runtime Error"
-      @verdict = "RE"
-    elsif @verdict.include? "Memory Limit Exceeded"
-      @verdict = "MLE"
-    end
-    @time = @status["time"].to_i
-    @memory = @status["memory"].to_i
-    not (@verdict.include?("ing") or @verdict.empty?)
+    status = fetch_submission_status
+    verdict = status["verdict"]
+    not (verdict.include?("ing") or verdict.empty?)
   end
 
+  def summary!
+    status = fetch_submission_status
+    @verdict = format_verdict(status["verdict"])
+    @time = status["time"].to_i
+    @memory = status["memory"].to_i
+  end
+
+  private
+
+  def fetch_submission_status
+    page = logged_in_get("https://codeforces.com/#{@submission_path}")
+    last_submission_row = page.search('.datatable tr')[1]
+    submission_details = last_submission_row.search('td').map(&:text).map(&:strip)
+    keys = %w(run_id username problem_name language verdict time memory send_time judged_time favorite compare)
+    Hash[keys.zip(submission_details)]
+  end
+
+  def format_verdict(verdict)
+    verdict = verdict.split.map(&:capitalize).join(' ')
+    case verdict
+    when /Accepted/ then "AC"
+    when /Wrong Answer/ then "WA"
+    when /Time Limit Exceeded/ then "TLE"
+    when /Runtime Error/ then "RE"
+    when /Memory Limit Exceeded/ then "MLE"
+    when /Compilation Error/ then "CE"
+    else verdict
+    end
+  end
 end

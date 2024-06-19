@@ -1,27 +1,40 @@
 class ProxyJudgeJob < ApplicationJob
   queue_as :default
 
-  def initialize(*args)
-    super
-    @cf = Judges::CF.new()
-  end
+  # def initialize(*args)
+  #   super
+  #   Rails.logger.info "args = #{args}"
+  # end
 
   # TODO add panel to check proxy judge active job status?
   def perform(submission, problem)
     code = submission.code_content.code
     code << "\n// tioj-proxy - " << rand(8**36).to_s(36) # XXX: hack for exactly same code
+    # TODO this comment style only works for C/C++
 
-    # TODO add proxy judge argument and language
-    submission_id = @cf.submit('375E', /.*GNU G++20.*/, code)
+    # Rails.logger.info code
+    # Rails.logger.info "proxy_judge_type = #{problem.proxy_judge_type}"
+    # Rails.logger.info "proxy_judge_args = #{problem.proxy_judge_args}"
+    # Rails.logger.info submission.compiler
+    # return
+
+    if problem.proxy_judge_type == 'CF' then
+      @proxy = Judges::CF.new()
+    else
+      raise 'Unknown problem.proxy_judge_type'
+    end
+
+    @proxy.submit!(problem.proxy_judge_args, submission.compiler.name, code)
 
     submission.result = "WaitingProxy"
     submission.save
 
     loop do
-      if @cf.done?
-        submission.result = @cf.verdict
-        submission.total_time = @cf.time
-        submission.total_memory = @cf.memory
+      if @proxy.done?
+        @proxy.summary!
+        submission.result = @proxy.verdict
+        submission.total_time = @proxy.time
+        submission.total_memory = @proxy.memory
         submission.save
         break
       end
