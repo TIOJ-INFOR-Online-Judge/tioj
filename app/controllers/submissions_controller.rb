@@ -18,7 +18,7 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
-    if @problem.specjudge_proxy?
+    if @problem.proxyjudge_any?
       # TODO
       redirect_back fallback_location: root_path, notice: 'WIP, cannot rejudge proxy judge problem'
       return
@@ -104,14 +104,10 @@ class SubmissionsController < ApplicationController
     @submission.generate_subtask_result
     @submission.priority = @contest ? Submission::PRIORITY[:contest] : Submission::PRIORITY[:normal]
 
-    if @problem.specjudge_proxy?
-      @submission.result = 'SendingProxy'
-    end
-
     respond_to do |format|
       if @submission.save
         redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)
-        if @problem.specjudge_proxy?
+        if @problem.proxyjudge_any?
           ProxyJudgeJob.perform_later(@submission, @problem)
         else
           ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})

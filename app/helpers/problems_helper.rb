@@ -80,7 +80,14 @@ module ProblemsHelper
       "none" => "Default compare",
       "old" => "Old-style special judge",
       "new" => "New-style special judge",
-      "proxy" => "Proxy judge",
+    }
+  end
+
+  def proxyjudge_type_desc_map
+    {
+      "none" => "None (no proxy judge)",
+      "codeforces" => "Codeforces proxy judge",
+      "poj" => "POJ proxy judge",
     }
   end
 

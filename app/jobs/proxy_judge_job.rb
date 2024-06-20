@@ -13,22 +13,23 @@ class ProxyJudgeJob < ApplicationJob
     # TODO this comment style only works for C/C++
 
     # Rails.logger.info code
-    # Rails.logger.info "proxy_judge_type = #{problem.proxy_judge_type}"
-    # Rails.logger.info "proxy_judge_args = #{problem.proxy_judge_args}"
+    # Rails.logger.info "proxyjudge_type = #{problem.proxyjudge_type}"
+    # Rails.logger.info "proxyjudge_args = #{problem.proxyjudge_args}"
     # Rails.logger.info submission.compiler
     # return
 
-    if problem.proxy_judge_type == 'CF' then
+    case problem.proxyjudge_type.to_sym
+    when :codeforces
       @proxy = Judges::CF.new()
-    elsif problem.proxy_judge_type == 'POJ' then
+    when :poj
       @proxy = Judges::POJ.new()
     else
-      raise 'Unknown problem.proxy_judge_type'
+      raise 'Unknown problem.proxyjudge_type'
     end
 
-    @proxy.submit!(problem.proxy_judge_args, submission.compiler.name, code)
+    @proxy.submit!(problem.proxyjudge_args, submission.compiler.name, code)
 
-    submission.result = "WaitingProxy"
+    submission.result = "received"
     submission.save
 
     loop do
@@ -38,6 +39,7 @@ class ProxyJudgeJob < ApplicationJob
         submission.total_time = @proxy.time
         submission.total_memory = @proxy.memory
         submission.save
+        # TODO broadcast to submissionchannel?
         break
       end
       sleep 3

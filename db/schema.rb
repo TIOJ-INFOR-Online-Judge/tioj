@@ -265,8 +265,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_19_070747) do
     t.integer "summary_type", null: false
     t.text "summary_code", size: :long
     t.bigint "summary_compiler_id"
-    t.string "proxy_judge_type"
-    t.text "proxy_judge_args"
+    t.integer "proxyjudge_type", default: 0
+    t.text "proxyjudge_args", default: ""
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["summary_compiler_id"], name: "index_problems_on_summary_compiler_id"

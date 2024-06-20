@@ -1,6 +1,6 @@
 class AddProxyArgsToProblem < ActiveRecord::Migration[7.0]
   def change
-    add_column :problems, :proxy_judge_type, :string
-    add_column :problems, :proxy_judge_args, :text
+    add_column :problems, :proxyjudge_type, :integer, default: 0
+    add_column :problems, :proxyjudge_args, :text, default: ''
   end
 end
