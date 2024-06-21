@@ -159,7 +159,7 @@
         <%= f.number_field :num_stages, in: 1..10, class: 'form-control flat', required: true %>
       </div>
     </div>
-    <div class="col-md-3"
+    <div class="col-md-3">
       <div class="form-group">
         <%= f.label :proxyjudge_type, "Proxy Judge Type" %>
         <%= f.select :proxyjudge_type, Problem.proxyjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{proxyjudge_type_desc_map[x]}", x]},
