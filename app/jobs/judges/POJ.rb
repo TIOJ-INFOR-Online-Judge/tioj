@@ -1,6 +1,13 @@
 require 'rest-client'
 
 class Judges::POJ
+  # ref: http://poj.org/page?id=1000
+  # "C", "C++" are MS VC++ 2008 Express and "GCC", "G++" are MinGW GCC 4.4.0
+  PROXY_COMPILERS = {
+    "c++98" => "G++",
+    "c99" => "GCC",
+  }.freeze
+
   LANGUAGES = %w(G++ GCC Java Pascal C++ C Fortran)
   REDIRECT_HANDLER = lambda do |response, request, result, &block|
     if response.code == 302
@@ -18,8 +25,12 @@ class Judges::POJ
     @password = account.dig(:password)
   end
 
-  def submit!(problem_id, language, source_code)
-    language = 'G++' # TODO lookup by a Hash
+  def submit!(problem_id, compiler_name, source_code)
+    if not PROXY_COMPILERS.include?(compiler_name) then
+      raise 'Unknown compiler for POJ proxy judge'
+    end
+    proxy_language = PROXY_COMPILERS[compiler_name]
+
     login_response = RestClient.post(
       'http://poj.org/login',
       {
@@ -35,7 +46,7 @@ class Judges::POJ
       {
         submit: 'Submit',
         problem_id: problem_id,
-        language: LANGUAGES.index(language),
+        language: LANGUAGES.index(proxy_language),
         source: [source_code].pack('m0'),
         encoded: 1
       },

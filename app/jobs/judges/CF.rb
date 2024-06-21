@@ -1,6 +1,16 @@
 require 'mechanize'
 
 class Judges::CF
+  PROXY_COMPILERS = {
+    "c++17" => /.*GNU G\+\+17.*/,
+    "c++20" => /.*GNU G\+\+20.*/,
+    "c++14" => /.*GNU G\+\+14.*/,
+    "c11" => /.*GNU GCC C11.*/,
+    "python2" => /.*PyPy 2.*/,
+    "python3" => /.*PyPy 3.*/,
+    "haskell" => /.*Haskell.*/,
+  }.freeze
+
   attr_reader :username, :verdict, :time, :memory
 
   def initialize
@@ -30,16 +40,21 @@ class Judges::CF
     page
   end
 
-  def submit!(problem_id, language, source_code)
-    language_regexp =  /.*GNU G\+\+20.*/ # TODO lookup this value by param language
+  def submit!(problem_id, compiler_name, source_code)
+    if not PROXY_COMPILERS.include?(compiler_name) then
+      raise 'Unknown compiler for Codeforces proxy judge'
+    end
+    regexp = PROXY_COMPILERS[compiler_name]
+
     page = logged_in_get('https://codeforces.com/problemset/submit')
     form = page.forms.find { |f| f.has_field? 'source' }
     form.submittedProblemCode = problem_id
     form.source = source_code
     form.field_with(name: 'programTypeId').options
-      .find { |o| o.text =~ language_regexp }
+      .find { |o| o.text =~ regexp }
       .select
     page = form.submit
+
     status_row = page.search('tr[data-submission-id]').first.search('td')
     @submission_path = status_row[0].search('a')[0]['href']
     page.search('script').text =~ /submitted successfully/
