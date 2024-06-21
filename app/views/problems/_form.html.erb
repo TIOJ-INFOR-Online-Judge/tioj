@@ -161,8 +161,17 @@
     </div>
     <div class="col-md-3">
       <div class="form-group">
-        <%= f.label :proxyjudge_type, "Proxy Judge Type" %>
-        <%= f.select :proxyjudge_type, Problem.proxyjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{proxyjudge_type_desc_map[x]}", x]},
+        <%= f.label :proxyjudge_type, help_collapse_toggle('Proxy Judge Type', 'pjDescription') %>
+        <div class="collapse" id="pjDescription" style="height: auto;">
+          <div class="panel panel-default">
+            <div class="panel-body small" style="line-height: 1.4;">
+              The submission will be sent to the corresponding proxy-judge
+              instead of being executed by TIOJ's own workers.<br>
+              Currently, if user made a submission with wrong compiler (not available on that proxy judge),
+              then the verdict will be JE.
+            </div>
+          </div>
+        </div>   <%= f.select :proxyjudge_type, Problem.proxyjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{proxyjudge_type_desc_map[x]}", x]},
           {}, {class: 'form-control flat'} %>
       </div>
     </div>
