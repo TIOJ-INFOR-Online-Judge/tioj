@@ -85,9 +85,9 @@ module ProblemsHelper
 
   def proxyjudge_type_desc_map
     {
-      "none" => "None (no proxy judge)",
-      "codeforces" => "Codeforces proxy judge",
-      "poj" => "POJ proxy judge",
+      "none" => "None (TIOJ native)",
+      "codeforces" => "Codeforces",
+      "poj" => "PKU JudgeOnline (POJ)",
     }
   end
 
