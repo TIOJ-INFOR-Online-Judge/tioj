@@ -2,28 +2,31 @@
 #
 # Table name: submissions
 #
-#  id              :bigint           not null, primary key
-#  result          :string(255)      default("queued")
-#  score           :decimal(18, 6)   default(0.0)
-#  created_at      :datetime
-#  updated_at      :datetime
-#  problem_id      :bigint           default(0)
-#  user_id         :bigint           default(0)
-#  contest_id      :bigint
-#  total_time      :integer
-#  total_memory    :integer
-#  message         :text(16777215)
-#  compiler_id     :bigint           not null
-#  code_length     :bigint           default(0), not null
-#  code_content_id :bigint           not null
-#  priority        :integer          default(20), not null
+#  id                :bigint           not null, primary key
+#  result            :string(255)      default("queued")
+#  score             :decimal(18, 6)   default(0.0)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  problem_id        :bigint           default(0)
+#  user_id           :bigint           default(0)
+#  contest_id        :bigint
+#  total_time        :integer
+#  total_memory      :integer
+#  message           :text(16777215)
+#  compiler_id       :bigint           not null
+#  code_length       :bigint           default(0), not null
+#  code_content_id   :bigint           not null
+#  priority          :integer          default(20), not null
+#  proxy_judge_type  :integer          default(0), not null
+#  proxy_judge_nonce :string(255)
+#  proxy_judge_id    :string(255)
 #
 # Indexes
 #
 #  fk_rails_55e5b9f361                         (compiler_id)
 #  index_submissions_contest_compiler          (contest_id,compiler_id,id DESC)
 #  index_submissions_contest_result            (contest_id,result,id DESC)
-#  index_submissions_fetch                     (result,priority DESC,id)
+#  index_submissions_fetch                     (proxy_judge_type,result,priority DESC,id)
 #  index_submissions_on_code_content_id        (code_content_id)
 #  index_submissions_on_contest_id             (contest_id)
 #  index_submissions_on_result_and_updated_at  (result,updated_at)
@@ -47,6 +50,11 @@ class Submission < ApplicationRecord
     :rejudge_contest => 35,
     :contest => 40,
   }
+  enum :proxyjudge_type, {
+    none: 0,
+    codeforces: 1,
+    poj: 2,
+  }, prefix: :proxyjudge
 
   belongs_to :problem
   belongs_to :user, class_name: 'UserBase'

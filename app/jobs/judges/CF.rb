@@ -40,7 +40,7 @@ class Judges::CF
     page
   end
 
-  def submit!(problem_id, compiler_name, source_code)
+  def submit!(problem_id, compiler_name, source_code, submission)
     if not PROXY_COMPILERS.include?(compiler_name) then
       raise 'Unknown compiler for Codeforces proxy judge'
     end
@@ -56,22 +56,14 @@ class Judges::CF
     page = form.submit
 
     status_row = page.search('tr[data-submission-id]').first.search('td')
+    return false unless page.search('script').text =~ /submitted successfully/
     @submission_path = status_row[0].search('a')[0]['href']
-    page.search('script').text =~ /submitted successfully/
+    submission_id = %r{/([0-9]+/[0-9]+)$}.match(@submission_path)[1]
+    submission.update!(proxy_judge_id: submission_id)
+    return true
   end
 
-  def done?
-    status = fetch_submission_status
-    verdict = status["verdict"]
-    not (verdict.include?("ing") or verdict.empty?)
-  end
-
-  def summary!
-    status = fetch_submission_status
-    @verdict = format_verdict(status["verdict"])
-    @time = status["time"].to_i
-    @memory = status["memory"].to_i
-  end
+  # TODO: fetch result job
 
   private
 
@@ -80,7 +72,25 @@ class Judges::CF
     last_submission_row = page.search('.datatable tr')[1]
     submission_details = last_submission_row.search('td').map(&:text).map(&:strip)
     keys = %w(run_id username problem_name language verdict time memory send_time judged_time favorite compare)
-    Hash[keys.zip(submission_details)]
+    status = Hash[keys.zip(submission_details)]
+    verdict = status['verdict']
+    return nil if verdict.nil? || verdict.empty? || verdict.include?("ing")
+    {
+      verdict: format_verdict(verdict),
+      time: verdict.to_i,
+      memory: verdict.to_i,
+    }
+  end
+
+  def get_status_dict(response)
+    status = DETAIL_REGEX.match(response).named_captures
+    verdict = status['verdict']
+    return nil if verdict.nil? || verdict.empty? || verdict.include?("ing")
+    {
+      verdict: format_verdict(verdict),
+      time: verdict.to_i,
+      memory: verdict.to_i,
+    }
   end
 
   def format_verdict(verdict)

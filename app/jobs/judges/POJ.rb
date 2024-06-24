@@ -17,20 +17,44 @@ class Judges::POJ
     end
   end
 
-  attr_reader :username, :verdict, :time, :memory
+  SUBMISSION_REGEX = %r{
+    <tr\salign=center>
+    <td>(?<run_id>.*?)</td>
+    <td><a\shref=userstatus\?user_id=.*?>(?<username>.*?)</a></td>
+    <td><a\shref=problem\?id=.*?>(?<problem_id>.*?)</a></td>
+    <td>(<a.*?>)?<font\scolor=.*?>(?<verdict>.*?)</font>(</a>)?</td>
+    <td>(?<memory>.*?)K?</td>
+    <td>(?<time>.*?)(MS)?</td>
+    <td>(?<language>.*?)</td>
+    <td>(?<code_length>.*?)B</td>
+    <td>(?<submit_time>.*?)</td>
+    </tr>
+  }xm
+  DETAIL_REGEX = %r{
+    <tr><td><b>.*?</b>.*?<a.*?>(?<problem_id>.*?)</a></td>
+    <td.*?></td>
+    <td><b>.*?</b>.*?<a.*?>(?<username>.*?)</a></td>
+    </tr>.*?
+    <tr><td><b>.*?</b>.*?((?<memory>[0-9]+)K|N/A)</td>
+    <td.*?></td>
+    <td><b>.*?</b>.*?((?<time>[0-9]+)MS|N/A)</td>
+    </tr>.*?
+    <tr><td><b>.*?</b>.*?(?<language>\S+?)</td>
+    <td.*?></td>
+    <td><b>.*?</b>.*?((<a.*?>)?<font.*?>(?<verdict>.*?)</font>(</a>)?)?</td></tr>
+  }xm
+
+  attr_reader :username
 
   def initialize
     account = Rails.configuration.x.settings.dig(:proxy_judge).dig(:poj)
     @username = account.dig(:username)
     @password = account.dig(:password)
+    @cookies = nil
   end
 
-  def submit!(problem_id, compiler_name, source_code)
-    if not PROXY_COMPILERS.include?(compiler_name) then
-      raise 'Unknown compiler for POJ proxy judge'
-    end
-    proxy_language = PROXY_COMPILERS[compiler_name]
-
+  def login
+    return unless @cookies.nil?
     login_response = RestClient.post(
       'http://poj.org/login',
       {
@@ -41,6 +65,16 @@ class Judges::POJ
       },
       &REDIRECT_HANDLER
     )
+    @cookies = login_response.cookies
+  end
+
+  def submit!(problem_id, compiler_name, source_code, _)
+    if not PROXY_COMPILERS.include?(compiler_name) then
+      raise 'Unknown compiler for POJ proxy judge'
+    end
+    proxy_language = PROXY_COMPILERS[compiler_name]
+
+    login
     submit_response = RestClient.post(
       'http://poj.org/submit',
       {
@@ -50,45 +84,52 @@ class Judges::POJ
         source: [source_code].pack('m0'),
         encoded: 1
       },
-      cookies: login_response.cookies,
+      cookies: @cookies,
       &REDIRECT_HANDLER
     )
-    submit_response.code == 302
+    return false if submit_response.code != 302
+    update_submission_id
+    return true
   end
 
-  def done?
-    status = fetch_submission_status
-    # Rails.logger.info "status = #{status}"
-    verdict = status["verdict"]
-    not (verdict.include?("ing") or verdict.empty?)
-  end
-
-  def summary!
-    status = fetch_submission_status
-    @verdict = format_verdict(status["verdict"])
-    @time = status["time"].to_i
-    @memory = status["memory"].to_i
-  end
+  # TODO: fetch result job
 
   private
 
-  def fetch_submission_status
-    # TODO when handling multiple simutaneous submissions, looking for the latest submission is wrong
+  def update_submission_id
     response = RestClient.get "http://poj.org/status?user_id=#{@username}"
-    match = %r{
-      <tr\salign=center>
-      <td>(?<run_id>.*?)</td>
-      <td><a\shref=userstatus\?user_id=.*?>(?<username>.*?)</a></td>
-      <td><a\shref=problem\?id=.*?>(?<problem_id>.*?)</a></td>
-      <td>(<a.*?>)?<font\scolor=.*?>(?<verdict>.*?)</font>(</a>)?</td>
-      <td>(?<memory>.*?)K?</td>
-      <td>(?<time>.*?)(MS)?</td>
-      <td>(?<language>.*?)</td>
-      <td>(?<code_length>.*?)B</td>
-      <td>(?<submit_time>.*?)</td>
-      </tr>
-    }xm.match(response)
-    Hash[match.names.zip(match.captures)]
+    submission_ids = response.scan(SUBMISSION_REGEX).map{ |match| match[0] }
+    identified_submissions = Submission.where(proxy_judge_id: submission_ids, proxy_judge_type: :poj).pluck(&:proxy_judge_id)
+    unidentified_submissions = Submission.where(proxy_judge_id: nil, proxy_judge_type: :poj).map{|x| [x.proxy_judge_nonce, x]}.to_h
+    submission_ids -= identified_submissions
+    submission_ids.each do |submission_id|
+      detail = fetch_submission_detail(submission_id)
+      nonce = detail.scan(/tioj-proxy nonce=([0-9a-f]{64})/).last
+      next if nonce.nil? || !unidentified_submissions.include?(nonce)
+      unidentified_submissions[nonce].update(proxy_judge_id: submission_id)
+      # TODO: also update result if available
+    end
+  end
+
+  def get_status_dict(response)
+    status = DETAIL_REGEX.match(response).named_captures
+    verdict = status['verdict']
+    return nil if verdict.nil? || verdict.empty? || verdict.include?("ing")
+    {
+      verdict: format_verdict(verdict),
+      time: status['time'].to_i,
+      memory: status['memory'].to_i,
+    }
+  end
+
+  # submission_id is the ID of POJ (proxy_judge_id)
+  def fetch_submission_detail(submission_id)
+    login
+    RestClient.get("http://poj.org/showsource?solution_id=#{submission_id}", cookies: @cookies)
+  end
+
+  def fetch_submission_status(submission_id)
+    get_status_dict fetch_submission_detail(submission_id)
   end
 
   def format_verdict(verdict)
@@ -100,7 +141,7 @@ class Judges::POJ
     when /Runtime Error/ then "RE"
     when /Memory Limit Exceeded/ then "MLE"
     when /Compilation Error/ then "CE"
-    else verdict
+    else "JE"
     end
   end
 end

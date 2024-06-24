@@ -32,8 +32,8 @@
 #  summary_type           :integer          not null
 #  summary_code           :text(4294967295)
 #  summary_compiler_id    :bigint
-#  proxyjudge_type        :integer          default("none")
-#  proxyjudge_args        :text(65535)      default("")
+#  proxyjudge_type        :integer          default("none"), not null
+#  proxyjudge_args        :string(255)
 #
 # Indexes
 #
