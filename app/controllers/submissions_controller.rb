@@ -103,10 +103,10 @@ class SubmissionsController < ApplicationController
     @submission.contest = @contest
     @submission.generate_subtask_result
     @submission.priority = @contest ? Submission::PRIORITY[:contest] : Submission::PRIORITY[:normal]
-    @submission.proxy_judge_type = @problem.proxy_judge_type
+    @submission.proxyjudge_type = @problem.proxyjudge_type
 
     if @problem.proxyjudge_any?
-      @submission.proxy_judge_nonce = SecureRandom.hex(32)
+      @submission.proxyjudge_nonce = SecureRandom.hex(32)
     end
 
     respond_to do |format|

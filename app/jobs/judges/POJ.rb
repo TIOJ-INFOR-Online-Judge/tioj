@@ -47,7 +47,7 @@ class Judges::POJ
   attr_reader :username
 
   def initialize
-    account = Rails.configuration.x.settings.dig(:proxy_judge).dig(:poj)
+    account = Rails.configuration.x.settings.dig(:proxyjudge).dig(:poj)
     @username = account.dig(:username)
     @password = account.dig(:password)
     @cookies = nil
@@ -99,14 +99,14 @@ class Judges::POJ
   def update_submission_id
     response = RestClient.get "http://poj.org/status?user_id=#{@username}"
     submission_ids = response.scan(SUBMISSION_REGEX).map{ |match| match[0] }
-    identified_submissions = Submission.where(proxy_judge_id: submission_ids, proxy_judge_type: :poj).pluck(&:proxy_judge_id)
-    unidentified_submissions = Submission.where(proxy_judge_id: nil, proxy_judge_type: :poj).map{|x| [x.proxy_judge_nonce, x]}.to_h
+    identified_submissions = Submission.where(proxyjudge_id: submission_ids, proxyjudge_type: :poj).pluck(&:proxyjudge_id)
+    unidentified_submissions = Submission.where(proxyjudge_id: nil, proxyjudge_type: :poj).map{|x| [x.proxyjudge_nonce, x]}.to_h
     submission_ids -= identified_submissions
     submission_ids.each do |submission_id|
       detail = fetch_submission_detail(submission_id)
       nonce = detail.scan(/tioj-proxy nonce=([0-9a-f]{64})/).last
       next if nonce.nil? || !unidentified_submissions.include?(nonce)
-      unidentified_submissions[nonce].update(proxy_judge_id: submission_id)
+      unidentified_submissions[nonce].update(proxyjudge_id: submission_id)
       # TODO: also update result if available
     end
   end
@@ -122,7 +122,7 @@ class Judges::POJ
     }
   end
 
-  # submission_id is the ID of POJ (proxy_judge_id)
+  # submission_id is the ID of POJ (proxyjudge_id)
   def fetch_submission_detail(submission_id)
     login
     RestClient.get("http://poj.org/showsource?solution_id=#{submission_id}", cookies: @cookies)

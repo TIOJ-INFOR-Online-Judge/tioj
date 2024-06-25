@@ -12,11 +12,11 @@ class ProxyJudgeJob < ApplicationJob
     begin
       case submission.compiler.format_type # XXX: hack for exactly same code
       when "language-c", "language-cpp"
-        code << "\n// tioj-proxy nonce=" << submission.proxy_judge_nonce
+        code << "\n// tioj-proxy nonce=" << submission.proxyjudge_nonce
       when "language-haskell"
-        code << "\n-- tioj-proxy nonce=" << submission.proxy_judge_nonce
+        code << "\n-- tioj-proxy nonce=" << submission.proxyjudge_nonce
       when "language-python"
-        code << "\n# tioj-proxy nonce=" << submission.proxy_judge_nonce
+        code << "\n# tioj-proxy nonce=" << submission.proxyjudge_nonce
       end
 
       # Rails.logger.info code

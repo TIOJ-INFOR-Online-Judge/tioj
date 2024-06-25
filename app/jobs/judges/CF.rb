@@ -14,7 +14,7 @@ class Judges::CF
   attr_reader :username, :verdict, :time, :memory
 
   def initialize
-    account = Rails.configuration.x.settings.dig(:proxy_judge).dig(:codeforces)
+    account = Rails.configuration.x.settings.dig(:proxyjudge).dig(:codeforces)
     @username = account.dig(:username)
     @password = account.dig(:password)
     @agent = Mechanize.new
@@ -59,7 +59,7 @@ class Judges::CF
     return false unless page.search('script').text =~ /submitted successfully/
     @submission_path = status_row[0].search('a')[0]['href']
     submission_id = %r{/([0-9]+/[0-9]+)$}.match(@submission_path)[1]
-    submission.update!(proxy_judge_id: submission_id)
+    submission.update!(proxyjudge_id: submission_id)
     return true
   end
 
