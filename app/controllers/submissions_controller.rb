@@ -18,6 +18,12 @@ class SubmissionsController < ApplicationController
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
+    if @problem.proxyjudge_any?
+      # TODO
+      redirect_back fallback_location: root_path, notice: 'WIP, cannot rejudge proxy judge problem'
+      return
+    end
+
     @submission.submission_testdata_results.delete_all
     priority = @submission.contest_id ? Submission::PRIORITY[:rejudge_contest] : Submission::PRIORITY[:rejudge_normal]
     @submission.update_self_with_subtask_result({result: "queued", priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil})
@@ -97,10 +103,20 @@ class SubmissionsController < ApplicationController
     @submission.contest = @contest
     @submission.generate_subtask_result
     @submission.priority = @contest ? Submission::PRIORITY[:contest] : Submission::PRIORITY[:normal]
+    @submission.proxyjudge_type = @problem.proxyjudge_type
+
+    if @problem.proxyjudge_any?
+      @submission.proxyjudge_nonce = SecureRandom.hex(32)
+    end
+
     respond_to do |format|
       if @submission.save
         redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)
-        ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
+        if @problem.proxyjudge_any?
+          ProxyJudgeJob.perform_later(@submission, @problem)
+        else
+          ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
+        end
         helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
         format.html { redirect_to redirect_url, notice: 'Submission was successfully created.' }
         format.json { render action: 'show', status: :created, location: redirect_url }

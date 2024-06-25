@@ -256,6 +256,8 @@ class ProblemsController < ApplicationController
       :ranklist_display_score,
       :strict_mode,
       :skip_group,
+      :proxyjudge_type,
+      :proxyjudge_args,
       sample_testdata_attributes:
       [
         :id,
