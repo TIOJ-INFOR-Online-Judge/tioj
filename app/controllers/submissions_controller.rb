@@ -113,7 +113,7 @@ class SubmissionsController < ApplicationController
       if @submission.save
         redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)
         if @problem.proxyjudge_any?
-          ProxyJudgeJob.perform_later(@submission, @problem)
+          SubmitProxyJudgeJob.perform_later(@submission, @problem)
         else
           ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
         end

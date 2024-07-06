@@ -93,6 +93,9 @@ class Judges::POJ
   end
 
   # TODO: fetch result job
+  def fetch_submission_status(proxyjudge_args, proxyjudge_submission_id)
+    get_status_dict fetch_submission_detail(proxyjudge_submission_id)
+  end
 
   private
 
@@ -126,10 +129,6 @@ class Judges::POJ
   def fetch_submission_detail(submission_id)
     login
     RestClient.get("http://poj.org/showsource?solution_id=#{submission_id}", cookies: @cookies)
-  end
-
-  def fetch_submission_status(submission_id)
-    get_status_dict fetch_submission_detail(submission_id)
   end
 
   def format_verdict(verdict)
