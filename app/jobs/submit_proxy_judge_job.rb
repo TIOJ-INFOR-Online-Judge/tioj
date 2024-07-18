@@ -3,7 +3,10 @@ class SubmitProxyJudgeJob < ApplicationJob
 
   def perform(submission, problem)
     code = submission.code_content.code
-    case submission.compiler.format_type # XXX: hack for exactly same code
+    # proxyjudge_nonce is used to identify submissions
+    #  because in judges such as POJ, we don't know the submission id
+    #  if there are multiple submission submitted at the same time
+    case submission.compiler.format_type
     when "language-c", "language-cpp"
       code << "\n// tioj-proxy nonce=" << submission.proxyjudge_nonce
     when "language-haskell"
@@ -29,8 +32,7 @@ class SubmitProxyJudgeJob < ApplicationJob
       ActionCable.server.broadcast("submission_#{submission.id}_overall",
                                    {result: 'received', id: submission.id})
 
-      WaitProxyJudgeJob.perform_later(submission, problem)
-
+      WaitProxyJudgeJob.perform_later
     rescue Exception => e
       Rails.logger.error e
       submission.result = "JE"

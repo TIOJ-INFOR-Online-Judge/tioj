@@ -61,7 +61,7 @@ class FetchChannel < ApplicationCable::Channel
   def fetch_submission(data)
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
+      submission = Submission.where(result: "queued", proxyjudge_type: :none).order(priority: :desc, id: :asc).first
       flag = false
       if submission
         retry_op(3) do |is_first|
