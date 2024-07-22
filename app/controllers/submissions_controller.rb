@@ -15,15 +15,10 @@ class SubmissionsController < ApplicationController
   before_action :check_compiler, only: [:create, :update]
   before_action :normalize_code, only: [:create, :update]
   before_action :set_show_attrs, only: [:show, :show_old]
+  before_action :check_proxyjudge, only: [:edit, :update, :rejudge]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
-    if @problem.proxyjudge_any?
-      # TODO
-      redirect_back fallback_location: root_path, notice: 'WIP, cannot rejudge proxy judge problem'
-      return
-    end
-
     @submission.submission_testdata_results.delete_all
     priority = @submission.contest_id ? Submission::PRIORITY[:rejudge_contest] : Submission::PRIORITY[:rejudge_normal]
     @submission.update_self_with_subtask_result({result: "queued", priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil})
@@ -286,6 +281,13 @@ class SubmissionsController < ApplicationController
     end
     params[:submission][:code_content_attributes][:code] = code
     params[:submission][:code_length] = code.bytesize
+  end
+
+  def check_proxyjudge
+    if @problem.proxyjudge_any?
+      redirect_back fallback_location: root_path, alert: 'This action is disabled in proxy judge problems.'
+      return
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

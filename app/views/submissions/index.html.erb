@@ -110,8 +110,10 @@ $("button:not([type='submit'])").attr("type", "button");
         <td><%= submission.created_at.to_fs(:clean) %></td>
         <% if effective_admin? %>
           <td>
-            <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+            <% if submission.problem.proxyjudge_none? %>
+              <%= form_with url: rejudge_submission_path(submission) do |f| %>
+                <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+              <% end %>
             <% end %>
           </td>
         <% end %>

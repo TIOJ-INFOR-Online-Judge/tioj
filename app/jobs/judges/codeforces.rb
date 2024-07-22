@@ -44,10 +44,10 @@ class Judges::Codeforces
     @submission_path = status_row[0].search('a')[0]['href']
     # TODO: only works for contest submissions.
     #  gym submissions does not have a dedicated page
-    #  and probably need a similar fetching behavior as POJ
     #  it will probably be better to make it a different (logical) judge
     # TODO: solve race condition if multiple submissions are submitted at the same time
-    #  the first row may not actually be the most recent submission
+    #  by using the same mechanism as POJ
+    #  (fetch from https://codeforces.com/problemset/status?my=on)
     submission_id = %r{/([0-9]+/[0-9]+)$}.match(@submission_path)[1]
     submission.update!(proxyjudge_id: submission_id)
     return true
