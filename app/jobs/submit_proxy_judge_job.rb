@@ -18,7 +18,7 @@ class SubmitProxyJudgeJob < ApplicationJob
     begin
       case problem.proxyjudge_type.to_sym
       when :codeforces
-        @proxy = Judges::CF.new()
+        @proxy = Judges::Codeforces.new()
       when :poj
         @proxy = Judges::POJ.new()
       else

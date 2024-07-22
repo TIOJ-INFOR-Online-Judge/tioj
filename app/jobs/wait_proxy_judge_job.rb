@@ -5,7 +5,7 @@ class WaitProxyJudgeJob < ApplicationJob
     remain = false
     begin
       remain ||= Judges::POJ.new().fetch_results
-      remain ||= Judges::CF.new().fetch_results
+      remain ||= Judges::Codeforces.new().fetch_results
     rescue Exception => e
       Rails.logger.error e
     end

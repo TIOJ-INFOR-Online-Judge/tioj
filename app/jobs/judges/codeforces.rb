@@ -1,6 +1,7 @@
 require 'mechanize'
 
-class Judges::CF
+class Judges::Codeforces
+  # TODO: merge into database table
   PROXY_COMPILERS = {
     "c++17" => /.*GNU G\+\+17.*/,
     "c++20" => /.*GNU G\+\+20.*/,
