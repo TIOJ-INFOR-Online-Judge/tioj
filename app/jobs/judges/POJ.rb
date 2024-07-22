@@ -47,10 +47,12 @@ class Judges::POJ
   attr_reader :username
 
   def initialize
-    account = Rails.configuration.x.settings.dig(:proxyjudge).dig(:poj)
-    @username = account.dig(:username)
-    @password = account.dig(:password)
-    @cookies = nil
+    if not @username
+      account = Rails.configuration.x.settings.dig(:proxyjudge).dig(:poj)
+      @username = account.dig(:username)
+      @password = account.dig(:password)
+      @cookies = nil
+    end
   end
 
   def login
@@ -87,43 +89,47 @@ class Judges::POJ
       cookies: @cookies,
       &REDIRECT_HANDLER
     )
-    return false if submit_response.code != 302
-    update_submission_id
-    return true
+    return submit_response.code == 302
   end
 
   def fetch_results
     response = RestClient.get "http://poj.org/status?user_id=#{@username}&size=100"
-    submission_data = response.scan(SUBMISSION_REGEX)
-    submission_ids = submission_data.map{ |match| match[0] }
+    # find all matches with MatchData
+    submission_data = response.to_enum(:scan, SUBMISSION_REGEX).map {$~}
+
+    submission_ids = submission_data.map{ |match| match[:run_id] }
     identified_submissions = Submission.where(proxyjudge_id: submission_ids, proxyjudge_type: :poj).map{|x| [x.proxyjudge_id, x]}.to_h
     unidentified_submissions = Submission.where(proxyjudge_id: nil, proxyjudge_type: :poj).map{|x| [x.proxyjudge_nonce, x]}.to_h
     submission_ids -= identified_submissions.keys
-    submission_ids.each do |submission_id|
-      detail = fetch_submission_detail(submission_id)
-      nonce = detail.scan(/tioj-proxy nonce=([0-9a-f]{64})/).last
-      next if nonce.nil? || !unidentified_submissions.include?(nonce)
-      status = get_status_dict_from_detail(detail)
-      status.merge({proxyjudge_id: submission_id})
-      unidentified_submissions[nonce].update(**status)
-    end
+    submission_id_set = submission_ids.to_set
+  
     result = false
-    update_hash = submission_data.filter_map { |x|
-      status = get_status_dict(x)
+    submission_ids.each do |submission_id|
+      next if submission_id_set.empty?
+      detail = fetch_submission_detail(submission_id)
+      nonce = detail.scan(/tioj-proxy nonce=([0-9a-f]{64})/).last&.first
+      next if nonce.nil? || !unidentified_submissions.include?(nonce)
+      submission_id_set.delete(submission_id)
+      sub = unidentified_submissions[nonce]
+      status = get_status_dict_from_detail(detail)
       result = true if status.nil?
-      sub = identified_submissions[x['run_id']]
-      expected = {verdict: sub.verdict, time: sub.time, memory: sub.memory}
-      status.update(id: sub.id, score: status[:verdict] == 'AC' ? 100 : 0) if status && status != expected
-    }
-    Submission.import(update_hash, on_duplicate_key_update: [:verdict, :time, :memory, :score], validate: false)
+      next if status.nil?
+      sub.update(**status, proxyjudge_id: submission_id)
+      ActionCable.server.broadcast("submission_#{sub.id}_overall", status.update(id: sub.id))
+    end
+    update_hash = submission_data.filter_map do |x|
+      status = get_status_dict(x)
+      sub = identified_submissions[x[:run_id]]
+      next if sub.nil?
+      result = true if status.nil?
+      expected = {result: sub.result, score: sub.score, total_time: sub.total_time, total_memory: sub.total_memory}
+      status.update(id: sub.id) if status && status != expected
+    end
+    Submission.import(
+      update_hash.map {|x| x.update(compiler_id: -1, code_content_id: -1)},
+      on_duplicate_key_update: [:result, :score, :total_time, :total_memory], validate: false)
     update_hash.each{ |x|
-      ActionCable.server.broadcast("submission_#{x[:id]}_overall", {
-        id: x[:id],
-        result: x[:verdict],
-        score: x[:score],
-        total_time: x[:time],
-        total_memory: x[:memory],
-      })
+      ActionCable.server.broadcast("submission_#{x[:id]}_overall", x)
     }
     result
   end
@@ -131,17 +137,19 @@ class Judges::POJ
   private
 
   def get_status_dict(status)
-    verdict = status['verdict']
+    verdict = status[:verdict]
     return nil if verdict.nil? || verdict.empty? || verdict.include?("ing")
+    verdict = format_verdict(verdict)
     {
-      verdict: format_verdict(verdict),
-      time: (status['time']&.to_i || 0) * 1000,
-      memory: status['memory'].to_i || 0,
+      result: verdict,
+      score: verdict == 'AC' ? 100 : 0,
+      total_time: status[:time]&.to_i || 0,
+      total_memory: status[:memory]&.to_i || 0,
     }
   end
 
   def get_status_dict_from_detail(response)
-    get_status_dict(DETAIL_REGEX.match(response).named_captures)
+    get_status_dict(DETAIL_REGEX.match(response))
   end
 
   # submission_id is the ID of POJ (proxyjudge_id)

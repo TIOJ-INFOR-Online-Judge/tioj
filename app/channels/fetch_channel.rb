@@ -54,7 +54,7 @@ class FetchChannel < ApplicationCable::Channel
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
     retry_op do |is_first|
-      Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+      Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago, proxyjudge_type: :none).update_all(result: "queued")
     end
   end
 
