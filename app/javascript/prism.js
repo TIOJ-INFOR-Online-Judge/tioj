@@ -5,6 +5,7 @@ import 'prismjs-components-importer/esm/prism-javascript';
 import 'prismjs-components-importer/esm/prism-c';
 import 'prismjs-components-importer/esm/prism-cpp';
 import 'prismjs-components-importer/esm/prism-haskell';
+import 'prismjs-components-importer/esm/prism-rust';
 import 'prismjs-components-importer/esm/prism-python';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 import 'prismjs/plugins/toolbar/prism-toolbar';

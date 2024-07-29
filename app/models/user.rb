@@ -107,7 +107,7 @@ class User < UserBase
   validates :name, presence: true, length: {in: 1..12}
 
   validates_uniqueness_of :nickname
-  validates_length_of :motto, maximum: 75
+  validates_length_of :motto, maximum: 1000
 
   extend FriendlyId
   friendly_id :username
