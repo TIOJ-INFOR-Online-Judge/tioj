@@ -27,6 +27,10 @@
 <% if @problem %>
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
   <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-xs" %>
+  <% if user_signed_in? %>
+    <% my_link = contest_adaptive_polymorphic_path([@problem,:submissions], filter_username: @user.username) %>
+    <%= link_to 'My Submissions', my_link, class: "btn btn-success btn-xs"%>
+  <%end%>
 <% else %>
   <div class="form-inline">
     <div class="form-group">

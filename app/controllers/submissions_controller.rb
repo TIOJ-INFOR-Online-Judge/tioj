@@ -30,6 +30,7 @@ class SubmissionsController < ApplicationController
     unless effective_admin?
       @submissions = @submissions.preload(:contest)
     end
+	@user=current_user
   end
 
   def show
@@ -44,7 +45,7 @@ class SubmissionsController < ApplicationController
     end
     @_result = @submission.submission_testdata_results.index_by(&:position)
     @has_vss = @_result.empty? || @_result.values.any?{|x| x.vss}
-    @show_old = false
+  	@show_old = false
   end
 
   def show_old
