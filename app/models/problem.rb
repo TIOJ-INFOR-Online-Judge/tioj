@@ -87,4 +87,17 @@ class Problem < ApplicationRecord
       errors.add(:judge_between_stages, "Can only judge between stages when using special judge")
     end
   end
+
+  def self.filter_by_visibility(current_user, problems)
+    problems = problems.left_outer_joins(:roles)
+    public_problems = problems.where(visible_state: Problem.visible_states[:public])
+    if not current_user
+      return public_problems.distinct
+    elsif current_user.admin
+      return problems.distinct
+    else
+      role_problems = problems.where(roles: current_user.roles)
+      return public_problems.or(role_problems).distinct
+    end
+  end
 end

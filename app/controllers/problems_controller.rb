@@ -1,5 +1,5 @@
 class ProblemsController < ApplicationController
-  before_action :authenticate_user!
+  # before_action :authenticate_user!
   # From TIOJ 3.0
   before_action :authenticate_user_and_running_if_single_contest!, only: [:show]
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
@@ -58,14 +58,9 @@ class ProblemsController < ApplicationController
     @problems = Problem.includes(:tags, :solution_tags)
     if not params[:search_name].blank?
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_name])
-      @problems = @problems.where("name LIKE ?", "%#{sanitized}%")
+      @problems = @problems.where("problems.name LIKE ?", "%#{sanitized}%")
     end
-    unless current_user&.admin?
-      @problems = @problems.left_outer_joins(:roles)
-      p = @problems.where(visible_state: Problem.visible_states[:public])
-      p = p.or(@problems.where(roles: current_user.roles)).distinct
-      @problems = p
-    end
+    @problems = Problem.filter_by_visibility(current_user, @problems)
     if not params[:tag].blank?
       @problems = @problems.tagged_with(params[:tag])
     end

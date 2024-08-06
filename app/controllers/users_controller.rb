@@ -8,6 +8,8 @@ class UsersController < ApplicationController
 
   def show
     @problems = Problem.select(:id).order(id: :asc)
+    @problems = Problem.filter_by_visibility(current_user, @problems)
+
     tried = @user.submissions.select(:problem_id).group(:problem_id)
     ac = @user.submissions.select(:problem_id).where(result: 'AC').group(:problem_id)
     @tried = Array.new(@problems.count + 1)
