@@ -226,7 +226,7 @@ class SubmissionsController < ApplicationController
       unless effective_admin?
         @submissions = @submissions.joins(:problem).left_outer_joins(problem: :roles)
         s = @submissions.where(problem: {visible_state: :public})
-        s = s.or(@submissions.where(problem: {roles: current_user&.roles})).distinct
+        s = s.or(@submissions.where(problem: {roles: current_user&.roles || []})).distinct
         @submissions = s
       end
     end
