@@ -33,6 +33,10 @@ class ProblemsController < ApplicationController
   end
 
   def rejudge
+    if @problem.proxyjudge_any?
+      redirect_back fallback_location: root_path, alert: 'This action is disabled in proxy judge problems.'
+      return
+    end
     subs = Submission.where(problem_id: params[:id], contest_id: @contest ? @contest.id : nil)
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
@@ -256,6 +260,8 @@ class ProblemsController < ApplicationController
       :ranklist_display_score,
       :strict_mode,
       :skip_group,
+      :proxyjudge_type,
+      :proxyjudge_args,
       sample_testdata_attributes:
       [
         :id,

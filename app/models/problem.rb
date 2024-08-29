@@ -32,6 +32,8 @@
 #  summary_type           :integer          not null
 #  summary_code           :text(4294967295)
 #  summary_compiler_id    :bigint
+#  proxyjudge_type        :integer          default("none"), not null
+#  proxyjudge_args        :string(255)
 #
 # Indexes
 #
@@ -52,6 +54,12 @@ class Problem < ApplicationRecord
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :summary_type, {none: 0, custom: 1}, prefix: :summary
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion
+  enum :proxyjudge_type, {
+    none: 0,
+    codeforces: 1,
+    poj: 2,
+    qoj: 3,
+  }, prefix: :proxyjudge
 
   acts_as_taggable_on :tags, :solution_tags
 
@@ -93,5 +101,9 @@ class Problem < ApplicationRecord
     if specjudge_none? and judge_between_stages
       errors.add(:judge_between_stages, "Can only judge between stages when using special judge")
     end
+  end
+
+  def proxyjudge_any?
+    not proxyjudge_none?
   end
 end
