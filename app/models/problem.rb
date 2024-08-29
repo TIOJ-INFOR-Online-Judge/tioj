@@ -58,6 +58,7 @@ class Problem < ApplicationRecord
     none: 0,
     codeforces: 1,
     poj: 2,
+    qoj: 3,
   }, prefix: :proxyjudge
 
   acts_as_taggable_on :tags, :solution_tags

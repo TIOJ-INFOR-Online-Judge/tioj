@@ -134,7 +134,12 @@
   </div>
 
   <!-- TODO shall we use classname like this? -->
-  <div class="form-group visibility-proxyjudge visibility-proxyjudge-codeforces visibility-proxyjudge-poj">
+  <div class="form-group visibility-proxyjudge <%=
+    Problem.proxyjudge_types.keys
+      .filter {|t| t != 'none'}
+      .map {|t| "visibility-proxyjudge-#{t}"}
+      .join(' ')
+  %>">
     <%= f.label :proxyjudge_args, "Proxy Judge Args" %>
     <%= f.text_field :proxyjudge_args, class: 'form-control flat' %>
   </div>

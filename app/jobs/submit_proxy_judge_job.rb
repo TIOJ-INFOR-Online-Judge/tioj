@@ -21,6 +21,8 @@ class SubmitProxyJudgeJob < ApplicationJob
         @proxy = Judges::Codeforces.new()
       when :poj
         @proxy = Judges::POJ.new()
+      when :qoj
+        @proxy = Judges::QOJ.new()
       else
         raise 'Unknown problem.proxyjudge_type'
       end

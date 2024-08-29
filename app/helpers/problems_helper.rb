@@ -88,6 +88,7 @@ module ProblemsHelper
       "none" => "None (TIOJ native)",
       "codeforces" => "Codeforces",
       "poj" => "PKU JudgeOnline (POJ)",
+      "qoj" => "QOJ",
     }
   end
 

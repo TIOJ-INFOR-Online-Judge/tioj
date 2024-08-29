@@ -54,6 +54,7 @@ class Submission < ApplicationRecord
     none: 0,
     codeforces: 1,
     poj: 2,
+    qoj: 3,
   }, prefix: :proxyjudge
 
   belongs_to :problem
