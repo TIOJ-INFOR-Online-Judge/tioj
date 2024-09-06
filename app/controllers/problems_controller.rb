@@ -33,11 +33,12 @@ class ProblemsController < ApplicationController
   end
 
   def rejudge
-    subs = Submission.where(problem_id: params[:id])
+    subs = Submission.where(problem_id: params[:id], contest_id: @contest ? @contest.id : nil)
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
     subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)
-    subs.update_all(result: "queued", score: 0, total_time: nil, total_memory: nil, message: nil)
+    priority = @contest ? Submission::PRIORITY[:batch_rejudge_contest] : Submission::PRIORITY[:batch_rejudge_normal]
+    subs.update_all(result: 'queued', priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil)
     subtask_results.update_all(result: subs.first.calc_subtask_result) if subs.first
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|
@@ -175,6 +176,7 @@ class ProblemsController < ApplicationController
   end
 
   def recalc_score
+    return if @problem.summary_custom?
     num_tds = @problem.testdata.count
     subtasks = @problem.subtasks
     contests_map = @problem.contests.all.index_by(&:id)
@@ -241,13 +243,16 @@ class ProblemsController < ApplicationController
       :specjudge_type,
       :specjudge_compiler_id,
       :specjudge_compile_args,
+      :sjcode,
       :judge_between_stages,
       :default_scoring_args,
       :interlib_type,
-      :sjcode,
       :interlib,
       :interlib_impl,
       :code_length_limit,
+      :summary_type,
+      :summary_compiler_id,
+      :summary_code,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,

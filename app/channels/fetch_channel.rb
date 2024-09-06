@@ -25,7 +25,11 @@ class FetchChannel < ApplicationCable::Channel
     end
     v2i = ApplicationController.v2i
     update_hash[:result] = ApplicationController.i2v[v2i.fetch(data[:verdict], v2i['JE'])]
-    if ['JE', 'ER', 'CE', 'CLE'].include? update_hash[:result]
+    if submission.problem.summary_custom?
+      update_hash[:score] = int_to_score(data[:score])
+      update_hash[:total_time] = (BigDecimal(data[:total_time]) / 1000).round(0)
+      update_hash[:total_memory] = data[:total_memory]
+    elsif ['JE', 'ER', 'CE', 'CLE'].include? update_hash[:result]
       update_hash[:score] = 0
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
@@ -57,7 +61,7 @@ class FetchChannel < ApplicationCable::Channel
   def fetch_submission(data)
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(Arel.sql('contest_id IS NOT NULL ASC'), id: :asc).first
+      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
       flag = false
       if submission
         retry_op(3) do |is_first|
@@ -84,7 +88,7 @@ class FetchChannel < ApplicationCable::Channel
     user = submission.user
     td_count = problem.testdata.count
     verdict_ignore_set = Subtask.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
-    priority = (submission.contest ? 100000000 : 0) - submission.id
+    priority = submission.priority * (2 ** 32) - submission.id
     data = {
       submission_id: submission.id,
       contest_id: submission.contest_id || -1,
@@ -104,6 +108,9 @@ class FetchChannel < ApplicationCable::Channel
         specjudge_compiler: problem.specjudge_compiler&.name,
         specjudge_compile_args: problem.specjudge_compile_args || "",
         sjcode: problem.sjcode || "",
+        summary_type: Problem.summary_types[problem.summary_type],
+        summary_compiler: problem.summary_compiler&.name,
+        summary_code: problem.summary_code || "",
         interlib_type: Problem.interlib_types[problem.interlib_type],
         interlib: problem.interlib || "",
         interlib_impl: problem.interlib_impl || "",
@@ -141,6 +148,10 @@ class FetchChannel < ApplicationCable::Channel
 
   private
 
+  def int_to_score(x)
+    (x / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6'))
+  end
+
   def update_td_results(data, submission)
     results = data.map { |res|
       {
@@ -150,26 +161,31 @@ class FetchChannel < ApplicationCable::Channel
         time: BigDecimal(res[:time]) / 1000,
         rss: res[:rss],
         vss: res[:vss],
-        score: (BigDecimal(res[:score]) / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6')),
+        score: int_to_score(res[:score]),
         message_type: res[:message_type],
         message: res[:message],
       }
     }
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    subtask_scores = submission.calc_subtask_result
-    score = subtask_scores.sum{|x| x[:score]}
-    max_score = BigDecimal('1e+12') - 1
-    score = score.clamp(-max_score, max_score).round(6)
+    if submission.problem.summary_none?
+      subtask_scores = submission.calc_subtask_result
+      score = subtask_scores.sum{|x| x[:score]}
+      max_score = BigDecimal('1e+12')
+      score = score.clamp(-max_score, max_score).round(6)
+      update_hash = {score: score}
+    else
+      update_hash = {}
+    end
     retry_op do |is_first|
       submission.reload if not is_first
       submission.with_lock do
         return if not ['Validating', 'received'].include?(submission.result)
-        submission.update_self_with_subtask_result({score: score}, subtask_scores)
+        submission.update_self_with_subtask_result(update_hash, subtask_scores)
       end
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", {score: score, result: submission.result, id: submission.id})
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({result: submission.result, id: submission.id}))
   end
 
   def retry_op(retry_times=4, interval=0.3)

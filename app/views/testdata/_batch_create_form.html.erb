@@ -1,0 +1,71 @@
+<%= form_for [@problem, @problem.testdata.build], url: :batch_new_problem_testdata, html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @testdata_errors, item: 'testdatum'} %>
+
+  <div class="form-group">
+    <%= f.label :testdata_file_list, "Testdata" %>
+    <%= f.file_field :testdata_file_list, class: 'form-control flat', multiple: true %>
+  </div>
+  
+  <div id="testdata-list" class="panel panel-default">
+    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
+      <h1 class="panel-title">
+        Testdata File List
+        <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+      </h1>
+    </div>
+    <div class="collapse in" id="collapseTestdata">
+      <table class="table table-condensed table-align-middle">
+        <thead>
+          <tr>
+            <th>Input Filename</th>
+            <th>Output Filename</th>
+          </tr>
+        </thead>
+        <tbody id="file-table">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :time_limit, "Time Limit" %>
+    <%= f.number_field :time_limit, class: 'form-control flat' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :vss_limit, "Memory Limit (VSS)" %>
+    <%= f.number_field :vss_limit, class: 'form-control flat' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :rss_limit, "Memory Limit (RSS)" %>
+    <%= f.number_field :rss_limit, class: 'form-control flat' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :output_limit, "Output Limit" %>
+    <%= f.number_field :output_limit, class: 'form-control flat' %>
+  </div>
+
+  <div class="dummy-placeholder">
+    <%= f.hidden_field :problem_id %>
+  </div>
+
+  <div class="form-group flex" style="display: flex; margin-bottom: 0.5em;">
+    <div class="actions" style="margin-right: 1em; flex: 0 0 0%;">
+      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-button' %>
+    </div>
+    <div style="flex: 1 0 0%; ">
+      <% ["filezip", "update"].each do |data|%>
+        <div class="fade" id="progress-fade-<%= data %>" style="flex: 1 0 0%;">
+          <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
+            <div id="progress-inner-bar-<%= data %>" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+          </div>
+          <div id="progress-text-<%= data %>" class="progress-extended small"></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<%= javascript_include_tag "testdata_batch_upload" %>
+<script>
+$(initTestdataBatchUpload);
+</script>

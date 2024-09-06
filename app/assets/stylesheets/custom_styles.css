@@ -55,6 +55,29 @@ h1 h2 h3 h4 h5 h6 {
   }
 }
 
+/* tabs for problem settings */
+.panel.panel-problem-settings {
+  background-color: #f0f3f5;
+  border-color: #96a3b7;
+}
+.panel-problem-settings > .panel-heading {
+  background-color: #6683b7;
+  padding: 5px 10px 0 10px;
+}
+.panel-problem-settings .nav-tabs {
+  border: none;
+}
+.panel-problem-settings .nav-tabs > li.active > a {
+  background-color: #f0f3f5;
+  color: #555555;
+}
+.panel-problem-settings .nav-tabs > li > a {
+  color: #f0f3f5;
+}
+.panel-problem-settings .nav-tabs > li > a:hover {
+  color: #555555;
+}
+
 /* slider (dashboard) */
 .ui-slider {
   background: #ffffff;

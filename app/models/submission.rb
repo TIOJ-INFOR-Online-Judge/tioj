@@ -16,13 +16,14 @@
 #  compiler_id     :bigint           not null
 #  code_length     :bigint           default(0), not null
 #  code_content_id :bigint           not null
+#  priority        :integer          default(20), not null
 #
 # Indexes
 #
 #  fk_rails_55e5b9f361                         (compiler_id)
 #  index_submissions_contest_compiler          (contest_id,compiler_id,id DESC)
 #  index_submissions_contest_result            (contest_id,result,id DESC)
-#  index_submissions_fetch                     (result,contest_id,id)
+#  index_submissions_fetch                     (result,priority DESC,id)
 #  index_submissions_on_code_content_id        (code_content_id)
 #  index_submissions_on_contest_id             (contest_id)
 #  index_submissions_on_result_and_updated_at  (result,updated_at)
@@ -38,6 +39,15 @@
 #
 
 class Submission < ApplicationRecord
+  PRIORITY = { # should be positive
+    :batch_rejudge_normal => 5,
+    :batch_rejudge_contest => 10,
+    :rejudge_normal => 15,
+    :normal => 20,
+    :rejudge_contest => 35,
+    :contest => 40,
+  }
+
   belongs_to :problem
   belongs_to :user, class_name: 'UserBase'
   belongs_to :contest, optional: true
@@ -108,7 +118,7 @@ class Submission < ApplicationRecord
     subtask_scores ||= calc_subtask_result
     if submission_subtask_result
       submission_subtask_result.update(result: subtask_scores)
-      update(**update_hash)
+      update(**update_hash) unless update_hash.empty?
     else
       update(**update_hash, submission_subtask_result: SubmissionSubtaskResult.new(result: subtask_scores))
     end
