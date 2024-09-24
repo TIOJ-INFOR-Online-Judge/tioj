@@ -37,4 +37,4 @@ if rails db:exists; then
 else
   rails db:setup
 fi
-/usr/local/bundle/bin/passenger start --port 4000
+/Users/user/.rvm/gems/ruby-3.2.0/bin/passenger start --port 4000
