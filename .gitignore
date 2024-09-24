@@ -40,3 +40,4 @@ passenger.*.pid.lock
 /node_modules
 
 .env
+.DS_Store
