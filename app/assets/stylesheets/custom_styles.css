@@ -19,7 +19,9 @@
     padding-right: 5px !important;
   }
 }
-
+.col-md-8 .table-condensed {
+	background-color: #f3f6fb;
+}
 .btn-success {
   background-color: rgb(88,185,158);
 }
@@ -59,9 +61,11 @@ body {
   text-overflow: ellipsis;
 }
 td {
-  background-color: #f3f6fb   !important;
+  background-color: #f3f6fb;
 }
-
+.td-ignore {
+  background-color: #dde4ef;
+}
 .well-lg .table {
   width: 100%;
 }
