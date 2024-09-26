@@ -1,7 +1,6 @@
 <h4 class="page-header">New submission <small><%= @problem.id %>. <%= @problem.name %></small></h4>
 
+<%= link_to 'Back to Problem', contest_adaptive_polymorphic_path([@problem]), class: 'btn btn-primary btn-sm' %>
 <%= render 'form' %>
-
-<%= link_to 'Show Problem', contest_adaptive_polymorphic_path([@problem]), class: 'btn btn-primary btn-xs' %>
 <%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-default btn-xs' %>
 
