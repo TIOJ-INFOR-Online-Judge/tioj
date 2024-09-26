@@ -55,74 +55,85 @@
 
 <% if not hide_old_submission %>
   <div class="row">
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h1 class="panel-title">TopCoder</h1>
-        </div>
-        <div class="panel-body">
-          <% tcoder = topcoder(@problem) %>
-          <% if tcoder %>
-            <div class="bs5-row">
-              <div class="bs5-col-lg bs5-col-lg-auto">
-                <%= link_to image_tag(tcoder.avatar.thumb.to_s, class: "img-thumbnail img-responsive"), user_path(tcoder) %>
-              </div>
-              <div class="bs5-col-lg">
-                <%= link_to tcoder.nickname, user_path(tcoder) %><br>
-                <blockquote class="motto"><dfn><%= tcoder.motto %></dfn></blockquote>
-              </div>
-            </div>
-          <% end %>
-        </div>
+    <div class="col-md-9 ds-panel panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Description</h1>
       </div>
-    </div>
-    <div class="col-md-5">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">User's AC Ratio</h1>
-            </div>
-            <div class="panel-body">
-              <%= users_ac_ratio(@problem) %>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">Submission's AC Ratio</h1>
-            </div>
-            <div class="panel-body">
-              <%= submissions_ac_ratio(@problem) %>
-            </div>
-          </div>
-        </div>
+      <div class="panel-body">
+        <%= markdown(@problem.description) %>
       </div>
     </div>
     <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h1 class="panel-title">Tags
-            <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
-          </h1>
-        </div>
-        <div class="panel-body">
-          <%= tag_list_html(@problem) %>
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">TopCoder</h1>
+          </div>
+          <div class="panel-body">
+            <% tcoder = topcoder(@problem) %>
+            <% if tcoder %>
+              <div class="bs5-row">
+                <div class="bs5-col-lg bs5-col-lg-auto">
+                  <%= link_to image_tag(tcoder.avatar.thumb.to_s, class: "img-thumbnail img-responsive"), user_path(tcoder) %>
+                </div>
+                <div class="bs5-col-lg">
+                  <%= link_to tcoder.nickname, user_path(tcoder) %><br>
+                  <blockquote class="motto"><dfn><%= tcoder.motto %></dfn></blockquote>
+                </div>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">User's AC Ratio</h1>
+          </div>
+          <div class="panel-body">
+            <%= users_ac_ratio(@problem) %>
+          </div>
+        </div>
+      </div>
+      
+      <!-- <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">Submission's AC Ratio</h1>
+          </div>
+          <div class="panel-body">
+            <%= submissions_ac_ratio(@problem) %>
+          </div>
+        </div>
+      </div> -->
+
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">Tags
+              <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+            </h1>
+          </div>
+          <div class="panel-body">
+            <%= tag_list_html(@problem) %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title">Problem Source</h1>
+          </div>
+          <div class="panel-body">
+            <%= markdown(@problem.source) %>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 <% end %>
-
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Description</h1>
-  </div>
-  <div class="panel-body">
-    <%= markdown(@problem.description) %>
-  </div>
-</div>
 
 <div class="row">
   <div class="col-md-6">
@@ -181,48 +192,41 @@
       </div>
     </div>
   </div>
+
   <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Problem Source</h1>
-      </div>
-      <div class="panel-body">
-        <%= markdown(@problem.source) %>
-      </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+      <h1 class="panel-title">Subtasks</h1>
     </div>
+    <table class="table table-hover table-striped table-condensed">
+      <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
+      <thead>
+        <tr>
+          <th width="5%">No.</th>
+          <th width="20%">Testdata Range</th>
+          <% if show_cons %>
+            <th width="60%">Constraints</th>
+          <% end %>
+          <th width="15%">Score</th>
+        </tr>
+      </thead>
+      <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
+          <% if show_cons %>
+            <td><%= markdown_no_p(s.constraints) %></td>
+          <% end %>
+          <td><%= sprintf("%g", s.score) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Subtasks</h1>
-  </div>
-  <table class="table table-hover table-striped table-condensed">
-    <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
-    <thead>
-      <tr>
-        <th width="5%">No.</th>
-        <th width="20%">Testdata Range</th>
-        <% if show_cons %>
-          <th width="60%">Constraints</th>
-        <% end %>
-        <th width="15%">Score</th>
-      </tr>
-    </thead>
-    <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
-      <tr>
-        <td><%= i + 1 %></td>
-        <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
-        <% if show_cons %>
-          <td><%= markdown_no_p(s.constraints) %></td>
-        <% end %>
-        <td><%= sprintf("%g", s.score) %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
 
-<div class="panel panel-default">
+<!-- <div class="panel panel-default">
   <div class="panel-heading" data-toggle="collapse" href="#collapseLimit">
     <h1 class="panel-title">
       Testdata and Limits
@@ -269,7 +273,7 @@
     </tbody>
   </table>
   </div>
-</div>
+</div> -->
 
 <div class="row">
   <%= render 'submit_button' %>
