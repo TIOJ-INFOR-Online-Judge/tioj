@@ -3,11 +3,11 @@
 <% end %>
 
 <% content_for :navbar do %>
-<div style="background-color:#3F2305">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#3F2305">
+<div style="background-color:#003365">
+  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#2E3440">
     <div class="container-fluid">
       <div class="navbar-header">
-        <%= link_to image_tag("banner.png", alt: "TIOJ contest - #{@contest.title}", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), contest_path(@contest), class: "nav-brand" %>
+        <%= link_to image_tag("banner_new.png", alt: "ISCOJ", style: "width: 214px; height: 40px; padding-left: 15px; padding-right: 20px;", skip_pipeline: true), root_path, class: "nav-brand" %>
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
@@ -18,9 +18,10 @@
       <div class="collapse navbar-collapse" id="navbar-collapse-01">
         <ul class="nav navbar-nav navbar-left">
           <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
-          <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
-          <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
           <li><%= link_to "Dashboard", dashboard_contest_path(@contest) %></li>
+          <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
+
+          <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
           <% if current_user %>
             <% if current_user.admin? %>
               <li><%= link_to "Users & Registrations", contest_contest_registrations_path(@contest) %></li>

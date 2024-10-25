@@ -3,6 +3,10 @@
   src: url("SF-Pro.ttf");
 }
 
+.ds-panel {
+  padding: 0px !important;
+}
+
 @media only screen and (max-width: 768px) {
   html {
     overflow-x: hidden;
@@ -15,7 +19,9 @@
     padding-right: 5px !important;
   }
 }
-
+.col-md-8 .table-condensed {
+	background-color: #f3f6fb;
+}
 .btn-success {
   background-color: rgb(88,185,158);
 }
@@ -55,9 +61,11 @@ body {
   text-overflow: ellipsis;
 }
 td {
-  background-color: #f3f6fb   !important;
+  background-color: #f3f6fb;
 }
-
+.td-ignore {
+  background-color: #dde4ef;
+}
 .well-lg .table {
   width: 100%;
 }

@@ -109,7 +109,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% end %>
         <td id="time-<%= submission.id %>"><%= submission.total_time.to_i %></td>
         <td id="memory-<%= submission.id %>"><%= submission.total_memory.to_i %></td>
-        <td id="verdict-<%= submission.id %>" class="<%= verdict_class_map[submission.result] %>"><%= submission.result %></td>
+        <td id="verdict-<%= submission.id %>" class="<%= verdict_class_map[submission.result] %>" data-splitting><%= submission.result %></td>
         <td><%= submission.compiler.name %></td>
         <td><%= number_to_human_size(submission.code_length) %></td>
         <td id="score-<%= submission.id %>"><%= sprintf("%g", submission.score) %></td>

@@ -8,40 +8,40 @@
     <% if not @user.motto.blank? %><blockquote class="motto"><dfn><%= @user.motto %></dfn></blockquote><% end %>
     <table>
       <tr>
-        <td class="col-md-7">Tried and accepted (+contests):</td>
-        <td class="col-md-5"><%= @tried.count{|x| x == 1} %></td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-7">Tried and accepted (+contests):</td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-5"><%= @tried.count{|x| x == 1} %></td>
       </tr>
       <tr>
-        <td class="col-md-7">Tried but in vain (+contests):</td>
-        <td class="col-md-5"><%= @tried.count{|x| x == 2} %></td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-7">Tried but in vain (+contests):</td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-5"><%= @tried.count{|x| x == 2} %></td>
       </tr>
       <tr>
-        <td class="col-md-7">AC Ratio (-contests):</td>
-        <td class="col-md-5"><%= ac_ratio_by_user(@user) %></td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-7">AC Ratio (-contests):</td>
+        <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-5"><%= ac_ratio_by_user(@user) %></td>
       </tr>
     </table>
     <br>
     <% if current_user&.admin? or current_user&.id == @user.id %>
       <table>
         <tr>
-          <td class="col-md-3">Admin:</td>
-          <td class="col-md-9"><%= @user.admin? %></td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-3">Admin:</td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-9"><%= @user.admin? %></td>
         </tr>
         <tr>
-          <td class="col-md-3">Name:</td>
-          <td class="col-md-9"><%= @user.name %></td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-3">Name:</td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-9"><%= @user.name %></td>
         </tr>
         <tr>
-          <td class="col-md-3">School:</td>
-          <td class="col-md-9"><%= @user.school %></td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-3">School:</td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-9"><%= @user.school %></td>
         </tr>
         <tr>
-          <td class="col-md-3">Gradyear:</td>
-          <td class="col-md-9"><%= @user.gradyear %></td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-3">Gradyear:</td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-9"><%= @user.gradyear %></td>
         </tr>
         <tr>
-          <td class="col-md-3">Email:</td>
-          <td class="col-md-9"><%= @user.email %></td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-3">Email:</td>
+          <td styles="background-color: #dde4ef !important;" class="td-ignore col-md-9"><%= @user.email %></td>
         </tr>
       </table>
       <br>
@@ -67,7 +67,7 @@
             <tr>
           <% end %>
 
-          <td>
+          <td styles="background-color: #dde4ef !important;">
             <% case @tried[prob.id] %>
               <% when 1 %>
                  <%= link_to prob.id.to_s, problem_submissions_path(prob, filter_user_id: @user.id), class: "text-success" %>

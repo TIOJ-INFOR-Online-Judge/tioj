@@ -1,3 +1,19 @@
+.text-rainbow {
+  animation: rainbow-colors 2s linear infinite;
+  animation-delay: calc(-2s * var(--char-percent));
+}
+/* Unfortunately, browsers try to take the shortest distance between transition/animation properties, so a simple `0turn` to `1turn` doesn't get the proper effect. */
+@keyframes rainbow-colors {
+  0% { color: hsl(0turn, 90%, 65%); }
+  16.6% { color: hsl(43.12deg 90% 65%); }
+  33.2% { color: hsl(108.49deg 63.89% 53.1%); }
+  49.8% { color: hsl(200.39deg 89.02% 57.73%); }
+  67.4% { color: hsl(240.56deg 92.31% 60.86%); }
+  83.4% { color: hsl(279.12deg 59.85% 47.92%); }
+  100% { color: hsl(0turn, 90%, 65%); }
+}
+
+
 tr.ole > td {
   background-color: #F3E6FC;
 }
