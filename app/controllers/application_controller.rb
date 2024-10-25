@@ -139,8 +139,7 @@ class ApplicationController < ActionController::Base
     contest_id = @layout == :application ? nil : @contest&.id
     @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
   end
-
-  def get_sorted_user(limit = nil)
+  def get_sorted_user(limit = nil, gradyear: nil)
     attributes = [
       "users.*",
       "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.problem_id END) ac",
@@ -149,11 +148,14 @@ class ApplicationController < ActionController::Base
       "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) / COUNT(s.id) acratio",
     ]
     query = User.select(*attributes)
-        .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
-        .group(:id).order('ac DESC', 'acratio DESC', 'sub DESC', :id)
-    if limit
-      query = query.limit(limit)
-    end
+                .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
+                .group(:id)
+                .order('ac DESC', 'acratio DESC', 'sub DESC', :id)
+
+    # Apply gradyear filter if provided
+    query = query.where(gradyear: gradyear) if gradyear.present?
+  
+    query = query.limit(limit) if limit
     query.to_a
   end
 
