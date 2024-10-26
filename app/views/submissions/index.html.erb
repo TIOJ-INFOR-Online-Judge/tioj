@@ -38,8 +38,10 @@
       <input style="width:150px" id="quick_prob_id" type="number" class="form-control input-sm flat" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
     </div>
     <a href="#" id="quick_submit" class="btn btn-success btn-xs">Submit</a>
-    <% my_link = url_for(controller: 'submissions', action: 'index', filter_username: @user.username) %>
-    <%= link_to 'My Submissions', my_link, class: "btn btn-success btn-xs"%>
+    <% if user_signed_in? %>
+      <% my_link = url_for(controller: 'submissions', action: 'index', filter_username: @user.username) %>
+      <%= link_to 'My Submissions', my_link, class: "btn btn-success btn-xs"%>
+    <%end%>
   </div>
 <% end %>
 
