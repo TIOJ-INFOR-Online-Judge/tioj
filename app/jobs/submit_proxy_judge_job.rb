@@ -16,16 +16,7 @@ class SubmitProxyJudgeJob < ApplicationJob
     end
 
     begin
-      case problem.proxyjudge_type.to_sym
-      when :codeforces
-        @proxy = Judges::Codeforces.new()
-      when :poj
-        @proxy = Judges::POJ.new()
-      when :qoj
-        @proxy = Judges::QOJ.new()
-      else
-        raise 'Unknown problem.proxyjudge_type'
-      end
+      @proxy = problem.proxyjudge_class.new()
 
       # the submit! method will update the submission's proxyjudge_id
       @proxy.submit!(problem.proxyjudge_args, submission.compiler.name, code, submission)

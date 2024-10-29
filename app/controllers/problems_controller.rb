@@ -107,6 +107,7 @@ class ProblemsController < ApplicationController
   def create
     params[:problem][:compiler_ids] ||= []
     @problem = Problem.new(check_params())
+    set_proxyjudge_ban_compiler
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       if @problem.save
@@ -124,6 +125,7 @@ class ProblemsController < ApplicationController
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       @problem.attributes = check_params()
+      set_proxyjudge_ban_compiler
       pre_ids = @problem.subtasks.collect(&:id)
       changed = @problem.subtasks.any? {|x| x.score_changed? || x.td_list_changed?}
       changed ||= @problem.score_precision_changed?
@@ -221,6 +223,15 @@ class ProblemsController < ApplicationController
       params[:judge_between_stages] = false
     end
     params
+  end
+
+  def set_proxyjudge_ban_compiler
+    if @problem.proxyjudge_any? then
+      valid_compiler_names = @problem.proxyjudge_class::PROXY_COMPILERS.keys()
+      proxyjudge_ban_compilers = Compiler.where.not(name: valid_compiler_names)
+      @problem.compilers = \
+        (@problem.compilers.to_set | proxyjudge_ban_compilers.to_set).to_a
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

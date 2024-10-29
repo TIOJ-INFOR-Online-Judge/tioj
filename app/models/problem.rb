@@ -106,4 +106,14 @@ class Problem < ApplicationRecord
   def proxyjudge_any?
     not proxyjudge_none?
   end
+
+  def proxyjudge_class
+    classname = [proxyjudge_type.capitalize, proxyjudge_type.upcase] \
+      .find { |classname| Judges.const_defined?(classname) }
+    if classname.nil? then
+      raise "Failed to find class, proxyjudge_type is `#{proxyjudge_type}`"
+    end
+    # Rails.logger.debug "classname = #{classname}"
+    Judges.const_get(classname)
+  end
 end
