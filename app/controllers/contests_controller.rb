@@ -51,7 +51,6 @@ class ContestsController < ApplicationController
         user_team_mapping[user] = user_team_mapping.fetch(user, team)
       end
     end
-    Rails.logger.debug(user_team_mapping)
     c_submissions = c_submissions.order(:created_at).map{|sub|
       sub.user = user_team_mapping[sub.user]
       sub
@@ -81,7 +80,7 @@ class ContestsController < ApplicationController
 
   def index
     @contests = Contest.order(id: :desc).page(params[:page])
-    @registrations = ContestRegistration.where(contest_id: @contests.map(&:id), user_id: current_user&.id).all
+    @registrations = @contests.map { |contest| contest.find_registration(current_user) }
     @registrations = @registrations.map{|x| [x.contest_id, x.approved]}.to_h
   end
 
