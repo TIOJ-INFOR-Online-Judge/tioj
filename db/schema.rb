@@ -377,6 +377,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_06_023828) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "teams_users", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id", "user_id"], name: "index_teams_users_on_team_id_and_user_id"
+    t.index ["user_id", "team_id"], name: "index_teams_users_on_user_id_and_team_id"
+  end
+
   create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.string "test_input"

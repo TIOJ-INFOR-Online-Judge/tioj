@@ -112,7 +112,6 @@ class User < UserBase
   extend FriendlyId
   friendly_id :username
 
-  
   def self.ransackable_attributes(auth_object = nil)
     [
       "created_at", "updated_at", "id", "id_value", "username", "email", "admin",
@@ -123,6 +122,11 @@ class User < UserBase
       "remember_created_at", "reset_password_sent_at"
     ]
   end
+
+  has_and_belongs_to_many :teams,
+                          join_table: 'teams_users',
+                          foreign_key: :user_id,
+                          association_foreign_key: :team_id
 end
 
 class ContestUser < UserBase
@@ -131,4 +135,32 @@ class ContestUser < UserBase
     uniqueness: {case_sensitive: false, scope: :contest_id},
     username_convention: true
   validates_uniqueness_of :nickname, scope: :contest_id
+end
+
+class Team < UserBase
+  has_and_belongs_to_many :users,
+                          join_table: 'teams_users',
+                          foreign_key: :team_id,
+                          association_foreign_key: :user_id
+  accepts_nested_attributes_for :users
+  validates :users, :presence => true # has at least one user
+
+  alias_attribute :teamname, :username
+  validates :teamname,
+    uniqueness: {case_sensitive: false},
+    username_convention: true
+
+  validates_uniqueness_of :nickname
+  validates_length_of :motto, maximum: 75
+
+  validates :school, presence: true, length: {in: 1..64}
+  # validates :gradyear, presence: true, inclusion: 1..3000
+  # validates :name, presence: true, length: {in: 1..12}
+
+  def password_required?
+    false
+  end
+
+  extend FriendlyId
+  friendly_id :teamname
 end

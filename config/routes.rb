@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :teams
   resources :announcements
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
