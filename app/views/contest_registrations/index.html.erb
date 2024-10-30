@@ -92,6 +92,39 @@
 
 <hr style="border-top: 3px solid #ddd">
 
+<h4>Registered teams</h4>
+
+<% if @registered_teams %>
+  <table class="table table-hover table-striped table-condensed">
+    <tr>
+      <th></th>
+      <th>Teamname</th>
+      <th>Nickname</th>
+      <th>
+        <%= button_to 'Unregister All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'unregister_all'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all teams?'} %>
+      </th>
+    </tr>
+    <% @registered_teams.each do |item| %>
+      <tr>
+        <% team = item.user %>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
+        <td>
+          <%= link_to team.teamname, team_path(team) %>
+          <% if @duplicate_names.include?(team.teamname) %>
+            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This team is shadowed by a contest team. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+          <% end %>
+        </td>
+        <td><%= team.nickname %></td>
+        <td>
+          <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  No currently registered teams.
+<% end %>
+
 <h4>Unapproved registrations</h4>
 
 <% if @unapproved_users %>

@@ -142,8 +142,8 @@ class Team < UserBase
                           join_table: 'teams_users',
                           foreign_key: :team_id,
                           association_foreign_key: :user_id
+  validates :users, length: { in: 1..10, message: "should be between 1 and 10." }
   accepts_nested_attributes_for :users
-  validates :users, :presence => true # has at least one user
 
   alias_attribute :teamname, :username
   validates :teamname,

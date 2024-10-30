@@ -122,21 +122,20 @@ module ContestsHelper
 
   ## --- HTML ---
 
-  def contest_register_button(contest, status, standalone)
+  def contest_registration_page_button(contest, status, standalone)
     if contest.can_register?
       btn_class = standalone ? 'btn-lg' : 'btn-xs'
-      btn_class += status.nil? ? ' btn-success' : ' btn-danger'
-      button_text = status.nil? ? "Register" : "Unregister"
+      btn_class += ' btn-primary'
+      button_text = standalone ? 'Change Registration' : 'Change'
 
       content_tag(:div, class: 'pull-right') if standalone
 
       html = button_to(
           button_text,
           register_contest_path(contest),
-          method: :post,
+          method: :get,
           class: "btn #{btn_class}",
           form: {style: 'display: inline'},
-          params: status.nil? ? {} : { cancel: 1 },
       )
       if standalone
         content_tag(:div, class: 'pull-right') do

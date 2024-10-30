@@ -22,8 +22,7 @@
   </table>
 
   <p>
-  There are <%= @team.users.length %> users in this team.
-  <p>
+
   <div>
     <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-xs' %>
     <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>

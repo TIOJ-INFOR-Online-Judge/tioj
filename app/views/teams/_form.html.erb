@@ -40,7 +40,7 @@
   <%# <%= f.link_to_add "Add a member", :users, class: 'btn btn-warning' %1> %>
 
   <div class="form-group">
-    <%= f.collection_select(:user_ids, User.all, :id, :username, {}, { multiple: true }) %>
+    <%= f.collection_select(:user_ids, User.all, :id, :username, {}, { multiple: true, class: 'form-control flat' }) %>
     <br>
     Hint: use ctrl to select multiple users.
     <%# TODO make it more UI-friendly %> 

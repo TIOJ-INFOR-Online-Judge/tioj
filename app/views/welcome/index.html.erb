@@ -39,7 +39,7 @@
               <% if user_signed_in? %>
                 <td>
                   <%= contest_register_status(@registrations[contest.id], false) %>
-                  <%= contest_register_button(contest, @registrations[contest.id], false) %>
+                  <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
                 </td>
               <% end %>
               <% if contest.is_ended? %>
