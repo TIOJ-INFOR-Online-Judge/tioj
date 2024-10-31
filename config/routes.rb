@@ -1,5 +1,11 @@
 Rails.application.routes.draw do
-  resources :teams
+  resources :teams do
+    member do
+      get :invite
+      post :invite, to: 'teams#invite_accept'
+    end
+  end
+
   resources :announcements
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
