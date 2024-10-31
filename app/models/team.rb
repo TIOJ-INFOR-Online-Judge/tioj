@@ -18,8 +18,6 @@ class Team < ApplicationRecord
   validates :users, length: { in: 1..10, message: "should be between 1 and 10." }
   accepts_nested_attributes_for :users
 
-  has_and_belongs_to_many :team_contest_users, association_foreign_key: :user_id
-
   # validates_presence_of :teamname
   validates_length_of :teamname, in: 1..32
 
