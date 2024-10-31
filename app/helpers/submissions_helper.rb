@@ -30,8 +30,11 @@ module SubmissionsHelper
 
   def user_can_view?(user, submission, contest)
     return true if user&.id == submission.user_id
-    return true if contest && contest == submission.contest \
-      && contest.find_registration(submission.user) == contest.find_registration(user)
+    if contest && contest == submission.contest
+      sub_team = contest.find_registration(submission.user)&.team
+      team = contest.find_registration(user)&.team
+      return true if team && team == sub_team
+    end
     false
   end
 end
