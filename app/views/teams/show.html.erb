@@ -6,21 +6,23 @@
 
   <table>
     <tr>
-      <td class="col-md-3">School:</td>
-      <td class="col-md-9"><%= @team.school %></td>
+      <td class="col-md-5">School:</td>
+      <td class="col-md-7"><%= @team.school %></td>
     </tr>
     <tr>
-      <td class="col-md-3">Created:</td>
-      <td class="col-md-9"><%= @team.created_at.to_fs(:clean) %></td>
+      <td class="col-md-5">Created at:</td>
+      <td class="col-md-7"><%= @team.created_at.to_fs(:clean) %></td>
     </tr>
   </table>
 
   <p>
 
-  <div>
-    <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-xs' %>
-    <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
-  </div>
+  <% if effective_admin? or @team.users.include?(current_user) %>
+    <div>
+      <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-xs' %>
+      <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
+    </div>
+  <% end %>
   <div>
     <%= link_to 'Back to teams List', teams_path, class: 'btn btn-default btn-xs' %>
   </div>

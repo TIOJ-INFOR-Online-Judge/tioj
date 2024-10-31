@@ -9,14 +9,14 @@
 #  school     :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  token      :string(255)
 #
 
 require 'file_size_validator'
 
 class Team < ApplicationRecord
   has_and_belongs_to_many :users
-  validates :users, length: { in: 1..10, message: "should be between 1 and 10." }
-  accepts_nested_attributes_for :users
+  accepts_nested_attributes_for :users, allow_destroy: true
 
   # validates_presence_of :teamname
   validates_length_of :teamname, in: 1..32
@@ -45,5 +45,11 @@ class Team < ApplicationRecord
 
   extend FriendlyId
   friendly_id :teamname
+
+  before_create :generate_token
+
+  def generate_token
+    self.token = SecureRandom.hex(20)
+  end
 end
 

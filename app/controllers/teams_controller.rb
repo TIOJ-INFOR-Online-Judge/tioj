@@ -1,5 +1,7 @@
 class TeamsController < ApplicationController
-  before_action :set_team, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept]
+  before_action :check_user_in_team!, only: [:edit, :update, :destroy]
 
   def index
     @teams = Team.order(id: :desc).page(params[:page])
@@ -10,12 +12,12 @@ class TeamsController < ApplicationController
 
   def new
     @team = Team.new
-    @team.users = [current_user]
   end
 
   def create
     @team = Team.new(team_params)
     @team.generate_random_avatar
+    @team.users = [current_user]
     if @team.save
       redirect_to @team, notice: 'Team was successfully created.'
     else
@@ -24,6 +26,34 @@ class TeamsController < ApplicationController
   end
 
   def edit
+  end
+
+  def invite
+    @token = params[:token]
+  end
+
+  def invite_accept
+    if @team.token != params[:token]
+      redirect_to teams_path, alert: 'Invalid token'
+      return
+    end
+    # if @team.users.include?(current_user)
+    #   redirect_to @team, alert: 'You are already in this team.'
+    #   return
+    # end
+
+    begin
+      @team.users << current_user
+      if @team.save
+        flash[:notice] = 'Joined successfully.'
+      else
+        flash[:alert] = 'Failed to join.'
+      end
+    rescue ActiveRecord::RecordNotUnique
+      flash[:alert] = 'User has already been added to this team.'
+    end
+
+    redirect_to @team
   end
 
   def update
@@ -59,9 +89,17 @@ class TeamsController < ApplicationController
   def team_params
     params.require(:team).permit(
       :teamname,
-      :nickname,
+      :avatar, :avatar_cache,
+      :motto,
       :school,
-      user_ids: []
+      users_attributes: [
+        :id,
+        :_destroy
+      ]
     )
+  end
+
+  def check_user_in_team!
+    raise_not_found unless effective_admin? or @team.users.include?(current_user)
   end
 end
