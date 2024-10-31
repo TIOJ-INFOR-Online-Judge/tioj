@@ -3,7 +3,10 @@
 # Table name: teams
 #
 #  id         :bigint           not null, primary key
-#  teamname       :string(255)
+#  teamname   :string(255)
+#  avatar     :string(255)
+#  motto      :string(255)
+#  school     :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

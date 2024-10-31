@@ -123,10 +123,7 @@ class User < UserBase
     ]
   end
 
-  has_and_belongs_to_many :teams,
-                          join_table: 'teams_users',
-                          foreign_key: :user_id,
-                          association_foreign_key: :team_id
+  has_and_belongs_to_many :teams
 end
 
 class ContestUser < UserBase
@@ -136,40 +133,3 @@ class ContestUser < UserBase
     username_convention: true
   validates_uniqueness_of :nickname, scope: :contest_id
 end
-
-class TeamContestUser < UserBase
-  belongs_to :team
-  belongs_to :contest
-  validates :username,
-    uniqueness: {case_sensitive: false, scope: :contest_id},
-    username_convention: true
-  validates_uniqueness_of :nickname, scope: :contest_id
-end
-
-# class Team < UserBase
-#   has_and_belongs_to_many :users,
-#                           join_table: 'teams_users',
-#                           foreign_key: :team_id,
-#                           association_foreign_key: :user_id
-#   validates :users, length: { in: 1..10, message: "should be between 1 and 10." }
-#   accepts_nested_attributes_for :users
-
-#   alias_attribute :teamname, :username
-#   validates :teamname,
-#     uniqueness: {case_sensitive: true},
-#     username_convention: true
-
-#   validates_uniqueness_of :nickname
-#   validates_length_of :motto, maximum: 75
-
-#   validates :school, presence: true, length: {in: 1..64}
-#   # validates :gradyear, presence: true, inclusion: 1..3000
-#   # validates :name, presence: true, length: {in: 1..12}
-
-#   def password_required?
-#     false
-#   end
-
-#   extend FriendlyId
-#   friendly_id :teamname
-# end

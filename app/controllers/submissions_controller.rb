@@ -75,7 +75,7 @@ class SubmissionsController < ApplicationController
 
   def create
     cd_time = @contest ? @contest.cd_time : 15
-    user = @contest ? @contest.find_registration(current_user).user : current_user
+    user = @contest ? @contest.find_registration(current_user)&.user || current_user : current_user
     if user.admin?
       user.update(last_submit_time: Time.now)
     else
@@ -152,8 +152,8 @@ class SubmissionsController < ApplicationController
         if user_signed_in?
           user_ids = [current_user.id]
           registration = @contest.find_registration(current_user)
-          if registration.user.type == 'Team'
-            user_ids += registration.user.users
+          if registration&.team
+            user_ids += registration.team.users
           end
         end
         @submissions = @submissions.where('submissions.created_at < ?', @contest.freeze_after) \
@@ -226,7 +226,7 @@ class SubmissionsController < ApplicationController
     if @submission&.compiler_id
       @default_compiler_id = @submission.compiler_id
     else
-      user = @contest ? @contest.find_registration(current_user).user : current_user
+      user = @contest ? @contest.find_registration(current_user)&.user || current_user : current_user
       last_compiler = user&.last_compiler_id
       if @compiler.map(&:id).include?(last_compiler)
         @default_compiler_id = last_compiler

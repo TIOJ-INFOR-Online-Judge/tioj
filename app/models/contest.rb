@@ -87,11 +87,7 @@ class Contest < ApplicationRecord
   end
 
   def find_registration(usr)
-    teams = usr&.teams
-    teams ||= []
-    registration = contest_registrations.where(user_id: teams.map(&:id)).first
-    registration ||= contest_registrations.where(user_id: usr&.id).first
-    registration
+    contest_registrations.where(user_id: usr&.id).first
   end
 
   # nil if not registered, false if pending approval, true if registered

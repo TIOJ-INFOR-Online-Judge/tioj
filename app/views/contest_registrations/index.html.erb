@@ -99,22 +99,24 @@
     <tr>
       <th></th>
       <th>Teamname</th>
-      <th>Nickname</th>
+      <th>Member</th>
       <th>
         <%= button_to 'Unregister All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'unregister_all'}, class: 'btn btn-xs btn-danger', style: 'font-size: 14px', data: {confirm: 'Are you sure to unregister all teams?'} %>
       </th>
     </tr>
     <% @registered_teams.each do |item| %>
       <tr>
-        <% team = item.user %>
+        <% team = item.team %>
+        <% user = item.user %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
+        <td><%= link_to team.teamname, team_path(team) %></td>
         <td>
-          <%= link_to team.teamname, team_path(team) %>
-          <% if @duplicate_names.include?(team.teamname) %>
-            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This team is shadowed by a contest team. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+          <%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %>
+          <%= link_to user.username, user_path(user) %>
+          <% if @duplicate_names.include?(user.username) %>
+            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
           <% end %>
         </td>
-        <td><%= team.nickname %></td>
         <td>
           <%= link_to 'Unregister', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-danger' %>
         </td>
@@ -137,27 +139,35 @@
       <th></th>
       <th>Username</th>
       <th>Nickname</th>
+      <th>Team</th>
       <th>
         <%= button_to 'Approve All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'approve_all'}, class: 'btn btn-xs btn-info', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to approve all registrations?'} %>
         <%= button_to 'Delete All', batch_op_contest_contest_registrations_path(@contest), params: {action_type: 'delete_unapproved'}, class: 'btn btn-xs btn-danger', form_class: 'inline-block', style: 'font-size: 14px', data: {confirm: 'Are you sure to delete all unapproved registrations?'} %>
       </th>
     </tr>
     <% @unapproved_users.each do |item| %>
-    <tr>
-      <% user = item.user %>
-      <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
-      <td>
-        <%= link_to user.username, user_path(user) %>
-        <% if @duplicate_names.include?(user.username) %>
-          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
-        <% end %>
-      </td>
-      <td><%= user.nickname %></td>
-      <td>
-        <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-info' %>
-        <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
-      </td>
-    </tr>
+      <tr>
+        <% team = item.team %>
+        <% user = item.user %>
+        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %></td>
+        <td>
+          <%= link_to user.username, user_path(user) %>
+          <% if @duplicate_names.include?(user.username) %>
+            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+          <% end %>
+        </td>
+        <td><%= user.nickname %></td>
+        <td>
+          <% if team.present? %>
+            <%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %>
+            <%= link_to team.teamname, team_path(team) %>
+          <% end %>
+        </td>
+        <td>
+          <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-xs btn-info' %>
+          <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
     <% end %>
   </table>
 <% else %>
@@ -165,5 +175,5 @@
 <% end %>
 
 <script>
-$(() => { $('[data-toggle="tooltip"]').tooltip(); })
+  $(() => { $('[data-toggle="tooltip"]').tooltip(); })
 </script>

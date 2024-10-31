@@ -2,45 +2,61 @@
 
 <%# <h5><%= @contest.title %1></h5> %>
 
-<div class="form-group">
-  <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-    <label>As team</label>
-    <% if @team_registration %>
+<% if @registration.nil? %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As team</label>
+      <%= f.collection_select :team_id, @teams, :id, :teamname, {}, { class: 'form-control flat' } %>
+      <%= contest_register_status(@registration&.approved, true) %>
+      <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+    <% end %>
+  </div>
+
+  <hr>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As individual</label>
+      <div>
+        <%= contest_register_status(@registration&.approved, true) %>
+        <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+      </div>
+    <% end %>
+  </div>
+
+<% elsif @registration.team.nil? %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As individual</label>
+      <div>
+        <%= contest_register_status(@registration&.approved, true) %>
+        <%= f.hidden_field :cancel, value: 1 %>
+        <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
+      </div>
+    <% end %>
+  </div>
+
+<% else %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As team</label>
       <%=
         f.collection_select :team_id, @teams, :id, :teamname,
-          { selected: @team_registration.user.id },
+          { selected: @registration.user.id },
           { class: 'form-control flat', disabled: true }
         %>
       <%= f.hidden_field :cancel, value: 1 %>
-      <%= f.hidden_field :team_id, value: @team_registration.user.id %>
-      <%= contest_register_status(@team_registration&.approved, true) %>
+      <%= f.hidden_field :team_id, value: @registration.team.id %>
+      <%= contest_register_status(@registration&.approved, true) %>
       <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
-    <% else %>
-      <%= f.collection_select :team_id, @teams, :id, :teamname, {}, { class: 'form-control flat' } %>
-      <%= contest_register_status(@team_registration&.approved, true) %>
-      <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
     <% end %>
-  <% end %>
-</div>
+  </div>
 
-<hr>
-
-<div class="form-group">
-  <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-    <label>As individual</label>
-    <div>
-      <% if @user_registration %>
-        <%= contest_register_status(@user_registration&.approved, true) %>
-        <%= f.hidden_field :cancel, value: 1 %>
-        <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
-      <% else %>
-        <%= contest_register_status(@user_registration&.approved, true) %>
-        <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
+<% end %>
 
 <p>
+
 <%= link_to "Back", :back, class: 'btn btn-default btn-xs' %>
