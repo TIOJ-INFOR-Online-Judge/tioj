@@ -8,8 +8,8 @@
   <thead>
     <tr>
       <%# <th>ID</th> %>
+      <th></th>
       <th>Teamname</th>
-      <th>Nickname</th>
       <th></th>
       <th></th>
     </tr>
@@ -19,8 +19,8 @@
     <% @teams.each do |team| %>
       <tr>
         <%# <td><%= team.id %1></td> %>
-        <td><%= team.teamname %></td>
-        <td><%= team.nickname %></td>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
+        <td><%= link_to team.teamname, team_path(team) %></td>
         <td>Created at: <%= team.created_at.strftime("%Y-%m-%d") %></td>
         <td>
           <%= link_to 'Show', team, method: :get, class: 'btn btn-success btn-xs' %>

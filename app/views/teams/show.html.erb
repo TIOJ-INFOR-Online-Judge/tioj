@@ -1,14 +1,8 @@
 <% set_page_title @team.teamname %>
 
-<%# <h4 class="page-header"> %>
-<%#   <%= @team.nickname %1> %>
-<%#   <%1# <%= user_problem_status(current_user, @problem) if user_signed_in? %2> <%= @problem.id %2> . <%= @problem.name %2> %1> %>
-<%# </h4> %>
-
 <div class="col-md-4">
   <%= image_tag(@team.avatar.thumb.to_s, class: "img-rounded img-responsive") %><br/>
-  <h4><%= @team.nickname %></h4>
-  <h6><%= @team.teamname %></h6>
+  <h4><%= @team.teamname %></h4>
 
   <table>
     <tr>
