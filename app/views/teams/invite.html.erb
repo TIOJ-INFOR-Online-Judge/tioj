@@ -1,6 +1,6 @@
 <% set_page_title "Join " + @team.teamname %>
 
-<h4 class="page-header">Join team <small>#<%= @team.teamname %></small> ?</h4>
+<h4 class="page-header">Join team <small><i><%= @team.teamname %></i></small> ?</h4>
 
 <%= form_with url: invite_team_path(@team), html: {class: 'form', id: 'team-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>

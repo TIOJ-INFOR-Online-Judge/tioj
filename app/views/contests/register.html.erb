@@ -55,6 +55,40 @@
     <% end %>
   </div>
 
+  <label>
+  Team <i><%= @registration.team.teamname %></i>
+  </label>
+  <table class="table table-hover table-striped table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Username</th>
+        <th>Nickname</th>
+        <th>
+          Register Status
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @teammate_registrations.each do |user, registration| %>
+        <tr>
+          <td>
+            <%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %>
+          </td>
+          <td>
+          <%= link_to user.username, user_path(user) %>
+          </td>
+          <td>
+            <%= user.nickname %>
+          </td>
+          <td>
+            <%= contest_register_status(registration&.approved, true) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
 <% end %>
 
 <p>

@@ -1,79 +1,93 @@
 <% set_page_title "Edit " + @team.teamname %>
 
-<h4 class="page-header">Editing team <small>#<%= @team.teamname %></small></h4>
+<h4 class="page-header">Editing team <small><i><%= @team.teamname %></i></small></h4>
 
-  <%= nested_form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
-    <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
+<%= nested_form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
-    <div class="col-xs-12 col-md-7">
-      <div class="form-group">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-7">
         <%= f.label :teamname %>
         <%= f.text_field :teamname, class: 'form-control flat' %>
       </div>
+    </div>
+  </div>
 
-      <div class="form-group">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-7">
         <%= f.label :school %>
         <%= f.text_field :school, class: 'form-control flat' %>
       </div>
+    </div>
+  </div>
 
-      <div class="form-group">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-7">
         <%= f.label :motto %>
         <%= f.text_field :motto, class: "form-control flat" %>
       </div>
+    </div>
+  </div>
 
-      <div class="form-group">
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-7">
         <%= f.label :avatar %>
         <%= f.file_field :avatar, class: "form-control flat" %>
         <%= f.hidden_field :avatar_cache %>
       </div>
     </div>
+  </div>
 
-    <div class="form-group">
-      <%# <%= f.label :users %1> %>
+  <div class="form-group">
+    <%# <%= f.label :users %1> %>
 
-      <table class="table table-hover table-striped">
-        <thead>
-          <tr>
-            <%# <th>#</th> %>
-            <th></th>
-            <th>Username</th>
-            <th>Nickname</th>
-            <th></th>
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <%# <th>#</th> %>
+          <th></th>
+          <th>Username</th>
+          <th>Nickname</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%= f.fields_for :users do |t| %>
+          <% user = t.object %>
+          <%# https://github.com/ryanb/nested_form/issues/225 %>
+          <tr class="fields">
+            <%# <td><%= index + 1 %1></td> %>
+            <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
+            <td><%= link_to user.username, user_path(user) %></td>
+            <td><%= user.nickname %></td>
+            <td><%= t.link_to_remove "Remove", class: "btn btn-danger btn-xs" %></td>
           </tr>
-        </thead>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-        <tbody>
-          <%= f.fields_for :users do |t| %>
-            <% user = t.object %>
-            <%# https://github.com/ryanb/nested_form/issues/225 %>
-            <tr class="fields">
-              <%# <td><%= index + 1 %1></td> %>
-              <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
-              <td><%= link_to user.username, user_path(user) %></td>
-              <td><%= user.nickname %></td>
-              <td><%= t.link_to_remove "Remove", class: "btn btn-danger btn-xs" %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-
-    <% alert_tag class: 'alert-warning' do %>
-      <strong>Oh Geez! </strong>
-      <%= "Use the following url to invite members to this team. Anyone have this url can join this team." %>
-    <% end %>
-    <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
-
-    <hr>
-
-    <div class="actions">
-      <span class="flex-container-bottom-align">
-        <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
-      </span>
-    </div>
-
+  <% alert_tag class: 'alert-warning' do %>
+    <strong>Oh Geez! </strong>
+    <%= "Use the following url to invite members to this team. Anyone have this url can join this team." %>
   <% end %>
-  <%= link_to 'Back to team info', @team, class: 'btn btn-default btn-xs' %>
+  <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
 
-  <%= javascript_include_tag "prism" %>
-  <%= stylesheet_link_tag "prism" %>
+  <hr>
+
+  <div class="actions">
+    <span class="flex-container-bottom-align">
+      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
+    </span>
+  </div>
+
+<% end %>
+<%= link_to 'Back to team info', @team, class: 'btn btn-default btn-xs' %>
+
+<%= javascript_include_tag "prism" %>
+<%= stylesheet_link_tag "prism" %>

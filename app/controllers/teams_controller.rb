@@ -37,10 +37,6 @@ class TeamsController < ApplicationController
       redirect_to teams_path, alert: 'Invalid token'
       return
     end
-    # if @team.users.include?(current_user)
-    #   redirect_to @team, alert: 'You are already in this team.'
-    #   return
-    # end
 
     begin
       @team.users << current_user

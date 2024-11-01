@@ -164,6 +164,13 @@ class ContestsController < ApplicationController
   def register
     @teams = current_user.teams
     @registration = @contest.find_registration(current_user)
+    team = @registration&.team
+    if team.present?
+      @teammate_registrations = team.users.map{|user|
+        registration = @contest.contest_registrations.where(user: user, team: team).first
+        [user, registration]
+      }
+    end
   end
 
   def register_update
