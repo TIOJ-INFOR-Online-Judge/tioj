@@ -43,7 +43,7 @@ class ContestsController < ApplicationController
       flash.now[:notice] = "Scoreboard is now frozen."
     end
 
-    user_team_mapping = @contest.contest_registrations.includes([:user, :team]).where.not(team_id: nil).map{|x| [x.user.id, x.team&.id]}.to_h
+    user_team_mapping = @contest.contest_registrations.where.not(team_id: nil).map{|x| [x.user_id, x.team_id]}.to_h
     @data = helpers.ranklist_data(
       c_submissions.order(:created_at),
       @contest.start_time, freeze_start, @contest.contest_type,
@@ -51,8 +51,6 @@ class ContestsController < ApplicationController
     )
     @data[:participants] |= @contest.approved_registered_users.ids - user_team_mapping.keys
     @data[:teams] |= user_team_mapping.values
-    Rails.logger.debug(user_team_mapping)
-    Rails.logger.debug(user_team_mapping.values)
     @participants = UserBase.where(id: @data[:participants])
     @teams = Team.where(id: @data[:teams])
     @data[:tasks] = @tasks.map(&:id)

@@ -22,7 +22,7 @@
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
         <td><%= link_to team.teamname, team_path(team) %></td>
         <% unless team.motto.blank? %>
-          <td><div class="motto"><%= user.motto %></div></td>
+          <td><div class="motto"><%= team.motto %></div></td>
         <% else %>
           <td></td>
         <% end %>
