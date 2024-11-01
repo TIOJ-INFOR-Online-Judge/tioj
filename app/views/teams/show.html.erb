@@ -1,7 +1,7 @@
 <% set_page_title @team.teamname %>
 
 <div class="col-md-4">
-  <%= image_tag(@team.avatar.thumb.to_s, class: "img-rounded img-responsive") %><br/>
+  <%= image_tag(@team.avatar.square.to_s, class: "img-rounded img-responsive") %><br/>
   <h4><%= @team.teamname %></h4>
 
   <table>
