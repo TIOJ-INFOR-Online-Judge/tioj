@@ -13,6 +13,7 @@
 # Indexes
 #
 #  index_contest_registrations_on_contest_id_and_approved  (contest_id,approved)
+#  index_contest_registrations_on_contest_id_and_team_id   (contest_id,team_id)
 #  index_contest_registrations_on_contest_id_and_user_id   (contest_id,user_id) UNIQUE
 #  index_contest_registrations_on_team_id                  (team_id)
 #  index_contest_registrations_on_user_id_and_approved     (user_id,approved)
