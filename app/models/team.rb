@@ -19,7 +19,7 @@ class Team < ApplicationRecord
   accepts_nested_attributes_for :users, allow_destroy: true
 
   # validates_presence_of :teamname
-  validates_length_of :teamname, in: 1..32
+  validates_length_of :teamname, in: 1..45
 
   validates :teamname,
     uniqueness: {case_sensitive: false},
