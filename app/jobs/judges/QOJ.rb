@@ -36,28 +36,47 @@ class Judges::QOJ
     form.add_field!('submit-answer', value = 'answer')
     page = form.submit
 
-    # Rails.logger.error "page=#{page.uri} row=#{page.search('tr')}"
-    submission_path = page.search('tr')[1].search('a')[0]['href']
-    submission_path = submission_path.to_s.force_encoding("UTF-8")
-    # Rails.logger.error "submission_path=#{submission_path}"
-    submission_id =  %r{/submission/([0-9]+)}.match(submission_path)[1]
-    submission.update!(proxyjudge_id: submission_id)
-
     return true
   end
 
   def fetch_results
-    Rails.logger.info "FETCH_RESULTS"
-    subs = Submission.where(result: 'received', proxyjudge_type: :qoj).all
-    Rails.logger.info "subs = #{subs}"
-    return false if subs.empty?
+    Rails.logger.debug "QOJ FETCH_RESULTS"
+
+    page = logged_in_get("https://qoj.ac/submissions?submitter=#{@username}")
+    keys = %w(submission_id problem_name username verdict time memory language code_size submit_time)
+    submission_ids = page.search('tr').filter_map{|tr|
+      a = tr.search('a')&.first
+      next if a.nil? or a['href'].nil?
+      submission_path = a['href']
+      submission_path = submission_path.to_s.force_encoding("UTF-8")
+      %r{/submission/([0-9]+)}.match(submission_path)[1].to_i
+    }
+    submission_ids += Submission.where(result: 'received', proxyjudge_type: :qoj).select(:proxyjudge_id).map(&:proxyjudge_id).compact
+
     update_hash = []
-    subs.any? do |submission|
-      status = fetch_submission_status(submission.proxyjudge_id)
+    submission_ids.each do |submission_id|
+      submission = Submission.find_by(proxyjudge_id: submission_id, proxyjudge_type: :qoj)
+      next if submission.present? && submission.result != 'received'
+      begin
+        page = logged_in_get("https://qoj.ac/submission/#{submission_id}")
+      rescue Mechanize::ResponseCodeError => e
+        if submission.present?
+          submission.result = 'JE'
+          submission.save
+        end
+        next
+      end
+      if submission.nil?
+        code = page.search('code')[0].text.strip
+        nonce = code.scan(/tioj-proxy nonce=([0-9a-f]{64})/).last&.first
+        submission = Submission.find_by(proxyjudge_nonce: nonce, proxyjudge_type: :qoj)
+        next if submission.nil?
+        submission.update(proxyjudge_id: submission_id)
+      end
+      status = get_submission_status(page)
       if status
         update_hash << status.update(id: submission.id)
       end
-      not status
     end
     Submission.import(
       update_hash.map {|x| x.update(compiler_id: -1, code_content_id: -1)},
@@ -65,20 +84,20 @@ class Judges::QOJ
     update_hash.each{ |x|
       ActionCable.server.broadcast("submission_#{x[:id]}_overall", x)
     }
+
+    Submission.where(result: 'received', proxyjudge_type: :qoj).any?
   end
 
   private
 
-  def fetch_submission_status(submission_id)
-    page = logged_in_get("https://qoj.ac/submission/#{submission_id}")
+  def get_submission_status(page)
     keys = %w(submission_id problem_name username verdict time memory language code_size submit_time)
-
     status = Hash[keys.zip(
       page.search('tr')[1]
       .search('td')
       .map(&:text).map(&:strip)
     )]
-    Rails.logger.info "status=#{status}"
+    Rails.logger.debug "status=#{status}"
     verdict = status['verdict']
     return nil if verdict.nil? || verdict.empty? || verdict.include?("ing")
 

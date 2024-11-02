@@ -5,9 +5,18 @@ class WaitProxyJudgeJob < ApplicationJob
 
   def perform
     remain = false
-    remain ||= Judges::QOJ.new().fetch_results
-    remain ||= Judges::Codeforces.new().fetch_results
-    remain ||= Judges::POJ.new().fetch_results # it takes so long to fetch on POJ
+
+    proxyjudge_config = Rails.configuration.x.settings.dig(:proxyjudge)
+    if proxyjudge_config&.include?(:qoj)
+      remain ||= Judges::QOJ.new().fetch_results
+    end
+    if proxyjudge_config&.include?(:codeforces)
+      remain ||= Judges::Codeforces.new().fetch_results
+    end
+    if proxyjudge_config&.include?(:poj)
+      remain ||= Judges::POJ.new().fetch_results # it takes so long to fetch on POJ
+    end
+
     sleep 1
 
     WaitProxyJudgeJob.perform_later if remain
