@@ -74,7 +74,7 @@
 
   <% alert_tag class: 'alert-warning' do %>
     <strong>Oh Geez! </strong>
-    <%= "Use the following url to invite members to this team. Anyone have this url can join this team." %>
+    <%= "Use the following url to invite members to this team. Anyone with this url can join this team." %>
   <% end %>
   <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
 
