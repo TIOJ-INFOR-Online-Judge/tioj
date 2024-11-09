@@ -2,7 +2,7 @@ class SubmitProxyJudgeJob < ApplicationJob
   queue_as :default
 
   def perform(submission, problem)
-    code = submission.code_content.code
+    code = submission.code_content.code.force_encoding "UTF-8"
     # proxyjudge_nonce is used to identify submissions
     #  because in judges such as POJ, we don't know the submission id
     #  if there are multiple submission submitted at the same time
