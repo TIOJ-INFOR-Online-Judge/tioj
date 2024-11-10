@@ -341,7 +341,7 @@
 
   <div class="form-group visibility-summary visibility-summary-custom">
     <%= f.label :summary_compiler_id, "Summary Compiler" %>
-    <%= f.select :summary_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
+    <%= f.select :summary_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.summary_compiler_id || @compiler[0].id),
         {}, {class: 'form-control flat'} %>
   </div>
   <div class="form-group visibility-summary visibility-summary-custom">
