@@ -3,7 +3,7 @@
     - Lower priority
     - Separate contest and non-contest submissions
 - [ ] Virtual judge
-- [ ] Batch upload testdata
+- [x] Batch upload testdata
 - [ ] Revisit all JSON endpoints
 - [ ] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
 ---
