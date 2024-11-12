@@ -33,6 +33,10 @@ class ProblemsController < ApplicationController
   end
 
   def rejudge
+    if @problem.proxyjudge_any?
+      redirect_back fallback_location: root_path, alert: 'This action is disabled in proxy judge problems.'
+      return
+    end
     subs = Submission.where(problem_id: params[:id], contest_id: @contest ? @contest.id : nil)
     sub_ids = subs.pluck(:id)
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
@@ -103,6 +107,7 @@ class ProblemsController < ApplicationController
   def create
     params[:problem][:compiler_ids] ||= []
     @problem = Problem.new(check_params())
+    set_proxyjudge_ban_compiler
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       if @problem.save
@@ -120,6 +125,7 @@ class ProblemsController < ApplicationController
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       @problem.attributes = check_params()
+      set_proxyjudge_ban_compiler
       pre_ids = @problem.subtasks.collect(&:id)
       changed = @problem.subtasks.any? {|x| x.score_changed? || x.td_list_changed?}
       changed ||= @problem.score_precision_changed?
@@ -219,6 +225,15 @@ class ProblemsController < ApplicationController
     params
   end
 
+  def set_proxyjudge_ban_compiler
+    if @problem.proxyjudge_any? then
+      valid_compiler_names = @problem.proxyjudge_class::PROXY_COMPILERS.keys()
+      proxyjudge_ban_compilers = Compiler.where.not(name: valid_compiler_names)
+      @problem.compilers = \
+        (@problem.compilers.to_set | proxyjudge_ban_compilers.to_set).to_a
+    end
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
   def problem_params
     params.require(:problem).permit(
@@ -256,6 +271,8 @@ class ProblemsController < ApplicationController
       :ranklist_display_score,
       :strict_mode,
       :skip_group,
+      :proxyjudge_type,
+      :proxyjudge_args,
       sample_testdata_attributes:
       [
         :id,
