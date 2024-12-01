@@ -432,7 +432,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activeadmin
+  activeadmin (~> 3)
   activerecord-import
   activerecord-session_store
   acts-as-taggable-on
