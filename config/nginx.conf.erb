@@ -20,7 +20,7 @@
 
 <%= include_passenger_internal_template('global.erb') %>
 
-worker_processes 1;
+worker_processes auto;
 events {
     worker_connections 4096;
 }
