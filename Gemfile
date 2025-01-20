@@ -89,6 +89,9 @@ gem 'redis', '~> 4'
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
+# loads .env file
+gem 'dotenv'
+
 group :development do
   # Bullet for debugging
   gem 'bullet', group: 'development'
