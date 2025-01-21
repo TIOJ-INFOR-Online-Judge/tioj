@@ -3,51 +3,101 @@
 <h5>Site Info</h5>
 <div class="well">
 This site is powered by Ruby on Rails! <br >
-TIOJ Github Repo: <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj">https://github.com/TIOJ-INFOR-Online-Judge/tioj</a> <br>
-Judge System Github Repo: <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge">https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge</a> <br>
-Still in development, any issues or pull requests are welcomed. <br >
+NTUCPC OJ Github Repo: <a href="https://github.com/ntucpc/tioj">https://github.com/ntucpc/tioj</a> (forked from <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj">TIOJ</a>) <br>
+Judge System Github Repo: <a href="https://github.com/ntucpc/tioj-judge">https://github.com/ntucpc/tioj-judge</a> (forked from <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge">tioj-judge</a>) <br>
+For any issues or pull requests, please reach out us at <a href="https://www.facebook.com/NTUCPC">https://www.facebook.com/NTUCPC</a> <br>
 </div>
-<!--
-<h5>Contributors</h5>
+
+<h5>FAQ</h5>
 <div class="well">
-  Developers: <br >
-  建資25<sup>th</sup> 蕭從恩(joshua5201)<br>
-  建資25<sup>th</sup> 陳家陞(qitar888)<br >
-  建資25<sup>th</sup> 江懿友(silverneko) <br>
-  Debugger and Adviser: <br>
-  建電34<sup>th</sup> 丁安立(anlialtting) <br>
-  Contributor: <br>
-  IOI 29<sup>th</sup> 吳聖福(adrien1018, Yihda Yol) <br>
-  IOI 29<sup>th</sup> 蘇柏瑄(briansu) <br>
-  INFOR 29<sup>th</sup> 陳冠宇(edisonhello) <br>
+  <div class="faq-container">
+    <div class="faq-item">
+      <button class="faq-question">
+          我看不懂上傳結果
+          <span class="arrow">&#9660;</span>
+      </button>
+      <div class="faq-answer">
+          <p>你可以看<a href="/about/verdicts">評測結果說明</a>。</p>
+      </div>
+    </div>
+  </div>
 </div>
-<h4>History</h4>
-<h5>2014.8</h5>
-<div class="well">
-正式版網頁上線。將舊TIOJ的題目資料migrate過來。
-</div>
-<h5>2014.7</h5>
-<div class="well">
-測試版網頁上線，於建中暑期程式設計快樂營作為練習平台。
-</div>
-<h5>2014.5</h5>
-<div class="well">
-建電34<sup>th</sup>的丁安立(anlialtting)加入開發團隊。
-</div>
-<h5>2014.4</h5>
-<div class="well">
-建資25<sup>th</sup>的江懿友(silverneko)加入開發團隊。
-於即將踏入五月時資料庫換到MySQL2。
-</div>
-<h5>2014.1</h5>
-<div class="well">
-於2014年農曆除夕夜前建資25<sup>th</sup>的陳家陞(qitar888)與蕭從恩(joshua5201)商討TIOJ復站事宜，<br>
-後以時下最新的Rails4搭配預設的SQLite3做為資料庫開工。
-</div>
-<h5>源起</h5>
-<div class="well">
-  在資訊社有悠久傳統的TIOJ(Temporary INFOR Online Judge)，蒐集了上千題優秀題目，是許多人啟蒙及增強實力的平台。<br />
-  因為系統老舊故障，有兩屆的時間建中校隊只能到處找別人的Judge寫題目。也由於缺乏一個穩定的培訓環境，導致校隊培訓不易。
-  <br>只能借用建中65<sup>th</sup>黃凱祺學長架的step5權做校隊培訓Judge，但是step5畢竟是新架的OnlineJudge，缺乏歷屆學長辛苦搜集來的題目們，所以考完學測的建資25<sup>th</sup>們便揪團試著將TIOJ復站。
-</div>
--->
+
+<style type="text/css">
+/* Source: https://medium.com/@francesco.saviano87/building-a-simple-faq-accordion-with-html-css-and-javascript-2a8aed32badf */
+/* Reset default margins and paddings for all elements */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style for the main FAQ container */
+.faq-container {
+  max-width: 800px; /* Limit the width for better readability */
+  margin: 50px auto; /* Center the container and add vertical spacing */
+  padding: 20px;
+  font-family: 'Arial, sans-serif';
+  color: #333; /* Base text color */
+}
+
+/* Style for the main title */
+.faq-container h1 {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #2c3e50; /* Dark blue color for the title */
+}
+
+/* Style for each FAQ item */
+.faq-item {
+  border-bottom: 1px solid #ddd; /* Light gray border between items */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+/* Style for the question buttons */
+.faq-question {
+  background-color: #ecf0f1; /* Light gray background */
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.3s ease; /* Smooth background transition on hover */
+}
+
+/* Hover effect for question buttons */
+.faq-question:hover {
+  background-color: #d0d7de; /* Slightly darker gray on hover */
+}
+
+/* Style for the arrow icon */
+.faq-question .arrow {
+  position: absolute;
+  right: 20px;
+  transition: transform 0.3s ease; /* Smooth rotation transition */
+}
+
+/* Rotate the arrow when the question is active (expanded) */
+.faq-question.active .arrow {
+  transform: rotate(180deg); /* Rotate arrow 180 degrees */
+}
+
+/* Style for the answer sections */
+.faq-answer {
+  max-height: 0; /* Initially hide the answer */
+  overflow: hidden;
+  transition: max-height 0.3s ease; /* Smooth transition for expanding */
+  background-color: #fff; /* White background for answers */
+}
+
+/* Style for the answer text */
+.faq-answer p {
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.5; /* Increase line height for better readability */
+  color: #555; /* Slightly lighter text color for answers */
+}
+</style>
