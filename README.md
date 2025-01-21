@@ -1,37 +1,42 @@
-TIOJ: IOIC variant
+TIOJ: NTUCPC variant
 ==
+
+Modified from [IOICAMP Online Judge](https://github.com/ioicamp/tioj).
 
 ## features
 
-因為 TIOJ 升級到 v2，在 merge 的途中順便把 ioicamp judge 的 feature 重新整理一遍（大部分 code 都是從舊的 commit 抓來的）
+目前 follow 上游 TIOJ v3.0.0，在 merge 過程順便把 NTUCPC judge 的 feature 重新整理一遍
 
-https://github.com/ioicamp/tioj/pulls
-
-### 共同需求
-
-- [X] 禁止註冊 [PR#24](https://github.com/ioicamp/tioj/commit/f9a13ec740d1f16791162338332f928ae312fba8) [PR#29](https://github.com/ioicamp/tioj/commit/effec6456dd36c6f976cccb52a25a277573951b3) \
+### 與原版 TIOJ 不同的地方
+大部分都是在 ioicamp judge 上實作的，可以從上面的 github 的 README 看到更多實作細節。
+- 禁止註冊 \
     comment: 可以用環境變數 `ALLOW_REGISTER=allow` 來允許註冊。 \
     或者是用 `ALLOW_REGISTER=token_XXXXXXXXXXXXX` 讓擁有 token 的人才可以註冊。 \
     前端依然會把按鈕藏起來，要自己 POST request 包含一個欄位 `register_token`，
     其內容也一樣是 `token_XXXXXXXXXXXXX` 才允許註冊。
-- [X] 禁止刪除帳號 [PR#25](https://github.com/ioicamp/tioj/commit/979e37bbcdba854c39aebc0c54ab53702c6d526b)
-- [X] 讓 admin 可以在記分板上看到名字 [PR#27](https://github.com/ioicamp/tioj/commit/6efa6fba7b249a9c808a66ff87a0e1f4b6599d97)
-- [X] 要登入才能看題目 [PR#26](https://github.com/ioicamp/tioj/commit/6916bcb879097255e3cd5183f90ceab2bd1c3515) \
+- 禁止刪除帳號
+- 讓 admin 可以在計分板上看到名字
+- ioicamp 的 contest type
+- 要登入才能看題目 \
     comment: 這個 feature 好像只是用來防止有人沒把題目開成 invisible?
-- [X] IOIC type 的 contest（IOI type 和 ACM type 的混合） (PR#28)
-- [X] user_whitelist（限制特定 regex 的人才能加進 contest） \
-    comment: 好像本來就在 upstream 上
-- [X] About page
-- [ ] https://github.com/TIOJ-INFOR-Online-Judge/tioj/commit/a75130e74f3f628a8bb276587151f9e6d0d0aa23 \
-    comment: 好像已經不存在 `.form-group > select` 的元素了(?)
-- [ ] Translated verdict
-- [X] Add dashboard.json endpoint (氣球機 discord bot)
-- [X] Judge problem 的 contest visibility 的行為改成要比賽進行中且 user 為 register 才能看
+- `dashboard.json` 的 endpoint \
+    comment: for 氣球機 discord bot \
+    只有 admin 才能看
+- visibility 為 contest 的題目在比賽中必須要 register 才能看得到 \
+    comment: 比賽後的話本來就看不到，原版 TIOJ 則是比賽中外面的也能看得到題目。
+- [X] roles 功能
+    comment: 只要 user 跟 problem 有共同的 role，就能看到非公開的題目。 \
+    主要是在比賽結束後把 ioicamp 學員放進 role，讓學員可以看到題目來補題，而防止其他人看到營隊題目。
+- [X] About Page
+- [X] favicon/banner
+- [X] `config.site_name`
 
-### 每屆都會改的
+### 預計增加的功能
+TODO
 
-- 換 banner, favicon
-- 換 config.site_name
+### 預計拔掉的功能
+- [ ] 禁止註冊
+- [ ] 禁止刪除帳號
 
 [TIOJ INFOR Online Judge](http://tioj.ck.tp.edu.tw/)
 ==
