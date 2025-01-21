@@ -19,16 +19,30 @@
     </div>
     <small id="status-text">Offline</small>
   </div>
+  <% if @contest.type_ioicamp? %>
+    <div style="display: flex; justify-content: right; align-items: center;"
+         class="col-md-4 ioicamp-dashboard-switch">
+         <small class="display-switch-score">Score / Total Tries</small>
+         <small class="display-switch-penalty">Last Score update / Penalty Tries</small>
+         &nbsp;
+         <div class="make-switch"
+              data-on-label="score"
+              data-off-label="penalty" id="display_switch_div">
+           <input id="display_switch" autocomplete=off type="checkbox" name="display_switch" checked>
+         </div>
+    </div>
+  <% end %>
+
 </div>
 
 <div>
   <p class="text-center" style="margin-bottom: 0; margin-top: 0.8rem;">
-    Display time: <span id="ranklist_time">Current status</span>
+  Display time: <span id="ranklist_time">Current status</span>
   </p>
   <div id="ranklist_time_slider"></div>
 </div>
 
-<table id="dashboard_table" class="table table-hover table-align-middle dashboard-table">
+<table id="dashboard_table" class="table table-hover table-align-middle dashboard-table ioicamp-dashboard-switch">
   <%= render partial: 'dashboard_table', locals: {} %>
 </table>
 
@@ -42,10 +56,10 @@
 </div>
 
 <script>
-initContestRanklist(<%= raw(@data.to_json) %>);
-initContestCable(<%= raw(@contest.id) %>);
+  initContestRanklist(<%= raw(@data.to_json) %>);
+  initContestCable(<%= raw(@contest.id) %>);
+  <% if @contest.type_ioicamp? %>
+      ioicampContestDashboardMain()
+  <% end %>
 </script>
 
-<% if @contest.type_ioicamp? %>
-  <script> ioicampContestDashboardMain() </script>
-<% end %>

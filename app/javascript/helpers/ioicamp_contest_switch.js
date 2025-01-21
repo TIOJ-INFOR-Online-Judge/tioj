@@ -1,20 +1,20 @@
 export function ioicampContestDashboardMain(){
-	let SWITCH = document.getElementById('display_switch')
-	let TABLE = document.querySelector("table.dashboard-table")
+  let SWITCH = document.getElementById('display_switch');
 
-	SWITCH.onchange = function() {
-		update(SWITCH.checked);
-	};
-	update(SWITCH.checked);
+  SWITCH.onchange = function() {
+    update(SWITCH.checked);
+  };
+  update(SWITCH.checked);
 
-	function update(state) {
-		if (!state) {
-			TABLE.classList.remove('dashboard-show-score');
-			TABLE.classList.add('dashboard-show-penalty');
-		} else {
-			TABLE.classList.remove('dashboard-show-penalty');
-			TABLE.classList.add('dashboard-show-score');
-		}
-	}
+  function update(state) {
+    const ele = $('.ioicamp-dashboard-switch');
+    if (!state) {
+      ele.removeClass('dashboard-show-score');
+      ele.addClass('dashboard-show-penalty');
+    } else {
+      ele.removeClass('dashboard-show-penalty');
+      ele.addClass('dashboard-show-score');
+    }
+  }
 
 }

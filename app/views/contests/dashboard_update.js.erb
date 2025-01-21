@@ -1,3 +1,6 @@
 $('#dashboard_table').html('<%= escape_javascript(render partial: "dashboard_table", locals: {}) %>')
 initContestRanklist(<%= raw(@data.to_json) %>);
+<% if @contest.type_ioicamp? %>
+  ioicampContestDashboardMain()
+<% end %>
 MathJax.typeset()
