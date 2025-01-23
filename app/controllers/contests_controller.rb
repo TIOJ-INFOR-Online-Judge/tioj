@@ -78,9 +78,14 @@ class ContestsController < ApplicationController
           { result: 'Waiting' }
         else
           key_to_find = "#{sub.user_id}_#{sub.problem_id}"
-          sub_in_data = @data[:result][key_to_find].find { |e| e[:submission_id] == sub.id }
-          # sub_in_data[0] is score in both new IOI and ioicamp contest style
-          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub_in_data[0], time: (sub.created_at - @contest.start_time) / 60 }
+          # find the last submission with submission_id <= sub.id
+          sub_in_data = @data[:result][key_to_find].reduce(nil) { |acc, ele| ele[:submission_id] <= sub.id ? ele : acc }
+          if sub_in_data.present?
+            # sub_in_data[0] is score in both new IOI and ioicamp contest style
+            { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, time: (sub.created_at - @contest.start_time) / 60, score: sub_in_data[:state][0] }
+          else
+            { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, time: (sub.created_at - @contest.start_time) / 60, score: "0" }
+          end
         end
       end,
     }
