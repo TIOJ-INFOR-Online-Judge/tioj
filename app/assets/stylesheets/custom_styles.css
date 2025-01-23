@@ -37,6 +37,29 @@ h1 h2 h3 h4 h5 h6 {
   }
 }
 
+/* tabs for problem settings */
+.panel.panel-problem-settings {
+  background-color: #f0f3f5;
+  border-color: #96a3b7;
+}
+.panel-problem-settings > .panel-heading {
+  background-color: #6683b7;
+  padding: 5px 10px 0 10px;
+}
+.panel-problem-settings .nav-tabs {
+  border: none;
+}
+.panel-problem-settings .nav-tabs > li.active > a {
+  background-color: #f0f3f5;
+  color: #555555;
+}
+.panel-problem-settings .nav-tabs > li > a {
+  color: #f0f3f5;
+}
+.panel-problem-settings .nav-tabs > li > a:hover {
+  color: #555555;
+}
+
 /* slider (dashboard) */
 .ui-slider {
   background: #f5f5f5;
@@ -47,11 +70,11 @@ h1 h2 h3 h4 h5 h6 {
   top: -2.2px;
 }
 div.code-toolbar > .toolbar > .toolbar-item > button.copy-to-clipboard-button {
-	background-color: #3498db;
-	color: #ffffff;
-	padding: 3px 10px;
-	font-size: 18px;
-	margin: 6px 6px 0 0;
+  background-color: #3498db;
+  color: #ffffff;
+  padding: 3px 10px;
+  font-size: 18px;
+  margin: 6px 6px 0 0;
 }
 pre.code-block[class*="language-"] {
   font-size: 14px;
@@ -102,7 +125,7 @@ tr.ole > td.highlight-if-self { /* dashboard self */
   margin: 10px 0 15px;
 }
 .button-checkbox > .btn { /* compiler checkboxes */
-	margin-bottom: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 /* bootstrap 5 auto row */

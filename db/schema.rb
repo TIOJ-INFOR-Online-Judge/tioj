@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -244,7 +244,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
     t.text "input", size: :medium
     t.text "output", size: :medium
     t.text "hint", size: :medium
-    t.integer "visible_state", default: 0
+    t.integer "visible_state", default: 2
     t.text "sjcode", size: :long
     t.text "interlib", size: :long
     t.integer "specjudge_type", null: false
@@ -262,8 +262,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
     t.boolean "ranklist_display_score", default: false
     t.integer "code_length_limit", default: 5000000
     t.string "specjudge_compile_args"
+    t.integer "summary_type", null: false
+    t.text "summary_code", size: :long
+    t.bigint "summary_compiler_id"
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
+    t.index ["summary_compiler_id"], name: "index_problems_on_summary_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
   end
 
@@ -347,6 +351,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
     t.bigint "compiler_id", null: false
     t.bigint "code_length", default: 0, null: false
     t.bigint "code_content_id", null: false
+    t.integer "priority", default: 20, null: false
     t.index ["code_content_id"], name: "index_submissions_on_code_content_id"
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler"
@@ -355,7 +360,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
     t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result"
     t.index ["contest_id", "user_id", "problem_id", "result"], name: "index_submissions_user_query"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
-    t.index ["result", "contest_id", "id"], name: "index_submissions_fetch"
+    t.index ["result", "priority", "id"], name: "index_submissions_fetch", order: { priority: :desc }
     t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
@@ -448,6 +453,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_071847) do
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
+  add_foreign_key "problems", "compilers", column: "summary_compiler_id"
   add_foreign_key "submission_subtask_results", "submissions"
   add_foreign_key "submissions", "code_contents"
   add_foreign_key "submissions", "compilers"

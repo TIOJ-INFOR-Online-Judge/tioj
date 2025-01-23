@@ -7,12 +7,13 @@ require "rails/all"
 Bundler.require(*Rails.groups)
 
 module Tioj
-  VERSION = '3.0.0'
+  VERSION = '3.1.1'
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
     config.time_zone = "Taipei"
     config.site_name = "NTU CPC Online Judge"
+    config.exceptions_app = self.routes
     begin
       config.x.settings = config_for(:settings)
       if !config.x.settings
@@ -21,7 +22,6 @@ module Tioj
     rescue RuntimeError
       config.x.settings = {}
     end
-    ActsAsTaggableOn.strict_case_match = true
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

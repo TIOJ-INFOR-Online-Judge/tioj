@@ -25,7 +25,7 @@ class ContestRegistrationsController < InheritedResources::Base
         num_end = record.num_end.to_i
         if (num_start..num_end).map{|x| value % x}.uniq.size != num_end - num_start + 1
           record.errors.add(attr, 'produces duplicate values')
-          return
+          next
         end
         record.n_start = num_start
         record.n_end = num_end

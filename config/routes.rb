@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   resources :problems do
     resources :testdata do
       collection do
+        get 'batch_new'
+        post 'batch_new', to: 'testdata#batch_create'
+
         get 'batch_edit'
         post 'batch_edit', to: 'testdata#batch_update'
       end
@@ -44,11 +47,13 @@ Rails.application.routes.draw do
     resources :comments, except: [:index]
   end
 
+  # normal contest
   resources :contests do
     resources :submissions do
       get 'raw', to: 'submissions#download_raw', on: :member
     end
     resources :problems, except: [:index, :create, :new] do
+      post 'rejudge', on: :member
       resources :submissions, only: [:index, :create, :new]
     end
     resources :announcements
@@ -79,6 +84,7 @@ Rails.application.routes.draw do
     end
   end
 
+  # single contest
   resources :contests, only: [:show], as: :single_contest, path: '/single_contest' do
     resources :submissions, only: [:index, :create, :new, :show] do
       get 'raw', to: 'submissions#download_raw', on: :member
@@ -130,6 +136,10 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'welcome#index'
+
+  # Custom error pages
+  match '/404', to: 'errors#not_found', via: :all
+  match '/500', to: 'errors#internal_server_error', via: :all
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

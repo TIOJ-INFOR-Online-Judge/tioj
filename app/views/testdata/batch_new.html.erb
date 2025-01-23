@@ -1,0 +1,19 @@
+<h4 class="page-header">Testdata Batch Upload <small>Problem #<%= @problem.id%>. <%= @problem.name %></small></h4>
+
+<% alert_tag do %>
+  <ul>
+    <li>
+      The system will automatically pair up testdata files based on their names.
+      <ul>
+        <li>The input files should have <code>in</code> prefix or suffix, and the output files should have <code>out</code> or <code>ans</code> prefix or suffix. Files with the same format and the same name except the prefix / suffix are consider matched.</li>
+        <li>For example, (<code>in01</code>, <code>out01</code>), (<code>01.in</code>, <code>01.ans</code>), (<code>02.in</code>, <code>02.out</code>), (<code>ain</code>, <code>aout</code>), (<code>input-1</code>, <code>output-1</code>) are all valid pairs, but (<code>1in</code>, <code>out1</code>), (<code>input-2</code>, <code>answer-2</code>) are not.</li>
+      </ul>
+    </li>
+    <li>File matching will be shown in the "Testdata File List" table below. Unmatched files are not uploaded.</li>
+    <li>The uploaded testdata will have the same limits. Use "Batch Edit Testdata" to change them.</li>
+  </ul>
+<% end %>
+
+<%= render 'batch_create_form' %>
+
+<%= link_to 'Back to Testdata List', problem_testdata_path, class: 'btn btn-default btn-xs' %>

@@ -34,9 +34,13 @@ import './globals/submissions';
 import './globals/users';
 
 // helpers
-import './helpers/init_code_copy_script'
+import './helpers/ajax_upload';
+import './helpers/init_code_copy_script';
 import { buttonCheckboxSetup } from './helpers/button_checkbox_setup';
+import { renderUploadProgress, ajaxUploadFunc } from './helpers/ajax_upload';
 window.buttonCheckboxSetup = buttonCheckboxSetup;
+window.renderUploadProgress = renderUploadProgress;
+window.ajaxUploadFunc = ajaxUploadFunc;
 
 // pages
 import { initContestRanklist, initContestCable } from './pages/contests/main';

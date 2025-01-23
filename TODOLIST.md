@@ -1,18 +1,12 @@
-- [ ] Batch upload testdata
-- [x] Testdata download for admin
-- [x] Testdata compression (#19)
-- [x] User-specified compilation flags (special judge / user program) (#25)
-- [x] Disable sign up in settings
-- [x] Pre-contest notice & UI color
-- [x] Upload submission by file + non-UTF-8 code
-- [x] Add option to stop on first non-AC testdata of each task (score = 0 if unfinished)
-- [x] IOI-style scoring in contest (max of each subtask)
-- [x] Rewrite contest scoreboard refresh using ActionCable
-- [x] Contest-only users + batch creation
-    - don't appear in rank, can only submit to contests
-
-
+- [ ] GitHub pipeline
+- [x] Modify rejudge behavior
+    - Lower priority
+    - Separate contest and non-contest submissions
+- [ ] Virtual judge
+- [x] Batch upload testdata
 - [ ] Revisit all JSON endpoints
+- [ ] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
+---
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
     - [ ] Native format
@@ -22,6 +16,7 @@
 - [ ] Judge load balancing
 - [ ] Write basic tests
 - [ ] Add more languages
+- [ ] Consider migrate to Trilogy
 - [ ] Send compiler information from judge server
 - [ ] Per-language memory/time limit / interactive lib
 - [ ] Role for problem setter
