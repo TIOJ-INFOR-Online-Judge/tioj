@@ -69,14 +69,15 @@ class ContestsController < ApplicationController
         tasks: dc_bot_tasks,
         task_order: @tasks.pluck(:id),
         title: @contest.title,
+        freeze_time: @contest.freeze_minutes,
       },
       users: dc_bot_userlist,
       first_ac: @data[:first_ac],
       scores: c_submissions.order(:created_at).map do |sub|
-        if ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= @contest.freeze_after
+        if ['queued', 'received', 'Validating'].include?(sub.result)
           { result: 'Waiting' }
         else
-          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score }
+          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score, time: sub.created_at }
         end
       end,
     }
