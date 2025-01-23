@@ -131,7 +131,7 @@ module ContestsHelper
       is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
       new_state = func.call(sub, start_time, orig_state, is_waiting)
-      res[key] << {timestamp: rel_timestamp(sub, start_time), state: new_state} unless new_state.nil?
+      res[key] << {timestamp: rel_timestamp(sub, start_time), state: new_state, submission_id: sub.id} unless new_state.nil?
       first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, sub.user_id) if sub.result == 'AC'
     end
     res.delete_if { |key, value| value.empty? }

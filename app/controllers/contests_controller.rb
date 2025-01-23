@@ -77,7 +77,10 @@ class ContestsController < ApplicationController
         if ['queued', 'received', 'Validating'].include?(sub.result)
           { result: 'Waiting' }
         else
-          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub.score, time: sub.created_at }
+          key_to_find = "#{sub.user_id}_#{sub.problem_id}"
+          sub_in_data = @data[:result][key_to_find].find { |e| e[:submission_id] == sub.id }
+          # sub_in_data[0] is score in both new IOI and ioicamp contest style
+          { result: sub.result, owner: sub.user.id, task: sub.problem.id, id: sub.id, score: sub_in_data[0], time: (sub.created_at - @contest.start_time) / 60 }
         end
       end,
     }
