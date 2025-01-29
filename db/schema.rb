@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -265,6 +265,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.integer "summary_type", null: false
     t.text "summary_code", size: :long
     t.bigint "summary_compiler_id"
+    t.integer "proxyjudge_type", default: 0, null: false
+    t.string "proxyjudge_args"
     t.index ["name"], name: "index_problems_on_name"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["summary_compiler_id"], name: "index_problems_on_summary_compiler_id"
@@ -328,6 +330,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.bigint "code_length", default: 0, null: false
     t.bigint "code_content_id", null: false
     t.integer "priority", default: 20, null: false
+    t.integer "proxyjudge_type", default: 0, null: false
+    t.string "proxyjudge_nonce"
+    t.string "proxyjudge_id"
     t.index ["code_content_id"], name: "index_submissions_on_code_content_id"
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
     t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
@@ -336,7 +341,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result", order: { id: :desc }
     t.index ["contest_id", "user_id", "problem_id", "result"], name: "index_submissions_user_query"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
-    t.index ["result", "priority", "id"], name: "index_submissions_fetch", order: { priority: :desc }
+    t.index ["proxyjudge_type", "result", "priority", "id"], name: "index_submissions_fetch", order: { priority: :desc }
     t.index ["result", "updated_at"], name: "index_submissions_on_result_and_updated_at"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
