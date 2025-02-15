@@ -4,7 +4,7 @@ class TeamsController < ApplicationController
   before_action :check_user_in_team!, only: [:edit, :update, :destroy]
 
   def index
-    @teams = Team.order(id: :desc).page(params[:page])
+    @teams = Team.order(id: :desc).page(params[:page]).per(100)
   end
 
   def show
