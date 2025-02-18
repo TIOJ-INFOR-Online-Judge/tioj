@@ -86,6 +86,8 @@
           <%= t.label :output, "Sample Output", class: "sample_output" %>
           <%= t.link_to_remove "Remove this sample testdatum", class: "btn btn-danger pull-right", name: "testdatum_remove" %>
           <%= t.text_area :output, class: 'form-control flat code-input', rows: '7' %>
+          <%= t.label :display_type, "Sample Display Type" %>
+          <%= t.select :display_type, SampleTestdatum.display_types.keys.map{|key| [key, key]}, {}, {class: 'form-control flat'} %>
         </div>
       </div>
     </div>

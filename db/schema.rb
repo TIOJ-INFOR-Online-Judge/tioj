@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_18_175247) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -190,6 +190,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.boolean "online", default: false
   end
 
+  create_table "limits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "time", default: 1000
+    t.integer "memory", default: 65536
+    t.integer "output", default: 65536
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "testdatum_id"
+  end
+
   create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "old_submission_id"
     t.integer "position"
@@ -277,6 +286,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.text "output", size: :medium
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "display_type", default: 0, null: false
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
