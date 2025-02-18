@@ -8,7 +8,7 @@ namespace :sample do
        output LIKE ? OR output LIKE ? OR output LIKE ? OR output LIKE ?",
        '%$%$%', '%\\(%\\)%', '%\\\\[%\\\\]%', '%<%>%',
        '%$%$%', '%\\(%\\)%', '%\\\\[%\\\\]%', '%<%>%'
-    )
+    ).where(display_type: :plaintext)
     samples.each do |sample|
       puts "------------------------------------------------------------------------------"
       puts "In problem ##{sample.problem.id}, the following sample may require manual review."
