@@ -15,6 +15,7 @@ class SubmissionsController < ApplicationController
   before_action :check_compiler, only: [:create, :update]
   before_action :normalize_code, only: [:create, :update]
   before_action :set_show_attrs, only: [:show, :show_old]
+  before_action :check_proxyjudge, only: [:edit, :update, :rejudge]
   layout :set_contest_layout, only: [:show, :index, :new, :edit]
 
   def rejudge
@@ -97,10 +98,20 @@ class SubmissionsController < ApplicationController
     @submission.contest = @contest
     @submission.generate_subtask_result
     @submission.priority = @contest ? Submission::PRIORITY[:contest] : Submission::PRIORITY[:normal]
+    @submission.proxyjudge_type = @problem.proxyjudge_type
+
+    if @problem.proxyjudge_any?
+      @submission.proxyjudge_nonce = SecureRandom.hex(32)
+    end
+
     respond_to do |format|
       if @submission.save
         redirect_url = helpers.contest_adaptive_polymorphic_path([@submission], strip_prefix: false)
-        ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
+        if @problem.proxyjudge_any?
+          SubmitProxyJudgeJob.perform_later(@submission, @problem)
+        else
+          ActionCable.server.broadcast('fetch', {type: 'notify', action: 'new', submission_id: @submission.id})
+        end
         helpers.notify_contest_channel(@submission.contest_id, @submission.user_id)
         format.html { redirect_to redirect_url, notice: 'Submission was successfully created.' }
         format.json { render action: 'show', status: :created, location: redirect_url }
@@ -270,6 +281,13 @@ class SubmissionsController < ApplicationController
     end
     params[:submission][:code_content_attributes][:code] = code
     params[:submission][:code_length] = code.bytesize
+  end
+
+  def check_proxyjudge
+    if @problem.proxyjudge_any?
+      redirect_back fallback_location: root_path, alert: 'This action is disabled in proxy judge problems.'
+      return
+    end
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

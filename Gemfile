@@ -66,6 +66,7 @@ group :doc do
 end
 
 gem 'mechanize'
+gem 'rest-client' # for proxy judge
 
 # friendly id for SEO
 gem 'friendly_id'

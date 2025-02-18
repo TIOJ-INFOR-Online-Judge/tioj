@@ -116,6 +116,35 @@
 </div>
 
 <div class="tab-pane fade" id="judge-settings-tab">
+
+  <div class="form-group">
+    <%= f.label :proxyjudge_type, help_collapse_toggle('Proxy Judge Type', 'pjDescription') %>
+    <div class="collapse" id="pjDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small" style="line-height: 1.4;">
+          The submission will be proxied to the corresponding online judge
+          instead of being executed by TIOJ's own workers.<br>
+          Currently, if user made a submission with wrong compiler (not available on that proxy judge),
+          then the verdict will be JE.
+        </div>
+      </div>
+    </div>
+    <%= f.select :proxyjudge_type, Problem.proxyjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{proxyjudge_type_desc_map[x]}", x]},
+      {}, {class: 'form-control flat'} %>
+  </div>
+
+  <!-- TODO shall we use classname like this? -->
+  <div class="form-group visibility-proxyjudge <%=
+    Problem.proxyjudge_types.keys
+      .filter {|t| t != 'none'}
+      .map {|t| "visibility-proxyjudge-#{t}"}
+      .join(' ')
+  %>">
+    <%= f.label :proxyjudge_args, "Proxy Judge Args" %>
+    <%= f.text_field :proxyjudge_args, class: 'form-control flat' %>
+  </div>
+
+  <div class="visibility-proxyjudge visibility-proxyjudge-none">
   <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
@@ -295,6 +324,7 @@
     <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
     <%= f.text_area :interlib_impl, class: 'form-control flat code-input', rows: '7' %>
   </div>
+  </div><%# visibility-proxyjudge-none %>
 
   <div class="form-group">
     <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
@@ -306,28 +336,31 @@
       <%= f.check_box :ranklist_display_score, 'data-toggle': 'checkbox' %>
       Display score in ranklist
     <% end %>
-    <%= f.label :skip_group, class: 'checkbox' do %>
-      <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
-      Skip the remaining testdata in the task if any of the testdata got non-AC
-    <% end %>
-    <%= f.label :strict_mode, class: 'checkbox' do %>
-      <%= f.check_box :strict_mode, 'data-toggle': 'checkbox' %>
-      Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
-    <% end %>
-    <div class="collapse" id="strictModeDescription" style="height: auto;">
-      <div class="panel panel-default">
-        <div class="panel-body small">
-          Strict mode provides more isolation measures when running user's program, including:
-          <ul style="line-height: 1.4;">
-            <li>(C/C++/Haskell only) Compile to static executable and run it without any shared libraries present (to avoid calling shared libraries that are not meant to be used; also reduces base memory usage)</li>
-            <li>Use pipes instead of regular files for stdin/stdout (to avoid re-opening or seeking)</li>
-            <li>Block the program from creating any files</li>
-          </ul>
+    <div class="visibility-proxyjudge visibility-proxyjudge-none">
+      <%= f.label :skip_group, class: 'checkbox' do %>
+        <%= f.check_box :skip_group, 'data-toggle': 'checkbox' %>
+        Skip the remaining testdata in the task if any of the testdata got non-AC
+      <% end %>
+      <%= f.label :strict_mode, class: 'checkbox' do %>
+        <%= f.check_box :strict_mode, 'data-toggle': 'checkbox' %>
+        Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
+      <% end %>
+      <div class="collapse" id="strictModeDescription" style="height: auto;">
+        <div class="panel panel-default">
+          <div class="panel-body small">
+            Strict mode provides more isolation measures when running user's program, including:
+            <ul style="line-height: 1.4;">
+              <li>(C/C++/Haskell only) Compile to static executable and run it without any shared libraries present (to avoid calling shared libraries that are not meant to be used; also reduces base memory usage)</li>
+              <li>Use pipes instead of regular files for stdin/stdout (to avoid re-opening or seeking)</li>
+              <li>Block the program from creating any files</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="visibility-proxyjudge visibility-proxyjudge-none">
   <div class="form-group">
     <%= f.label :summary_type, "Summary Type" %>
     <%= f.select :summary_type, Problem.summary_types.keys.map.with_index {|x, index| ["[#{index}] #{summary_type_desc_map[x]}", x]},
@@ -440,6 +473,7 @@
     </div>
   </div>
 
+  </div><%# visibility-proxyjudge-none %>
 </div>
     </div>
   </div>

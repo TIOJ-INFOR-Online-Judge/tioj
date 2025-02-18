@@ -25,3 +25,13 @@ shared:
 
   # Old submission views (default: false)
   old_submission_views: false
+
+  # Proxy judge accounts
+  proxyjudge:
+    codeforces:
+      username: some_username
+      password: some_password
+    poj:
+      username: some_username
+      password: some_password
+
