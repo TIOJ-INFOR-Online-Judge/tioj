@@ -8,7 +8,7 @@
 #  output       :text(16777215)
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  display_type :integer          default(0), not null
+#  display_type :integer          default("plaintext"), not null
 #
 # Indexes
 #

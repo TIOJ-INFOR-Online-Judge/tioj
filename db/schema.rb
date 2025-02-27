@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_18_175247) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -188,15 +188,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_18_175247) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "online", default: false
-  end
-
-  create_table "limits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "time", default: 1000
-    t.integer "memory", default: 65536
-    t.integer "output", default: 65536
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "testdatum_id"
   end
 
   create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
