@@ -38,10 +38,8 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
-    retry_op do
-      submission.with_lock do
-        submission.update(**update_hash)
-      end
+    submission.with_lock do
+      submission.update(**update_hash)
     end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
     notify_contest_channel(submission.contest_id, submission.user_id)
@@ -52,9 +50,7 @@ class FetchChannel < ApplicationCable::Channel
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    retry_op do
-      Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
-    end
+    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
   end
 
   def fetch_submission(data)
@@ -63,18 +59,15 @@ class FetchChannel < ApplicationCable::Channel
       submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
       flag = false
       if submission
-        retry_op do
-          submission.with_lock do
-            if submission.result == "received"
-              if i != n_retry
-                flag = true
-                next # breaks with_lock
-              end
-              return
+        submission.with_lock do
+          if submission.result == "received"
+            if i != n_retry
+              flag = true
+              next # breaks with_lock
             end
-            submission.update(result: "received")
+            return
           end
-          next if flag
+          submission.update(result: "received")
         end
         next if flag
       else
@@ -167,37 +160,21 @@ class FetchChannel < ApplicationCable::Channel
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
     subtask_scores = nil
     update_hash = nil
-    retry_op do
-      submission.with_lock do
-        return if not ['Validating', 'received'].include?(submission.result)
-        if submission.problem.summary_none?
-          subtask_scores = submission.calc_subtask_result
-          score = subtask_scores.sum{|x| x[:score]}
-          max_score = BigDecimal('1e+12')
-          score = score.clamp(-max_score, max_score).round(6)
-          update_hash = {score: score}
-        else
-          update_hash = {}
-        end
-        submission.update_self_with_subtask_result(update_hash, subtask_scores)
+    submission.with_lock do
+      return if not ['Validating', 'received'].include?(submission.result)
+      if submission.problem.summary_none?
+        subtask_scores = submission.calc_subtask_result
+        score = subtask_scores.sum{|x| x[:score]}
+        max_score = BigDecimal('1e+12')
+        score = score.clamp(-max_score, max_score).round(6)
+        update_hash = {score: score}
+      else
+        update_hash = {}
       end
+      submission.update_self_with_subtask_result(update_hash, subtask_scores)
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({result: submission.result, id: submission.id}))
-  end
-
-  def retry_op(retry_times=4, interval=0.3)
-    begin
-      yield
-    rescue ActiveRecord::Deadlocked => e
-      retry_times -= 1
-      if retry_times > 0
-        sleep interval
-        retry
-      else
-        raise e
-      end
-    end
   end
 end
