@@ -38,8 +38,7 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
-    retry_op do |is_first|
-      submission.reload if not is_first
+    retry_op do
       submission.with_lock do
         submission.update(**update_hash)
       end
@@ -53,7 +52,7 @@ class FetchChannel < ApplicationCable::Channel
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    retry_op do |is_first|
+    retry_op do
       Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
     end
   end
@@ -64,8 +63,7 @@ class FetchChannel < ApplicationCable::Channel
       submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
       flag = false
       if submission
-        retry_op(3) do |is_first|
-          submission.reload if not is_first
+        retry_op do
           submission.with_lock do
             if submission.result == "received"
               if i != n_retry
@@ -167,19 +165,20 @@ class FetchChannel < ApplicationCable::Channel
       }
     }
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    if submission.problem.summary_none?
-      subtask_scores = submission.calc_subtask_result
-      score = subtask_scores.sum{|x| x[:score]}
-      max_score = BigDecimal('1e+12')
-      score = score.clamp(-max_score, max_score).round(6)
-      update_hash = {score: score}
-    else
-      update_hash = {}
-    end
-    retry_op do |is_first|
-      submission.reload if not is_first
+    subtask_scores = nil
+    update_hash = nil
+    retry_op do
       submission.with_lock do
         return if not ['Validating', 'received'].include?(submission.result)
+        if submission.problem.summary_none?
+          subtask_scores = submission.calc_subtask_result
+          score = subtask_scores.sum{|x| x[:score]}
+          max_score = BigDecimal('1e+12')
+          score = score.clamp(-max_score, max_score).round(6)
+          update_hash = {score: score}
+        else
+          update_hash = {}
+        end
         submission.update_self_with_subtask_result(update_hash, subtask_scores)
       end
     end
@@ -189,12 +188,10 @@ class FetchChannel < ApplicationCable::Channel
   end
 
   def retry_op(retry_times=4, interval=0.3)
-    is_first = true
     begin
-      yield(is_first)
+      yield
     rescue ActiveRecord::Deadlocked => e
       retry_times -= 1
-      is_first = false
       if retry_times > 0
         sleep interval
         retry
