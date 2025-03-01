@@ -29,7 +29,7 @@ It is strongly recommended to mount tmpfs on `/tmp` by adding `tmpfs /tmp tmpfs 
 
 ### Settings
 
-If password recovery and/or Sentry monitoring is needed, setup `config/settings.yml` using the format of `config/settings.yml.example`. The old method of using `rails credentials:edit` is deprecated.
+If password recovery and/or Sentry monitoring is needed, setup `config/settings.yml` using the format of `config/settings.yml.example`.
 
 ## Judge Management
 
