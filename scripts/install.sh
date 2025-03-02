@@ -271,3 +271,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
+sudo echo '30 3 * * 0 /tioj/scripts/trim_sessions.sh' >> /etc/crontab
