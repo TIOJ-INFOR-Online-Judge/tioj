@@ -18,7 +18,7 @@ ENV TIOJ_KEY=$TIOJ_KEY
 
 COPY Gemfile Gemfile.lock package.json yarn.lock /tioj/
 WORKDIR /tioj
-RUN echo '30 3 * * 0 /tioj/scripts/trim_sessions.sh' >> /etc/crontab
+RUN echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
 RUN MAKEFLAGS='-j2' bundle install
 RUN yarn install --frozen-lockfile
 
