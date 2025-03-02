@@ -130,8 +130,8 @@ fi
 sudo usermod -a -G rvm $USER
 echo 'source "/etc/profile.d/rvm.sh"' >> ~/.bashrc
 source "/etc/profile.d/rvm.sh"
-newgrp rvm <<< 'rvm install 3.3.1; rvm alias create default 3.3.1'
-rvm use 3.3.1
+newgrp rvm <<< 'rvm install 3.3.7; rvm alias create default 3.3.7'
+rvm use 3.3.7
 
 # Clone git repos
 cd "$WORKDIR"
