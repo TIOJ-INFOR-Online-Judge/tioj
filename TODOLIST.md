@@ -5,7 +5,8 @@
 - [ ] Virtual judge
 - [x] Batch upload testdata
 - [ ] Revisit all JSON endpoints
-- [ ] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
+- [x] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
+- [ ] Teaming in contest (from ntuicpc?)
 ---
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export
@@ -21,7 +22,6 @@
 - [ ] Per-language memory/time limit / interactive lib
 - [ ] Role for problem setter
     - can add problem, edit/rejudge their own problems and manage submissions in them, but nothing else
-- [ ] Teaming in contest
 - [ ] Post voting & contribution system
 - [ ] Notification system for problem issue reporting
 - [ ] Migrate to Bootstrap 4
