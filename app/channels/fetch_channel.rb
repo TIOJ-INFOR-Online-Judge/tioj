@@ -157,10 +157,12 @@ class FetchChannel < ApplicationCable::Channel
         message: res[:message],
       }
     }
-    SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
     subtask_scores = nil
     update_hash = nil
     submission.with_lock do
+      # This insert needs to be protected because simultaneous inserts
+      #  can cause deadlock because of gap locks
+      SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
       return if not ['Validating', 'received'].include?(submission.result)
       if submission.problem.summary_none?
         subtask_scores = submission.calc_subtask_result
