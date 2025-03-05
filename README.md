@@ -5,7 +5,7 @@ Modified from [IOICAMP Online Judge](https://github.com/ioicamp/tioj).
 
 ## features
 
-目前 follow 上游 TIOJ v3.2.0，在 merge 過程順便把 NTUCPC judge 的 feature 重新整理一遍
+目前 follow 上游 TIOJ v3.2.0。在與 v3 merge 過程順便把 NTUCPC judge 的 feature 重新整理一遍
 
 ### 與原版 TIOJ 不同的地方
 大部分都是在 ioicamp judge 上實作的，可以從上面的 github 的 README 看到更多實作細節。
@@ -30,6 +30,10 @@ Modified from [IOICAMP Online Judge](https://github.com/ioicamp/tioj).
 - [X] About Page
 - [X] favicon/banner
 - [X] `config.site_name`
+- C++ 23 的語言選項
+    comment: 需要 worker 配合升級
+- problem 頁面 include prism js
+    comment: 讓題目敘述裡面可以輕鬆的放有 syntax highlight 的程式碼
 
 ### 預計增加的功能
 TODO
