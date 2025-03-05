@@ -34,13 +34,19 @@
       <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-xs btn-block' %>
     </div>
     <div class="col-md-2">
-      <%= form_with url: rejudge_problem_path(@problem) do |f| %>
-        <%= f.submit 'Rejudge', data: {confirm: 'Are you really going to rejudge the whole problem?'}, class: 'btn btn-inverse btn-xs btn-block' %>
+      <% if @contest %>
+        <%= form_with url: rejudge_contest_problem_path(@contest, @problem) do |f| %>
+          <%= f.submit 'Rejudge in Contest', data: {confirm: "Are you really going to rejudge the whole problem in this contest? Out-of-contest submissions won't be affected."}, class: 'btn btn-inverse btn-xs btn-block' %>
+        <% end %>
+      <% else %>
+        <%= form_with url: rejudge_problem_path(@problem) do |f| %>
+          <%= f.submit 'Rejudge', data: {confirm: "Are you really going to rejudge the whole problem? Contest submissions won't be affected."}, class: 'btn btn-inverse btn-xs btn-block' %>
+        <% end %>
       <% end %>
     </div>
     <div class="col-md-2">
       <%= form_with url: delsub_problem_path(@problem) do |f| %>
-        <%= f.submit 'Delete all submissions', data: {confirm: 'Are you really going to delete ALL submissions to this problem?'}, class: 'btn btn-danger btn-xs btn-block' %>
+        <%= f.submit 'Delete All Submissions', data: {confirm: 'Are you really going to delete ALL submissions to this problem?'}, class: 'btn btn-danger btn-xs btn-block' %>
       <% end %>
     </div>
   </div>

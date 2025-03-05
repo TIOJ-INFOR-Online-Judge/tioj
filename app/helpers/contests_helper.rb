@@ -10,10 +10,10 @@ module ContestsHelper
 
   def contest_type_short_desc_map
     {
-      "ioi" => "IOI style",
-      "ioi_new" => "New IOI style",
-      "acm" => "ACM style",
-      "ioicamp" => "IOICamp style",
+      "ioi" => "IOI",
+      "ioi_new" => "New IOI",
+      "acm" => "ACM",
+      "ioicamp" => "IOICamp",
     }
   end
 
@@ -25,13 +25,15 @@ module ContestsHelper
     }
   end
 
-  def rel_timestamp(submission, start_time)
+  private
+
+  def submission_rel_timestamp(submission, start_time)
     submission.created_at_usec - to_us(start_time)
   end
 
   # return item_state
   def acm_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [attempts, ac_usec, is_first_ac, waiting]
+    # state: [attempts, ac_usec, waiting]
     if item_state.nil?
       item_state = [0, nil, 0]
     end
@@ -42,7 +44,7 @@ module ContestsHelper
     else
       item_state[0] += 1
       if submission.result == 'AC'
-        item_state[1] = rel_timestamp(submission, start_time)
+        item_state[1] = submission_rel_timestamp(submission, start_time)
         item_state[2] = 0
       end
     end
@@ -64,7 +66,7 @@ module ContestsHelper
   end
 
   def ioi_new_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [score, has_sub, waiting]
+    # state: [score, has_sub, waiting, subtask_scores]
     if item_state.nil?
       item_state = [BigDecimal(0), false, 0, nil]
     end
@@ -85,7 +87,7 @@ module ContestsHelper
   end
 
   def ioicamp_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update]
+    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update, subtask_scores]
     if item_state.nil?
       item_state = [BigDecimal(0), 0, 0, nil, 0, nil]
     end
@@ -107,11 +109,13 @@ module ContestsHelper
         item_state[0] = nscore
         item_state[2] += item_state[4] - 1
         item_state[4] = 1
-        item_state[3] = rel_timestamp(submission, start_time)
+        item_state[3] = submission_rel_timestamp(submission, start_time)
       end
     end
     item_state
   end
+
+  public
 
   def ranklist_data(submissions, start_time, freeze_start, rule)
     res = Hash.new { |h, k| h[k] = [] }
@@ -131,7 +135,7 @@ module ContestsHelper
       is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
       new_state = func.call(sub, start_time, orig_state, is_waiting)
-      res[key] << {timestamp: rel_timestamp(sub, start_time), state: new_state, submission_id: sub.id} unless new_state.nil?
+      res[key] << {timestamp: submission_rel_timestamp(sub, start_time), state: new_state, submission_id: sub.id} unless new_state.nil?
       first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, sub.user_id) if sub.result == 'AC' && sub.created_at < freeze_start
     end
     res.delete_if { |key, value| value.empty? }
@@ -146,5 +150,59 @@ module ContestsHelper
       index = index / 26 - 1
     end
     return 'p' + (65 + index % 26).chr + text
+  end
+
+  ## --- HTML ---
+
+  def contest_register_button(contest, status, standalone)
+    if contest.can_register?
+      btn_class = standalone ? 'btn-lg' : 'btn-xs'
+      btn_class += status.nil? ? ' btn-success' : ' btn-danger'
+      button_text = status.nil? ? "Register" : "Unregister"
+
+      content_tag(:div, class: 'pull-right') if standalone
+
+      html = button_to(
+          button_text,
+          register_contest_path(contest),
+          method: :post,
+          class: "btn #{btn_class}",
+          form: {style: 'display: inline'},
+          params: status.nil? ? {} : { cancel: 1 },
+      )
+      if standalone
+        content_tag(:div, class: 'pull-right') do
+          html
+        end
+      else
+        html
+      end
+    end
+  end
+
+  def contest_register_status(status, text)
+    status_class = case
+      when status.nil? then 'glyphicon glyphicon-remove text-danger'
+      when status then 'glyphicon glyphicon-ok text-success'
+      else 'glyphicon glyphicon-play text-warning'
+    end
+    status_class += ' align-middle' unless text
+    show_text = case
+      when !text then ''
+      when status.nil? then "Not registered"
+      when status then "Registered"
+      else "Pending approval"
+    end
+
+    content_tag(:span, '', class: status_class) + ' ' + show_text
+  end
+
+  def contest_link(contest)
+    is_running = contest.is_running? && contest.user_can_submit?(current_user)
+    text = is_running ? 'Participate' : 'View'
+    color = is_running ? 'btn-danger' : 'btn-primary'
+
+    dest = contest.default_single_contest && !current_user&.admin? ? single_contest_path(contest) : contest
+    link_to(text, dest, class: 'btn btn-xs ' + color, target: '_blank')
   end
 end

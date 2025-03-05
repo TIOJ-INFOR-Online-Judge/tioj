@@ -23,6 +23,7 @@
 /public-tmp
 !/public/fonts
 !/public/images
+!/public/static
 !/public/robots.txt
 
 passenger.*.pid.lock

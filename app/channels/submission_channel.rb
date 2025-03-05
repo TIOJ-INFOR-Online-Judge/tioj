@@ -18,6 +18,7 @@ class SubmissionChannel < ApplicationCable::Channel
       reject && return if not submissions
       submissions.each do |s|
         stream_from "submission_#{s.id}_overall"
+        init_data(s, false, true)
       end
     end
   end
@@ -27,16 +28,18 @@ class SubmissionChannel < ApplicationCable::Channel
 
   private
 
-  def init_data(submission, with_detail)
-    ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: submission.get_subtask_result})
-    ActionCable.server.broadcast("submission_#{submission.id}_testdata", {
-      testdata: submission.submission_testdata_results.map do |t|
-        [:position, :result, :time, :rss, :vss, :score, :message_type, :message].map{|attr|
-          [attr, t.read_attribute(attr)]
-        }.to_h
-      end
-    }) if with_detail
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", [:id, :message, :score, :result, :total_time, :total_memory].map{|attr|
+  def init_data(submission, with_detail, overall_only = false)
+    unless overall_only
+      ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: submission.get_subtask_result})
+      ActionCable.server.broadcast("submission_#{submission.id}_testdata", {
+        testdata: submission.submission_testdata_results.map do |t|
+          [:position, :result, :time, :rss, :vss, :score, :message_type, :message].map{|attr|
+            [attr, t.read_attribute(attr)]
+          }.to_h
+        end
+      }) if with_detail
+    end
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", [:id, :score, :result, :total_time, :total_memory, :message].map{|attr|
       [attr, submission.read_attribute(attr)]
     }.to_h)
   end

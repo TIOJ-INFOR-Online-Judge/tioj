@@ -1,13 +1,8 @@
 import { buttonCheckboxSetup } from '../../helpers/button_checkbox_setup';
 
-function setSpecjudgeVisibility(val) {
-  $('.visibility-specjudge').hide();
-  $('.visibility-specjudge-' + val).show();
-}
-
-function setInterlibVisibility(val) {
-  $('.visibility-interlib').hide();
-  $('.visibility-interlib-' + val).show();
+function setGroupVisibility(type, val) {
+  $('.visibility-' + type).hide();
+  $('.visibility-' + type + '-' + val).show();
 }
 
 export function initProblemForm() {
@@ -16,12 +11,16 @@ export function initProblemForm() {
   });
   buttonCheckboxSetup();
 
-  setInterlibVisibility($('#problem_interlib_type').val());
-  setSpecjudgeVisibility($('#problem_specjudge_type').val());
+  setGroupVisibility('interlib', $('#problem_interlib_type').val());
+  setGroupVisibility('specjudge', $('#problem_specjudge_type').val());
+  setGroupVisibility('summary', $('#problem_summary_type').val());
   $('#problem_interlib_type').on('change', function() {
-    setInterlibVisibility(this.value);
+    setGroupVisibility('interlib', this.value);
   });
   $('#problem_specjudge_type').on('change', function() {
-    setSpecjudgeVisibility(this.value);
+    setGroupVisibility('specjudge', this.value);
+  });
+  $('#problem_summary_type').on('change', function() {
+    setGroupVisibility('summary', this.value);
   });
 }

@@ -12,15 +12,7 @@
     </div>
   </div>
 
-  <% if @contest.can_register? %>
-    <div class="pull-right">
-      <% if @register_status.nil? %>
-        <%= button_to "Register", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-success' %>
-      <% else %>
-        <%= button_to "Unregister", register_contest_path(@contest), method: :post, class: 'btn btn-lg btn-danger', form: {style: 'display: inline'}, params: {cancel: 1} %>
-      <% end %>  
-    </div>
-  <% end %>
+  <%= contest_register_button(@contest, @register_status, true) %>
 <% end %>
 
 <h4 class='page-header'>
@@ -28,7 +20,7 @@
 </h4>
 
 <div class="row">
-  <div class="col-md-3">
+  <div class="col-sm-6 <% if @layout == :single_contest %>col-lg-4<% else %>col-lg-3<% end %>">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Start / End</h1>
@@ -39,7 +31,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-sm-6 col-lg-4">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h1 class="panel-title">Contest Type</h1>
@@ -54,22 +46,32 @@
       </div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="<% if @layout == :single_contest %>col-sm-12 col-lg-4<% else %>col-sm-6 col-lg-3<% end %>">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h1 class="panel-title">Registration Status</h1>
+        <h1 class="panel-title">Register Before</h1>
       </div>
       <div class="panel-body">
-        <% if @register_status.nil? %>
-          <span class="glyphicon glyphicon-remove text-danger"></span> Not registered
-        <% elsif @register_status %>
-          <span class="glyphicon glyphicon-ok text-success"></span> Registered
-        <% else %>
-          <span class="glyphicon glyphicon-play text-warning"></span> Pending approval
+        <%= @contest.effective_register_before.to_fs(:clean) %>
+        <% unless @layout == :single_contest %>
+          <br>
+          <%= register_mode_desc_map[@contest.register_mode] %>
         <% end %>
       </div>
     </div>
   </div>
+  <% unless @layout == :single_contest %>
+    <div class="col-sm-6 col-lg-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Registration Status</h1>
+        </div>
+        <div class="panel-body">
+          <%= contest_register_status(@register_status, true) %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
 
 <% if effective_admin? || !(@contest.is_started? && @contest.user_can_submit?(current_user)) %>

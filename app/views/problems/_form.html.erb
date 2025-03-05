@@ -7,6 +7,18 @@
 <%= nested_form_for @problem, html: {class: 'form', id: 'problem-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @problem.errors, item: 'problem'} %>
 
+
+<div class="panel with-nav-tabs panel-problem-settings">
+  <div class="panel-heading">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#general-settings-tab" data-toggle="tab">General Settings</a></li>
+      <li><a href="#judge-settings-tab" data-toggle="tab">Judge Settings</a></li>
+    </ul>
+  </div>
+  <div class="panel-body">
+    <div class="tab-content">
+<div class="tab-pane fade in active" id="general-settings-tab">
+
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
@@ -101,7 +113,9 @@
     <%= f.select :discussion_visibility, Problem.discussion_visibilities.keys.map.with_index {|x, index| ["[#{index}] #{discussion_visibility_desc_map[x]}", x]},
       {}, {class: 'form-control flat'} %>
   </div>
+</div>
 
+<div class="tab-pane fade" id="judge-settings-tab">
   <div class="form-group">
     <%= f.label :compilers do %>
       Banned compilers
@@ -147,20 +161,10 @@
     </div>
   </div>
 
-  <div class="row visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
-    <div class="col-md-8">
-      <div class="form-group">
-        <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
-        <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
-            {}, {class: 'form-control flat'} %>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="form-group">
-        <%= f.label :score_precision %>
-        <%= f.number_field :score_precision, in: 0..6, class: 'form-control flat', required: true %>
-      </div>
-    </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
+    <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
+        {}, {class: 'form-control flat'} %>
   </div>
   <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
     <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
@@ -324,6 +328,78 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :summary_type, "Summary Type" %>
+    <%= f.select :summary_type, Problem.summary_types.keys.map.with_index {|x, index| ["[#{index}] #{summary_type_desc_map[x]}", x]},
+      {}, {class: 'form-control flat'} %>
+  </div>
+  
+  <div class="form-group visibility-summary visibility-summary-none">
+    <%= f.label :score_precision %>
+    <%= f.number_field :score_precision, in: 0..6, class: 'form-control flat', required: true %>
+  </div>
+
+  <div class="form-group visibility-summary visibility-summary-custom">
+    <%= f.label :summary_compiler_id, "Summary Compiler" %>
+    <%= f.select :summary_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.summary_compiler_id || @compiler[0].id),
+        {}, {class: 'form-control flat'} %>
+  </div>
+  <div class="form-group visibility-summary visibility-summary-custom">
+    <%= f.label :summary_code, help_collapse_toggle('Summary Code', 'summaryDescription') %>
+    <div class="collapse" id="summaryDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small">
+          The program is used to calculate the total score / time / memory, and potentially custom CE messages.<br>
+          It will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
+          <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
+            user_code_file: 'path_to_user_source_code',
+            problem_id: 1234,
+            submission_id: 123456,
+            contest_id: -1,
+            submitter_id: 123,
+            submitter_name: 'username',
+            submitter_nickname: 'nickname',
+            submission_time: 1656430000000000,
+            compiler: 'c++14/python2/etc.',
+            ce_message: 'CE message to be shown on user\'s submission page',
+            ce_message_file: 'path_to_full_ce_message',
+            verdict: 'AC',
+            testdata: [{
+              verdict: 'AC',
+              score: '100.000000',
+              time_us: 123456,
+              vss_kib: 66888,
+              rss_kib: 44888,
+              message_type: 'text',
+              message: 'meow',
+              ignore_verdict: false,
+              subtasks: [0, 1, 2, 3],
+            }],
+            subtask_scores: ["10.000000", "20.000000", "30.000000", "40.000000"],
+          }) %></pre>
+          The program must output a JSON object to stdout with the following fields (all fields are optional; default calculation is used if omitted):
+          <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
+            verdict: 'AC',
+            score: '1.35',
+            total_time_us: 123456,
+            total_memory_kib: 66888,
+            ce_message: 'Overriden CE message',
+          }) %></pre>
+          Notes:
+          <ul style="line-height: 1.4;">
+            <li><code>contest_id</code> will be -1 if it is not a contest submission.</li>
+            <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
+            <li><code>verdict</code> of a testdata will be an empty string if the execution is skipped (e.g. CE or "skip remaining testdata" option).</li>
+            <li><code>score</code> can be given by float or string.</li>
+            <li><code>ce_message</code> can be specified even if the verdict is not CE.</li>
+          </ul>
+          <code>#include "nlohmann/json.hpp"</code> (<a href="https://github.com/nlohmann/json/tree/v3.10.5">docs</a>) are provided for C++ special judge programs.
+        </div>
+      </div>
+    </div>
+    <%= f.text_area :summary_code, class: 'form-control flat code-input', rows: '7' %>
+  </div>
+
   <%= f.label nil, raw("Testdata Sets (testdata no. starts from 0, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)") %><br>
   <%= f.fields_for :subtasks do |t| %>
     <div class="form-group">
@@ -363,6 +439,11 @@
       </div>
     </div>
   </div>
+
+</div>
+    </div>
+  </div>
+</div>
 
   <hr>
   <div class="actions">

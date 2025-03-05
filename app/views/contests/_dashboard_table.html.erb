@@ -31,14 +31,8 @@
     <tr id="row_user_<%= usr.id %>">
       <td id="cell_rank_<%= usr.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
-        <td>
-          <% if usr.type == 'ContestUser' %>
-            <%= image_tag usr.avatar.mini_thumb.to_s, class: 'img-rounded' %>
-          <% else %>
-            <%= link_to image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(usr) %>
-          <% end %>
-        </td>
-        <td class="highlight-if-self"><%= link_to usr.username, user_path(usr) %></td>
+        <td><%= user_link(usr, image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded')) %></td>
+        <td class="highlight-if-self"><%= user_link(usr, usr.username) %></td>
       <% else %>
         <td class="highlight-if-self"><%= usr.username %></td>
       <% end %>
