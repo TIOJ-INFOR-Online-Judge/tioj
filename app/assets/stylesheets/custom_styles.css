@@ -24,6 +24,14 @@ h1 h2 h3 h4 h5 h6 {
 .code-input {
   font-family: "monofont";
 }
+.sample-testdata {
+  font-family: "monofont";
+  font-size: 15px;
+  line-height: 18px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
 
 /* navbar patch */
 @media (min-width: 767px) {

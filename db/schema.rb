@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
-  create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
+  create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
     t.string "resource_id", null: false
@@ -301,6 +301,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_27_010819) do
     t.text "output", size: :medium
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "display_type", default: 0, null: false
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 

@@ -46,24 +46,20 @@ services:
     networks:
       - app
     logging: *default-logging
-    container_name: ioic2024_tioj_db
-    restart: always
-      #   judge:
-      #     build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#ddb2f430eb7b6a4561ed23c1ef2ad94fcafc5b22
-      #     environment:
-      #       TIOJ_URL: "http://localhost:4002"
-      #       TIOJ_KEY: $FETCH_KEY
-      #     volumes:
-      #       - /srv/ioic2024_tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
-      #       - /srv/ioic2024_tioj/judge-testdata:/var/lib/tioj-judge/testdata
-      #     tmpfs:
-      #       - /tmp:exec
-      #     privileged: true
-      #     network_mode: host
-      #     pid: host
-      #     logging: *default-logging
-      #     container_name: ioic2024_tioj_judge
-      #     restart: always
+  judge:
+    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#dfd75f94c0c3a5f1e642306d79f67d9b6a647aa5
+    environment:
+      TIOJ_URL: "http://localhost:4000"
+      TIOJ_KEY: $FETCH_KEY
+    volumes:
+      - /srv/tioj/judge-td-pool:/var/lib/tioj-judge/td-pool
+      - /srv/tioj/judge-testdata:/var/lib/tioj-judge/testdata
+    tmpfs:
+      - /tmp:exec
+    privileged: true
+    network_mode: host
+    pid: host
+    logging: *default-logging
 
 networks:
   app:

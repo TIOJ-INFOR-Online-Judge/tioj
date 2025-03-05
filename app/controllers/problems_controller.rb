@@ -270,6 +270,7 @@ class ProblemsController < ApplicationController
         :problem_id,
         :input,
         :output,
+        :display_type,
         :_destroy
       ],
       compiler_ids: [],
@@ -280,7 +281,7 @@ class ProblemsController < ApplicationController
         :constraints,
         :score,
         :_destroy
-      ]
+      ],
     )
   end
 end
