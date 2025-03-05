@@ -21,15 +21,9 @@
 # Indexes
 #
 #  fk_rails_55e5b9f361                         (compiler_id)
-<<<<<<< HEAD
-#  index_submissions_contest_compiler          (contest_id,compiler_id,id)
-#  index_submissions_contest_result            (contest_id,result,id)
-#  index_submissions_fetch                     (result,contest_id,id)
-=======
 #  index_submissions_contest_compiler          (contest_id,compiler_id,id DESC)
 #  index_submissions_contest_result            (contest_id,result,id DESC)
 #  index_submissions_fetch                     (result,priority DESC,id)
->>>>>>> main
 #  index_submissions_on_code_content_id        (code_content_id)
 #  index_submissions_on_contest_id             (contest_id)
 #  index_submissions_on_result_and_updated_at  (result,updated_at)

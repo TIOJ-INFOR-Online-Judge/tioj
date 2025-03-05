@@ -87,7 +87,7 @@ module ContestsHelper
   end
 
   def ioicamp_ranklist_state(submission, start_time, item_state, is_waiting)
-    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update]
+    # state: [score, waiting, penalty_attempts, last_update_usec, attempts_after_last_update, subtask_scores]
     if item_state.nil?
       item_state = [BigDecimal(0), 0, 0, nil, 0, nil]
     end
@@ -109,7 +109,7 @@ module ContestsHelper
         item_state[0] = nscore
         item_state[2] += item_state[4] - 1
         item_state[4] = 1
-        item_state[3] = rel_timestamp(submission, start_time)
+        item_state[3] = submission_rel_timestamp(submission, start_time)
       end
     end
     item_state
