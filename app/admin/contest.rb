@@ -1,5 +1,9 @@
 ActiveAdmin.register Contest do
 
+  controller do
+    actions :all, :except => [:edit, :update, :create, :new]
+  end
+
   index do
     selectable_column
     id_column

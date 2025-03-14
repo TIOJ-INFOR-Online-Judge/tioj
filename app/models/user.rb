@@ -61,7 +61,8 @@ class UserBase < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :rememberable, :trackable
   devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
-  devise :recoverable # if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
+
+  devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings)
 
   validates_presence_of :username, :nickname
   validates_length_of :nickname, in: 1..12
@@ -111,6 +112,18 @@ class User < UserBase
 
   extend FriendlyId
   friendly_id :username
+
+  
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "created_at", "updated_at", "id", "id_value", "username", "email", "admin",
+      "motto", "name", "nickname", "avatar", "gradyear", "school",
+      "current_sign_in_at", "last_sign_in_at",
+      "current_sign_in_ip", "last_sign_in_ip", "sign_in_count",
+      "last_compiler_id", "last_submit_time",
+      "remember_created_at", "reset_password_sent_at"
+    ]
+  end
 end
 
 class ContestUser < UserBase

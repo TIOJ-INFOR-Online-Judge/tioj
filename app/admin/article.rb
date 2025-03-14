@@ -1,6 +1,6 @@
 ActiveAdmin.register Article do
-  permit_params :title, :content, :era, :pinned, :category
-  includes :user  
+  permit_params :title, :content, :era, :pinned, :category, :public
+  includes :user
 
   index do
     selectable_column
@@ -8,7 +8,21 @@ ActiveAdmin.register Article do
     column :title
     column :era
     column :user
+    column :public
     actions
+  end
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :title
+      f.input :content
+      f.input :era
+      f.input :pinned
+      f.input :category
+      f.input :public
+    end
+    f.actions
   end
 
   preserve_default_filters!

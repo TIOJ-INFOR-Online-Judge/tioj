@@ -4,7 +4,9 @@
       <th class="col-md-5"><%= pin_glyph %> Title</th>
       <th class="col-md-3">Time</th>
       <th class="col-md-3">Author</th>
-      <th class="col-md-1"></th>
+      <% if current_user&.admin? %>
+        <th class="col-md-1"></th>
+      <% end %>
     </tr>
   </thead>
   <tbody>

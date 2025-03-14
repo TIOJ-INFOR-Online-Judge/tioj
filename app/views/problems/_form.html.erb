@@ -86,6 +86,8 @@
           <%= t.label :output, "Sample Output", class: "sample_output" %>
           <%= t.link_to_remove "Remove this sample testdatum", class: "btn btn-danger pull-right", name: "testdatum_remove" %>
           <%= t.text_area :output, class: 'form-control flat code-input', rows: '7' %>
+          <%= t.label :display_type, "Sample Display Type" %>
+          <%= t.select :display_type, SampleTestdatum.display_types.keys.map{|key| [sample_display_type_desc_map[key], key]}, {}, {class: 'form-control flat'} %>
         </div>
       </div>
     </div>
@@ -341,7 +343,7 @@
 
   <div class="form-group visibility-summary visibility-summary-custom">
     <%= f.label :summary_compiler_id, "Summary Compiler" %>
-    <%= f.select :summary_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
+    <%= f.select :summary_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.summary_compiler_id || @compiler[0].id),
         {}, {class: 'form-control flat'} %>
   </div>
   <div class="form-group visibility-summary visibility-summary-custom">

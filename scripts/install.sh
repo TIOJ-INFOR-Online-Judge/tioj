@@ -130,8 +130,8 @@ fi
 sudo usermod -a -G rvm $USER
 echo 'source "/etc/profile.d/rvm.sh"' >> ~/.bashrc
 source "/etc/profile.d/rvm.sh"
-newgrp rvm <<< 'rvm install 3.1.2; rvm alias create default 3.1.2'
-rvm use 3.1.2
+newgrp rvm <<< 'rvm install 3.3.7; rvm alias create default 3.3.7'
+rvm use 3.3.7
 
 # Clone git repos
 cd "$WORKDIR"
@@ -271,3 +271,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
+sudo echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
