@@ -158,8 +158,10 @@
           <% end %>
         </div>
         <div class="panel-body">
-          <% if sample.display_markdown? %>
+          <% if sample.display_raw_html? %>
             <div class="mathjax_ignore sample-testdata"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
+          <% elsif sample.display_markdown? %>
+            <%= markdown(sample.input) %>
           <% else %>
             <pre class="copy-group-code sample-testdata"><%= sample.input %></pre>
           <% end %>
@@ -175,8 +177,10 @@
           <% end %>
         </div>
         <div class="panel-body">
-          <% if sample.display_markdown? %>
+          <% if sample.display_raw_html? %>
             <div class="mathjax_ignore sample-testdata"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
+          <% elsif sample.display_markdown? %>
+            <%= markdown(sample.output) %>
           <% else %>
             <pre class="copy-group-code sample-testdata"><%= sample.output %></pre>
           <% end %>
