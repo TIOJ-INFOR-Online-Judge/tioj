@@ -95,18 +95,38 @@
       <div class="panel panel-default copy-group problem-copy-group">
         <div class="panel-heading">
           <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
-          <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+          <% if sample.display_plaintext? %>
+            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+          <% end %>
         </div>
-        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
+        <div class="panel-body">
+          <% if sample.display_raw_html? %>
+            <div class="mathjax_ignore sample-testdata"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
+          <% elsif sample.display_markdown? %>
+            <%= markdown(sample.input) %>
+          <% else %>
+            <pre class="copy-group-code sample-testdata"><%= sample.input %></pre>
+          <% end %>
+        </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="panel panel-default copy-group problem-copy-group">
         <div class="panel-heading">
           <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
-          <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+          <% if sample.display_plaintext? %>
+            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+          <% end %>
         </div>
-        <div class="panel-body code-input copy-group-code" style="font-size:15px;line-height:18px;"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
+        <div class="panel-body">
+          <% if sample.display_raw_html? %>
+            <div class="mathjax_ignore sample-testdata"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
+          <% elsif sample.display_markdown? %>
+            <%= markdown(sample.output) %>
+          <% else %>
+            <pre class="copy-group-code sample-testdata"><%= sample.output %></pre>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

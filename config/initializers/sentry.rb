@@ -1,6 +1,6 @@
-if Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn
+if Rails.configuration.x.settings.dig(:sentry_dsn)
   Sentry.init do |config|
-    config.dsn = Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn
+    config.dsn = Rails.configuration.x.settings.dig(:sentry_dsn)
     config.breadcrumbs_logger = [:active_support_logger, :http_logger]
     config.traces_sampler = lambda do |sampling_context|
       unless sampling_context[:parent_sampled].nil?

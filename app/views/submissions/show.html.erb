@@ -209,12 +209,12 @@
                   <td id="td-score-<%= i %>"></td>
                 <% end %>
                 <td>
-                  <i class="indicator glyphicon glyphicon-chevron-down<% unless task&.message_type %> no-display<% end %>"></i>
+                  <i class="indicator glyphicon glyphicon-chevron-down<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> no-display<% end %>"></i>
                 </td>
               <% end %> <%# tr %>
-              <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type %> no-display<% end %>" id="<%= collapse_id %>">
+              <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> no-display<% end %>" id="<%= collapse_id %>">
                 <td id="td-message-<%= i %>" colspan="<%= @has_vss ? 8 : 7 %>">
-                  <% if task&.message_type %>
+                  <% if task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %>
                     <% if task.message_type == "html" %>
                       <%= raw task.message %>
                     <% else %>
