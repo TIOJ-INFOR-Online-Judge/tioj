@@ -19,6 +19,7 @@
 !/public/fonts
 !/public/images
 !/public/robots.txt
+!/public/test.txt
 
 passenger.*.pid.lock
 
