@@ -16,7 +16,7 @@ end
 
 class AddDisplayTypeToSampleTestdatum < ActiveRecord::Migration[7.0]
   def change
-    #add_column :sample_testdata, :display_type, :integer, null: false, default: 0
+    add_column :sample_testdata, :display_type, :integer, null: false, default: 0
     reversible do |dir|
       dir.up do
         tds = SampleTestdatum.all.filter {|x| plaintext_check(x.input) or plaintext_check(x.output)}.map(&:id)
