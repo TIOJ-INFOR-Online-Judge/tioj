@@ -248,3 +248,9 @@ tr.ole > td.highlight-if-self { /* dashboard self */
 .navbar-nav li a {
   color: #effafa !important;
 }
+
+// add this, but i don't know how to compile lol
+// - Huey
+body {
+	overflow-x: hidden;
+}

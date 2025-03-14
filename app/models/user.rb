@@ -61,6 +61,7 @@ class UserBase < ApplicationRecord
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :rememberable, :trackable
   devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
+
   devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings)
 
   validates_presence_of :username, :nickname
