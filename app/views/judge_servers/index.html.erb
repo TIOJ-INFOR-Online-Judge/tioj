@@ -7,6 +7,7 @@
       <th>Name</th>
       <th>IP Address</th>
       <th>Key</th>
+      <th>Online</th>
       <th></th>
     </tr>
   </thead>
@@ -17,6 +18,7 @@
         <td><%= judge_server.name %></td>
         <td><%= judge_server.ip %></td>
         <td><%= judge_server.key %></td>
+        <td><%= judge_server.online ? 'Yes' : 'No' %></td>
         <th>
           <%= link_to 'Edit', edit_judge_server_path(judge_server), class: 'btn btn-info btn-xs' %>
           <%= link_to 'Destroy', judge_server_path(judge_server), method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
