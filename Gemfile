@@ -49,7 +49,7 @@ gem 'carrierwave'
 gem 'mini_magick'
 # compression
 gem 'zstd-ruby'
-gem 'rubyzip', require: 'zip'
+gem 'rubyzip', '~> 2', require: 'zip'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
@@ -58,7 +58,7 @@ gem 'mathjax-rails-3'
 gem 'acts-as-taggable-on'
 
 # Active Admin, db admin tool: https://github.com/gregbell/active_admin
-gem 'activeadmin', '~> 2'
+gem 'activeadmin', '~> 3'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

@@ -46,5 +46,5 @@ end
 
 class SubmissionSubtaskResult < ApplicationRecord
   belongs_to :submission
-  serialize :result, Serializer
+  serialize :result, coder: Serializer
 end

@@ -4,6 +4,10 @@ ActiveAdmin.register Problem do
       
   includes :specjudge_compiler
 
+  controller do
+    actions :all, :except => [:create, :new]
+  end
+
   index do
     selectable_column
     id_column
