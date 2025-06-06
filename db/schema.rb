@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_06_023828) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -195,8 +195,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
     t.integer "position"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "time"
-    t.integer "rss"
+    t.bigint "time"
+    t.bigint "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["old_submission_id"], name: "index_old_submission_testdata_results_on_old_submission_id"
@@ -207,8 +207,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
     t.bigint "problem_id"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
@@ -303,11 +303,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
     t.integer "position"
     t.string "result"
     t.decimal "time", precision: 12, scale: 3
-    t.integer "rss"
+    t.bigint "rss"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "vss"
+    t.bigint "vss"
     t.string "message_type"
     t.text "message", size: :medium
     t.index ["submission_id", "position"], name: "index_submission_testdata_results_on_submission_id_and_position", unique: true
@@ -322,8 +322,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_18_175247) do
     t.bigint "problem_id", default: 0
     t.bigint "user_id", default: 0
     t.bigint "contest_id"
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
     t.bigint "code_length", default: 0, null: false

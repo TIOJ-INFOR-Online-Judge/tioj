@@ -7,8 +7,8 @@
 #  position          :integer
 #  result            :string(255)
 #  score             :decimal(18, 6)
-#  time              :integer
-#  rss               :integer
+#  time              :bigint
+#  rss               :bigint
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #

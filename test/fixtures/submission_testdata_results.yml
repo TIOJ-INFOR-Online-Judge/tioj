@@ -7,11 +7,11 @@
 #  position      :integer
 #  result        :string(255)
 #  time          :decimal(12, 3)
-#  rss           :integer
+#  rss           :bigint
 #  score         :decimal(18, 6)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  vss           :integer
+#  vss           :bigint
 #  message_type  :string(255)
 #  message       :text(16777215)
 #

@@ -10,8 +10,8 @@
 #  problem_id      :bigint           default(0)
 #  user_id         :bigint           default(0)
 #  contest_id      :bigint
-#  total_time      :integer
-#  total_memory    :integer
+#  total_time      :bigint
+#  total_memory    :bigint
 #  message         :text(16777215)
 #  compiler_id     :bigint           not null
 #  code_length     :bigint           default(0), not null
