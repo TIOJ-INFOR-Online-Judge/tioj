@@ -2,6 +2,7 @@ module CompilerHelper
   COMPILER_LIST = [
     ["language-cpp", ".cpp", "c++17/gnu c++ compiler 11.2.0 | options: -O2 -std=c++17", "c++17"],
     ["language-cpp", ".cpp", "c++20/gnu c++ compiler 11.2.0 | options: -O2 -std=c++20", "c++20"],
+    ["language-cpp", ".cpp", "c++23/gnu c++ compiler 11.2.0 | options: -O2 -std=c++23", "c++23"],
     ["language-cpp", ".cpp", "c++14/gnu c++ compiler 11.2.0 | options: -O2 -std=c++14", "c++14"],
     ["language-cpp", ".cpp", "c++11/gnu c++ compiler 11.2.0 | options: -O2 -std=c++11", "c++11"],
     ["language-cpp", ".cpp", "c++98/gnu c++ compiler 11.2.0 | options: -O2 -std=c++98", "c++98"],
@@ -10,8 +11,9 @@ module CompilerHelper
     ["language-c", ".c", "c99/gnu c compiler 11.2.0 | options: -O2 -std=c99 -lm", "c99"],
     ["language-c", ".c", "c90/gnu c compiler 11.2.0 | options: -O2 -ansi -lm", "c90"],
     ["language-rustc", ".rs", "rust / rustc | rustc", "rustc"],
-  	["language-python", ".py", "python2/CPython 2.7.18 | options: -m py_compile", "python2"],
+    ["language-ts", ".ts", "typescript / esbuild 0.25.5 + node 24.1.0 | options: --platform=node --format=cjs", "typescript"],
     ["language-python", ".py", "python3/CPython 3.10.4 with numpy & PIL | options: -m py_compile", "python3"],
+    ["language-python", ".py", "python2/CPython 2.7.18 | options: -m py_compile", "python2"],
     ["language-haskell", ".hs", "haskell/glasgow haskell compiler 8.8.4 with haskell platform | options: -O", "haskell"],
   ]
 
