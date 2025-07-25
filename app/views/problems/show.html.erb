@@ -252,7 +252,7 @@
           </div>
           <div class="panel-body">
             <span>Created by </span> 
-            <%# creator's name %>
+            <%= link_to @problem.setter.nickname, user_path(@problem.setter) %><br>
           </div>
         </div>
       </div>
