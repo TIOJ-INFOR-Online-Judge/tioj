@@ -102,7 +102,7 @@ class ProblemsController < ApplicationController
 
   def create
     params[:problem][:compiler_ids] ||= []
-    @problem = Problem.new(check_params())
+    @problem = Problem.new(check_params(), setter: current_user)
     @ban_compiler_ids = params[:problem][:compiler_ids].map(&:to_i).to_set
     respond_to do |format|
       if @problem.save

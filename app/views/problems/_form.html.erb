@@ -29,7 +29,7 @@
   </div>
   <div class="field">
     <%= f.label :setter, "Setter: " %>
-    <%= f.collection_select :setter, User.all, :id, :email, prompt: "Select user" %>
+    <%= f.collection_select :setter, User.all, :id, :nickname, prompt: "Select user", selected: @problem.setter.id || current_user.id %>
   </div>
   <div class="row">
     <div class="col-md-4">
