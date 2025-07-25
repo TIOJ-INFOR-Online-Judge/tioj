@@ -99,4 +99,9 @@ class Problem < ApplicationRecord
   def setter
   	user
   end
+  
+  def setter=(value)
+    self.user = User.find_by(id: value)
+  end
+
 end

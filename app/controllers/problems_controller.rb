@@ -224,6 +224,7 @@ class ProblemsController < ApplicationController
     params.require(:problem).permit(
       :id,
       :name,
+	  :setter,
       :description,
       :input,
       :output,
