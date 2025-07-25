@@ -29,7 +29,19 @@
   </div>
   <div class="field">
     <%= f.label :setter, "Setter: " %>
-    <%= f.collection_select :setter, User.all, :id, :nickname, prompt: "Select user", selected: @problem.setter.id || current_user.id %>
+    <%#= f.collection_select :setter, User.all, :id, :nickname, prompt: "Select user", selected: @problem.setter.id || current_user.id %>
+	<%#= f.collection_select :setter, User.all, :id, :nickname,
+	  { prompt: "Select user" },
+ 	  { id: "problem_setter", class: "form-control" }
+	%>
+	<%= f.select :setter, options_from_collection_for_select(
+    	User.all, :id, :nickname, @problem.persisted? ? @problem.setter&.id : current_user.id
+    	),
+    	{ prompt: "Search or select a user" },
+    	{ id: "problem_setter", class: "form-control" }
+   	%>
+
+
   </div>
   <div class="row">
     <div class="col-md-4">

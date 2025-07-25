@@ -50,3 +50,13 @@ window.initContestRanklist = initContestRanklist;
 window.initContestCable = initContestCable;
 window.initSubmissionCable = initSubmissionCable;
 window.initProblemForm = initProblemForm;
+
+import TomSelect from "tom-select";
+document.addEventListener("DOMContentLoaded", () => {
+  new TomSelect("#problem_setter", {
+    create: false,
+    allowEmptyOption: true,
+    placeholder: "Select or search for a user",
+  });
+});
+

@@ -27,3 +27,4 @@
  */
  
  @import 'custom_styles.css';
+ @import "tom-select/dist/css/tom-select.bootstrap5.css";
