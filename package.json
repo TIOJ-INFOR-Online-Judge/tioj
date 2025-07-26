@@ -20,7 +20,8 @@
     "jszip": "^3.10.1",
     "prismjs": "^1.29.0",
     "prismjs-components-importer": "^0.2.0",
-    "tablesorter": "^2.31.3"
+    "tablesorter": "^2.31.3",
+    "tom-select": "^2.4.3"
   },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"

@@ -2,7 +2,7 @@ module CompilerHelper
   COMPILER_LIST = [
     ["language-cpp", ".cpp", "c++17/gnu c++ compiler 11.2.0 | options: -O2 -std=c++17", "c++17"],
     ["language-cpp", ".cpp", "c++20/gnu c++ compiler 11.2.0 | options: -O2 -std=c++20", "c++20"],
-    ["language-cpp", ".cpp", "c++23/gnu c++ compiler 11.2.0 | options: -O2 -std=c++23", "c++23"],
+    ["language-cpp", ".cpp", "c++23/gnu c++ compiler 14 | options: -O2 -std=c++23", "c++23"],
     ["language-cpp", ".cpp", "c++14/gnu c++ compiler 11.2.0 | options: -O2 -std=c++14", "c++14"],
     ["language-cpp", ".cpp", "c++11/gnu c++ compiler 11.2.0 | options: -O2 -std=c++11", "c++11"],
     ["language-cpp", ".cpp", "c++98/gnu c++ compiler 11.2.0 | options: -O2 -std=c++98", "c++98"],

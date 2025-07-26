@@ -27,7 +27,17 @@
       </div>
     </div>
   </div>
+  <div class="field">
+    <%= f.label :setter, "Setter: " %>
+	<%= f.select :setter, options_from_collection_for_select(
+    	User.where(admin: true), :id, :nickname, @problem.persisted? ? @problem.setter&.id : current_user.id
+    	),
+    	{ prompt: "Search or select a user" },
+    	{ id: "problem_setter", class: "form-control" }
+   	%>
 
+
+  </div>
   <div class="row">
     <div class="col-md-4">
       <div class="form-group">

@@ -54,6 +54,7 @@ class UserBase < ApplicationRecord
 
   has_many :contest_registrations, dependent: :destroy, foreign_key: :user_id
   has_many :registered_contests, source: :contest, through: :contest_registrations
+  has_many :problems, dependent: :destroy
 
   belongs_to :last_compiler, class_name: 'Compiler', optional: true
 

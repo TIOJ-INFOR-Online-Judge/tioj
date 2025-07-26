@@ -78,6 +78,7 @@ class Problem < ApplicationRecord
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
   belongs_to :summary_compiler, class_name: 'Compiler', optional: true
+  belongs_to :user
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
@@ -94,4 +95,13 @@ class Problem < ApplicationRecord
       errors.add(:judge_between_stages, "Can only judge between stages when using special judge")
     end
   end
+
+  def setter
+  	user
+  end
+  
+  def setter=(value)
+    self.user = User.find_by(id: value)
+  end
+
 end
