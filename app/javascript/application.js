@@ -54,9 +54,22 @@ window.initProblemForm = initProblemForm;
 import TomSelect from "tom-select";
 document.addEventListener("DOMContentLoaded", () => {
   new TomSelect("#problem_setter", {
-    create: false,
-    allowEmptyOption: true,
-    placeholder: "Select or search for a user",
-  });
+  create: true,
+  allowEmptyOption: true,
+  placeholder: "Search or select a user",
+  highlight: true,
+  closeAfterSelect: true,
+  hideSelected: true,
+  openOnFocus: true,
+  selectOnTab: true,
+  persist: false,
+  maxOptions: 20,
+  render: {
+    item: function(data, escape) {
+      return `<div>${escape(data.text)}</div>`;
+    }
+  }
+});
+
 });
 
