@@ -57,7 +57,6 @@
   <div class="row">
     <div class="col-md-9">
       <div class="col-md-12 ds-panel panel panel-default">
-
         <div class="panel-heading">
           <h1 class="panel-title">Description</h1>
         </div>
@@ -65,116 +64,114 @@
           <%= markdown(@problem.description) %>
         </div>
       </div>
-      
-<div class="row">
-  <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Input Format</h1>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Input Format</h1>
+            </div>
+            <div class="panel-body">
+              <%= markdown(@problem.input) %>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Output Format</h1>
+            </div>
+            <div class="panel-body">
+              <%= markdown(@problem.output) %>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="panel-body">
-        <%= markdown(@problem.input) %>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Output Format</h1>
-      </div>
-      <div class="panel-body">
-        <%= markdown(@problem.output) %>
-      </div>
-    </div>
-  </div>
-</div>
 
-<% @problem.sample_testdata.each_with_index do |sample, index| %>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="panel panel-default copy-group problem-copy-group">
-        <div class="panel-heading">
-          <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
-          <% if sample.display_plaintext? %>
-            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
-          <% end %>
+      <% @problem.sample_testdata.each_with_index do |sample, index| %>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="panel panel-default copy-group problem-copy-group">
+              <div class="panel-heading">
+                <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
+                <% if sample.display_plaintext? %>
+                  <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+                <% end %>
+              </div>
+              <div class="panel-body">
+                <% if sample.display_raw_html? %>
+                  <div class="mathjax_ignore sample-testdata"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
+                <% elsif sample.display_markdown? %>
+                  <%= markdown(sample.input) %>
+                <% else %>
+                  <pre class="copy-group-code sample-testdata"><%= sample.input %></pre>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="panel panel-default copy-group problem-copy-group">
+              <div class="panel-heading">
+                <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
+                <% if sample.display_plaintext? %>
+                  <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
+                <% end %>
+              </div>
+              <div class="panel-body">
+                <% if sample.display_raw_html? %>
+                  <div class="mathjax_ignore sample-testdata"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
+                <% elsif sample.display_markdown? %>
+                  <%= markdown(sample.output) %>
+                <% else %>
+                  <pre class="copy-group-code sample-testdata"><%= sample.output %></pre>
+                <% end %>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="panel-body">
-          <% if sample.display_raw_html? %>
-            <div class="mathjax_ignore sample-testdata"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
-          <% elsif sample.display_markdown? %>
-            <%= markdown(sample.input) %>
-          <% else %>
-            <pre class="copy-group-code sample-testdata"><%= sample.input %></pre>
-          <% end %>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="panel panel-default copy-group problem-copy-group">
-        <div class="panel-heading">
-          <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
-          <% if sample.display_plaintext? %>
-            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
-          <% end %>
-        </div>
-        <div class="panel-body">
-          <% if sample.display_raw_html? %>
-            <div class="mathjax_ignore sample-testdata"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
-          <% elsif sample.display_markdown? %>
-            <%= markdown(sample.output) %>
-          <% else %>
-            <pre class="copy-group-code sample-testdata"><%= sample.output %></pre>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-<% end %>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Hints</h1>
-      </div>
-      <div class="panel-body">
-        <%= markdown(@problem.hint) %>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-6">
-<div class="panel panel-default">
-    <div class="panel-heading">
-      <h1 class="panel-title">Subtasks</h1>
-    </div>
-    <table class="table table-hover table-striped table-condensed">
-      <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
-      <thead>
-        <tr>
-          <th width="5%">No.</th>
-          <th width="20%">Testdata Range</th>
-          <% if show_cons %>
-            <th width="60%">Constraints</th>
-          <% end %>
-          <th width="15%">Score</th>
-        </tr>
-      </thead>
-      <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
-        <tr>
-          <td><%= i + 1 %></td>
-          <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
-          <% if show_cons %>
-            <td><%= markdown_no_p(s.constraints) %></td>
-          <% end %>
-          <td><%= sprintf("%g", s.score) %></td>
-        </tr>
       <% end %>
-    </table>
-  </div>
-  </div>
-</div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Hints</h1>
+            </div>
+            <div class="panel-body">
+              <%= markdown(@problem.hint) %>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h1 class="panel-title">Subtasks</h1>
+            </div>
+            <table class="table table-hover table-striped table-condensed">
+              <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
+              <thead>
+                <tr>
+                  <th width="5%">No.</th>
+                  <th width="20%">Testdata Range</th>
+                  <% if show_cons %>
+                    <th width="60%">Constraints</th>
+                  <% end %>
+                  <th width="15%">Score</th>
+                </tr>
+              </thead>
+              <% @problem.subtasks.order(id: :asc).each_with_index do |s, i| %>
+                <tr>
+                  <td><%= i + 1 %></td>
+                  <td><%= s.td_list.gsub(',', ', ').gsub('-', '~') %></td>
+                  <% if show_cons %>
+                    <td><%= markdown_no_p(s.constraints) %></td>
+                  <% end %>
+                  <td><%= sprintf("%g", s.score) %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="col-md-3">
@@ -209,7 +206,6 @@
           </div>
         </div>
       </div>
-      
       <!-- <div class="col-md-12" style="padding:0px;">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -219,8 +215,7 @@
             <%= submissions_ac_ratio(@problem) %>
           </div>
         </div>
-      </div> -->
-
+      </div> -->    
       <div class="col-md-12" style="padding:0px;">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -233,7 +228,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-md-12" style="padding:0px;">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -244,7 +238,6 @@
           </div>
         </div>
       </div>
-
       <div class="col-md-12" style="padding:0px;">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -256,14 +249,11 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 <% end %>
 
-
-
- <div class="panel panel-default">
+<div class="panel panel-default">
   <div class="panel-heading" data-toggle="collapse" href="#collapseLimit">
     <h1 class="panel-title">
       Testdata and Limits
@@ -271,44 +261,44 @@
     </h1>
   </div>
   <div class="collapse in" id="collapseLimit">
-  <table class="table table-hover table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>No.</th>
-        <th>Time Limit (ms)</th>
-        <% if @has_vss %>
-          <th>Memory Limit (VSS, KiB) <%= help_icon '/about/memory' %></th>
-        <% end %>
-        <% if @has_rss %>
-          <th>Memory Limit (RSS, KiB) <%= help_icon '/about/memory' %></th>
-        <% end %>
-        <th>Output Limit (KiB)</th>
-        <th>Subtasks</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @testdata.each_with_index do |testdatum, index| %>
+    <table class="table table-hover table-striped table-condensed">
+      <thead>
         <tr>
-          <td><%= index %></td>
-          <td><%= testdatum.time_limit || "-" %></td>
+          <th>No.</th>
+          <th>Time Limit (ms)</th>
           <% if @has_vss %>
-            <td><%= testdatum.vss_limit || "-" %></td>
+            <th>Memory Limit (VSS, KiB) <%= help_icon '/about/memory' %></th>
           <% end %>
           <% if @has_rss %>
-            <td><%= testdatum.rss_limit || "-" %></td>
+            <th>Memory Limit (RSS, KiB) <%= help_icon '/about/memory' %></th>
           <% end %>
-          <td><%= testdatum.output_limit || "-" %></td>
-          <td>
-            <% if @tdlist[index] %>
-              <% @tdlist[index].each do |x| %>
-                <span class="subtask-icon"><%= x + 1 %></span>
-              <% end %>
-            <% end %>
-          </td>
+          <th>Output Limit (KiB)</th>
+          <th>Subtasks</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @testdata.each_with_index do |testdatum, index| %>
+          <tr>
+            <td><%= index %></td>
+            <td><%= testdatum.time_limit || "-" %></td>
+            <% if @has_vss %>
+              <td><%= testdatum.vss_limit || "-" %></td>
+            <% end %>
+            <% if @has_rss %>
+              <td><%= testdatum.rss_limit || "-" %></td>
+            <% end %>
+            <td><%= testdatum.output_limit || "-" %></td>
+            <td>
+              <% if @tdlist[index] %>
+                <% @tdlist[index].each do |x| %>
+                  <span class="subtask-icon"><%= x + 1 %></span>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 
