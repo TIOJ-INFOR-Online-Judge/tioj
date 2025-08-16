@@ -70,7 +70,7 @@ class TeamsController < ApplicationController
 
   def set_team
     begin
-      @team = Team.friendly.find(params[:id])
+      @team = Team.find(params[:id])
       if @team.blank?
         redirect_to teams_path, alert: "Teamname '#{params[:id]}' not found."
         return

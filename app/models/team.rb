@@ -21,9 +21,8 @@ class Team < ApplicationRecord
   # validates_presence_of :teamname
   validates_length_of :teamname, in: 1..45
 
-  validates :teamname,
-    uniqueness: {case_sensitive: false},
-    username_convention: true
+  validates :teamname, username_convention: true
+    # uniqueness: {case_sensitive: false},
 
 #   validates_uniqueness_of :nickname
   validates_length_of :motto, maximum: 75
@@ -43,8 +42,8 @@ class Team < ApplicationRecord
     end
   end
 
-  extend FriendlyId
-  friendly_id :teamname
+  # extend FriendlyId
+  # friendly_id :teamname
 
   before_create :generate_token
 
