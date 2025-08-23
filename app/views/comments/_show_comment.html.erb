@@ -10,6 +10,7 @@
   <%= post_user(comment) %>
 </div>
 <% if effective_admin? or (current_user&.id == comment.user_id and not @contest) %>
-  <%= link_to "Edit", edit_polymorphic_path(comment_object), class:'btn btn-primary btn-xs' %>
+  <%= link_to "View", polymorphic_path(comment_object), class:'btn btn-primary btn-xs' %>
+  <%= link_to "Edit", edit_polymorphic_path(comment_object), class:'btn btn-info btn-xs' %>
   <%= link_to "Delete", polymorphic_path(comment_object), method: :delete, data:{confirm:"Sure?"}, class:'btn btn-danger btn-xs' %>
 <% end %>
