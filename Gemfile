@@ -48,7 +48,7 @@ gem 'nested_form'
 gem 'carrierwave'
 gem 'mini_magick'
 # compression
-gem 'zstd-ruby'
+gem 'zstd-ruby', '~> 1.5', '>= 1.5.6.7'
 gem 'rubyzip', '~> 2', require: 'zip'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
