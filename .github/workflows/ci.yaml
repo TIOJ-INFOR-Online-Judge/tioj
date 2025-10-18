@@ -31,9 +31,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-          apt-get update && apt-get -yqq install imagemagick yarn libzstd-dev libmysqlclient-dev
+          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          sudo apt-get update && sudo apt-get -yqq install imagemagick yarn libzstd-dev libmysqlclient-dev
           bundle install --jobs 4 --retry 3
 
       - name: Run Tests
