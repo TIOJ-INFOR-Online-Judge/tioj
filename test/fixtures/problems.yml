@@ -57,6 +57,7 @@ one:
   specjudge_type: none
   interlib_type: none
   visible_state: public
+  summary_type: none
 
 invisible:
   name: ProblemInvisible
@@ -69,3 +70,4 @@ invisible:
   specjudge_type: none
   interlib_type: none
   visible_state: invisible
+  summary_type: none

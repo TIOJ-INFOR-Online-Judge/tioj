@@ -5,7 +5,7 @@ require 'rails/test_help'
 Selenium::WebDriver.logger.output = 'tmp/selenium.log'
 
 class ActiveSupport::TestCase
-  ActiveRecord::Migration.check_pending!
+  ActiveRecord::Migration.check_all_pending!
 
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)
