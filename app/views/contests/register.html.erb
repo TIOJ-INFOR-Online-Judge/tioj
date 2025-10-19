@@ -1,0 +1,96 @@
+<h4 class="page-header">Edit registrations</h4>
+
+<%# <h5><%= @contest.title %1></h5> %>
+
+<% if @registration.nil? %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As team</label>
+      <%= f.collection_select :team_id, @teams, :id, :teamname, {}, { class: 'form-control flat' } %>
+      <%= contest_register_status(@registration&.approved, true) %>
+      <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+    <% end %>
+  </div>
+
+  <hr>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As individual</label>
+      <div>
+        <%= contest_register_status(@registration&.approved, true) %>
+        <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+      </div>
+    <% end %>
+  </div>
+
+<% elsif @registration.team.nil? %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As individual</label>
+      <div>
+        <%= contest_register_status(@registration&.approved, true) %>
+        <%= f.hidden_field :cancel, value: 1 %>
+        <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
+      </div>
+    <% end %>
+  </div>
+
+<% else %>
+
+  <div class="form-group">
+    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+      <label>As team</label>
+      <%=
+        f.collection_select :team_id, @teams, :id, :teamname,
+          { selected: @registration.user.id },
+          { class: 'form-control flat', disabled: true }
+        %>
+      <%= f.hidden_field :cancel, value: 1 %>
+      <%= f.hidden_field :team_id, value: @registration.team.id %>
+      <%= contest_register_status(@registration&.approved, true) %>
+      <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
+    <% end %>
+  </div>
+
+  <label>
+  Team <i><%= @registration.team.teamname %></i>
+  </label>
+  <table class="table table-hover table-striped table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Username</th>
+        <th>Nickname</th>
+        <th>
+          Register Status
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @teammate_registrations.each do |user, registration| %>
+        <tr>
+          <td>
+            <%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %>
+          </td>
+          <td>
+          <%= link_to user.username, user_path(user) %>
+          </td>
+          <td>
+            <%= user.nickname %>
+          </td>
+          <td>
+            <%= contest_register_status(registration&.approved, true) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+<% end %>
+
+<p>
+
+<%= link_to "Back", :back, class: 'btn btn-default btn-xs' %>

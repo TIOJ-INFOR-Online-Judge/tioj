@@ -1,11 +1,11 @@
 class ContestsController < ApplicationController
   before_action :authenticate_user_and_running_if_single_contest!, only: [:dashboard, :dashboard_update]
-  before_action :authenticate_user!, only: [:register]
+  before_action :authenticate_user!, only: [:register, :register_update]
   before_action :authenticate_admin!, only: [:set_contest_task, :new, :create, :edit, :update, :destroy]
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
-  layout :set_contest_layout, only: [:show, :edit, :dashboard, :sign_in]
+  layout :set_contest_layout, only: [:show, :edit, :register, :dashboard, :sign_in]
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -43,12 +43,28 @@ class ContestsController < ApplicationController
       flash.now[:notice] = "Scoreboard is now frozen."
     end
 
-    @data = helpers.ranklist_data(c_submissions.order(:created_at), @contest.start_time, freeze_start, @contest.contest_type)
-    @data[:participants] |= @contest.approved_registered_users.ids
+    user_team_mapping = @contest.contest_registrations.where.not(team_id: nil).map{|x| [x.user_id, x.team_id]}.to_h
+    @data = helpers.ranklist_data(
+      c_submissions.order(:created_at),
+      @contest.start_time, freeze_start, @contest.contest_type,
+      user_team_mapping
+    )
+    @data[:participants] |= @contest.approved_registered_users.ids - user_team_mapping.keys
+    @data[:teams] |= user_team_mapping.values
     @participants = UserBase.where(id: @data[:participants])
+    @teams = Team.where(id: @data[:teams])
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
-    @data[:user_id] = current_user&.id
+
+    current_team = user_team_mapping[current_user&.id]
+    if current_user.nil?
+      @data[:user_id] = nil
+    elsif current_team.nil?
+      @data[:user_id] = "user_#{current_user.id}"
+    else
+      @data[:user_id] = "team_#{current_user.id}"
+    end
+
     @data[:timestamps] = {
       start: helpers.to_us(@contest.start_time),
       end: helpers.to_us(@contest.end_time),
@@ -68,7 +84,7 @@ class ContestsController < ApplicationController
 
   def index
     @contests = Contest.order(id: :desc).page(params[:page])
-    @registrations = ContestRegistration.where(contest_id: @contests.map(&:id), user_id: current_user&.id).all
+    @registrations = @contests.map { |contest| contest.find_registration(current_user) }.compact
     @registrations = @registrations.map{|x| [x.contest_id, x.approved]}.to_h
   end
 
@@ -146,19 +162,43 @@ class ContestsController < ApplicationController
   end
 
   def register
+    @teams = current_user.teams
+    @registration = @contest.find_registration(current_user)
+    team = @registration&.team
+    if team.present?
+      @teammate_registrations = team.users.map{|user|
+        registration = @contest.contest_registrations.where(user: user, team: team).first
+        [user, registration]
+      }
+    end
+  end
+
+  def register_update
     unless @contest.can_register?
       flash[:alert] = 'Registration is closed.'
       redirect_to @contest
       return
     end
+    user_id = current_user.id
+    team_id = nil
+    if params[:team_id].present?
+      team = Team.find(params[:team_id])
+      if not current_user or not current_user.teams.include?(team) then
+        flash[:alert] = 'Cannot (un)register as this team.'
+        redirect_to @contest
+        return
+      end
+      team_id = team.id
+    end
+
     if params[:cancel] == '1'
-      @contest.contest_registrations.where(user_id: current_user.id).destroy_all
+      @contest.contest_registrations.where(user_id: user_id, team_id: team_id).destroy_all
       respond_to do |format|
         format.html { redirect_back fallback_location: root_path, notice: 'Successfully unregistered.' }
         format.json { head :no_content }
       end
     else
-      entry = @contest.contest_registrations.new(user_id: current_user.id, approved: !@contest.require_approval?)
+      entry = @contest.contest_registrations.new(user_id: user_id, team_id: team_id, approved: !@contest.require_approval?)
       respond_to do |format|
         begin
           entry.save!
