@@ -4,7 +4,7 @@
     <% if @layout != :single_contest %>
       <th></th>
     <% end %>
-    <th>Username</th>
+    <th>User/Team</th>
     <th>Nickname</th>
     <% @tasks.each_with_index do |task, index| %>
       <th><%= link_to problem_index_text(index), contest_adaptive_polymorphic_path([task]) %></th>
@@ -18,9 +18,10 @@
   </tr>
 </thead>
 <tbody id="dashboard_table_body">
+
   <% @participants.each do |usr| %>
     <tr id="row_user_<%= usr.id %>">
-      <td id="cell_rank_<%= usr.id %>" class="highlight-if-self"></td>
+      <td id="cell_rank_user_<%= usr.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
         <td><%= user_link(usr, image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded')) %></td>
         <td class="highlight-if-self"><%= user_link(usr, usr.username) %></td>
@@ -29,14 +30,40 @@
       <% end %>
       <td class="highlight-if-self"><%= usr.nickname %></td>
       <% @tasks.each do |t|%>
-        <td id="cell_item_<%= usr.id %>_<%= t.id %>"></td>
+        <td id="cell_item_user_<%= usr.id %>_<%= t.id %>"></td>
       <% end %>
       <% if @contest.type_acm? %>
-        <td id="cell_solved_<%= usr.id %>"></td>
-        <td id="cell_penalty_<%= usr.id %>"></td>
+        <td id="cell_solved_user_<%= usr.id %>"></td>
+        <td id="cell_penalty_user_<%= usr.id %>"></td>
       <% else %>
-        <td id="cell_score_<%= usr.id %>"></td>
+        <td id="cell_score_user_<%= usr.id %>"></td>
       <% end %>
     </tr>
   <% end %>
+
+  <% @teams.each do |team| %>
+    <tr id="row_team_<%= team.id %>">
+      <td id="cell_rank_team_<%= team.id %>" class="highlight-if-self"></td>
+      <% if @layout != :single_contest %>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
+        <td class="highlight-if-self"><%= link_to team.teamname, team_path(team) %></td>
+      <% else %>
+        <td class="highlight-if-self"><%= team.teamname %></td>
+      <% end %>
+      <td class="highlight-if-self">
+        <%# <%= team.nickname %1> %>
+        <%# TODO display registered team members here %>
+      </td>
+      <% @tasks.each do |t|%>
+        <td id="cell_item_team_<%= team.id %>_<%= t.id %>"></td>
+      <% end %>
+      <% if @contest.type_acm? %>
+        <td id="cell_solved_team_<%= team.id %>"></td>
+        <td id="cell_penalty_team_<%= team.id %>"></td>
+      <% else %>
+        <td id="cell_score_team_<%= team.id %>"></td>
+      <% end %>
+    </tr>
+  <% end %>
+
 </tbody>

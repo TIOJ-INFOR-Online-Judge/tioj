@@ -260,7 +260,7 @@
   </div>
 </div>
 
-<% if effective_admin? or current_user&.id == @submission.user_id %>
+<% if effective_admin? or user_can_view?(current_user, @submission, @contest) %>
   <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
     <div class="panel-heading">
         <h1 class="panel-title">Compilation Error Message</h1>

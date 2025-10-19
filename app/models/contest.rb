@@ -86,12 +86,16 @@ class Contest < ApplicationRecord
     Time.now < effective_register_before
   end
 
+  def find_registration(usr)
+    contest_registrations.where(user_id: usr&.id).first
+  end
+
   # nil if not registered, false if pending approval, true if registered
   def user_register_status(usr)
-    contest_registrations.where(user_id: usr&.id).first&.approved
+    find_registration(usr)&.approved
   end
 
   def user_can_submit?(usr)
-    usr && (no_register? || approved_registered_users.exists?(usr.id))
+    usr && (no_register? || find_registration(usr)&.approved)
   end
 end

@@ -248,10 +248,12 @@ class ContestRegistrationsController < InheritedResources::Base
   def index
     registrations = @contest.contest_registrations.includes(:user)
     @duplicate_names = registrations.group_by{|x| x.user.username }.select{|k, v| v.size > 1 }.map(&:first).to_set
-    groups = registrations.group_by{|x| x.approved ? (x.user.type == 'User' ? 1 : 0) : -1}
-    @contest_users = groups[0]
-    @registered_users = groups[1]
-    @unapproved_users = groups[-1]
+
+    @registered_teams = registrations.select{|x| x.approved && x.team.present?}.sort_by{|x| x.team} # make same team consecutive
+    approved_users    = registrations.select{|x| x.approved && x.team.nil?}.group_by{|x| x.user.type}
+    @contest_users    = approved_users['ContestUser']
+    @registered_users = approved_users['User']
+    @unapproved_users = registrations.select{|x| not x.approved}.sort_by{|x| x.team} # make same team consecutive
   end
 
  private

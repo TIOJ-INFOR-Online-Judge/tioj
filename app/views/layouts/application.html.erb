@@ -27,6 +27,7 @@
           <li><%= link_to "About", about_url %></li>
           <li><%= link_to "Rank", users_path %></li>
           <% if current_user %>
+            <li><%= link_to "Teams", teams_path %></li>
             <li><%= link_to current_user.username, user_path(current_user) %></li>
             <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
           <% else %>

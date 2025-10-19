@@ -112,6 +112,7 @@ class User < UserBase
   extend FriendlyId
   friendly_id :username
 
+  has_and_belongs_to_many :teams
   
   def self.ransackable_attributes(auth_object = nil)
     [

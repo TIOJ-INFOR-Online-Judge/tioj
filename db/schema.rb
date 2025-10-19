@@ -154,8 +154,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_06_023828) do
     t.boolean "approved", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "team_id"
     t.index ["contest_id", "approved"], name: "index_contest_registrations_on_contest_id_and_approved"
+    t.index ["contest_id", "team_id"], name: "index_contest_registrations_on_contest_id_and_team_id"
     t.index ["contest_id", "user_id"], name: "index_contest_registrations_on_contest_id_and_user_id", unique: true
+    t.index ["team_id"], name: "index_contest_registrations_on_team_id"
     t.index ["user_id", "approved"], name: "index_contest_registrations_on_user_id_and_approved"
   end
 
@@ -377,6 +380,23 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_06_023828) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "teamname"
+    t.string "avatar"
+    t.string "motto"
+    t.string "school"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "token"
+  end
+
+  create_table "teams_users", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id", "user_id"], name: "index_teams_users_on_team_id_and_user_id", unique: true
+    t.index ["user_id", "team_id"], name: "index_teams_users_on_user_id_and_team_id", unique: true
+  end
+
   create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.string "test_input"
@@ -429,6 +449,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_06_023828) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
+  add_foreign_key "contest_registrations", "teams"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "problems", "compilers", column: "summary_compiler_id"
   add_foreign_key "submission_subtask_results", "submissions"

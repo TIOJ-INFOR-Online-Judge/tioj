@@ -34,7 +34,7 @@ class SubmissionsController < ApplicationController
   end
 
   def show
-    unless effective_admin? or current_user&.id == @submission.user_id or not @submission.contest
+    unless effective_admin? or user_can_view? or not @submission.contest
       if not @submission.contest.is_ended?
         redirect_to contest_path(@submission.contest), notice: 'Submission is censored during contest.'
         return
@@ -148,16 +148,22 @@ class SubmissionsController < ApplicationController
     if @contest
       @submissions = @submissions.where(contest_id: @contest.id)
       unless effective_admin?
+        user_ids = []
         if user_signed_in?
-          @submissions = @submissions.where('submissions.created_at < ? OR submissions.user_id = ?', @contest.freeze_after, current_user.id)
-        else
-          @submissions = @submissions.where('submissions.created_at < ?', @contest.freeze_after)
+          user_ids = [current_user.id]
+          registration = @contest.find_registration(current_user)
+          if registration&.team
+            registered_members = @contest.contest_registrations.where(team: registration.team).select(:user_id).map(&:user_id)
+            user_ids += registered_members
+          end
         end
+        @submissions = @submissions.where('submissions.created_at < ?', @contest.freeze_after) \
+          .or(@submissions.where(user_id: user_ids))
         # TODO: Add an option to still hide submission after contest
         unless @contest.is_ended?
           # only self submission
           if user_signed_in?
-            @submissions = @submissions.where(user_id: current_user.id)
+            @submissions = @submissions.where(user_id: user_ids)
           else
             @submissions = Submission.none
             return
@@ -188,8 +194,8 @@ class SubmissionsController < ApplicationController
     if @contest
       unless effective_admin?
         # TODO: Add an option to still hide submission after contest
-        raise_not_found if @submission.created_at >= @contest.freeze_after && current_user&.id != @submission.user_id
-        raise_not_found unless @contest.is_ended? or current_user&.id == @submission.user_id
+        raise_not_found if @submission.created_at >= @contest.freeze_after and (not user_can_view?)
+        raise_not_found unless @contest.is_ended? or user_can_view?
       end
     end
   end
@@ -221,7 +227,8 @@ class SubmissionsController < ApplicationController
     if @submission&.compiler_id
       @default_compiler_id = @submission.compiler_id
     else
-      last_compiler = current_user&.last_compiler_id
+      user = current_user
+      last_compiler = user&.last_compiler_id
       if @compiler.map(&:id).include?(last_compiler)
         @default_compiler_id = last_compiler
       else
@@ -256,10 +263,14 @@ class SubmissionsController < ApplicationController
   end
 
   def check_code_visibility
-    unless effective_admin? || current_user&.id == @submission.user_id
+    unless effective_admin? || user_can_view?
       redirect_to problem_path(@problem), alert: 'Insufficient User Permissions.'
       return
     end
+  end
+
+  def user_can_view?
+    helpers.user_can_view?(current_user, @submission, @contest)
   end
 
   def normalize_code
