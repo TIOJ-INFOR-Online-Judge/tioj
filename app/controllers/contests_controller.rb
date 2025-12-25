@@ -182,6 +182,12 @@ class ContestsController < ApplicationController
     user_id = current_user.id
     team_id = nil
     if params[:team_id].present?
+      if not @contest.allow_team_register? then
+        flash[:alert] = 'Register as team is not allowed in this contest.'
+        redirect_to @contest
+        return
+      end
+
       team = Team.find(params[:team_id])
       if not current_user or not current_user.teams.include?(team) then
         flash[:alert] = 'Cannot (un)register as this team.'
@@ -295,6 +301,7 @@ class ContestsController < ApplicationController
       :hide_old_submission,
       :skip_group,
       :default_single_contest,
+      :allow_team_register,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,
