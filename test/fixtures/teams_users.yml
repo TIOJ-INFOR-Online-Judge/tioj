@@ -3,11 +3,11 @@
   usertwo_id = ActiveRecord::FixtureSet.identify(:userTwo)
   teamone_id = ActiveRecord::FixtureSet.identify(:one)
 %>
-one:
+team_one_user_one:
   user_id: <%= userone_id %>
   team_id: <%= teamone_id %>
 
-two:
+team_one_user_two:
   user_id: <%= usertwo_id %>
   team_id: <%= teamone_id %>
 

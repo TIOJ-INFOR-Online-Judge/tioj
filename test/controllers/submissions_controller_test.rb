@@ -9,6 +9,12 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     @submission = submissions(:ac)
     @submission_invisible = submissions(:invisible)
     @problem = problems(:one)
+    @contest_four = contests(:four) # Contest allowing team registration
+    @user_one = users(:userOne)
+    @user_two = users(:userTwo)
+    @user_three = users(:userThree)
+    @team_one = teams(:one) # Team with userOne and userTwo
+    @problem_one = problems(:one)
   end
 
   test "should get index" do
@@ -91,5 +97,45 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
       code_content_attributes: {code: "code", id: @submission.code_content_id}
     }}
     assert_no_permission
+  end
+
+  test "should allow team members to view each other's submissions" do
+    # userOne creates a submission
+    sign_in @user_one
+    assert_difference("Submission.count") do
+      post contest_problem_submissions_url(@contest_four, @problem_one), params: {submission: {
+        compiler_id: compilers(:c99).id,
+        code_content_attributes: {code: "user_one_code"}
+      }}
+    end
+    user_one_submission = Submission.last
+    assert_response :redirect
+    sign_out @user_one
+
+    # userTwo should be able to view userOne's submission
+    sign_in @user_two
+    get submission_url(user_one_submission)
+    assert_redirected_to contest_submission_url(@contest_four, user_one_submission)
+    sign_out @user_two
+  end
+
+  test "should not allow non-team members to view submissions" do
+    # userOne creates a submission
+    sign_in @user_one
+    assert_difference("Submission.count") do
+      post contest_problem_submissions_url(@contest_four, @problem_one), params: {submission: {
+        compiler_id: compilers(:c99).id,
+        code_content_attributes: {code: "user_one_code"}
+      }}
+    end
+    user_one_submission = Submission.last
+    assert_response :redirect
+    sign_out @user_one
+
+    # userThree (not in team_one) should not be able to view userOne's submission
+    sign_in @user_three
+    get submission_url(user_one_submission)
+    assert_response :not_found
+    sign_out @user_three
   end
 end
