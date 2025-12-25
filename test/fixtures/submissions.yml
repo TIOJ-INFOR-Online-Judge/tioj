@@ -59,3 +59,30 @@ invisible:
   code_content: invisibleCode
   code_length: 8
   compiler: c99
+
+team_submission_one:
+  user: userOne
+  problem: one
+  compiler: c99
+  contest: four
+  result: AC
+  score: 100.0
+  code_content: team_code_one
+
+team_submission_two:
+  user: userTwo
+  problem: one
+  compiler: c99
+  contest: four
+  result: AC
+  score: 100.0
+  code_content: team_code_two
+
+non_team_submission:
+  user: userThree
+  problem: one
+  compiler: c99
+  contest: four
+  result: AC
+  score: 100.0
+  code_content: non_team_code

@@ -15,6 +15,9 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     @user_three = users(:userThree)
     @team_one = teams(:one) # Team with userOne and userTwo
     @problem_one = problems(:one)
+
+    @team_submission_one = submissions(:team_submission_one)
+    @team_submission_two = submissions(:team_submission_two)
   end
 
   test "should get index" do
@@ -100,42 +103,50 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should allow team members to view each other's submissions" do
-    # userOne creates a submission
+    # userOne should be able to view userTwo's submission
     sign_in @user_one
-    assert_difference("Submission.count") do
-      post contest_problem_submissions_url(@contest_four, @problem_one), params: {submission: {
-        compiler_id: compilers(:c99).id,
-        code_content_attributes: {code: "user_one_code"}
-      }}
-    end
-    user_one_submission = Submission.last
-    assert_response :redirect
-    sign_out @user_one
+    get submission_url(@team_submission_two)
+    assert_redirected_to contest_submission_url(@contest_four, @team_submission_two)
+    sign_out :user
 
     # userTwo should be able to view userOne's submission
     sign_in @user_two
-    get submission_url(user_one_submission)
-    assert_redirected_to contest_submission_url(@contest_four, user_one_submission)
-    sign_out @user_two
+    get submission_url(@team_submission_one)
+    assert_redirected_to contest_submission_url(@contest_four, @team_submission_one)
+    sign_out :user
   end
 
   test "should not allow non-team members to view submissions" do
-    # userOne creates a submission
-    sign_in @user_one
-    assert_difference("Submission.count") do
-      post contest_problem_submissions_url(@contest_four, @problem_one), params: {submission: {
-        compiler_id: compilers(:c99).id,
-        code_content_attributes: {code: "user_one_code"}
-      }}
-    end
-    user_one_submission = Submission.last
-    assert_response :redirect
-    sign_out @user_one
-
     # userThree (not in team_one) should not be able to view userOne's submission
     sign_in @user_three
-    get submission_url(user_one_submission)
+    get submission_url(@team_submission_one)
     assert_response :not_found
-    sign_out @user_three
+  end
+
+  test "should show team members submissions in index" do
+    sign_in @user_one
+    get contest_submissions_url(@contest_four)
+    assert_response :success
+    assert_select "td", { text: @user_one.nickname, count: 1 }
+    assert_select "td", { text: @user_two.nickname, count: 1 }
+    assert_select "td", { text: @user_three.nickname, count: 0 } # Ensure userThree's submission is not visible
+    sign_out :user
+
+    sign_in @user_two
+    get contest_submissions_url(@contest_four)
+    assert_response :success
+    assert_select "td", { text: @user_one.nickname, count: 1 }
+    assert_select "td", { text: @user_two.nickname, count: 1 }
+    assert_select "td", { text: @user_three.nickname, count: 0 } # Ensure userThree's submission is not visible
+    sign_out :user
+  end
+
+  test "should not show non-team members submissions in index" do
+    sign_in @user_three
+    get contest_submissions_url(@contest_four)
+    assert_response :success
+    assert_select "td", { text: @user_one.nickname, count: 0 } # userOne's submission should not be visible
+    assert_select "td", { text: @user_two.nickname, count: 0 } # userTwo's submission should not be visible
+    assert_select "td", { text: @user_three.nickname, count: 1 }
   end
 end
