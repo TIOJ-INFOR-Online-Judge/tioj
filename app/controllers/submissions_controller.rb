@@ -75,17 +75,11 @@ class SubmissionsController < ApplicationController
 
   def create
     cd_time = @contest ? @contest.cd_time : 15
-    user = current_user
-    if user.admin?
-      user.update(last_submit_time: Time.now)
-    else
-      user.with_lock do
-        if not user.last_submit_time.blank? and Time.now - user.last_submit_time < cd_time
-          redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
-          return
-        end
-        user.update(last_submit_time: Time.now)
-      end
+    team = @contest&.find_registration(current_user)&.team
+
+    unless check_cd_and_update_last_submit(cd_time, current_user, team, Time.now)
+      redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
+      return
     end
     user.update(last_compiler_id: params[:submission][:compiler_id])
 
@@ -267,6 +261,32 @@ class SubmissionsController < ApplicationController
       redirect_to problem_path(@problem), alert: 'Insufficient User Permissions.'
       return
     end
+  end
+
+  def check_cd_and_update_last_submit(cd_time, user, team, now)
+    if user.admin?
+      user.update!(last_submit_time: now)
+      return true
+    end
+
+    within_cd = true
+    if team&.present? then
+      user_ids = team.users.pluck(:id)
+      User.transaction do
+        locked_users = User.where(id: user_ids).order(:id).lock.to_a
+        within_cd = locked_users.any? do |u|
+          not u.last_submit_time.blank? and now - u.last_submit_time < cd_time
+        end
+        user.update!(last_submit_time: now) unless within_cd
+      end
+    else
+      user.with_lock do
+        within_cd = (not user.last_submit_time.blank? and now - user.last_submit_time < cd_time)
+        user.update!(last_submit_time: now) unless within_cd
+      end
+    end
+
+    not within_cd
   end
 
   def user_can_view?
