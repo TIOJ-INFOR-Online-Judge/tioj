@@ -38,3 +38,29 @@ one:
   contest_type: ioi
   cd_time: 15
   disable_discussion: false
+  register_mode: 'no_register'
+
+two:
+  title: contestTwo
+  description: descriptionTwo
+  description_before_contest: descriptionTwo
+  start_time: 3000-01-01 12:00
+  end_time: 3000-01-01 15:00
+  register_before: 3000-01-01 12:00
+  contest_type: ioi
+  cd_time: 15
+  disable_discussion: false
+  register_mode: 'require_approval'
+
+three:
+  title: contestThree
+  description: descriptionThree
+  description_before_contest: descriptionThree
+  start_time: 3000-01-01 12:00
+  end_time: 3000-01-01 15:00
+  register_before: 3000-01-01 12:00
+  contest_type: ioi
+  cd_time: 15
+  disable_discussion: false
+  register_mode: 'require_approval'
+  allow_team_register: true
