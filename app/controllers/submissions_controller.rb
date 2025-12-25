@@ -81,7 +81,7 @@ class SubmissionsController < ApplicationController
       redirect_to submissions_path, alert: 'CD time %d seconds.' % cd_time
       return
     end
-    user.update(last_compiler_id: params[:submission][:compiler_id])
+    current_user.update(last_compiler_id: params[:submission][:compiler_id])
 
     raise_not_found unless @problem
 
