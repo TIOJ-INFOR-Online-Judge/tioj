@@ -4,7 +4,21 @@ class TeamsController < ApplicationController
   before_action :check_user_in_team!, only: [:edit, :update, :destroy]
 
   def index
-    @teams = Team.order(id: :desc).page(params[:page]).per(100)
+    if params[:search_username].present?
+      user = User.find_by(username: params[:search_username])
+      if not user then
+        redirect_to teams_path, alert: 'No such user.'
+        return
+      end
+      @teams = user.teams
+    else
+      @teams = Team
+    end
+    if params[:search_teamname].present?
+      sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_teamname])
+      @teams = @teams.where("teamname LIKE ?", "%#{sanitized}%")
+    end
+    @teams = @teams.order(id: :desc).page(params[:page]).per(100)
   end
 
   def show
