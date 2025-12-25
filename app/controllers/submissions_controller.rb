@@ -269,24 +269,24 @@ class SubmissionsController < ApplicationController
       return true
     end
 
-    within_cd = true
+    cd_finished = false
     if team&.present? then
       user_ids = team.users.pluck(:id)
       User.transaction do
         locked_users = User.where(id: user_ids).order(:id).lock.to_a
-        within_cd = locked_users.any? do |u|
-          not u.last_submit_time.blank? and now - u.last_submit_time < cd_time
+        cd_finished = locked_users.all? do |u|
+          u.last_submit_time.blank? or now - u.last_submit_time >= cd_time
         end
-        user.update!(last_submit_time: now) unless within_cd
+        user.update!(last_submit_time: now) if cd_finished
       end
     else
       user.with_lock do
-        within_cd = (not user.last_submit_time.blank? and now - user.last_submit_time < cd_time)
-        user.update!(last_submit_time: now) unless within_cd
+        cd_finished = (user.last_submit_time.blank? or now - user.last_submit_time >= cd_time)
+        user.update!(last_submit_time: now) if cd_finished
       end
     end
 
-    not within_cd
+    cd_finished
   end
 
   def user_can_view?
