@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     member do
       get :invite
       post :invite, to: 'teams#invite_accept'
+      post :renew_token
     end
   end
 

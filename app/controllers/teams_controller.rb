@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept]
-  before_action :check_user_in_team!, only: [:edit, :update, :destroy]
+  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept, :renew_token]
+  before_action :check_user_in_team!, only: [:edit, :update, :destroy, :renew_token]
 
   def index
     if params[:search_username].present?
@@ -78,6 +78,15 @@ class TeamsController < ApplicationController
   def destroy
     @team.destroy
     redirect_to teams_url
+  end
+
+  def renew_token
+    @team.generate_token
+    if @team.save
+      redirect_to edit_team_path(@team), notice: 'The token was successfully renewed.'
+    else
+      flash[:alert] = 'Failed to renew token.'
+    end
   end
 
   private

@@ -74,11 +74,9 @@
 
   <% alert_tag class: 'alert-warning' do %>
     <strong>Oh Geez! </strong>
-    <%= "Use the following url to invite members to this team. Anyone with this url can join this team." %>
+    <%= "Use the following URL to invite members to this team. Anyone with this URL can join this team." %>
   <% end %>
   <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
-
-  <hr>
 
   <div class="actions">
     <span class="flex-container-bottom-align">
@@ -87,6 +85,8 @@
   </div>
 
 <% end %>
+
+<%= button_to 'Renew Invitation URL', renew_token_team_path(@team), class: 'btn btn-danger btn-xs' %>
 <%= link_to 'Back to team info', @team, class: 'btn btn-default btn-xs' %>
 
 <%= javascript_include_tag "prism" %>
