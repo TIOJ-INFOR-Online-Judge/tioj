@@ -52,6 +52,12 @@ class TeamsController < ApplicationController
       return
     end
 
+    max_members_per_team = Rails.configuration.x.settings.dig(:max_members_per_team) || 10
+    if @team.users.count >= max_members_per_team
+      redirect_to teams_path, alert: 'Too many members!'
+      return
+    end
+
     begin
       @team.users << current_user
       if @team.save
