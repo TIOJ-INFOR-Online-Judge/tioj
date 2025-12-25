@@ -74,7 +74,7 @@ four:
   end_time: <%= 1.day.from_now %>
   register_before: <%= 1.day.from_now %>
   contest_type: ioi
-  cd_time: 15
+  cd_time: 60
   disable_discussion: false
   register_mode: 'free_register'
   allow_team_register: true

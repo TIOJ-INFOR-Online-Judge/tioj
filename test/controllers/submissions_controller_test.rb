@@ -149,4 +149,33 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", { text: @user_two.nickname, count: 0 } # userTwo's submission should not be visible
     assert_select "td", { text: @user_three.nickname, count: 1 }
   end
+
+  test "team submission cooldown" do
+    sign_in @user_one
+    post contest_problem_submissions_url(@contest_four, @problem_one), params: { submission: {
+      compiler_id: compilers(:c99).id,
+      code_content_attributes: { code: "somecode" }
+    } }
+    assert_response :redirect
+    sign_out :user
+
+    sign_in @user_two
+    post contest_problem_submissions_url(@contest_four, @problem_one), params: { submission: {
+      compiler_id: compilers(:c99).id,
+      code_content_attributes: { code: "somecode" }
+    } }
+    assert_redirected_to submissions_path
+    assert_equal "CD time 60 seconds.", flash[:alert]
+
+    # Travel to the future
+    travel 61.seconds
+
+    assert_difference(["Submission.count", "SubmissionSubtaskResult.count", "CodeContent.count"]) do
+      post contest_problem_submissions_url(@contest_four, @problem_one), params: { submission: {
+        compiler_id: compilers(:c99).id,
+        code_content_attributes: { code: "somecode" }
+      } }
+    end
+    assert_response :redirect
+  end
 end
