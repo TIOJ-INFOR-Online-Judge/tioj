@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       get :invite
       post :invite, to: 'teams#invite_accept'
       post :renew_token
+      delete 'users/:user_id', to: 'teams#remove_user', as: :remove_user
     end
   end
 

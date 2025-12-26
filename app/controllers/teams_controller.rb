@@ -1,7 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept, :renew_token]
-  before_action :check_user_in_team!, only: [:edit, :update, :destroy, :renew_token]
+  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept, :renew_token, :remove_user]
+  before_action :check_user_in_team!, only: [:edit, :update, :destroy, :renew_token, :remove_user]
 
   def index
     if params[:search_username].present?
@@ -89,10 +89,29 @@ class TeamsController < ApplicationController
   def renew_token
     @team.generate_token
     if @team.save
-      redirect_to edit_team_path(@team), notice: 'The token was successfully renewed.'
+      flash[:notice] = 'The token was successfully renewed.'
     else
       flash[:alert] = 'Failed to renew token.'
     end
+
+    redirect_to edit_team_path(@team)
+  end
+
+  def remove_user
+    user_to_remove = User.find(params[:user_id])
+
+    if @team.users.size == 1 && user_to_remove == @team.users.first
+      flash[:alert] = "The last member cannot be removed from the team. Please delete the team instead."
+      return
+    end
+
+    if @team.users.delete(user_to_remove)
+      flash[:notice] = "User #{user_to_remove.username} was successfully removed from the team."
+    else
+      flash[:alert] = "Failed to remove user #{user_to_remove.username} from the team."
+    end
+
+    redirect_to edit_team_path(@team)
   end
 
   private
@@ -116,11 +135,7 @@ class TeamsController < ApplicationController
       :teamname,
       :avatar, :avatar_cache,
       :motto,
-      :school,
-      users_attributes: [
-        :id,
-        :_destroy
-      ]
+      :school
     )
   end
 
