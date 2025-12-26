@@ -188,8 +188,8 @@ class SubmissionsController < ApplicationController
     if @contest
       unless effective_admin?
         # TODO: Add an option to still hide submission after contest
-        raise_not_found if @submission.created_at >= @contest.freeze_after and (not user_can_view?)
-        raise_not_found unless @contest.is_ended? or user_can_view?
+        raise_not_found if @submission.created_at >= @contest.freeze_after && (not user_can_view?)
+        raise_not_found unless @contest.is_ended? || user_can_view?
       end
     end
   end
