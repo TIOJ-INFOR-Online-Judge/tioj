@@ -62,7 +62,7 @@ class ContestsController < ApplicationController
     elsif current_team.nil?
       @data[:user_id] = "user_#{current_user.id}"
     else
-      @data[:user_id] = "team_#{current_team.id}"
+      @data[:user_id] = "team_#{current_team}"
     end
 
     @data[:timestamps] = {
