@@ -166,10 +166,10 @@ class ContestsController < ApplicationController
     @registration = @contest.find_registration(current_user)
     team = @registration&.team
     if team.present?
-      @teammate_registrations = team.users.map{|user|
-        registration = @contest.contest_registrations.where(user: user, team: team).first
-        [user, registration]
-      }
+      @teammate_registrations = @contest.contest_registrations
+                                  .where(team: team)
+                                  .includes(:user)
+                                  .map { |reg| [reg.user, reg] }
     end
   end
 
