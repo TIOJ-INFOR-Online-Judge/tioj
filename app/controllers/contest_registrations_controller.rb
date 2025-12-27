@@ -246,7 +246,7 @@ class ContestRegistrationsController < InheritedResources::Base
   end
 
   def index
-    registrations = @contest.contest_registrations.includes(:user)
+    registrations = @contest.contest_registrations.includes(:user, :team)
     @duplicate_names = registrations.group_by{|x| x.user.username }.select{|k, v| v.size > 1 }.map(&:first).to_set
 
     @registered_teams = registrations.select{|x| x.approved && x.team.present?}.sort_by{|x| x.team} # make same team consecutive
