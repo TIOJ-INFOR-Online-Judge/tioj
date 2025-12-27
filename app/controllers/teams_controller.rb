@@ -53,17 +53,20 @@ class TeamsController < ApplicationController
     end
 
     max_members_per_team = Rails.configuration.x.settings.dig(:max_members_per_team) || 10
-    if @team.users.count >= max_members_per_team
-      redirect_to teams_path, alert: 'Too many members!'
-      return
-    end
 
     begin
-      @team.users << current_user
-      if @team.save
-        flash[:notice] = 'Joined successfully.'
-      else
-        flash[:alert] = 'Failed to join.'
+      @team.with_lock do
+        if @team.users.count >= max_members_per_team
+          redirect_to teams_path, alert: 'Too many members!'
+          return
+        end
+
+        @team.users << current_user
+        if @team.save
+          flash[:notice] = 'Joined successfully.'
+        else
+          flash[:alert] = 'Failed to join.'
+        end
       end
     rescue ActiveRecord::RecordNotUnique
       flash[:alert] = 'User has already been added to this team.'
@@ -100,15 +103,18 @@ class TeamsController < ApplicationController
   def remove_user
     user_to_remove = User.find(params[:user_id])
 
-    if @team.users.size == 1 && user_to_remove == @team.users.first
-      flash[:alert] = "The last member cannot be removed from the team. Please delete the team instead."
-      return
-    end
+    @team.with_lock do
+      if @team.users.count == 1 && user_to_remove == @team.users.first
+        flash[:alert] = "The last member cannot be removed from the team. Please delete the team instead."
+        redirect_to edit_team_path(@team)
+        return
+      end
 
-    if @team.users.delete(user_to_remove)
-      flash[:notice] = "User #{user_to_remove.username} was successfully removed from the team."
-    else
-      flash[:alert] = "Failed to remove user #{user_to_remove.username} from the team."
+      if @team.users.delete(user_to_remove)
+        flash[:notice] = "User #{user_to_remove.username} was successfully removed from the team."
+      else
+        flash[:alert] = "Failed to remove user #{user_to_remove.username} from the team."
+      end
     end
 
     redirect_to edit_team_path(@team)
