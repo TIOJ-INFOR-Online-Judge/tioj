@@ -18,19 +18,15 @@ class Team < ApplicationRecord
   has_and_belongs_to_many :users
   accepts_nested_attributes_for :users, allow_destroy: true
 
-  # validates_presence_of :teamname
   validates_length_of :teamname, in: 1..45
 
   validates :teamname, username_convention: true
-    # uniqueness: {case_sensitive: false},
 
-#   validates_uniqueness_of :nickname
   validates_length_of :motto, maximum: 75
   validates :school, presence: true, length: {in: 1..64}
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,
-    #presence: true,
     file_size: {
       maximum: 5.megabytes.to_i
     }
@@ -41,9 +37,6 @@ class Team < ApplicationRecord
       self.avatar = tmpfile
     end
   end
-
-  # extend FriendlyId
-  # friendly_id :teamname
 
   before_create :generate_token
 
