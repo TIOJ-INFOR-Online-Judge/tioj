@@ -12,7 +12,7 @@ class TeamsController < ApplicationController
       end
       @teams = user.teams
     else
-      @teams = Team
+      @teams = Team.all
     end
     if params[:search_teamname].present?
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_teamname])
