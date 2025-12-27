@@ -112,7 +112,6 @@ class User < UserBase
   extend FriendlyId
   friendly_id :username
 
-  
   def self.ransackable_attributes(auth_object = nil)
     [
       "created_at", "updated_at", "id", "id_value", "username", "email", "admin",
@@ -123,6 +122,8 @@ class User < UserBase
       "remember_created_at", "reset_password_sent_at"
     ]
   end
+
+  has_and_belongs_to_many :teams
 end
 
 class ContestUser < UserBase

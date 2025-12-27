@@ -25,3 +25,8 @@ shared:
 
   # Old submission views (default: false)
   old_submission_views: false
+
+  # Maximum members per team (default: 10)
+  # This is only checked when users tries to join a team.
+  # Existing team won't be checked.
+  max_members_per_team: 10

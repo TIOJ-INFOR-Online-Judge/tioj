@@ -1,0 +1,11 @@
+one:
+  user: userOne
+  contest: four
+  team: one
+  approved: true
+
+two:
+  user: userTwo
+  contest: four
+  team: one
+  approved: true

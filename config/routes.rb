@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  resources :teams do
+    member do
+      get :invite
+      post :invite, to: 'teams#invite_accept'
+      post :renew_token
+      delete 'users/:user_id', to: 'teams#remove_user', as: :remove_user
+    end
+  end
+
   resources :announcements
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
@@ -77,7 +86,8 @@ Rails.application.routes.draw do
 
     member do
       post 'set_contest_task'
-      post 'register'
+      get 'register'
+      post 'register_update'
       get 'dashboard'
       get 'dashboard_update'
     end

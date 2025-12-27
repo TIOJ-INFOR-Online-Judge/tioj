@@ -21,6 +21,7 @@
 #  register_mode              :integer          default("no_register"), not null
 #  register_before            :datetime         not null
 #  default_single_contest     :boolean          default(FALSE), not null
+#  allow_team_register        :boolean          default(FALSE), not null
 #
 # Indexes
 #
@@ -37,3 +38,43 @@ one:
   contest_type: ioi
   cd_time: 15
   disable_discussion: false
+  register_mode: 'no_register'
+
+two:
+  title: contestTwo
+  description: descriptionTwo
+  description_before_contest: descriptionTwo
+  start_time: 3000-01-01 12:00
+  end_time: 3000-01-01 15:00
+  register_before: 3000-01-01 12:00
+  contest_type: ioi
+  cd_time: 15
+  disable_discussion: false
+  register_mode: 'require_approval'
+  allow_team_register: false
+
+three:
+  title: contestThree
+  description: descriptionThree
+  description_before_contest: descriptionThree
+  start_time: 3000-01-01 12:00
+  end_time: 3000-01-01 15:00
+  register_before: 3000-01-01 12:00
+  contest_type: ioi
+  cd_time: 15
+  disable_discussion: false
+  register_mode: 'require_approval'
+  allow_team_register: true
+
+four:
+  title: contestFour
+  description: descriptionFour
+  description_before_contest: descriptionFour
+  start_time: <%= 1.day.ago %>
+  end_time: <%= 1.day.from_now %>
+  register_before: <%= 1.day.from_now %>
+  contest_type: ioi
+  cd_time: 60
+  disable_discussion: false
+  register_mode: 'free_register'
+  allow_team_register: true

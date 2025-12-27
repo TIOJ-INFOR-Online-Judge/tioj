@@ -86,9 +86,10 @@ module ContestsHelper
 
   public
 
-  def ranklist_data(submissions, start_time, freeze_start, rule)
+  def ranklist_data(submissions, start_time, freeze_start, rule, user_team_mapping)
     res = Hash.new { |h, k| h[k] = [] }
     participants = Set[]
+    teams = Set[]
     func = {
       'acm' => method(:acm_ranklist_state),
       'ioi' => method(:ioi_ranklist_state),
@@ -97,18 +98,25 @@ module ContestsHelper
     first_ac = {}
     submissions = submissions.to_a
     submissions.each do |sub|
-      participants << sub.user_id
+      team_id = user_team_mapping[sub.user_id]
+      if team_id.nil?
+        effective_id = "user_#{sub.user_id}"
+        participants << sub.user_id
+      else
+        effective_id = "team_#{team_id}"
+        teams << team_id
+      end
       next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result) && sub.created_at < freeze_start
-      key = "#{sub.user_id}_#{sub.problem_id}"
+      key = "#{effective_id}_#{sub.problem_id}"
       is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
       new_state = func.call(sub, start_time, orig_state, is_waiting)
       res[key] << {timestamp: submission_rel_timestamp(sub, start_time), state: new_state} unless new_state.nil?
-      first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, sub.user_id) if sub.result == 'AC' && sub.created_at < freeze_start
+      first_ac[sub.problem_id] = first_ac.fetch(sub.problem_id, effective_id) if sub.result == 'AC' && sub.created_at < freeze_start
     end
     res.delete_if { |key, value| value.empty? }
     res.each_value {|x| x.each {|item| item[:state].pop}} if rule == 'ioi_new'
-    {result: res, participants: participants.to_a, first_ac: first_ac}
+    {result: res, participants: participants.to_a, teams: teams.to_a, first_ac: first_ac}
   end
 
   def problem_index_text(index)
@@ -122,22 +130,36 @@ module ContestsHelper
 
   ## --- HTML ---
 
-  def contest_register_button(contest, status, standalone)
+  def contest_registration_page_button(contest, status, standalone)
     if contest.can_register?
-      btn_class = standalone ? 'btn-lg' : 'btn-xs'
-      btn_class += status.nil? ? ' btn-success' : ' btn-danger'
-      button_text = status.nil? ? "Register" : "Unregister"
+      btn_class = "btn "
+      btn_class += standalone ? 'btn-lg' : 'btn-xs'
 
-      content_tag(:div, class: 'pull-right') if standalone
+      if contest.allow_team_register? then
+        btn_class += ' btn-primary'
+        button_text = standalone ? 'Change Registration' : 'Change'
 
-      html = button_to(
+        html = button_to(
           button_text,
           register_contest_path(contest),
+          method: :get,
+          class: btn_class,
+          form: {style: 'display: inline'},
+        )
+      else
+        btn_class += status.nil? ? ' btn-success' : ' btn-danger'
+        button_text = status.nil? ? "Register" : "Unregister"
+
+        html = button_to(
+          button_text,
+          register_update_contest_path(contest),
           method: :post,
-          class: "btn #{btn_class}",
+          class: btn_class,
           form: {style: 'display: inline'},
           params: status.nil? ? {} : { cancel: 1 },
-      )
+        )
+      end
+
       if standalone
         content_tag(:div, class: 'pull-right') do
           html
