@@ -117,16 +117,7 @@ class TeamsController < ApplicationController
   private
 
   def set_team
-    begin
-      @team = Team.find(params[:id])
-      if @team.blank?
-        redirect_to teams_path, alert: "Teamname '#{params[:id]}' not found."
-        return
-      end
-    rescue ActiveRecord::RecordNotFound => e
-      redirect_to teams_path, alert: "Teamname '#{params[:id]}' not found."
-      return
-    end
+    @team = Team.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
