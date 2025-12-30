@@ -90,6 +90,9 @@ class Problem < ApplicationRecord
   validates_length_of :summary_code, maximum: 5000000
   validates_length_of :hackprog_code, maximum: 5000000
 
+  validates_presence_of :hackprog_compiler, if: :specjudge_hack?
+  validates_presence_of :hackprog_code, if: :specjudge_hack?
+
   validates :code_length_limit, numericality: { in: 1..16777216 }
 
   validates :score_precision, numericality: { in: 0..6 }
