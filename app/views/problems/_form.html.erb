@@ -163,16 +163,34 @@
     </div>
   </div>
 
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="form-group visibility-specjudge visibility-specjudge-hack">
+    <%= f.label :hackprog_compiler_id, "Hack Program Compiler" %>
+    <%= f.select :hackprog_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.hackprog_compiler_id || @compiler[0].id),
+        {}, {class: 'form-control flat'} %>
+  </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-hack">
+    <%= f.label :hackprog_code, help_collapse_toggle("Hack Program Code", "hacksjDescription") %>
+    <div class="collapse" id="hacksjDescription" style="height: auto;">
+      <div class="panel panel-default">
+        <div class="panel-body small">
+          This program would be executed instead of user's submission, except for stage <code>0</code>.
+          You can then use new-style special judge to write validator/checker logic.
+        </div>
+      </div>
+    </div>
+    <%= f.text_area :hackprog_code, class: 'form-control flat code-input', rows: '7' %>
+  </div>
+
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
     <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
     <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
         {}, {class: 'form-control flat'} %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
     <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
     <%= f.text_field :specjudge_compile_args, class: 'form-control flat' %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
     <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
     <div class="collapse" id="sjDescription" style="height: auto;">
       <div class="panel panel-default">
@@ -196,7 +214,7 @@
               </li>
             </ul>
           </div>
-          <div class="visibility-specjudge visibility-specjudge-new">
+          <div class="visibility-specjudge visibility-specjudge-new visibility-specjudge-hack">
             This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
             The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
             <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
@@ -263,7 +281,7 @@
     </div>
     <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
     <%= f.label :judge_between_stages, class: 'checkbox' do %>
       <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
       Invoke special judge between stages (only applicable if number of stages &gt; 1)

@@ -253,6 +253,8 @@ class ProblemsController < ApplicationController
       :summary_type,
       :summary_compiler_id,
       :summary_code,
+      :hackprog_compiler_id,
+      :hackprog_code,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,

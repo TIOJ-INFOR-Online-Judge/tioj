@@ -107,6 +107,8 @@ class FetchChannel < ApplicationCable::Channel
         interlib_impl: problem.interlib_impl || "",
         strict_mode: problem.strict_mode,
         num_stages: problem.num_stages,
+        hackprog_compiler: problem.hackprog_compiler&.name,
+        hackprog_code: problem.hackprog_code || "",
         judge_between_stages: problem.judge_between_stages,
         default_scoring_args: ApplicationController.shellsplit_safe(problem.default_scoring_args),
       },

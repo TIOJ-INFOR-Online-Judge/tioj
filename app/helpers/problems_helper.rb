@@ -80,6 +80,7 @@ module ProblemsHelper
       "none" => "Default compare",
       "old" => "Old-style special judge",
       "new" => "New-style special judge",
+      "hack" => "New-style special judge (+hack)",
     }
   end
 
