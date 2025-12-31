@@ -5,35 +5,32 @@
 <% end %>
 
 <% content_for :navbar do %>
-<div style="background-color:#003365">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#003365">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <%= link_to image_tag("banner.png", alt: "TIOJ", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), root_path, class: "nav-brand" %>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-01">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse" id="navbar-collapse-01">
-        <ul class="nav navbar-nav navbar-left">
-          <li><%= link_to "Bulletin", articles_path %></li>
-          <li><%= link_to "Problems", problems_path %></li>
-          <li><%= link_to "Submissions", submissions_path %></li>
-          <li><%= link_to "Contests", contests_path %></li>
-          <li><%= link_to "Discuss", posts_path %></li>
-          <li><%= link_to "About", about_url %></li>
-          <li><%= link_to "Rank", users_path %></li>
+<div class="mb-4" style="background-color:#003365">
+  <nav class="navbar navbar-expand-md navbar-dark">
+    <div class="container-fluid d-flex flex-wrap align-items-start">
+      <%= link_to image_tag("banner.png", alt: "TIOJ", skip_pipeline: true), root_path, class: "nav-brand" %>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav">
+          <li class="nav-item"><%= link_to "Bulletin", articles_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Problems", problems_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Submissions", submissions_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Contests", contests_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Discuss", posts_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "About", about_url, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Rank", users_path, class: "nav-link" %></li>
           <% if current_user %>
-            <li><%= link_to "Teams", teams_path %></li>
-            <li><%= link_to current_user.username, user_path(current_user) %></li>
-            <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
+            <li class="nav-item"><%= link_to "Teams", teams_path, class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to current_user.username, user_path(current_user), class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "nav-link" %></li>
           <% else %>
-            <li><%= link_to "Sign in", new_session_path(:user) %> </li>
+            <li class="nav-item"><%= link_to "Sign in", new_session_path(:user), class: "nav-link" %> </li>
             <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
-              <li><%= link_to "Sign up", new_registration_path(:user) %></li>
+              <li class="nav-item"><%= link_to "Sign up", new_registration_path(:user), class: "nav-link" %></li>
             <% end %>
           <% end %>
         </ul>
