@@ -1,12 +1,5 @@
-@font-face {
-  font-family: "monofont";
-  src: url("/fonts/DejaVuSansMono.ttf");
-}
 .page-header small {
   color: #30617C;
-}
-body {
-  background-color: #E6EBF0;
 }
 h1 h2 h3 h4 h5 h6 {
   color: #948C75;

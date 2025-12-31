@@ -83,9 +83,7 @@ module ApplicationHelper
     ret = raw '<div class="alert' + cls + '" role="alert">'
     if dismissible
       ret += raw <<~HTML
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
       </button>
       HTML
     end

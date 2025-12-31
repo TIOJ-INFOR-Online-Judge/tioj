@@ -1,4 +1,12 @@
+
+$navbar-nav-link-padding-x: 1.125rem;
+$body-bg: #E6EBF0;
+$link-decoration: none;
+$link-hover-decoration: none;
+
+@import "variables";
 @import "bootstrap/scss/bootstrap";
+@import "font";
 
 /*
 require bootstrap
