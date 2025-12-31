@@ -5,9 +5,9 @@
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
 </h4>
 
-<div class="container-fluid d-grid row-gap-4">
+<div class="container-fluid d-grid row-gap-2 mb-4">
 
-  <div class="row gap-4">
+  <div class="row gap-md-4">
     <%= render 'submit_button' %>
     <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), class: 'btn btn-info btn-sm col-md-2' %>
     <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
@@ -19,7 +19,7 @@
     <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_adaptive_polymorphic_path([]), class: 'btn btn-secondary btn-sm col-md-2' %>
   </div>
   <% if effective_admin? %>
-    <div class="row gap-4">
+    <div class="row gap-md-4">
       <%= link_to 'Edit', edit_problem_path(@problem), class: 'btn btn-info btn-sm col-md-2' %>
       <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-sm col-md-2' %>
       <% if @contest %>
@@ -31,10 +31,13 @@
     </div>
   <% end %>
 
+</div>
+
+<div class="container-fluid d-grid row-gap-4 mb-4">
   <% if not hide_old_submission %>
     <div class="row">
       <div class="col-md-4">
-        <div class="card">
+        <div class="card bg-light">
           <h6 class="card-header">
             TopCoder
           </h6>
@@ -57,7 +60,7 @@
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-6">
-            <div class="card">
+            <div class="card bg-light">
               <h6 class="card-header">
                 User's AC Ratio
               </h6>
@@ -67,7 +70,7 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div class="card">
+            <div class="card bg-light">
               <h6 class="card-header">
                 Submission's AC Ratio
               </h6>
@@ -79,10 +82,10 @@
         </div>
       </div>
       <div class="col-md-3">
-        <div class="card">
+        <div class="card bg-light">
           <h6 class="card-header">
             Tags
-            <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-sm">Show solution-related tags</button></div>
+            <div class="float-end"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
 
           </h6>
           <div class="card-body">
@@ -93,7 +96,7 @@
     </div>
   <% end %>
 
-  <div class="card">
+  <div class="card bg-light">
     <h6 class="card-header">
       Description
     </h6>
@@ -104,7 +107,7 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div class="card">
+      <div class="card bg-light">
         <h6 class="card-header">
           Input Format
         </h6>
@@ -114,7 +117,7 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card">
+      <div class="card bg-light">
         <h6 class="card-header">
           Output Format
         </h6>
@@ -128,11 +131,11 @@
   <% @problem.sample_testdata.each_with_index do |sample, index| %>
     <div class="row">
       <div class="col-md-6">
-        <div class="card copy-group problem-copy-group">
+        <div class="card bg-light copy-group problem-copy-group">
           <h6 class="card-header">
             Sample Input <%= index + 1 %>
           <% if sample.display_plaintext? %>
-            <button class="btn btn-secondary btn-sm float-right copy-group-btn"> copy </button>
+            <button class="btn btn-secondary btn-sm float-end copy-group-btn"> copy </button>
           <% end %>
           </h6>
           <div class="card-body">
@@ -147,11 +150,11 @@
         </div>
       </div>
       <div class="col-md-6">
-        <div class="card copy-group problem-copy-group">
+        <div class="card bg-light copy-group problem-copy-group">
           <h6 class="card-header">
             Sample Output <%= index + 1 %>
           <% if sample.display_plaintext? %>
-            <button class="btn btn-secondary btn-sm float-right copy-group-btn"> copy </button>
+            <button class="btn btn-secondary btn-sm float-end copy-group-btn"> copy </button>
           <% end %>
           </h6>
           <div class="card-body">
@@ -170,7 +173,7 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div class="card">
+      <div class="card bg-light">
         <h6 class="card-header">
           Hints
         </h6>
@@ -180,7 +183,7 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card">
+      <div class="card bg-light">
         <h6 class="card-header">
           Problem Source
         </h6>
@@ -191,11 +194,11 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card bg-light">
     <h6 class="card-header">
       Subtasks
     </h6>
-    <table class="table table-hover table-striped table-sm">
+    <table class="table table-hover table-striped table-sm mb-0 table-light">
       <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
       <thead>
         <tr>
@@ -220,13 +223,13 @@
     </table>
   </div>
 
-  <div class="card">
+  <div class="card bg-light">
     <h6 class="card-header" data-bs-toggle="collapse" href="#collapseLimit">
       Testdata and Limits
-      <i class="indicator glyphicon glyphicon-chevron-up float-right"></i>
+      <i class="indicator glyphicon glyphicon-chevron-up float-end"></i>
     </h6>
     <div class="collapse show" id="collapseLimit">
-      <table class="table table-hover table-striped table-condensed">
+      <table class="table table-hover table-striped table-sm mb-0 table-light">
         <thead>
           <tr>
             <th>No.</th>
@@ -268,7 +271,7 @@
   </div>
 </div>
 
-<div class="container-fluid my-4">
+<div class="container-fluid">
   <div class="row gap-4">
     <%= render 'submit_button' %>
     <%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm col-md-2' %>

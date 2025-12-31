@@ -71,8 +71,8 @@ module ProblemsHelper
   end
 
   def tag_list_html(problem)
-    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-default' } +
-         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
+    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-sm btn-secondary mb-1' } +
+         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-sm btn-warning solution-tag d-none mb-1' }).join(" ")
   end
 
   def specjudge_type_desc_map

@@ -1,0 +1,23 @@
+/* tabs for problem settings */
+.card.panel-problem-settings {
+  background-color: #f0f3f5;
+  border-color: #96a3b7;
+}
+.panel-problem-settings > .card-header {
+  background-color: #6683b7;
+  padding: 5px 10px 0 10px;
+}
+.panel-problem-settings .nav-tabs {
+  border: none;
+}
+.panel-problem-settings .nav-tabs .nav-link.active {
+  background-color: #f0f3f5;
+  color: #555555;
+}
+.panel-problem-settings .nav-tabs .nav-link {
+  color: #f0f3f5;
+  border: none;
+}
+.panel-problem-settings .nav-tabs .nav-link:hover {
+  color: #555555;
+}

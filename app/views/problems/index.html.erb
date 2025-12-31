@@ -7,19 +7,19 @@
 </h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success btn-sm' %><br>
+  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success' %><br>
 <% end %>
 
-<form class="form-inline search-form" accept-charset="UTF-8" method="get">
+<form class="search-form d-flex align-items-center gap-2" accept-charset="UTF-8" method="get">
   <label for="search_id">Search Problems</label>
-  <div class="form-group">
-    <input style="width:150px" id="search_id" name="search_id" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  <div>
+    <input style="width:150px" id="search_id" name="search_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
-  <div class="form-group">
-    <input id="search_name" name="search_name" class="form-control input-sm flat" type="text" placeholder="Enter Problem Name">
+  <div>
+    <input id="search_name" name="search_name" class="form-control form-control-sm" type="text" placeholder="Enter Problem Name">
   </div>
-  <div class="form-group">
-    <input id="tag" name="tag" class="form-control input-sm flat" type="text" placeholder="Enter tag">
+  <div>
+    <input id="tag" name="tag" class="form-control form-control-sm" type="text" placeholder="Enter tag">
   </div>
   <button type="submit" id="quick_search" class="btn btn-dark btn-sm">Search</button>
 </form>
@@ -43,8 +43,13 @@ window.onpageshow = function(e){
     <tr>
       <th></th>
       <th>#</th>
-      <th style="width: 45%;">Name
-        <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-sm">Show solution-related tags</button></div>
+      <th style="width: 45%;">
+        Name
+        <div class="float-end">
+          <button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">
+            Show solution-related tags
+          </button>
+        </div>
       </th>
       <th class="text-center">TopCoder</th>
       <th>AC Ratio (user)</th>
@@ -65,8 +70,8 @@ window.onpageshow = function(e){
           <td><%= user_problem_status_with_infor(problem, @attr_map) if user_signed_in? %></td>
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
           <td>
-            <div style="float:left"><%= link_to problem.name, problem_path(problem.id) %></div>
-            <div style="float:right"><%= tag_list_html(problem) %></div>
+            <div class="float-start"><%= link_to problem.name, problem_path(problem.id) %></div>
+            <div class="float-end"><%= tag_list_html(problem) %></div>
           </td>
           <td class="text-center">
             <% begin %>

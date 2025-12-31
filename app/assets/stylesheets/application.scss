@@ -1,15 +1,11 @@
-$navbar-nav-link-padding-x: 1.125rem;
-$body-bg: #E6EBF0;
-$link-decoration: none;
-$link-hover-decoration: none;
 
-$headings-font-weight: 700;
-
+@import "./font";
 @import "./variables";
 @import "bootstrap/scss/bootstrap";
-@import "./font";
-@import "./tagsinput";
-
+@import "./components/tagsinput";
+@import "./components/panel-problem-settings";
+@import "./components/btn-xs";
+// @import "./components/problem_copy_btn";
 
 #page-content {
   padding-left: 40px;
@@ -18,29 +14,6 @@ $headings-font-weight: 700;
 }
 .page-header {
   margin: 10px 0 15px;
-}
-
-/* tabs for problem settings */
-.card.panel-problem-settings {
-  background-color: #f0f3f5;
-  border-color: #96a3b7;
-}
-.panel-problem-settings > .card-header {
-  background-color: #6683b7;
-  padding: 5px 10px 0 10px;
-}
-.panel-problem-settings .nav-tabs {
-  border: none;
-}
-.panel-problem-settings .nav-tabs > li.active > a {
-  background-color: #f0f3f5;
-  color: #555555;
-}
-.panel-problem-settings .nav-tabs > li > a {
-  color: #f0f3f5;
-}
-.panel-problem-settings .nav-tabs > li > a:hover {
-  color: #555555;
 }
 
 /*

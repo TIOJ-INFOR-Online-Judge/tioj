@@ -25,25 +25,29 @@ $purple:  #6f42c1 !default;
 $pink:    #e83e8c !default;
 $red:     #e74c3c !default;
 $orange:  #fd7e14 !default;
-$yellow:  #f39c12 !default;
-$green:   #18bc9c !default;
-$teal:    #20c997 !default;
+$yellow:  #f1c40f !default;
+$green:   #2ecc71 !default;
+$teal:    #16a085 !default;
 $cyan:    #3498db !default;
 
-$primary:       $blue !default;
-$secondary:     $gray-600 !default;
+$primary:       $teal !default;
+$secondary:     $gray-500 !default;
 $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $yellow !default;
 $danger:        $red !default;
-$light:         $gray-200 !default;
-$dark:          $gray-700 !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
 
-$min-contrast-ratio:   2.05 !default;
+$min-contrast-ratio:   1.65 !default;
+
+$body-bg: #E6EBF0;
 
 // Links
 
-$link-color:                $success !default;
+$link-color:              $teal !default;
+$link-decoration: none;
+// $link-hover-decoration: none;
 
 // Fonts
 
@@ -125,4 +129,16 @@ $input-bg: $white;
 $input-border-width: 2px;
 $component-active-bg: $teal;
 $input-focus-box-shadow: none;
+$input-hover-bg: $gray-100;
 $form-select-focus-box-shadow: none;
+
+$form-check-input-width: 1.25em;
+$form-check-input-bg: $gray-500;
+$form-check-input-focus-box-shadow: none;
+
+// Misc
+
+$table-striped-bg: #f8f8f8;
+$table-hover-bg: #f5f5f5;
+$navbar-nav-link-padding-x: 1.125rem;
+$headings-font-weight: 700;
