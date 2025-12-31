@@ -26,3 +26,6 @@
 - [ ] Notification system for problem issue reporting
 - [ ] Migrate to Bootstrap 4
     - [ ] Enhance posts UI
+
+---
+- tagsinput update

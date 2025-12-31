@@ -41,13 +41,13 @@ $('.button-checkbox').each(function () {
 		// Update the button's color
 		if (isChecked) {
 			$button
-				.removeClass('btn-default')
+				.removeClass('btn-secondary')
 				.addClass('btn-' + color + ' active');
 		}
 		else {
 			$button
 				.removeClass('btn-' + color + ' active')
-				.addClass('btn-default');
+				.addClass('btn-secondary');
 		}
 	}
 

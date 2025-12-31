@@ -21,7 +21,7 @@
   <div class="form-group">
     <input id="tag" name="tag" class="form-control input-sm flat" type="text" placeholder="Enter tag">
   </div>
-  <button type="submit" id="quick_search" class="btn btn-inverse btn-xs">Search</button>
+  <button type="submit" id="quick_search" class="btn btn-dark btn-sm">Search</button>
 </form>
 
 <%# remove empty fields %>
@@ -44,7 +44,7 @@ window.onpageshow = function(e){
       <th></th>
       <th>#</th>
       <th style="width: 45%;">Name
-        <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+        <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-sm">Show solution-related tags</button></div>
       </th>
       <th class="text-center">TopCoder</th>
       <th>AC Ratio (user)</th>
@@ -84,9 +84,9 @@ window.onpageshow = function(e){
           <% if user_signed_in? %>
             <td style="white-space: nowrap;">
               <% if current_user.admin? %>
-                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-xs' %>
+                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-sm' %>
               <% end %>
-              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-xs' %>
+              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-sm' %>
             </td>
           <% end %>
         </tr>
