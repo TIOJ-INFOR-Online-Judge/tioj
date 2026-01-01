@@ -1,10 +1,31 @@
-.table-ole > td {
+.panel-success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6
+}
+.panel-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1
+}
+.panel-info {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1
+}
+.panel-warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc
+}
+
+.table-ole  {
   background-color: #F3E6FC;
 }
 .text-ole {
   color: #7C18C4;
 }
-.panel-ole > .panel-heading {
+.panel-ole {
   color: #4E2A69;
   background-color: #F3E6FC;
   border-color: #E4C5FC;
@@ -12,13 +33,13 @@
 .panel-ole {
   border-color: #E4C5FC;
 }
-.table-sig > td {
+.table-sig  {
   background-color: #FCE9CF;
 }
 .text-sig {
   color: #F08A05;
 }
-.panel-sig > .panel-heading {
+.panel-sig {
   color: #805926;
   background-color: #FCE9CF;
   border-color: #F0D4AD;
@@ -26,13 +47,13 @@
 .panel-sig {
   border-color: #F0D4AD;
 }
-.table-mle > td {
+.table-mle  {
   background-color: #F1F2D0;
 }
 .text-mle {
   color: #A4A832;
 }
-.panel-mle > .panel-heading {
+.panel-mle {
   color: #6F7301;
   background-color: #F1F2D0;
   border-color: #D9DB93;
@@ -40,10 +61,10 @@
 .panel-mle {
   border-color: #D9DB93;
 }
-.table-ce > td {
+.table-ce  {
   background-color: #EEEEEE;
 }
-.panel-ce > .panel-heading {
+.panel-ce {
   background-color: #E0E0E0;
   border-color: #C0C0C0;
 }

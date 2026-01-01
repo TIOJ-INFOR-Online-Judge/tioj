@@ -1,0 +1,90 @@
+#page-content {
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-bottom: 40px;
+}
+.page-header {
+  margin: 10px 0 15px;
+}
+.page-header small {
+  color: #30617C;
+}
+
+.motto {
+  max-width: 50rem;
+  max-height: 10rem;
+  overflow: hidden;
+}
+
+a.bi-question-circle-fill:hover {
+  color: #1abc9c !important;
+}
+
+/* monospace form inputs */
+.code-input {
+  font-family: "monofont";
+}
+
+h1 h2 h3 h4 h5 h6 {
+  color: #948C75;
+}
+
+.subtask-icon {
+  background-color: #808080;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 13px;
+  height: 18px;
+  min-width: 18px;
+  display: inline-block;
+  text-align: center;
+  bottom: 2px;
+  position: relative;
+}
+.subtask-display {
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 30px;
+  min-width: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline-block;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* Prism fix */
+.line-numbers span.line-numbers-rows {
+  top: -2.2px;
+}
+div.code-toolbar > .toolbar > .toolbar-item > button.copy-to-clipboard-button {
+  background-color: #3498db;
+  color: #ffffff;
+  padding: 3px 10px;
+  font-size: 18px;
+  margin: 6px 6px 0 0;
+}
+pre.code-block[class*="language-"] {
+  font-size: 14px;
+}
+
+/* dashboard self */
+.table-ole > td.highlight-if-self {
+  font-weight: bold;
+  color: #7C18C4;
+}
+
+.a {
+  background-color: #99B2B7;
+}
+.sample-testdata {
+  font-family: "monofont";
+  font-size: 15px;
+  line-height: 18px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}

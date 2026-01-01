@@ -48,8 +48,8 @@
 <% end %>
 </p>
 <% infor_obj = @show_old ? @submission.old_submission : @submission %>
-<div id="overall-result" class="card mb-1 <%= panel_class_map[infor_obj.result] %>">
-  <div class="card-header">
+<div id="overall-result" class="card bg-light mb-1">
+  <div class="card-header <%= panel_class_map[infor_obj.result] %>">
     <div class="row">
       <div class="col-md-3">
         <h5 class="card-title">Problem</h5>
@@ -98,8 +98,8 @@
       Subtask Results
       <%= indicator_chevron_up_float_glyph %>
     </h5>
-    <div class="collapse in" id="collapseSubtask">
-      <table class="table table-sm align-middle mb-0">
+    <div class="collapse show" id="collapseSubtask">
+      <table class="table table-light table-sm align-middle mb-0">
         <% problem = @submission.problem %>
         <% num_tasks = problem.testdata.count %>
         <% testsets = problem.subtasks.order(id: :asc) %>
@@ -150,8 +150,8 @@
       <%= indicator_chevron_up_float_glyph %>
     </h5>
     <% if @show_detail %>
-      <div class="collapse in" id="collapseTestdata">
-        <table class="table table-sm mb-0">
+      <div class="collapse show" id="collapseTestdata">
+        <table class="table table-light table-sm mb-0">
           <thead>
             <tr>
               <th>Testdata no.</th>
@@ -172,7 +172,7 @@
               <% tr_attr = {id: "td-row-#{i}"} %>
               <% tr_attr[:class] = row_class_map[task.result] if task and row_class_map[task.result] %>
               <% collapse_id = "td-message-row-#{i}" %>
-              <% tr_attr.merge!({data: {toggle: "collapse"}, href: "##{collapse_id}"}) %>
+              <% tr_attr.merge!({data: {'bs-toggle': "collapse"}, href: "##{collapse_id}"}) %>
               <% if tr_attr[:class] %>
                 <% tr_attr[:class] += " card-header" %>
               <% else %>
@@ -216,7 +216,7 @@
                     <% if task.message_type == "html" %>
                       <%= raw task.message %>
                     <% else %>
-                      <pre class="overflow-auto" style="margin: 0;"><code class=""><%= task.message %></code></pre>
+                      <pre class="overflow-auto border border-2 rounded p-2 m-1"><code class=""><%= task.message %></code></pre>
                     <% end %>
                   <% end %>
                 </td>
@@ -226,7 +226,7 @@
         </table>
       </div>
     <% else %>
-      <div class="collapse in" id="collapseTestdata" style="margin: 0.4rem; padding-left: 1rem;">
+      <div class="collapse show" id="collapseTestdata" style="margin: 0.4rem; padding-left: 1rem;">
         Individual testdata result is hidden.
       </div>
     <% end %> <%# if @show_detail %>
@@ -264,7 +264,7 @@
       Compilation Error Message
     </h5>
     <div class="card-body">
-      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> d-none <% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
+      <pre id="ce-message-content" class="overflow-auto border border-2 rounded p-2 m-1<% unless @submission.message.present? %> d-none <% end %>"><code class=""><%= @submission.message || "" %></code></pre>
       <span id="ce-message-none" <% if @submission.message.present? %>class="d-none "<% end %>>
         Sorry, no compilation error message available.
       </span>
