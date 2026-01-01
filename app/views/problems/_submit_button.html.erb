@@ -1,5 +1,5 @@
 <% if !@contest || (@contest.is_running? && @contest.user_can_submit?(current_user)) %>
-  <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { class: 'btn btn-success btn-sm col-md-2' } %>
+  <%= link_to 'Submit', contest_adaptive_polymorphic_path([@problem, :submission], action: :new), { class: 'btn btn-success btn-sm w-100' } %>
 <% elsif @problem.visible_public? %><%# @layout != :single_contest %>
-  <%= link_to 'Submit out of contest', new_problem_submission_path(@problem), { class: 'btn btn-success btn-sm col-md-2' } %>
+  <%= link_to 'Submit out of contest', new_problem_submission_path(@problem), { class: 'btn btn-success btn-sm w-100' } %>
 <% end %>
