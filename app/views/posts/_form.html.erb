@@ -23,12 +23,12 @@
   <% if not @contest %>
     <div class="mb-3">
       <%= f.label :post_type %>
-      <%= f.select :post_type, @post_types, {}, {class: 'form-control flat'} %>
+      <%= f.select :post_type, @post_types, {}, {class: 'form-control'} %>
     </div>
   <% end %>
   <div class="mb-3">
     <%= f.label :content, raw('Content: (all characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %>
-    <%= f.text_area :content, class: 'form-control flat', rows: 6, placeholder:'Content'%>
+    <%= f.text_area :content, class: 'form-control', rows: 6, placeholder:'Content'%>
   </div>
   <% if allow_set_visibility %>
     <div class="mb-3 form-check">

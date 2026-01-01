@@ -3,7 +3,7 @@
 
   <div class="mb-3">
     <%= f.label :testdata_file_list, "Testdata" %>
-    <%= f.file_field :testdata_file_list, class: 'form-control flat', multiple: true %>
+    <%= f.file_field :testdata_file_list, class: 'form-control', multiple: true %>
   </div>
   
   <div id="testdata-list" class="card bg-light mb-3">
@@ -27,19 +27,19 @@
 
   <div class="mb-3">
     <%= f.label :time_limit, "Time Limit" %>
-    <%= f.number_field :time_limit, class: 'form-control flat' %>
+    <%= f.number_field :time_limit, class: 'form-control' %>
   </div>
   <div class="mb-3">
     <%= f.label :vss_limit, "Memory Limit (VSS)" %>
-    <%= f.number_field :vss_limit, class: 'form-control flat' %>
+    <%= f.number_field :vss_limit, class: 'form-control' %>
   </div>
   <div class="mb-3">
     <%= f.label :rss_limit, "Memory Limit (RSS)" %>
-    <%= f.number_field :rss_limit, class: 'form-control flat' %>
+    <%= f.number_field :rss_limit, class: 'form-control' %>
   </div>
   <div class="mb-3">
     <%= f.label :output_limit, "Output Limit" %>
-    <%= f.number_field :output_limit, class: 'form-control flat' %>
+    <%= f.number_field :output_limit, class: 'form-control' %>
   </div>
 
   <div class="dummy-placeholder">
