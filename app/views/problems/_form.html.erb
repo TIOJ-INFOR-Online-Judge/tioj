@@ -143,8 +143,8 @@
         </div>
         <div class="col-md-4">
           <%= f.label :num_stages, help_collapse_toggle('Number of execution stages', 'stagesDescription') %>
-          <div class="collapse" id="stagesDescription" style="height: auto;">
-            <div class="card">
+          <div class="collapse" id="stagesDescription">
+            <div class="card bg-white mb-3">
               <div class="card-body small" style="line-height: 1.4;">
                 The user's program will be run this number of times. If greater than 1, the 0-based stage number will be given via <code>argv[1]</code>.<br>
                 Each stage's output will be the input of the next stage; The last stage's output is the final answer.<br>
@@ -167,8 +167,8 @@
         </div>
         <div class="mb-3 visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
           <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
-          <div class="collapse" id="sjDescription" style="height: auto;">
-            <div class="card">
+          <div class="collapse" id="sjDescription">
+            <div class="card bg-white mb-3">
               <div class="card-body small">
                 <div class="visibility-specjudge visibility-specjudge-old">
                   Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
@@ -192,7 +192,7 @@
                 <div class="visibility-specjudge visibility-specjudge-new">
                   This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
                   The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
-                  <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
+                  <pre class="overflow-auto p-2 border" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
                     input_file: 'path_to_testdata_input',
                     answer_file: 'path_to_testdata_answer',
                     user_output_file: 'path_to_user_output',
@@ -226,15 +226,15 @@
                     },
                   }) %></pre>
                   The program must output a JSON object to stdout with the following fields (all fields are optional; see below for more details):
-                  <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
+                  <pre class="p-2 border" style="line-height: 1.2;"><%= JSON.pretty_generate({
                     verdict: 'AC',
-                  score: '1.35',
-                  time_us: 123456,
-                  vss_kib: 66888,
-                  rss_kib: 44888,
-                  message_type: 'text',
-                  message: 'meow',
-}) %></pre>
+                    score: '1.35',
+                    time_us: 123456,
+                    vss_kib: 66888,
+                    rss_kib: 44888,
+                    message_type: 'text',
+                    message: 'meow',
+                  }) %></pre>
                   Notes:
                   <ul style="line-height: 1.4;">
                     <li><code>original_verdict</code> will be an empty string if user's program terminated normally.</li>
@@ -266,7 +266,7 @@
         <div class="mb-3 visibility-specjudge visibility-specjudge-none">
           <%= f.label :default_scoring_args, help_collapse_toggle('Arguments of default scoring program', 'scoringArgsDescription') %>
           <div class="collapse" id="scoringArgsDescription" style="height: auto;">
-            <div class="card">
+            <div class="card bg-white mb-3">
               <div class="card-body small">
                 Pass arguments to the default scoring program for different comparison behavior. Possible arguments:<br>
                 <ul style="line-height: 1.4;">
@@ -349,12 +349,12 @@
         </div>
         <div class="mb-3 visibility-summary visibility-summary-custom">
           <%= f.label :summary_code, help_collapse_toggle('Summary Code', 'summaryDescription') %>
-          <div class="collapse" id="summaryDescription" style="height: auto;">
-            <div class="card">
+          <div class="collapse" id="summaryDescription">
+            <div class="card mb-3">
               <div class="card-body small">
                 The program is used to calculate the total score / time / memory, and potentially custom CE messages.<br>
                 It will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
-                <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
+                <pre class="overflow-auto p-2 border" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
                   user_code_file: 'path_to_user_source_code',
                   problem_id: 1234,
                   submission_id: 123456,
@@ -381,13 +381,13 @@
                   subtask_scores: ["10.000000", "20.000000", "30.000000", "40.000000"],
                 }) %></pre>
                 The program must output a JSON object to stdout with the following fields (all fields are optional; default calculation is used if omitted):
-                <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
+                <pre class="p-2 border" style="line-height: 1.2;"><%= JSON.pretty_generate({
                   verdict: 'AC',
-                score: '1.35',
-                total_time_us: 123456,
-                total_memory_kib: 66888,
-                ce_message: 'Overriden CE message',
-}) %></pre>
+                  score: '1.35',
+                  total_time_us: 123456,
+                  total_memory_kib: 66888,
+                  ce_message: 'Overriden CE message',
+                }) %></pre>
                 Notes:
                 <ul style="line-height: 1.4;">
                   <li><code>contest_id</code> will be -1 if it is not a contest submission.</li>
