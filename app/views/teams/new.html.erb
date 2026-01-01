@@ -4,29 +4,29 @@
 
 <div class="col-xs-12 col-md-6">
 
-  <%= nested_form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
+  <%= form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
     <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
-    <div class="form-group">
+    <div class="mb-3">
       <%= f.label :teamname %>
-      <%= f.text_field :teamname, class: 'form-control flat' %>
+      <%= f.text_field :teamname, class: 'form-control' %>
     </div>
 
-    <div class="form-group">
+    <div class="mb-3">
       <%= f.label :school %>
-      <%= f.text_field :school, class: 'form-control flat' %>
+      <%= f.text_field :school, class: 'form-control' %>
     </div>
 
     <hr>
 
     <div class="actions">
-      <span class="flex-container-bottom-align">
-        <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
-      </span>
+      <%= f.submit class: 'btn btn-success btn-lg' %>
     </div>
 
   <% end %>
 
-  <%= link_to 'Back to teams List', teams_path, class: 'btn btn-secondary btn-sm' %>
+  <div class="mt-1">
+    <%= link_to 'Back to teams List', teams_path, class: 'btn btn-secondary btn-sm' %>
+  </div>
 </div>
 

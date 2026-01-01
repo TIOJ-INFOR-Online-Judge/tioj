@@ -5,71 +5,61 @@
 <%= form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-7">
-        <%= f.label :teamname %>
-        <%= f.text_field :teamname, class: 'form-control flat' %>
-      </div>
+  <div class="row mb-3">
+    <div class="col-md-7">
+      <%= f.label :teamname %>
+      <%= f.text_field :teamname, class: 'form-control' %>
     </div>
   </div>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-7">
-        <%= f.label :school %>
-        <%= f.text_field :school, class: 'form-control flat' %>
-      </div>
+  <div class="row mb-3">
+    <div class="col-md-7">
+      <%= f.label :school %>
+      <%= f.text_field :school, class: 'form-control' %>
     </div>
   </div>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-7">
-        <%= f.label :motto %>
-        <%= f.text_field :motto, class: "form-control flat" %>
-      </div>
+  <div class="row mb-3">
+    <div class="col-md-7">
+      <%= f.label :motto %>
+      <%= f.text_field :motto, class: "form-control" %>
     </div>
   </div>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-7">
-        <%= f.label :avatar %>
-        <%= f.file_field :avatar, class: "form-control flat" %>
-        <%= f.hidden_field :avatar_cache %>
-      </div>
+  <div class="row mb-3">
+    <div class="col-md-7">
+      <%= f.label :avatar %>
+      <%= f.file_field :avatar, class: "form-control" %>
+      <%= f.hidden_field :avatar_cache %>
     </div>
   </div>
 
-  <div class="form-group">
+  <table class="table table-hover table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Username</th>
+        <th>Nickname</th>
+        <th></th>
+      </tr>
+    </thead>
 
-    <table class="table table-hover table-striped">
-      <thead>
+    <tbody>
+      <% @team.users.each do |user| %>
         <tr>
-          <th></th>
-          <th>Username</th>
-          <th>Nickname</th>
-          <th></th>
+          <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "rounded"), user_path(user) %></td>
+          <td><%= link_to user.username, user_path(user) %></td>
+          <td><%= user.nickname %></td>
+          <td>
+            <% if @team.users.count > 1 %>
+              <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-sm" %>
+            <% end %>
+          </td>
         </tr>
-      </thead>
+      <% end %>
+    </tbody>
+  </table>
 
-      <tbody>
-        <% @team.users.each do |user| %>
-          <tr>
-            <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
-            <td><%= link_to user.username, user_path(user) %></td>
-            <td><%= user.nickname %></td>
-            <td>
-              <% if @team.users.count > 1 %>
-                <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-sm" %>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
 
   <% alert_tag class: 'alert-warning' do %>
     <strong>Oh Geez! </strong>
@@ -78,15 +68,17 @@
   <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
 
   <div class="actions">
-    <span class="flex-container-bottom-align">
-      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
-    </span>
+    <%= f.submit class: 'btn btn-success btn-lg' %>
   </div>
 
 <% end %>
 
+<div class="mt-1">
 <%= button_to 'Renew Invitation URL', renew_token_team_path(@team), class: 'btn btn-danger btn-sm' %>
+</div>
+<div class="mt-1">
 <%= link_to 'Back to team info', @team, class: 'btn btn-secondary btn-sm' %>
+</div>
 
 <%= javascript_include_tag "prism" %>
 <%= stylesheet_link_tag "prism" %>

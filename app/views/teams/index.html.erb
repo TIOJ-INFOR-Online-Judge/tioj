@@ -2,12 +2,16 @@
 <h4 class="page-header">Teams</h4>
 
 
-<%= link_to 'New Team', new_team_path, class: 'btn btn-success btn-sm' %>
+<%= link_to 'New Team', new_team_path, class: 'btn btn-success' %>
 
-<%= form_with class: "form-inline", method: :get do |f| %>
+<%= form_with class: "form d-flex align-items-center gap-2", method: :get do |f| %>
   <%= f.label "Search Teams" %>
-  <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Teamname" %>
-  <%= f.text_field :search_username, class: "form-control input-sm flat", placeholder: "Enter Username" %>
+  <div>
+    <%= f.text_field :search_teamname, class: "form-control form-control-sm", placeholder: "Enter Teamname" %>
+  </div>
+  <div>
+    <%= f.text_field :search_username, class: "form-control form-control-sm", placeholder: "Enter Username" %>
+  </div>
   <%= f.submit "Search", class: "btn btn-dark btn-sm" %>
 <% end %>
 
@@ -28,7 +32,7 @@
     <% @teams.each do |team| %>
       <tr>
         <%# <td><%= team.id %1></td> %>
-        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "rounded"), team_path(team) %></td>
         <td><%= link_to team.teamname, team_path(team) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>
