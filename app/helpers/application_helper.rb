@@ -37,16 +37,28 @@ module ApplicationHelper
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end
 
+  def indicator_chevron_up_float_glyph
+    raw '<span class="indicator bi bi-chevron-up float-end"></span>'
+  end
+
+  def indicator_chevron_down_glyph
+    raw '<span class="indicator bi bi-chevron-down"></span>'
+  end
+
+  def alert_glyph
+    raw '<span class="bi bi-exclamation-triangle-fill"></span>'
+  end
+
   def destroy_glyph
-    return raw '<span class="glyphicon glyphicon-trash"></span>'
+    raw '<span class="bi bi-trash"></span>'
   end
 
   def edit_glyph
-    return raw '<span class="fui-new"></span>'
+    raw '<span class="bi bi-pencil-square"></span>'
   end
 
   def pin_glyph
-    return raw '<span class="glyphicon glyphicon-pushpin"></span>'
+    raw '<span class="bi bi-pin-angle-fill"></span>'
   end
 
   def verdict_text(x)
@@ -68,11 +80,11 @@ module ApplicationHelper
   end
 
   def help_icon(x)
-    raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+    raw '<a href="' + x + '" style="color: inherit;" class="bi bi-question-circle-fill"></a>'
   end
 
   def help_collapse_toggle(x, target)
-    raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
+    raw x + ' <a class="bi bi-question-circle-fill" style="color: inherit;" data-bs-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
   end
 
   def alert_tag(opts={}, &block)

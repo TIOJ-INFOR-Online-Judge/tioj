@@ -85,9 +85,6 @@ pre.code-block[class*="language-"] {
 label.checkbox.checked { /* not change label color when checkbox is checked */
   color: unset;
 }
-a.glyphicon-question-sign:hover {
-  color: #1abc9c !important;
-}
 small {
   line-height: 1.4;
 }

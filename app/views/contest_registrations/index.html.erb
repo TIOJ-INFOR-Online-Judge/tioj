@@ -24,7 +24,7 @@
       <td>
         <%= user.username %>
         <% if @duplicate_names.include?(user.username) %>
-          <span class="text-warning" data-toggle="tooltip" data-placement="right" title="This contest user shadows a normal user."><i class="glyphicon glyphicon-alert"></i></span>
+          <span class="text-warning" data-toggle="tooltip" data-placement="right" title="This contest user shadows a normal user."><%= alert_glyph %></span>
         <% end %>
       </td>
       <td><%= user.nickname %></td>
@@ -76,7 +76,7 @@
       <td>
         <%= link_to user.username, user_path(user) %>
         <% if @duplicate_names.include?(user.username) %>
-          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+          <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><%= alert_glyph %></span>
         <% end %>
       </td>
       <td><%= user.nickname %></td>
@@ -114,7 +114,7 @@
           <%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'img-rounded'), user_path(user) %>
           <%= link_to user.username, user_path(user) %>
           <% if @duplicate_names.include?(user.username) %>
-            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. They won't be able to login from the Single Contest page."><%= alert_glyph %></span>
           <% end %>
         </td>
         <td>
@@ -153,7 +153,7 @@
         <td>
           <%= link_to user.username, user_path(user) %>
           <% if @duplicate_names.include?(user.username) %>
-            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><i class="glyphicon glyphicon-alert"></i></span>
+            <span class="text-danger" data-toggle="tooltip" data-placement="right" title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><%= alert_glyph %></span>
           <% end %>
         </td>
         <td><%= user.nickname %></td>

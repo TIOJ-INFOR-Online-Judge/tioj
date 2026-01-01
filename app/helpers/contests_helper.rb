@@ -133,7 +133,7 @@ module ContestsHelper
   def contest_registration_page_button(contest, status, standalone)
     if contest.can_register?
       btn_class = "btn "
-      btn_class += standalone ? 'btn-lg' : 'btn-xs'
+      btn_class += standalone ? 'btn-lg' : 'btn-sm'
 
       if contest.allow_team_register? then
         btn_class += ' btn-primary'
@@ -161,7 +161,7 @@ module ContestsHelper
       end
 
       if standalone
-        content_tag(:div, class: 'pull-right') do
+        content_tag(:div, class: 'float-end') do
           html
         end
       else
@@ -172,9 +172,9 @@ module ContestsHelper
 
   def contest_register_status(status, text)
     status_class = case
-      when status.nil? then 'glyphicon glyphicon-remove text-danger'
-      when status then 'glyphicon glyphicon-ok text-success'
-      else 'glyphicon glyphicon-play text-warning'
+      when status.nil? then 'bi bi-x text-danger'
+      when status then 'bi bi-check text-success'
+      else 'bi bi-play-fill text-warning'
     end
     status_class += ' align-middle' unless text
     show_text = case
@@ -193,6 +193,6 @@ module ContestsHelper
     color = is_running ? 'btn-danger' : 'btn-primary'
 
     dest = contest.default_single_contest && !current_user&.admin? ? single_contest_path(contest) : contest
-    link_to(text, dest, class: 'btn btn-xs ' + color, target: '_blank')
+    link_to(text, dest, class: 'btn btn-sm ' + color, target: '_blank')
   end
 end

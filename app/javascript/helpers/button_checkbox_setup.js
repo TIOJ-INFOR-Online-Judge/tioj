@@ -9,10 +9,10 @@ $('.button-checkbox').each(function () {
 		color = $button.data('color'),
 		settings = {
 			on: {
-				icon: 'glyphicon glyphicon-check'
+				icon: 'bi bi-check-square'
 			},
 			off: {
-				icon: 'glyphicon glyphicon-unchecked'
+				icon: 'bi bi-square'
 			}
 		};
 

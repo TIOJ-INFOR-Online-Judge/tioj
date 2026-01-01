@@ -97,7 +97,7 @@
     <div class="card-header" data-bs-toggle="collapse" href="#collapseSubtask">
       <h1 class="card-title">
         Subtask Results
-        <i class="indicator glyphicon glyphicon-chevron-up float-end"></i>
+        <%= indicator_chevron_up_float_glyph %>
       </h1>
     </div>
     <div class="collapse in" id="collapseSubtask">
@@ -150,7 +150,7 @@
     <div class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
       <h1 class="card-title">
         Testdata Results
-        <i class="indicator glyphicon glyphicon-chevron-up float-end"></i>
+        <%= indicator_chevron_up_float_glyph %>
       </h1>
     </div>
     <% if @show_detail %>
@@ -209,7 +209,9 @@
                   <td id="td-score-<%= i %>"></td>
                 <% end %>
                 <td>
-                  <i class="indicator glyphicon glyphicon-chevron-down<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> no-display<% end %>"></i>
+                  <% if task&.message_type and user_can_view?(current_user, @submission, @contest) %>
+                    <%= indicator_chevron_down_glyph %>
+                  <% end %>
                 </td>
               <% end %> <%# tr %>
               <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> no-display<% end %>" id="<%= collapse_id %>">

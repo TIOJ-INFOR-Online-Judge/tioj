@@ -342,9 +342,7 @@
             </div>
             <div>
               <%= f.check_box :strict_mode, class: 'form-check-input' %>
-              <%= f.label :strict_mode, class: 'form-check-label' do %>
-                Use strict mode <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-bs-toggle="collapse" href="#strictModeDescription" role="button" aria-expanded="false" aria-controls="collapseExample"></a>
-              <% end %>
+              <%= f.label :strict_mode, help_collapse_toggle("Use strict mode", "strictModeDescription") %>
             </div>
             <div class="collapse" id="strictModeDescription" style="height: auto;">
               <div class="card">

@@ -1,10 +1,13 @@
-
 @import "./font";
 @import "./variables";
 @import "bootstrap/scss/bootstrap";
+@import "bootstrap-select/dist/css/bootstrap-select";
+@import "bootstrap-icons/font/bootstrap-icons";
+
 @import "./components/tagsinput";
 @import "./components/panel-problem-settings";
 @import "./components/btn-xs";
+
 // @import "./components/problem_copy_btn";
 
 #page-content {
@@ -15,6 +18,11 @@
 .page-header {
   margin: 10px 0 15px;
 }
+
+a.bi-question-circle-fill:hover {
+  color: #1abc9c !important;
+}
+
 
 /*
 require bootstrap

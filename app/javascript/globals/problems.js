@@ -1,6 +1,7 @@
 // Bottom menu in Problems#Show
 function toggleChevron(e) {
-  return $(e.target).prev('.card-header').find('i.indicator').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+  console.log('hi')
+  return $(e.target).prev('.card-header').find('span.indicator').toggleClass('bi-chevron-down bi-chevron-up');
 }
 
 function updateQuickSubmit() {

@@ -26,22 +26,19 @@ th span{
   padding-left: 3px;
 }
 th span.icon-asc{
-  display: None;
+  display: none;
 }
 th span.icon-dsc{
-  display: None;
+  display: none;
 }
-th.headerSortDown span.icon-asc{
+th.tablesorter-headerAsc span.icon-asc{
   display: inline;
 }
-th.headerSortUp span.icon-dsc{
+th.tablesorter-headerDesc span.icon-dsc{
   display: inline;
 }
-th.headerSortUp span.icon-non, th.headerSortDown span.icon-non {
-  display: None;
-}
-th span{
-  font-size: 12px;
+th.tablesorter-headerDesc span.icon-non, th.tablesorter-headerAsc span.icon-non {
+  display: none;
 }
 th {
   white-space: nowrap;
@@ -63,9 +60,9 @@ th {
     <tr>
       <th>
         Rank
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-down-alt icon-asc"></span>
+        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>#</th>
       <th></th>
@@ -73,40 +70,40 @@ th {
       <% if @problem.ranklist_display_score %>
         <th>
           Score
-          <span class="glyphicon glyphicon-sort icon-non"></span>
-          <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-          <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+          <span class="bi bi-funnel-fill icon-non"></span>
+          <span class="bi bi-sort-down-alt icon-asc"></span>
+          <span class="bi bi-sort-up icon-dsc"></span>
         </th>
       <% end %>
       <th>
         Time (ms)
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-down-alt icon-asc"></span>
+        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Memory (KiB)
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-down-alt icon-asc"></span>
+        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Compiler
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-alphabet icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-alphabet-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-alpha-down icon-asc"></span>
+        <span class="bi bi-sort-alpha-up-alt icon-dsc"></span>
       </th>
       <th>
         Code Length
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-down-alt icon-asc"></span>
+        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Achieved Time
-        <span class="glyphicon glyphicon-sort icon-non"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes icon-asc"></span>
-        <span class="glyphicon glyphicon-sort-by-attributes-alt icon-dsc"></span>
+        <span class="bi bi-funnel-fill icon-non"></span>
+        <span class="bi bi-sort-down-alt icon-asc"></span>
+        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
     </tr>
   </thead>
