@@ -5,12 +5,11 @@ import {createPopper} from '@popperjs/core';
 
 // Bootstrap & related components
 import 'bootstrap';
-import 'bootstrap-select';
-import './vendor/bootstrap-switch'
 import 'bootstrap-notify';
 
-// Flat UI
-import './vendor/flatui-checkbox';
+// multi-select component
+import TomSelect from "tom-select"
+window.TomSelect = TomSelect;
 
 // JQuery components
 import './helpers/jquery-ui-slider-import';

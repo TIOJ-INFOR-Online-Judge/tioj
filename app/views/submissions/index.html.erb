@@ -44,7 +44,7 @@
     <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" style="width:150px;" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
   <div>
-    <select id="filter_status" name="filter_status[]" class="selectpicker" multiple aria-label="Select Result">
+    <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple aria-label="Select Result">
       <option selected disabled value="">Select Result</option>
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
@@ -57,7 +57,7 @@
     </select>
   </div>
   <div>
-    <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple aria-label="Select Compiler">
+    <select id="filter_compiler" name="filter_compiler[]" class="form-select form-select-sm" multiple aria-label="Select Compiler">
       <option selected disabled value="">Select Compiler</option>
       <% Compiler.order(order: :asc).all.each do |x| %>
         <option value="<%= x.id %>"><%= x.name %></option>
@@ -68,7 +68,8 @@
 </form>
 
 <script>
-  // $(".selectpicker").multiselect();
+  new TomSelect("#filter_status", { create: true });
+  new TomSelect("#filter_compiler", { create: true });
 
   $("button:not([type='submit'])").attr("type", "button");
 </script>
