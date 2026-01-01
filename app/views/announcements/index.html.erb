@@ -29,7 +29,7 @@
   </div>
 
   <div class="actions">
-    <%= f.submit class: 'btn btn-success btn-xs' %>
+    <%= f.submit class: 'btn btn-success btn-sm' %>
   </div>
 <% end %>
 <br>
@@ -40,7 +40,7 @@
 <h4 class="page-header">Announcements</h4>
 <% end %>
 
-<table class="table table-hover table-striped table-condensed">
+<table class="table table-hover table-striped table-sm">
   <thead>
     <tr>
       <th>Title</th>
@@ -55,12 +55,12 @@
         <td><%= raw anno.title %></td>
         <td><%= raw anno.body %></td>
         <td style="width: 0; white-space: nowrap;">
-          <%= link_to 'Edit', contest_adaptive_polymorphic_path([anno], action: :edit), class: 'btn btn-info btn-xs' %>
-          <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
+          <%= link_to 'Edit', contest_adaptive_polymorphic_path([anno], action: :edit), class: 'btn btn-info btn-sm' %>
+          <%= link_to 'Destroy', anno, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-sm btn-danger' %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
-<%= link_to 'Back to Home', root_path, class: 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Home', root_path, class: 'btn btn-secondary btn-sm' %>

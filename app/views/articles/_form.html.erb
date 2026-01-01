@@ -40,7 +40,7 @@
           <%= a.file_field :path, class: 'form-control flat' %>
         </div>
         <div class="col-md-4">
-          <%= a.link_to_remove "Remove this attachment", class: 'btn btn-danger btn-xs' %>
+          <%= a.link_to_remove "Remove this attachment", class: 'btn btn-danger btn-sm' %>
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
 
   <div class="form-group">
     <%= f.label :public, class: 'checkbox' do %>
-      <%= f.check_box :public, 'data-toggle': 'checkbox' %>
+      <%= f.check_box :public, 'data-bs-toggle': 'checkbox' %>
       Public to anyone
     <% end %>
   </div>

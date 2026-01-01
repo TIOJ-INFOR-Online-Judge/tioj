@@ -6,15 +6,15 @@
     <%= f.file_field :testdata_file_list, class: 'form-control flat', multiple: true %>
   </div>
   
-  <div id="testdata-list" class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
-      <h1 class="panel-title">
+  <div id="testdata-list" class="card bg-light">
+    <div class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
+      <h1 class="card-title">
         Testdata File List
         <%= indicator_chevron_up_float_glyph %>
       </h1>
     </div>
     <div class="collapse in" id="collapseTestdata">
-      <table class="table table-condensed table-align-middle">
+      <table class="table table-sm table-align-middle">
         <thead>
           <tr>
             <th>Input Filename</th>

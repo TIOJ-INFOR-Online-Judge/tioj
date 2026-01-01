@@ -21,7 +21,7 @@
     <% end %>
   <% end %>
 
-  <table class="table table-hover table-striped table-condensed">
+  <table class="table table-hover table-striped table-sm">
     <tr>
       <th class="align-middle">Input</th>
       <th class="align-middle">Output</th>
@@ -32,13 +32,13 @@
       <th class="align-middle">Position</th>
       <th>
         Same as above?<br>
-        <a onclick="checkAll('.cls-same-as-above', true)" class="btn btn-default btn-xs">Check all</a>
-        <a onclick="checkAll('.cls-same-as-above', false)" class="btn btn-default btn-xs">Uncheck all</a>
+        <a onclick="checkAll('.cls-same-as-above', true)" class="btn btn-secondary btn-sm">Check all</a>
+        <a onclick="checkAll('.cls-same-as-above', false)" class="btn btn-secondary btn-sm">Uncheck all</a>
       </th>
       <th>
         Delete?<br>
-        <a onclick="checkAll('.cls-delete', true)" class="btn btn-default btn-xs">Check all</a>
-        <a onclick="checkAll('.cls-delete', false)" class="btn btn-default btn-xs">Uncheck all</a>
+        <a onclick="checkAll('.cls-delete', true)" class="btn btn-secondary btn-sm">Check all</a>
+        <a onclick="checkAll('.cls-delete', false)" class="btn btn-secondary btn-sm">Uncheck all</a>
       </th>
     </tr>
     <% @testdata.each_with_index do |td, index| %>
@@ -95,4 +95,4 @@ function checkAll(x, check) {
 }
 </script>
 
-<%= link_to 'Back to Testdata', problem_testdata_path, class: 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Testdata', problem_testdata_path, class: 'btn btn-secondary btn-sm' %>

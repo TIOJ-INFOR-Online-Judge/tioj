@@ -6,7 +6,7 @@
   <br>
 <% end %>
 <%= paginate @contests %>
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-sm table-striped">
   <thead>
     <tr>
       <th>Title</th>
@@ -53,8 +53,8 @@
         <td><%= contest.dashboard_during_contest ? "Yes" : "No" %></td>
         <% if current_user&.admin? %>
           <td>
-            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-xs' %>
-            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
+            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-sm' %>
+            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
           </td>
         <% end %>
       </tr>

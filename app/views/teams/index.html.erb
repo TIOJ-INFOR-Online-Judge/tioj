@@ -8,12 +8,12 @@
   <%= f.label "Search Teams" %>
   <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Teamname" %>
   <%= f.text_field :search_username, class: "form-control input-sm flat", placeholder: "Enter Username" %>
-  <%= f.submit "Search", class: "btn btn-inverse btn-xs" %>
+  <%= f.submit "Search", class: "btn btn-dark btn-sm" %>
 <% end %>
 
 <br>
 <%= paginate @teams %>
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-sm table-striped">
   <thead>
     <tr>
       <%# <th>ID</th> %>

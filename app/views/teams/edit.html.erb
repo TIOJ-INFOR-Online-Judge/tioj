@@ -62,7 +62,7 @@
             <td><%= user.nickname %></td>
             <td>
               <% if @team.users.count > 1 %>
-                <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-xs" %>
+                <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-sm" %>
               <% end %>
             </td>
           </tr>
@@ -85,8 +85,8 @@
 
 <% end %>
 
-<%= button_to 'Renew Invitation URL', renew_token_team_path(@team), class: 'btn btn-danger btn-xs' %>
-<%= link_to 'Back to team info', @team, class: 'btn btn-default btn-xs' %>
+<%= button_to 'Renew Invitation URL', renew_token_team_path(@team), class: 'btn btn-danger btn-sm' %>
+<%= link_to 'Back to team info', @team, class: 'btn btn-secondary btn-sm' %>
 
 <%= javascript_include_tag "prism" %>
 <%= stylesheet_link_tag "prism" %>

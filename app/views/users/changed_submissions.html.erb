@@ -30,7 +30,7 @@
       </label>
     </div>
   <% end %>
-  <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+  <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
 </form>
 
 <script>
@@ -70,7 +70,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% if current_user&.admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-sm btn-primary' %>
             <% end %>
           </td>
         <% end %>

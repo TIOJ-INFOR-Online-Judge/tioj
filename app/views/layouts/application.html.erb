@@ -6,7 +6,7 @@
 
 <% content_for :navbar do %>
 <div class="mb-4" style="background-color:#003365">
-  <nav class="navbar navbar-expand-md navbar-dark">
+  <nav class="navbar navbar-expand-md navbar-dark fw-bold">
     <div class="container-fluid d-flex flex-wrap align-items-start">
       <%= link_to image_tag("banner.png", alt: "TIOJ", skip_pipeline: true), root_path, class: "nav-brand" %>
 
@@ -15,7 +15,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav d-flex flex-wrap">
           <li class="nav-item"><%= link_to "Bulletin", articles_path, class: "nav-link" %></li>
           <li class="nav-item"><%= link_to "Problems", problems_path, class: "nav-link" %></li>
           <li class="nav-item"><%= link_to "Submissions", submissions_path, class: "nav-link" %></li>

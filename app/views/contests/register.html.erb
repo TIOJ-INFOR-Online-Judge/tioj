@@ -7,7 +7,7 @@
       <label>As team</label>
       <%= f.collection_select :team_id, @teams, :id, :teamname, {}, { class: 'form-control flat' } %>
       <%= contest_register_status(@registration&.approved, true) %>
-      <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+      <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
     <% end %>
   </div>
 
@@ -18,7 +18,7 @@
       <label>As individual</label>
       <div>
         <%= contest_register_status(@registration&.approved, true) %>
-        <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+        <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
       </div>
     <% end %>
   </div>
@@ -31,7 +31,7 @@
       <div>
         <%= contest_register_status(@registration&.approved, true) %>
         <%= f.hidden_field :cancel, value: 1 %>
-        <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
+        <%= f.submit 'Unregister', class: 'btn btn-danger btn-sm' %>
       </div>
     <% end %>
   </div>
@@ -49,14 +49,14 @@
       <%= f.hidden_field :cancel, value: 1 %>
       <%= f.hidden_field :team_id, value: @registration.team.id %>
       <%= contest_register_status(@registration&.approved, true) %>
-      <%= f.submit 'Unregister', class: 'btn btn-danger btn-xs' %>
+      <%= f.submit 'Unregister', class: 'btn btn-danger btn-sm' %>
     <% end %>
   </div>
 
   <label>
   Team <i><%= @registration.team.teamname %></i>
   </label>
-  <table class="table table-hover table-striped table-condensed">
+  <table class="table table-hover table-striped table-sm">
     <thead>
       <tr>
         <th></th>
@@ -91,4 +91,4 @@
 
 <p>
 
-<%= link_to "Back", :back, class: 'btn btn-default btn-xs' %>
+<%= link_to "Back", :back, class: 'btn btn-secondary btn-sm' %>

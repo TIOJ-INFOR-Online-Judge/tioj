@@ -17,16 +17,16 @@
 <% end %>
 
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h5 class="panel-title">Announcements</h5>
+<div class="card bg-light">
+  <div class="card-header">
+    <h5 class="card-title">Announcements</h5>
   </div>
   <%= render 'table', articles: @articles %>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h5 class="panel-title">Course Materials</h5>
+<div class="card bg-light">
+  <div class="card-header">
+    <h5 class="card-title">Course Materials</h5>
   </div>
   <%= render 'table', articles: @courses %>
 </div>
