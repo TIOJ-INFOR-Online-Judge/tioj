@@ -1,18 +1,18 @@
 <h4 class="page-header">Change your password</h4>
 
-<div class="col-xs-12 col-md-6">
+<div class="col-md-6">
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
   <%= f.hidden_field :reset_password_token %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :password, "New password" %><br />
-    <%= f.password_field :password, class: 'form-control flat', autofocus: true, autocomplete: "off" %>
+    <%= f.password_field :password, class: 'form-control', autofocus: true, autocomplete: "off" %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, class: 'form-control flat', autocomplete: "off" %>
+    <%= f.password_field :password_confirmation, class: 'form-control', autocomplete: "off" %>
   </div>
 
   <div><%= f.submit "Change my password", class: 'btn btn-lg btn-success' %></div>
