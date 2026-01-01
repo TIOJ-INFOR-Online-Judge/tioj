@@ -1,7 +1,7 @@
 <% set_page_title @user.username %>
 <div class="row">
   <div class="col-md-4">
-    <%= image_tag(@user.avatar.square.to_s, class: "img-rounded img-responsive") %><br/>
+    <%= image_tag(@user.avatar.square.to_s, class: "rounded img-fluid mb-3") %><br/>
     <h5><%= @user.nickname %></h5>
     <h6><%= @user.username %></h6>
     <br>

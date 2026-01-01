@@ -1,10 +1,10 @@
 <% set_page_title "Users" %>
 <h4 class="page-header">Users</h4>
 
-<div class="form-inline">
-  <div class="form-group">
-    <label for="goto_user_id">Find User</label>
-    <input id="goto_user_id" type="text" class="form-control input-sm flat" placeholder="Enter Username"/>
+<div class="d-flex align-items-center gap-2 mb-3">
+  <label for="goto_user_id">Find User</label>
+  <div>
+    <input id="goto_user_id" type="text" class="form-control form-control-sm" placeholder="Enter Username"/>
   </div>
   <a href="#" id="goto_user" class="btn btn-dark btn-sm">Search</a>
 </div>
@@ -27,7 +27,7 @@
     <% @users.each_with_index do |user, idx| %>
       <tr>
         <td><% offset = [params[:page].to_i, 1].max %><%= (offset-1) * 25 + idx + 1 %></td>
-        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
+        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "rounded"), user_path(user) %></td>
         <td><%= link_to user.username, user_path(user) %></td>
         <td><%= user.nickname %></td>
         <% unless user.motto.blank? %>
