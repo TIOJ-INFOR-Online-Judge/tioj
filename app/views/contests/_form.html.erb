@@ -55,7 +55,7 @@
 
   <div class="form-group">
     <%= f.label :description, help_collapse_toggle('Description in contest', 'contestDescription') %>
-    <div class="collapse" id="contestDescription" style="height: auto;">
+    <div class="collapse" id="contestDescription">
       <div class="card bg-light">
         <div class="card-body small" style="line-height: 1.4;">
           This description will be shown to users that are able to submit to this contest after the contest is started (also after the contest is ended).<br>
@@ -82,35 +82,34 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :dashboard_during_contest, class: 'checkbox' do %>
-      <%= f.check_box :dashboard_during_contest, 'data-bs-toggle': 'checkbox' %>
-      Enable dashboard during contest
-    <% end %>
-    <%= f.label :disable_discussion, class: 'checkbox' do %>
-      <%= f.check_box :disable_discussion, 'data-bs-toggle': 'checkbox' %>
-      Disable global and problem discussion during the contest
-    <% end %>
-    <%= f.label :show_detail_result, class: 'checkbox' do %>
-      <%= f.check_box :show_detail_result, 'data-bs-toggle': 'checkbox' %>
-      Show detailed result of each testdata
-    <% end %>
-    <%= f.label :skip_group, class: 'checkbox' do %>
-      <%= f.check_box :skip_group, 'data-bs-toggle': 'checkbox' %>
-      Skip the remaining testdata in the task if any of the testdata got non-AC
-    <% end %>
-    <%= f.label :hide_old_submission, class: 'checkbox' do %>
-      <%= f.check_box :hide_old_submission, 'data-bs-toggle': 'checkbox' %>
-      Hide old submissions in contest problems
-    <% end %>
-    <%= f.label :default_single_contest, class: 'checkbox' do %>
-      <%= f.check_box :default_single_contest, 'data-bs-toggle': 'checkbox' %>
-      Always go to Single Contest page by default for non-admin users
-    <% end %>
-
-    <%= f.label :allow_team_register, class: 'checkbox' do %>
-      <%= f.check_box :allow_team_register, 'data-bs-toggle': 'checkbox' %>
-      Allow team registration
-    <% end %>
+    <div class="form-check">
+      <%= f.check_box :dashboard_during_contest, class: 'form-check-input' %>
+      <%= f.label :dashboard_during_contest, 'Enable dashboard during contest', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :disable_discussion, class: 'form-check-input' %>
+      <%= f.label :disable_discussion, 'Disable global and problem discussion during the contest', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :show_detail_result, class: 'form-check-input' %>
+      <%= f.label :show_detail_result, 'Show detailed result of each testdata', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :skip_group, class: 'form-check-input' %>
+      <%= f.label :skip_group, 'Skip the remaining testdata in the task if any of the testdata got non-AC', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :hide_old_submission, class: 'form-check-input' %>
+      <%= f.label :hide_old_submission, 'Hide old submissions in contest problems', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :default_single_contest, class: 'form-check-input' %>
+      <%= f.label :default_single_contest, 'Always go to Single Contest page by default for non-admin users', class: 'form-check-label' %>
+    </div>
+    <div class="form-check">
+      <%= f.check_box :allow_team_register, class: 'form-check-input' %>
+      <%= f.label :allow_team_register, 'Allow team registration', class: 'form-check-label' %>
+    </div>
   </div>
 
   <div class="form-group">

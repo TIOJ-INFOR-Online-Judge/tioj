@@ -27,5 +27,13 @@
 - [ ] Migrate to Bootstrap 4
     - [ ] Enhance posts UI
 
+- pull-right
+- condensed
+- no-display
+- panel-heading
+- data-toggle
+- glyphicon
 ---
 - tagsinput update
+- selectpicker
+- well & panel
