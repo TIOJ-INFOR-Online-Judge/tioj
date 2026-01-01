@@ -7,58 +7,56 @@
 <%= nested_form_for(@article) do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @article.errors, item: 'article'} %>
 
-  <div class="form-group">
-    <%= f.label :pinned, "Pin to top" %><br>
-    <div class="make-switch switch-square"
-      data-on-label="<i class='fui-check'></i>"
-      data-off-label="<i class='fui-cross'></i>">
-      <%= f.check_box :pinned %>
-    </div>
+  <div class="form-check form-switch mb-3">
+    <%= f.check_box :pinned, class: 'form-check-input' %>
+    <%= f.label :pinned, "Pin to top", class: 'form-check-label' %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :category %>
-    <%= f.select :category, [["Announcements", 0], ["Course Materials", 1]], {}, {class: 'form-control flat'} %>
+    <%= f.select :category, [["Announcements", 0], ["Course Materials", 1]], {}, {class: 'form-control'} %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :title %>
-    <%= f.text_field :title, class: 'form-control flat' %>
+    <%= f.text_field :title, class: 'form-control' %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :content %>
-    <%= f.text_area :content, class: 'form-control flat', rows: '9' %>
+    <%= f.text_area :content, class: 'form-control', rows: '9' %>
   </div>
 
-  <label>Attachments</label>
-  <%= f.fields_for :attachments do |a| %>
-    <div class="form-group">
-      <%= a.text_field :path, disabled: true, class: 'form-control flat' %>
-      <div class="row">
-        <div class="col-md-4">
-          <%= a.file_field :path, class: 'form-control flat' %>
-        </div>
-        <div class="col-md-4">
-          <%= a.link_to_remove "Remove this attachment", class: 'btn btn-danger btn-sm' %>
+  <div class="mb-3">
+    <label>Attachments</label>
+    <%= f.fields_for :attachments do |a| %>
+      <div class="mb-3">
+        <div class="row align-items-center">
+          <div class="col-md-4">
+            <%= a.text_field :path, disabled: true, class: 'form-control' %>
+          </div>
+          <div class="col-md-4">
+            <%= a.file_field :path, class: 'form-control' %>
+          </div>
+          <div class="col-md-4">
+            <%= a.link_to_remove "Remove this attachment", class: 'btn btn-danger btn-sm' %>
+          </div>
         </div>
       </div>
-    </div>
-  <% end %>
-  <%= f.link_to_add "Add an attachment", :attachments, class: 'btn btn-warning' %>
-
-  <div class="form-group">
-    <%= f.label :public, class: 'checkbox' do %>
-      <%= f.check_box :public, 'data-bs-toggle': 'checkbox' %>
-      Public to anyone
     <% end %>
+    <%= f.link_to_add "Add an attachment", :attachments, class: 'btn btn-warning' %>
+  </div>
+
+  <div class="form-check mb-3">
+    <%= f.check_box :public, class: 'form-check-input' %>
+    <%= f.label :public, 'Public to anyone', class: 'form-check-label' %>
   </div>
 
   <%= hidden_field_tag :era, params[:era] %>
 
   <hr>
 
-  <div class="actions">
+  <div>
     <%= f.submit class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>
