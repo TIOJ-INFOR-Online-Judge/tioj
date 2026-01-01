@@ -2,10 +2,9 @@
 @import "./variables";
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons";
-@import "tom-select/dist/css/tom-select.bootstrap5.css";
 
+@import "tom-select/dist/scss/tom-select.bootstrap5";
 
-@import "./components/tagsinput";
 @import "./components/slider";
 @import "./components/panel-problem-settings";
 @import "./components/btn-xs";

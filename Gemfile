@@ -13,7 +13,6 @@ gem 'bootsnap', require: false
 gem 'mysql2'
 
 # Use SCSS for stylesheets
-gem 'sassc-rails'
 
 # Use jsbuilding-rails for JavaScript
 gem 'sprockets', '~> 4'
@@ -104,3 +103,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'puma'
 end
+
+gem "dartsass-sprockets", "~> 3.2"
