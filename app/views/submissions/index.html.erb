@@ -28,25 +28,24 @@
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
   <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-sm" %>
 <% else %>
-  <div class="form-inline">
-    <div class="form-group">
-      <label for="quick_prob_id">Quick Submit</label>
-      <input style="width:150px" id="quick_prob_id" type="number" class="form-control input-sm flat" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
-    </div>
+  <div class="d-flex align-items-center gap-2">
+    <label for="quick_prob_id">Quick Submit</label>
+    <input style="width:150px" id="quick_prob_id" type="number" class="form-control form-control-sm" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
     <a href="#" id="quick_submit" class="btn btn-success btn-sm">Submit</a>
   </div>
 <% end %>
 
-<form class="form-inline" accept-charset="UTF-8" method="get">
+<form class="d-flex align-items-center gap-2" accept-charset="UTF-8" method="get">
   <label for="filter_user">Quick Filter</label>
-  <div class="form-group">
-    <input id="filter_username" name="filter_username" class="form-control input-sm flat" type="text" placeholder="Enter Username">
+  <div>
+    <input id="filter_username" name="filter_username" class="form-control form-control-sm" type="text" placeholder="Enter Username">
   </div>
-  <div class="form-group">
-    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" style="width:150px;" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  <div>
+    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" style="width:150px;" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
-  <div class="form-group">
-    <select id="filter_status" name="filter_status[]" class="selectpicker" multiple title="Select Result">
+  <div>
+    <select id="filter_status" name="filter_status[]" class="selectpicker" multiple aria-label="Select Result">
+      <option selected disabled value="">Select Result</option>
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
       <option value="TLE">Time Limit Exceeded</option>
@@ -57,8 +56,9 @@
       <option value="CE">Compilation Error</option>
     </select>
   </div>
-  <div class="form-group">
-    <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple title="Select Compiler">
+  <div>
+    <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple aria-label="Select Compiler">
+      <option selected disabled value="">Select Compiler</option>
       <% Compiler.order(order: :asc).all.each do |x| %>
         <option value="<%= x.id %>"><%= x.name %></option>
       <% end %>
@@ -68,8 +68,9 @@
 </form>
 
 <script>
-$(".selectpicker").selectpicker({style: "form-control input-sm flat"});
-$("button:not([type='submit'])").attr("type", "button");
+  // $(".selectpicker").multiselect();
+
+  $("button:not([type='submit'])").attr("type", "button");
 </script>
 
 <table class='table table-hover table-striped'>
@@ -88,7 +89,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Score</th>
       <th>Submit Time</th>
       <% if effective_admin? %>
-         <th></th>
+        <th></th>
       <% end %>
     </tr>
   </thead>
@@ -122,12 +123,12 @@ $("button:not([type='submit'])").attr("type", "button");
 <%= contest_adaptive_paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
-<script>
-var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
+  <script>
+    var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
-initSubmissionCable();
-$(document).ready(function() {
-  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
-});
-</script>
+    initSubmissionCable();
+    $(document).ready(function() {
+      subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
+    });
+  </script>
 <% end %>
