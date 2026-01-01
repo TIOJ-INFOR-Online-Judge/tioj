@@ -14,7 +14,6 @@ window.TomSelect = TomSelect;
 // JQuery components
 import './helpers/jquery-ui-slider-import';
 import 'jquery-placeholder';
-import './vendor/jquery.tagsinput';
 import './vendor/jquery_nested_form';
 
 // tablesorter

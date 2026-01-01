@@ -33,17 +33,30 @@
           <div class="col-md-4">
             <div>
               <%= f.label :tag_list, "Tags" %>
-              <%= f.text_field :tag_list, value: @problem.tag_list.to_s, class: 'form-control tagsinput' %>
+              <%= f.text_field :tag_list, value: @problem.tag_list.to_s, class: 'form-control' %>
             </div>
           </div>
           <div class="col-md-4">
             <div>
               <%= f.label :solution_tag_list, "Solution Tags" %>
-              <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, class: 'form-control tagsinput' %>
+              <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, class: 'form-control' %>
             </div>
           </div>
           <script>
-            $('.tagsinput').tagsInput();
+            const tomselect_config = {
+              plugins: {
+                remove_button:{
+                  title:'Remove this item',
+                }
+              },
+              persist: false,
+              create: true,
+              onDelete: function(values) {
+                return confirm(values.length > 1 ? 'Are you sure you want to remove these ' + values.length + ' items?' : 'Are you sure you want to remove "' + values[0] + '"?');
+              }
+            };
+            new TomSelect("#<%= f.field_id :tag_list %>", tomselect_config);
+            new TomSelect("#<%= f.field_id :solution_tag_list %>", tomselect_config);
           </script>
           <div class="col-md-4">
             <%= f.label :visible_state %>
