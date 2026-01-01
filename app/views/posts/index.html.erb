@@ -6,14 +6,14 @@
 <% end %>
 
 <% if @problem %>
-<div class="row" style="margin-bottom: 10px;">
-  <div class="col-md-2">
-    <%= link_to 'Back to Problem', problem_path(@problem), class: 'btn btn-secondary btn-sm btn-block' %>
+<div class="row mb-3">
+  <div class="col-md-2 d-grid gap-2">
+    <%= link_to 'Back to Problem', problem_path(@problem), class: 'btn btn-secondary btn-sm' %>
   </div>
 </div>
 <% end %>
 
-<div class="actions">
+<div class="mb-3">
   <% if user_signed_in? and (effective_admin? or not @problem or @problem.discussion_enabled?) %>
     <% if @contest %>
       <% if effective_admin? %>
@@ -32,8 +32,10 @@
 <%= contest_adaptive_paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
-    <div class="post well<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
+    <div class="post card bg-light mb-3<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
+      <div class="card-body">
       <%= render partial: 'show_post', locals: {post: post}  %>
+      </div>
     </div>
   <% end %>
 </div><%# posts div %>

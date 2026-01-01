@@ -28,7 +28,6 @@ import 'blueimp-file-upload';
 import 'blueimp-tmpl';
 
 // globals
-import './globals/posts';
 import './globals/problems';
 import './globals/submissions';
 import './globals/users';
