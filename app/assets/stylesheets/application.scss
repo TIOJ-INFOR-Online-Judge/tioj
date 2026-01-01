@@ -6,17 +6,18 @@
 @import "tom-select/dist/scss/tom-select.bootstrap5";
 
 @import "./components/slider";
-@import "./components/panel-problem-settings";
+@import "./components/nav-tabs";
 @import "./components/btn-xs";
-@import "./components/verdicts";
 @import "./components/online-indicator";
+
+@import "./components/verdicts";
 
 @import "./custom_styles";
 
-// @import "tablesorter/dist/css/theme.blue";
-// @import "tablesorter/dist/css/jquery.tablesorter.pager.min";
-
 /*
+@import "tablesorter/dist/css/theme.blue";
+@import "tablesorter/dist/css/jquery.tablesorter.pager.min";
+
 require animate.css/animate.min
 require blueimp-file-upload/css/jquery.fileupload
 require blueimp-file-upload/css/jquery.fileupload-ui

@@ -25,10 +25,7 @@ a.bi-question-circle-fill:hover {
   font-family: "monofont";
 }
 
-h1 h2 h3 h4 h5 h6 {
-  color: #948C75;
-}
-
+/* circle icon in problem page */
 .subtask-icon {
   background-color: #808080;
   border-radius: 50%;
@@ -41,6 +38,8 @@ h1 h2 h3 h4 h5 h6 {
   bottom: 2px;
   position: relative;
 }
+
+/* pill-like element in submission subtask */
 .subtask-display {
   border-radius: 8px;
   color: #ffffff;
@@ -77,9 +76,6 @@ pre.code-block[class*="language-"] {
   color: #7C18C4;
 }
 
-.a {
-  background-color: #99B2B7;
-}
 .sample-testdata {
   font-family: "monofont";
   font-size: 15px;
