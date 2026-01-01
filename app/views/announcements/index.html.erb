@@ -1,9 +1,9 @@
 <% set_page_title "Announcements" %>
 
 <% if @contest %>
-<h4 class="page-header">New Contest Announcement <small><%= @contest.title %></small></h4>
+  <h4 class="page-header">New Contest Announcement <small><%= @contest.title %></small></h4>
 <% else %>
-<h4 class="page-header">New Announcement</h4>
+  <h4 class="page-header">New Announcement</h4>
 <% end %>
 
 <% if @contest %>
@@ -12,32 +12,28 @@
   <% form_target = @announcement %>
 <% end %>
 
-<%= semantic_form_for form_target, html: { class: "form-inline" } do |f| %>
-  <div class="row">
+<%= semantic_form_for form_target do |f| %>
+  <div class="row mb-3">
     <div class="col-lg-3">
-      <div class="form-group" style="display: unset;">
-        <%= f.label :title %><br>
-        <%= f.text_field :title, class: "form-control input-sm flat", style: "width: 100%;" %><br>
-      </div>
+      <%= f.label :title %>
+      <%= f.text_field :title, class: "form-control form-control-sm" %>
     </div>
     <div class="col-lg-6">
-      <div class="form-group" style="display: unset;">
-        <%= f.label :body %><br>
-        <%= f.text_field :body, class: "form-control input-sm flat", style: "width: 100%;" %><br>
-      </div>
+      <%= f.label :body %>
+      <%= f.text_field :body, class: "form-control form-control-sm" %>
     </div>
   </div>
 
-  <div class="actions">
+  <div>
     <%= f.submit class: 'btn btn-success btn-sm' %>
   </div>
 <% end %>
 <br>
 
 <% if @contest %>
-<h4 class="page-header">Contest Announcements</h4>
+  <h4 class="page-header">Contest Announcements</h4>
 <% else %>
-<h4 class="page-header">Announcements</h4>
+  <h4 class="page-header">Announcements</h4>
 <% end %>
 
 <table class="table table-hover table-striped table-sm">
