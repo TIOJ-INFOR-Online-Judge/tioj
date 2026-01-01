@@ -6,22 +6,22 @@
   Save the account information now. <strong>Once you leave this page, the passwords will be lost forever.</strong>
 <% end %>
 
-<div class="row">
+<div class="row mb-3">
   <div class="col-md-6">
     <div class="card bg-light copy-group problem-copy-group">
-      <div class="card-header">
-        <h1 class="card-title float-start">Account information (JSON)</h1>
-        <button class="btn btn-secondary btn-sm float-end copy-group-btn"> copy </button>
-      </div>
+      <h6 class="card-header">
+        Account information (JSON)
+        <button class="btn btn-secondary btn-xs float-end copy-group-btn">copy</button>
+      </h6>
       <div class="card-body code-input copy-group-code"><pre><%= @data_json %></pre></div>
     </div>
   </div>
 
   <div class="col-md-6">
     <div class="card bg-light">
-      <div class="card-header">
-        <h1 class="card-title">Account information (CSV)</h1>
-      </div>
+      <h6 class="card-header">
+        Account information (CSV)
+      </h6>
       <div class="card-body">
         <a href="data:text/plain;charset=utf-8,<%= @data_csv %>" download="accounts.csv" class="btn btn-success">Download CSV</a>
       </div>
