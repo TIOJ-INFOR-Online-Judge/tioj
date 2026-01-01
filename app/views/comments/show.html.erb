@@ -1,5 +1,6 @@
-<div class="well well-lg">
+<div class="card bg-light mb-3"><div class="card-body">
   <%= render partial: 'comments/show_comment', locals: {post: @post, comment: @comment, count: nil, now_comment_path: @comment_path}  %>
+  </div>
 </div>
 
 <%= link_to 'Back', @page_path, class: "btn btn-secondary btn-sm" %>

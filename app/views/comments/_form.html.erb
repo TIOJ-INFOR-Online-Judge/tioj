@@ -5,11 +5,11 @@
 <%= form_for form_target do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @comment.errors, item: 'comment'} %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :title, "Title:" %><br />
     <%= f.text_field :title, class: 'form-control', placeholder:'Title' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :content, "Content:" %> <br />
     <%= f.text_area :content, class: 'form-control', placeholder:'Content' %>
   </div>

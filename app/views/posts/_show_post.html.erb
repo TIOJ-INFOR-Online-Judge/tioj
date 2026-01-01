@@ -43,7 +43,7 @@
     <% count = 0;%>
     <% comments.each do |comment| %>
       <% count += 1 %>
-      <div class="comment card bg-light mb-3"><div class="card-body">
+      <div class="card bg-light mb-3"><div class="card-body">
           <%= render partial: 'comments/show_comment', locals: {post: post, comment: comment, count: count}  %>
         </div>
       </div>
