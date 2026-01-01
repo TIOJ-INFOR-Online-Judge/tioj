@@ -22,6 +22,9 @@
 .page-header {
   margin: 10px 0 15px;
 }
+.page-header small {
+  color: #30617C;
+}
 
 .motto {
   max-width: 50rem;
@@ -36,6 +39,10 @@ a.bi-question-circle-fill:hover {
 // monospace form inputs
 .code-input {
   font-family: "monofont";
+}
+
+h1 h2 h3 h4 h5 h6 {
+  color: #948C75;
 }
 
 
