@@ -134,7 +134,7 @@ export function initTestdataBatchUpload() {
 
     let url = $(this).attr('action');
     zipFile.generateAsync({type: "blob"}, function updateCallback(progress) {
-      $('#progress-fade-filezip').addClass('in');
+      $('#progress-fade-filezip').addClass('show');
       $('#progress-inner-bar-filezip').width(progress.percent + '%');
       $('#progress-text-filezip').text(`Compressing files: ${Math.round( progress.percent )}%`);
       if (progress.percent == 100) {
@@ -144,7 +144,7 @@ export function initTestdataBatchUpload() {
       formData.append('testdatum[testdata_file_list]', zippedFile, 'td.zip');
 
       ajaxUploadFunc()(url, formData, (finished, evt) => {
-        $('#progress-fade-update').addClass('in');
+        $('#progress-fade-update').addClass('show');
         if (finished) {
           $('#progress-inner-bar-update').width('100%');
           $('#progress-text-update').text('Processing...');
@@ -153,9 +153,8 @@ export function initTestdataBatchUpload() {
           $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
         }
       }, () => {
-        $('#progress-fade-update').removeClass('in');
-        $('#progress-inner-bar-update').width('0%');
-        $('#submit-button').removeAttr('disabled');
+        $('#progress-fade-filezip').removeClass('show');
+        $('#progress-inner-bar-filezip').width('0%');
       });
     });
   });
