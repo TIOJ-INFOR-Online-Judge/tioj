@@ -1,95 +1,92 @@
-<div class="container-fluid d-grid row-gap-3">
-  <% if current_user&.admin? %>
-    <div>
-      <%= link_to "Alter Announcement", announcements_path, class: "btn btn-info btn-sm" %>
-    </div>
-  <% end %>
-  <div class="card bg-light">
-    <div class="card-body">
-      <h5>Bulletin Board<small class="float-end"><%= link_to "Show all", articles_path %></small></h5>
-      <%= render 'articles/table', articles: @bulletins %>
-    </div>
+<% if current_user&.admin? %>
+  <div class="mb-3">
+    <%= link_to "Alter Announcement", announcements_path, class: "btn btn-info btn-sm" %>
   </div>
+<% end %>
 
-  <div class="card bg-light">
-    <div class="card-body">
-      <h5>Recent Contests<small class="float-end"><%= link_to "Show all", contests_path %></small></h5>
-      <table class="table table-hover table-striped">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th></th>
-            <% if user_signed_in? %>
-              <th>Registered?</th>
-            <% end %>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @contests.each do |contest| %>
-            <tr>
-              <% if contest.is_running? %>
-                <td><strong><%= contest.title %></strong></td>
-              <% else %>
-                <td><%= contest.title %></td>
-              <% end %>
-              <td style="text-align: right;">
-                <%= contest_link(contest) %>
-              </td>
-              <% if user_signed_in? %>
-                <td>
-                  <%= contest_register_status(@registrations[contest.id], false) %>
-                  <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
-                </td>
-              <% end %>
-              <% if contest.is_ended? %>
-                <td class="text-nowrap">Ended</td>
-                <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
-              <% elsif contest.is_started? %>
-                <td class="text-nowrap"><strong>Ready</strong></td>
-                <td class="text-nowrap"><strong>Now</strong></td>
-              <% elsif Time.now >= contest.start_time - 1.days %>
-                <td class="text-info text-nowrap">Upcoming</td>
-                <td class="text-danger text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
-              <% else %>
-                <td class="text-info text-nowrap">Not yet</td>
-                <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
-              <% end %>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+<div class="card bg-light mb-3">
+  <div class="card-body">
+    <h5>Bulletin Board<small class="float-end"><%= link_to "Show all", articles_path %></small></h5>
+    <%= render 'articles/table', articles: @bulletins %>
   </div>
-
-  <div class="card bg-light">
-    <div class="card-body">
-      <h5>Ranked Coders<small class="float-end"><%= link_to "Show all", users_path %></small></h5>
-      <table class="table table-hover table-striped">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th></th>
-            <th>Username</th>
-            <th>Accepted</th>
-            <th>AC Ratio</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @users.each_with_index do |f, idx| %>
-            <tr>
-              <td><%= idx + 1 %></td>
-              <td><%= link_to image_tag(f.avatar.mini_thumb.to_s, class: "img-rounded"), {controller: 'users', action: :show, id: f.id} %></td>
-              <td><%= link_to f.username, user_path(f) %></td>
-              <td><%= f.ac %></td>
-              <td><%= ac_ratio_by_user_with_infor(f) %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
 </div>
 
+<div class="card bg-light mb-3">
+  <div class="card-body">
+    <h5>Recent Contests<small class="float-end"><%= link_to "Show all", contests_path %></small></h5>
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th></th>
+          <% if user_signed_in? %>
+            <th>Registered?</th>
+          <% end %>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @contests.each do |contest| %>
+          <tr>
+            <% if contest.is_running? %>
+              <td><strong><%= contest.title %></strong></td>
+            <% else %>
+              <td><%= contest.title %></td>
+            <% end %>
+            <td style="text-align: right;">
+              <%= contest_link(contest) %>
+            </td>
+            <% if user_signed_in? %>
+              <td>
+                <%= contest_register_status(@registrations[contest.id], false) %>
+                <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
+              </td>
+            <% end %>
+            <% if contest.is_ended? %>
+              <td class="text-nowrap">Ended</td>
+              <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.end_time) + " ago" %></td>
+            <% elsif contest.is_started? %>
+              <td class="text-nowrap"><strong>Ready</strong></td>
+              <td class="text-nowrap"><strong>Now</strong></td>
+            <% elsif Time.now >= contest.start_time - 1.days %>
+              <td class="text-info text-nowrap">Upcoming</td>
+              <td class="text-danger text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
+            <% else %>
+              <td class="text-info text-nowrap">Not yet</td>
+              <td class="text-nowrap"><%= distance_of_time_in_words_to_now(contest.start_time) %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card bg-light mb-3">
+  <div class="card-body">
+    <h5>Ranked Coders<small class="float-end"><%= link_to "Show all", users_path %></small></h5>
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th></th>
+          <th>Username</th>
+          <th>Accepted</th>
+          <th>AC Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each_with_index do |f, idx| %>
+          <tr>
+            <td><%= idx + 1 %></td>
+            <td><%= link_to image_tag(f.avatar.mini_thumb.to_s, class: "img-rounded"), {controller: 'users', action: :show, id: f.id} %></td>
+            <td><%= link_to f.username, user_path(f) %></td>
+            <td><%= f.ac %></td>
+            <td><%= ac_ratio_by_user_with_infor(f) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
