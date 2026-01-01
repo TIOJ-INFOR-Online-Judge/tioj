@@ -11,7 +11,7 @@
 @import "./components/btn-xs";
 @import "./components/verdicts";
 
-// @import "./components/problem_copy_btn";
+// @import "./components/copy-btn";
 @import "./contests";
 
 #page-content {
@@ -23,9 +23,21 @@
   margin: 10px 0 15px;
 }
 
+.motto {
+  max-width: 50rem;
+  max-height: 10rem;
+  overflow: hidden;
+}
+
 a.bi-question-circle-fill:hover {
   color: #1abc9c !important;
 }
+
+// monospace form inputs
+.code-input {
+  font-family: "monofont";
+}
+
 
 /*
 require bootstrap
