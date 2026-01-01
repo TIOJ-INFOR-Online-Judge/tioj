@@ -31,44 +31,44 @@
 <% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
 
 <p>
-<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-secondary btn-sm' %>
 <% if Rails.configuration.x.settings.dig(:old_submission_views) && @submission.old_submission && @layout != :single_contest %>
   <% if @show_old %>
-    <%= link_to 'View New Results', submission_path(@submission), class: 'btn btn-default btn-xs' %>
+    <%= link_to 'View New Results', submission_path(@submission), class: 'btn btn-secondary btn-sm' %>
   <% else %>
-    <%= link_to 'View Old Results', old_submission_path(@submission), class: 'btn btn-default btn-xs' %>
+    <%= link_to 'View Old Results', old_submission_path(@submission), class: 'btn btn-secondary btn-sm' %>
   <% end %>
 <% end %>
 <% if effective_admin? && !@show_old %>
   <%= form_with url: rejudge_submission_path(@submission), html: {style: 'display: inline;'} do |f| %>
-    <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+    <%= f.submit 'Rejudge', class: 'btn btn-sm btn-primary' %>
   <% end %>
-  <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), class: 'btn btn-info btn-xs' %>
-  <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
+  <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), class: 'btn btn-info btn-sm' %>
+  <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-sm btn-danger' %>
 <% end %>
 </p>
 <% infor_obj = @show_old ? @submission.old_submission : @submission %>
 <div id="overall-result" class="panel <%= panel_class_map[infor_obj.result] %>">
-  <div class="panel-heading">
+  <div class="card-header">
   <div class="row">
     <div class="col-md-3">
-      <h1 class="panel-title">Problem</h1>
+      <h1 class="card-title">Problem</h1>
     </div>
     <div class="col-md-2">
-      <h1 class="panel-title">Total Time (ms)</h1>
+      <h1 class="card-title">Total Time (ms)</h1>
     </div>
     <div class="col-md-2">
-      <h1 class="panel-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h1>
+      <h1 class="card-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h1>
     </div>
     <div class="col-md-3">
-      <h1 class="panel-title">Verdict <%= help_icon '/about/verdicts' %></h1>
+      <h1 class="card-title">Verdict <%= help_icon '/about/verdicts' %></h1>
     </div>
     <div class="col-md-2">
-      <h1 class="panel-title">Score</h1>
+      <h1 class="card-title">Score</h1>
     </div>
   </div>
   </div>
-  <div class="panel-body">
+  <div class="card-body">
     <div class="row">
       <div class="col-md-3">
         <%= link_to @submission.problem.id.to_s + ". " + @submission.problem.name, contest_adaptive_polymorphic_path([@submission.problem]) %>
@@ -93,11 +93,11 @@
 </div>
 
 <% unless no_task_verdicts.include? @submission.result %>
-  <div id="subtask-results" class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" href="#collapseSubtask">
-      <h1 class="panel-title">
+  <div id="subtask-results" class="card bg-light">
+    <div class="card-header" data-bs-toggle="collapse" href="#collapseSubtask">
+      <h1 class="card-title">
         Subtask Results
-        <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+        <i class="indicator glyphicon glyphicon-chevron-up float-end"></i>
       </h1>
     </div>
     <div class="collapse in" id="collapseSubtask">
@@ -146,11 +146,11 @@
     </div>
   </div>
 
-  <div id="testdata-results" class="panel panel-default">
-    <div class="panel-heading" data-toggle="collapse" href="#collapseTestdata">
-      <h1 class="panel-title">
+  <div id="testdata-results" class="card bg-light">
+    <div class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
+      <h1 class="card-title">
         Testdata Results
-        <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
+        <i class="indicator glyphicon glyphicon-chevron-up float-end"></i>
       </h1>
     </div>
     <% if @show_detail %>
@@ -178,9 +178,9 @@
               <% collapse_id = "td-message-row-#{i}" %>
               <% tr_attr.merge!({data: {toggle: "collapse"}, href: "##{collapse_id}"}) %>
               <% if tr_attr[:class] %>
-                <% tr_attr[:class] += " panel-heading" %>
+                <% tr_attr[:class] += " card-header" %>
               <% else %>
-                <% tr_attr[:class] = "panel-heading" %>
+                <% tr_attr[:class] = "card-header" %>
               <% end %>
               <%= tag.tr(**tr_attr) do %>
                 <td><%= i %></td>
@@ -261,28 +261,28 @@
 </div>
 
 <% if effective_admin? or user_can_view?(current_user, @submission, @contest) %>
-  <div id="ce-message" class="panel panel-default<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
-    <div class="panel-heading">
-        <h1 class="panel-title">Compilation Error Message</h1>
+  <div id="ce-message" class="card bg-light<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
+    <div class="card-header">
+        <h1 class="card-title">Compilation Error Message</h1>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> no-display<% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
       <span id="ce-message-none" <% if @submission.message.present? %>class="no-display"<% end %>>
         Sorry, no compilation error message available.
       </span>
     </div>
   </div>
-  <div id="user-code" class="panel panel-default">
-    <div class="panel-heading">
-      <div class="pull-right" style="position: relative; top: -0.8rem">
-        <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-xs' %>
-        <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-xs' %>
+  <div id="user-code" class="card bg-light">
+    <div class="card-header">
+      <div class="float-end" style="position: relative; top: -0.8rem">
+        <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-sm' %>
+        <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-sm' %>
       </div>
-      <h1 class="panel-title">Code</h1>
+      <h1 class="card-title">Code</h1>
     </div>
     <% code_utf8 = @submission.code_content.code_utf8 %>
     <% if code_utf8.valid_encoding? %>
-      <div class="panel-body" style="padding: 0;">
+      <div class="card-body" style="padding: 0;">
         <% code_length_thresh = 32.kilobyte %>
         <% if code_utf8.bytesize > code_length_thresh %>
           <div style="margin: 0.3rem; margin-left: 1.2rem; margin-top: 0.5rem">Code truncated to 32 KiB. Click Download or View Raw to get the full source code.</div>
@@ -291,7 +291,7 @@
         <pre class="line-numbers code-block" style="margin: 0; width: 100%; min-height: 44px;"><code class="<%= @submission.compiler.format_type %>" id="submission_code"><%= code_utf8 %></code></pre>
       </div>
     <% else %>
-      <div class="panel-body">
+      <div class="card-body">
         This code contains non-UTF-8 byte sequences. Click Download or View Raw to get the source code.
       </div>
     <% end %>
@@ -313,7 +313,7 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs' %>
+<%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm' %>
 
 <%= javascript_include_tag "prism" %>
 <%= stylesheet_link_tag "prism" %>

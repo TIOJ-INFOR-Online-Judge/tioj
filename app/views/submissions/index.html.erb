@@ -26,14 +26,14 @@
 
 <% if @problem %>
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
-  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-xs" %>
+  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-sm" %>
 <% else %>
   <div class="form-inline">
     <div class="form-group">
       <label for="quick_prob_id">Quick Submit</label>
       <input style="width:150px" id="quick_prob_id" type="number" class="form-control input-sm flat" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
     </div>
-    <a href="#" id="quick_submit" class="btn btn-success btn-xs">Submit</a>
+    <a href="#" id="quick_submit" class="btn btn-success btn-sm">Submit</a>
   </div>
 <% end %>
 
@@ -64,7 +64,7 @@
       <% end %>
     </select>
   </div>
-  <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+  <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
 </form>
 
 <script>
@@ -111,7 +111,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% if effective_admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-sm btn-primary' %>
             <% end %>
           </td>
         <% end %>
