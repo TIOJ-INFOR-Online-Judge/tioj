@@ -33,16 +33,21 @@
 - panel-heading
 - data-toggle
 - glyphicon
----
 - tagsinput update
 - selectpicker
-- well & panel
-
+- btn-block
 - form-group
+- form-inline
+- img-rounded
+
+---
+
+- well & panel
 - action
 - fields
 - 整理 css
-- form-inline
-- btn-block
-- img-rounded
 - view-post 會壞掉
+- `_ranklist*` 還有 tr.success / tr.info 等
+- navbar brand
+- 整體字體大小
+- 選定 icon
