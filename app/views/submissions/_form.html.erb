@@ -20,25 +20,25 @@
 <%= form_for form_target, url: contest_adaptive_polymorphic_path(form_target), html: form_html do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @submission.errors, item: 'submission'} %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= render 'compiler_chooser', f: f %>
   </div>
 
   <%= f.fields_for :code_content do |t| %>
-    <div class="form-group">
+    <div class="mb-3">
       <%= t.label :code %>
-      <%= t.text_area :code, class: 'form-control flat code-input', rows: "12", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
+      <%= t.text_area :code, class: 'form-control code-input', rows: "12", style: 'font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;', maxlength: @problem.code_length_limit %>
     </div>
   <% end %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :code_file, 'Or, upload a file (overrides the code above):' %>
-    <%= f.file_field :code_file, class: 'form-control flat' %>
+    <%= f.file_field :code_file, class: 'form-control' %>
   </div>
 
   <hr>
 
-  <div class="actions">
+  <div>
     <%= f.submit class: 'btn btn-success btn-lg', id: 'form-submit-button' %>
   </div>
 <% end %>

@@ -18,15 +18,15 @@
   'CE' => 'panel-ce',
   'CLE' => 'panel-ce',
 } %>
-<% panel_class_map.default = 'panel-default' %>
+<% panel_class_map.default = 'bg-light' %>
 <% row_class_map = {
-  'WA' => 'danger',
-  'AC' => 'success',
-  'TLE' => 'info',
-  'RE' => 'warning',
-  'MLE' => 'mle',
-  'SIG' => 'sig',
-  'OLE' => 'ole',
+  'WA' => 'table-danger',
+  'AC' => 'table-success',
+  'TLE' => 'table-info',
+  'RE' => 'table-warning',
+  'MLE' => 'table-mle',
+  'SIG' => 'table-sig',
+  'OLE' => 'table-ole',
 } %>
 <% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
 
@@ -48,25 +48,25 @@
 <% end %>
 </p>
 <% infor_obj = @show_old ? @submission.old_submission : @submission %>
-<div id="overall-result" class="panel <%= panel_class_map[infor_obj.result] %>">
+<div id="overall-result" class="card mb-1 <%= panel_class_map[infor_obj.result] %>">
   <div class="card-header">
-  <div class="row">
-    <div class="col-md-3">
-      <h1 class="card-title">Problem</h1>
+    <div class="row">
+      <div class="col-md-3">
+        <h5 class="card-title">Problem</h5>
+      </div>
+      <div class="col-md-2">
+        <h5 class="card-title">Total Time (ms)</h5>
+      </div>
+      <div class="col-md-2">
+        <h5 class="card-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h5>
+      </div>
+      <div class="col-md-3">
+        <h5 class="card-title">Verdict <%= help_icon '/about/verdicts' %></h5>
+      </div>
+      <div class="col-md-2">
+        <h5 class="card-title">Score</h5>
+      </div>
     </div>
-    <div class="col-md-2">
-      <h1 class="card-title">Total Time (ms)</h1>
-    </div>
-    <div class="col-md-2">
-      <h1 class="card-title">Max Memory (RSS, KiB) <%= help_icon '/about/memory' %></h1>
-    </div>
-    <div class="col-md-3">
-      <h1 class="card-title">Verdict <%= help_icon '/about/verdicts' %></h1>
-    </div>
-    <div class="col-md-2">
-      <h1 class="card-title">Score</h1>
-    </div>
-  </div>
   </div>
   <div class="card-body">
     <div class="row">
@@ -93,15 +93,13 @@
 </div>
 
 <% unless no_task_verdicts.include? @submission.result %>
-  <div id="subtask-results" class="card bg-light">
-    <div class="card-header" data-bs-toggle="collapse" href="#collapseSubtask">
-      <h1 class="card-title">
-        Subtask Results
-        <%= indicator_chevron_up_float_glyph %>
-      </h1>
-    </div>
+  <div id="subtask-results" class="card bg-light mb-1">
+    <h5 class="card-header" data-bs-toggle="collapse" href="#collapseSubtask">
+      Subtask Results
+      <%= indicator_chevron_up_float_glyph %>
+    </h5>
     <div class="collapse in" id="collapseSubtask">
-      <table class="table table-sm table-align-middle">
+      <table class="table table-sm align-middle mb-0">
         <% problem = @submission.problem %>
         <% num_tasks = problem.testdata.count %>
         <% testsets = problem.subtasks.order(id: :asc) %>
@@ -146,16 +144,14 @@
     </div>
   </div>
 
-  <div id="testdata-results" class="card bg-light">
-    <div class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
-      <h1 class="card-title">
-        Testdata Results
-        <%= indicator_chevron_up_float_glyph %>
-      </h1>
-    </div>
+  <div id="testdata-results" class="card bg-light mb-1">
+    <h5 class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
+      Testdata Results
+      <%= indicator_chevron_up_float_glyph %>
+    </h5>
     <% if @show_detail %>
       <div class="collapse in" id="collapseTestdata">
-        <table class="table table-sm">
+        <table class="table table-sm mb-0">
           <thead>
             <tr>
               <th>Testdata no.</th>
@@ -214,13 +210,13 @@
                   <% end %>
                 </td>
               <% end %> <%# tr %>
-              <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> no-display<% end %>" id="<%= collapse_id %>">
+              <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> d-none <% end %>" id="<%= collapse_id %>">
                 <td id="td-message-<%= i %>" colspan="<%= @has_vss ? 8 : 7 %>">
                   <% if task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %>
                     <% if task.message_type == "html" %>
                       <%= raw task.message %>
                     <% else %>
-                      <pre class="pre-scrollable" style="margin: 0;"><code class=""><%= task.message %></code></pre>
+                      <pre class="overflow-auto" style="margin: 0;"><code class=""><%= task.message %></code></pre>
                     <% end %>
                   <% end %>
                 </td>
@@ -237,7 +233,7 @@
   </div>
 <% end %>
 
-<div class="well well-sm">
+<div class="card card-body bg-light mb-3 px-3 py-2">
   <div class="row">
     <% if @layout != :single_contest %>
       <div class="col-md-2">
@@ -263,25 +259,26 @@
 </div>
 
 <% if effective_admin? or user_can_view?(current_user, @submission, @contest) %>
-  <div id="ce-message" class="card bg-light<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> no-display<% end %>">
-    <div class="card-header">
-        <h1 class="card-title">Compilation Error Message</h1>
-    </div>
+  <div id="ce-message" class="card bg-light mb-2<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> d-none <% end %>">
+    <h5 class="card-header">
+      Compilation Error Message
+    </h5>
     <div class="card-body">
-      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> no-display<% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
-      <span id="ce-message-none" <% if @submission.message.present? %>class="no-display"<% end %>>
+      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> d-none <% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
+      <span id="ce-message-none" <% if @submission.message.present? %>class="d-none "<% end %>>
         Sorry, no compilation error message available.
       </span>
     </div>
   </div>
-  <div id="user-code" class="card bg-light">
-    <div class="card-header">
-      <div class="float-end" style="position: relative; top: -0.8rem">
-        <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-sm' %>
-        <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-sm' %>
+
+  <div id="user-code" class="card bg-light mb-2">
+    <h6 class="card-header d-flex align-items-center gap-1">
+      <div class="me-auto">
+        Code
       </div>
-      <h1 class="card-title">Code</h1>
-    </div>
+      <%= link_to 'View Raw', contest_adaptive_polymorphic_path([@submission], action: :raw, inline: 1), class: 'btn btn-info btn-sm' %>
+      <%= link_to 'Download', contest_adaptive_polymorphic_path([@submission], action: :raw), class: 'btn btn-info btn-sm' %>
+    </h6>
     <% code_utf8 = @submission.code_content.code_utf8 %>
     <% if code_utf8.valid_encoding? %>
       <div class="card-body" style="padding: 0;">
@@ -301,18 +298,18 @@
 <% end %>
 
 <% if will_update %>
-<script>
-var verdict = <%= raw(@verdict.to_json) %>;
-var no_task_verdicts = <%= raw(no_task_verdicts.to_json) %>;
-var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
-var panel_class_map = <%= raw(panel_class_map.to_json) %>;
-var row_class_map = <%= raw(row_class_map.to_json) %>;
+  <script>
+    var verdict = <%= raw(@verdict.to_json) %>;
+    var no_task_verdicts = <%= raw(no_task_verdicts.to_json) %>;
+    var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
+    var panel_class_map = <%= raw(panel_class_map.to_json) %>;
+    var row_class_map = <%= raw(row_class_map.to_json) %>;
 
-initSubmissionCable();
-$(document).ready(function() {
-  subscribeSubmission(<%= @submission.id %>, updateSubmissionDetail);
-});
-</script>
+    initSubmissionCable();
+    $(document).ready(function() {
+      subscribeSubmission(<%= @submission.id %>, updateSubmissionDetail);
+    });
+  </script>
 <% end %>
 
 <%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm' %>

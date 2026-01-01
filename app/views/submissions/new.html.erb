@@ -2,6 +2,7 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Show Problem', contest_adaptive_polymorphic_path([@problem]), class: 'btn btn-primary btn-sm' %>
-<%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-secondary btn-sm' %>
-
+<div class="mt-1">
+  <%= link_to 'Show Problem', contest_adaptive_polymorphic_path([@problem]), class: 'btn btn-primary btn-sm' %>
+  <%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-secondary btn-sm' %>
+</div>

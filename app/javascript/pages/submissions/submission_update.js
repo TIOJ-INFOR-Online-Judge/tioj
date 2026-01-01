@@ -55,12 +55,12 @@ function updateTestdata(data) {
     $('#td-verdict-' + pos).text(verdict[td['result']]);
     if (row_class_map[td['result']]) $('#td-row-' + pos).addClass(row_class_map[td['result']]);
     if (td['message_type'] && td['message']) {
-      $('#td-message-row-' + pos).removeClass('no-display');
-      $('#td-row-' + pos + ' .indicator').removeClass('no-display');
+      $('#td-message-row-' + pos).removeClass('d-none');
+      $('#td-row-' + pos + ' .indicator').removeClass('d-none');
       if (td['message_type'] == 'html') {
         $('#td-message-' + pos).html(td['message']);
       } else {
-        $('#td-message-' + pos).html('<pre class="pre-scrollable" style="margin: 0;"><code class=""></code></pre>');
+        $('#td-message-' + pos).html('<pre class="overflow-auto" style="margin: 0;"><code class=""></code></pre>');
         $('#td-message-' + pos + ' code').text(td['message']);
       }
     }
@@ -70,18 +70,18 @@ function updateTestdata(data) {
 function updateResult(data, cable) {
   let to_wait = waiting_verdicts.includes(data['result']);
   $('#verdict').text(verdict[data['result']]);
-  $('#waiting-icon').toggleClass('no-display', !to_wait);
-  $('#overall-result').attr('class', 'panel ' + (panel_class_map[data['result']] || 'panel-default'));
+  $('#waiting-icon').toggleClass('d-none', !to_wait);
+  $('#overall-result').attr('class', 'card ' + (panel_class_map[data['result']] || ''));
   if (['CE', 'CLE', 'ER'].includes(data['result']) || data['message']) {
-    $('#ce-message').removeClass('no-display');
+    $('#ce-message').removeClass('d-none');
   }
   if (no_task_verdicts.includes(data['result'])) {
-    $('#subtask-results').addClass('no-display');
-    $('#testdata-results').addClass('no-display');
+    $('#subtask-results').addClass('d-none');
+    $('#testdata-results').addClass('d-none');
   }
   if (data['message']) {
-    $('#ce-message-content').removeClass('no-display');
-    $('#ce-message-none').addClass('no-display');
+    $('#ce-message-content').removeClass('d-none');
+    $('#ce-message-none').addClass('d-none');
     $('#ce-message-content code').text(data['message']);
   }
   if (data['total_time']) $('#total-time').text(data['total_time'])
