@@ -1,4 +1,4 @@
-tr.ole > td {
+.table-ole > td {
   background-color: #F3E6FC;
 }
 .text-ole {
@@ -12,7 +12,7 @@ tr.ole > td {
 .panel-ole {
   border-color: #E4C5FC;
 }
-tr.sig > td {
+.table-sig > td {
   background-color: #FCE9CF;
 }
 .text-sig {
@@ -26,7 +26,7 @@ tr.sig > td {
 .panel-sig {
   border-color: #F0D4AD;
 }
-tr.mle > td {
+.table-mle > td {
   background-color: #F1F2D0;
 }
 .text-mle {
@@ -40,7 +40,7 @@ tr.mle > td {
 .panel-mle {
   border-color: #D9DB93;
 }
-tr.ce > td {
+.table-ce > td {
   background-color: #EEEEEE;
 }
 .panel-ce > .panel-heading {
