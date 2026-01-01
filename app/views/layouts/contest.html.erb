@@ -5,34 +5,30 @@
 <% end %>
 
 <% content_for :navbar do %>
-<div style="background-color:#32CD32">
-  <nav class="navbar navbar-inverse navbar-embossed" role="navigation" style="background-color:#32CD32">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <%= link_to image_tag("banner_contest.png", alt: "TIOJ contest - #{@contest.title}", style: "padding-left: 15px; padding-right: 20px;", skip_pipeline: true), contest_path(@contest), class: "nav-brand" %>
-        <button type="button" class="navbar-toggle" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-01">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse" id="navbar-collapse-01">
-        <ul class="nav navbar-nav navbar-left">
-          <li><%= link_to "Contest Tasks", contest_path(@contest) %></li>
-          <li><%= link_to "Submissions", contest_submissions_path(@contest) %></li>
-          <li><%= link_to "Q & A", contest_posts_path(@contest) %></li>
-          <li><%= link_to "Dashboard", dashboard_contest_path(@contest) %></li>
+<div class="mb-4" style="background-color:#32CD32">
+  <nav class="navbar navbar-dark navbar-expand-md fw-bold">
+    <div class="container-fluid d-flex flex-wrap align-items-center">
+      <%= link_to image_tag("banner_contest.png", alt: "TIOJ contest - #{@contest.title}", skip_pipeline: true), contest_path(@contest), class: "navbar-brand" %>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav d-flex flex-wrap">
+          <li class="nav-item"><%= link_to "Contest Tasks", contest_path(@contest), class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Submissions", contest_submissions_path(@contest), class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Q & A", contest_posts_path(@contest), class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Dashboard", dashboard_contest_path(@contest), class: "nav-link" %></li>
           <% if current_user %>
             <% if current_user.admin? %>
-              <li><%= link_to "Users & Registrations", contest_contest_registrations_path(@contest) %></li>
+              <li class="nav-item"><%= link_to "Users & Registrations", contest_contest_registrations_path(@contest), class: "nav-link" %></li>
             <% end %>
-            <li><%= link_to current_user.username, user_path(current_user) %></li>
-            <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
+            <li class="nav-item"><%= link_to current_user.username, user_path(current_user), class: "nav-link" %></li>
+            <li class="nav-item"><%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "nav-link" %></li>
           <% else %>
-            <li><%= link_to "Sign in", new_session_path(:user) %> </li>
+            <li class="nav-item"><%= link_to "Sign in", new_session_path(:user), class: "nav-link" %> </li>
             <% unless Rails.configuration.x.settings.dig(:disable_registration) %>
-              <li><%= link_to "Sign up", new_registration_path(:user) %></li>
+              <li class="nav-item"><%= link_to "Sign up", new_registration_path(:user), class: "nav-link" %></li>
             <% end %>
           <% end %>
         </ul>
