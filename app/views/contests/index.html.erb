@@ -29,7 +29,7 @@
     <% @contests.each do |contest| %>
       <tr>
         <td><%= contest.title %></td>
-        <td style="text-align: right;">
+        <td class="text-end">
           <%= contest_link(contest) %>
         </td>
         <% if contest.is_ended? %>
@@ -42,7 +42,7 @@
           <td>Not yet</td>
         <% end %>
         <% if user_signed_in? %>
-          <td style="white-space: nowrap;">
+          <td class="text-nowrap">
             <%= contest_register_status(@registrations[contest.id], false) %>
             <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
           </td>
