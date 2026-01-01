@@ -1,24 +1,24 @@
 <% set_page_title @contest.title %>
 
 <% if @layout != :single_contest %>
-    <% if effective_admin? %>
-      <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-sm col-md-2" %>
-    <% end %>
-    <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-sm col-md-2" %>
-
+  <% if effective_admin? %>
+    <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-sm" %>
+  <% end %>
+  <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-sm" %>
   <%= contest_registration_page_button(@contest, @register_status, true) %>
+
 <% end %>
 
-<h4 class='page-header'>
+<h4 class="page-header">
   <%= @contest.title %>
 </h4>
 
-<div class="row">
+<div class="row mb-3">
   <div class="col-sm-6 <% if @layout == :single_contest %>col-lg-4<% else %>col-lg-3<% end %>">
     <div class="card bg-light">
-      <div class="card-header">
-        <h1 class="card-title">Start / End</h1>
-      </div>
+      <h6 class="card-header">
+        Start / End
+      </h6>
       <div class="card-body">
         <%= @contest.start_time.to_fs(:clean) %> ~<br>
         <%= @contest.end_time.to_fs(:clean) %>
@@ -27,9 +27,9 @@
   </div>
   <div class="col-sm-6 col-lg-4">
     <div class="card bg-light">
-      <div class="card-header">
-        <h1 class="card-title">Contest Type</h1>
-      </div>
+      <h6 class="card-header">
+        Contest Type
+      </h6>
       <div class="card-body">
         <%= contest_type_desc_map[@contest.contest_type] %><br>
         <% if @contest.dashboard_during_contest %>
@@ -42,9 +42,9 @@
   </div>
   <div class="<% if @layout == :single_contest %>col-sm-12 col-lg-4<% else %>col-sm-6 col-lg-3<% end %>">
     <div class="card bg-light">
-      <div class="card-header">
-        <h1 class="card-title">Register Before</h1>
-      </div>
+      <h6 class="card-header">
+        Register Before
+      </h6>
       <div class="card-body">
         <%= @contest.effective_register_before.to_fs(:clean) %>
         <% unless @layout == :single_contest %>
@@ -57,9 +57,9 @@
   <% unless @layout == :single_contest %>
     <div class="col-sm-6 col-lg-2">
       <div class="card bg-light">
-        <div class="card-header">
-          <h1 class="card-title">Registration Status</h1>
-        </div>
+        <h6 class="card-header">
+          Registration Status
+        </h6>
         <div class="card-body">
           <%= contest_register_status(@register_status, true) %>
         </div>
@@ -69,14 +69,14 @@
 </div>
 
 <% if effective_admin? || !(@contest.is_started? && @contest.user_can_submit?(current_user)) %>
-  <div class="card bg-light">
-    <div class="card-header">
+  <div class="card bg-light mb-3">
+    <h6 class="card-header">
       <% if effective_admin? %>
-        <h1 class="card-title">Description before contest</h1>
+        Description before contest
       <% else %>
-        <h1 class="card-title">Description</h1>
+        Description
       <% end %>
-    </div>
+    </h6>
     <div class="card-body">
       <%= markdown(@contest.description_before_contest) %>
     </div>
@@ -84,14 +84,14 @@
 <% end %>
 
 <% if effective_admin? || (@contest.is_started? && @contest.user_can_submit?(current_user)) %>
-  <div class="card bg-light">
-    <div class="card-header">
+  <div class="card bg-light mb-3">
+    <h6 class="card-header">
       <% if effective_admin? %>
-        <h1 class="card-title">Description in contest</h1>
+        Description in contest
       <% else %>
-        <h1 class="card-title">Description</h1>
+        Description
       <% end %>
-    </div>
+    </h6>
     <div class="card-body">
       <%= markdown(@contest.description) %>
     </div>
@@ -99,7 +99,7 @@
 <% end %>
 
 <% if effective_admin? %>
-  <div style="margin-bottom:10px;">
+  <div class="mb-3">
     <% Problem.visible_states.each do |name, val| %>
       <%= form_with url: set_contest_task_contest_path(@contest), html: {style: 'display: inline;'} do |f| %>
         <%= f.hidden_field :alter_to, value: val %>
@@ -110,10 +110,10 @@
 <% end %>
 
 <% unless @layout == :single_contest && (!user_signed_in? || !@contest.is_running?) %>
-  <div class="card bg-light">
-    <div class="card-header">
-      <h1 class="card-title">Tasks</h1>
-    </div>
+  <div class="card bg-light mb-3">
+    <h6 class="card-header">
+      Tasks
+    </h6>
     <div class="card-body">
       <% if @contest.is_started? || current_user&.admin? %>
         <% @tasks.each_with_index do |task, index| %>

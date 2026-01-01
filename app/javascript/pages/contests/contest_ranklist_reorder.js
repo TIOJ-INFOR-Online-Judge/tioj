@@ -110,7 +110,7 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
   if (children.length === 0) return;
   let rank = 0;
   let color = 0;
-  let color_map = ['warning', 'success', 'info'];
+  let color_map = ['table-warning', 'table-success', 'table-info'];
   let prev_value = compare_keys[children[0].id][0];
   for (let i = 0; i < children.length; i++) {
     const cur_value = compare_keys[children[i].id];

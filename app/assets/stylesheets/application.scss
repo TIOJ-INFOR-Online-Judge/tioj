@@ -4,12 +4,15 @@
 @import "bootstrap-select/dist/css/bootstrap-select";
 @import "bootstrap-icons/font/bootstrap-icons";
 
+
 @import "./components/tagsinput";
+@import "./components/slider";
 @import "./components/panel-problem-settings";
 @import "./components/btn-xs";
 @import "./components/verdicts";
 
 // @import "./components/problem_copy_btn";
+@import "./contests";
 
 #page-content {
   padding-left: 40px;
@@ -23,7 +26,6 @@
 a.bi-question-circle-fill:hover {
   color: #1abc9c !important;
 }
-
 
 /*
 require bootstrap

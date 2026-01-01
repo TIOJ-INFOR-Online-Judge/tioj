@@ -23,7 +23,7 @@
     <tr id="row_user_<%= usr.id %>">
       <td id="cell_rank_user_<%= usr.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
-        <td><%= user_link(usr, image_tag(usr.avatar.mini_thumb.to_s, class: 'img-rounded')) %></td>
+        <td><%= user_link(usr, image_tag(usr.avatar.mini_thumb.to_s, class: 'rounded')) %></td>
         <td class="highlight-if-self"><%= user_link(usr, usr.username) %></td>
       <% else %>
         <td class="highlight-if-self"><%= usr.username %></td>
@@ -45,7 +45,7 @@
     <tr id="row_team_<%= team.id %>">
       <td id="cell_rank_team_<%= team.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
-        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'rounded'), team_path(team) %></td>
         <td class="highlight-if-self"><%= link_to team.teamname, team_path(team) %></td>
       <% else %>
         <td class="highlight-if-self"><%= team.teamname %></td>

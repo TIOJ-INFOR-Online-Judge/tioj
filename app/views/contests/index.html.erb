@@ -2,7 +2,7 @@
 <h4 class="page-header">Contests</h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn-sm' %>
+  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn' %>
   <br>
 <% end %>
 <%= paginate @contests %>
