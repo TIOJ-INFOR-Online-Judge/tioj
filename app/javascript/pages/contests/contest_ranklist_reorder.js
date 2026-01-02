@@ -67,9 +67,6 @@ import * as bounds from 'binary-search-bounds';
 import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
-  function rowUserID(row) {
-    return parseInt(row.id.slice(9));
-  }
   if (!data.participants) return;
   let compare_keys = {};
   let getValue = timestamp === -1 ? (
@@ -101,9 +98,13 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
   }
   console.log({ compare_keys });
   let tbody = $('#dashboard_table_body');
+  function rowEffectiveID(row) {
+    // final tie-breaker when other conditions are all the same
+    return row.id;
+  }
   tbody.append(tbody.children().detach().sort((a, b) => {
-    let key_a = compare_keys[a.id].concat([rowUserID(a)]);
-    let key_b = compare_keys[b.id].concat([rowUserID(b)]);
+    let key_a = compare_keys[a.id].concat([rowEffectiveID(a)]);
+    let key_b = compare_keys[b.id].concat([rowEffectiveID(b)]);
     return key_a.compare(key_b);
   }));
   let children = tbody.children();
@@ -123,8 +124,11 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
       color += 1;
     }
     row.removeClass();
-    if (rowUserID(children[i]) === data.user_id) {
-      row.addClass('ole');
+    console.log(children[i].id);
+    const effective_id = children[i].id.slice(4);
+    // TODO: rename it to like data.self_id
+    if (effective_id === data.user_id) {
+      row.addClass('table-self');
     } else if (color < 3) {
       row.addClass(color_map[color]);
     }

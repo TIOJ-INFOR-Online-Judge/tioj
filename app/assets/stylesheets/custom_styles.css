@@ -67,7 +67,7 @@ pre.code-block[class*="language-"] {
 }
 
 /* dashboard self */
-.table-ole > td.highlight-if-self {
+.table-self td.highlight-if-self {
   font-weight: bold;
   color: #7C18C4;
 }

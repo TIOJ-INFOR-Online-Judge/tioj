@@ -18,3 +18,4 @@
 @import "./custom_styles";
 
 @include table-variant("white", $white);
+@include table-variant("self", #F3E6FC);
