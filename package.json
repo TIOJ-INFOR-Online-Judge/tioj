@@ -7,7 +7,6 @@
     "@rails/actioncable": "^7",
     "animate.css": "^4.1.1",
     "binary-search-bounds": "^2.0.5",
-    "blueimp-file-upload": "^10.32.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "datatables.net-bs5": "^2.3.6",

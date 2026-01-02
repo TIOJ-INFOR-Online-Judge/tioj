@@ -20,10 +20,6 @@ import DataTable from 'datatables.net-bs5';
 import 'datatables.net-plugins/sorting/file-size.mjs';
 window.DataTable = DataTable;
 
-// file upload
-import 'blueimp-file-upload';
-import 'blueimp-tmpl';
-
 // globals
 import './globals/problems';
 import './globals/submissions';
