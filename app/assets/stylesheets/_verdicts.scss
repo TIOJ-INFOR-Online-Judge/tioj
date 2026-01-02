@@ -1,0 +1,23 @@
+$verdicts-raw: (
+  "ac":    (#2ecc71, #3c763d, #dff0d8, #d6e9c6),
+  "wa":    (#e74c3c, #a94442, #f2dede, #ebccd1),
+  "tle":   (#3498db, #31708f, #d9edf7, #bce8f1),
+  "re":    (#f1c40f, #8a6d3b, #fcf8e3, #faebcc),
+  "ole":   (#7c18c4, #4e2a69, #f3e6fc, #e4c5fc),
+  "sig":   (#f08a05, #805926, #fce9cf, #f0d4ad),
+  "mle":   (#a4a832, #6f7301, #f1f2d0, #d9db93),
+  "muted": (null,    null,    #e0e0e0, #c0c0c0)
+);
+
+$verdicts: ();
+
+@each $key, $values in $verdicts-raw {
+  $verdicts: map-merge($verdicts, (
+    $key: (
+      "saturated": nth($values, 1),
+      "text":      nth($values, 2),
+      "bg":        nth($values, 3),
+      "border":    nth($values, 4)
+    )
+  ));
+}

@@ -13,9 +13,4 @@
 @import "./components/btn-xs";
 @import "./components/online-indicator";
 
-@import "./components/verdicts";
-
-@import "./custom_styles";
-
-@include table-variant("white", $white);
-@include table-variant("self", #F3E6FC);
+@import "./custom";

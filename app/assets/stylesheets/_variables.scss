@@ -38,37 +38,27 @@ $min-contrast-ratio:   1.65 !default;
 
 $body-bg: #E6EBF0;
 
-$verdicts: (
-  // saturated text, text, bg, border
-  "ac":    (#2ecc71, #3c763d, #dff0d8, #d6e9c6),
-  "wa":    (#e74c3c, #a94442, #f2dede, #ebccd1),
-  "tle":   (#3498db, #31708f, #d9edf7, #bce8f1),
-  "re":    (#f1c40f, #8a6d3b, #fcf8e3, #faebcc),
-  "ole":   (#7C18C4, #4E2A69, #F3E6FC, #E4C5FC),
-  "sig":   (#F08A05, #805926, #FCE9CF, #F0D4AD),
-  "mle":   (#A4A832, #6F7301, #F1F2D0, #D9DB93),
-  "muted": (null,    null,    #E0E0E0, #C0C0C0)
-);
+@import "./verdicts";
 
 $verdict-ac:            map-get($verdicts, "ac");
-$success-text-emphasis: nth($verdict-ac, 2);
-$success-bg-subtle:     nth($verdict-ac, 3);
-$success-border-subtle: nth($verdict-ac, 4);
+$success-text-emphasis: map-get($verdict-ac, "saturated");
+$success-bg-subtle:     map-get($verdict-ac, "bg");
+$success-border-subtle: map-get($verdict-ac, "border");
 
 $verdict-tle:           map-get($verdicts, "tle");
-$info-text-emphasis:    nth($verdict-tle, 2);
-$info-bg-subtle:        nth($verdict-tle, 3);
-$info-border-subtle:    nth($verdict-tle, 4);
+$info-text-emphasis:    map-get($verdict-tle, "saturated");
+$info-bg-subtle:        map-get($verdict-tle, "bg");
+$info-border-subtle:    map-get($verdict-tle, "border");
 
 $verdict-wa:            map-get($verdicts, "wa");
-$danger-text-emphasis:  nth($verdict-wa, 2);
-$danger-bg-subtle:      nth($verdict-wa, 3);
-$danger-border-subtle:  nth($verdict-wa, 4);
+$danger-text-emphasis:  map-get($verdict-wa, "saturated");
+$danger-bg-subtle:      map-get($verdict-wa, "bg");
+$danger-border-subtle:  map-get($verdict-wa, "border");
 
 $verdict-re:            map-get($verdicts, "re");
-$warning-text-emphasis: nth($verdict-re, 2);
-$warning-bg-subtle:     nth($verdict-re, 3);
-$warning-border-subtle: nth($verdict-re, 4);
+$warning-text-emphasis: map-get($verdict-re, "saturated");
+$warning-bg-subtle:     map-get($verdict-re, "bg");
+$warning-border-subtle: map-get($verdict-re, "border");
 
 // Fonts
 
@@ -128,7 +118,8 @@ $form-check-input-bg: $gray-500;
 
 $link-decoration: none;
 
-// Misc
+// Tables
 
 $table-striped-bg: #f8f8f8;
 $table-hover-bg:   #f5f5f5; // TODO other colors variant
+$table-border-factor: 0;

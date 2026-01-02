@@ -66,12 +66,6 @@ pre.code-block[class*="language-"] {
   font-size: 14px;
 }
 
-/* dashboard self */
-.table-self td.highlight-if-self {
-  font-weight: bold;
-  color: #7C18C4;
-}
-
 .sample-testdata {
   font-family: "monofont";
   font-size: 15px;
@@ -80,3 +74,48 @@ pre.code-block[class*="language-"] {
   padding: 0;
   margin: 0;
 }
+
+/* styles derived from $verdicts */
+@each $name, $colors in $verdicts {
+  $saturated: map-get($colors, "saturated");
+  $text:      map-get($colors, "text");
+  $bg:        map-get($colors, "bg");
+  $border:    map-get($colors, "border");
+
+  @if $saturated != null {
+    .text-#{$name} {
+      color: $saturated !important;
+    }
+  }
+
+  @include table-variant($name, $bg);
+
+  .verdict-panel-#{$name}  {
+    .card-header {
+      @if $text != null {
+        color: $text;
+      }
+      background-color: $bg;
+      border-color: $border;
+    }
+
+    .card-body {
+      background-color: $white;
+    }
+
+    border-color: $border;
+  }
+}
+
+@include table-variant("white", $white);
+@include table-variant(
+  "self",
+  map-get(map-get($verdicts, "ole"), "bg")
+);
+
+/* dashboard self */
+.table-self td.highlight-if-self {
+  font-weight: bold;
+  color: map-get(map-get($verdicts, "ole"), "text");
+}
+

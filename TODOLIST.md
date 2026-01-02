@@ -56,3 +56,4 @@
 - view-post 會壞掉
     - problem 跟 single_contest
 - tomselect has subtle height difference between zero tags and > 0 tags
+- teams 的功能都要檢查 registration 是不是 approved
