@@ -44,13 +44,14 @@
 - `_ranklist*` 還有 tr.success / tr.info 等
 - action
 - fields
+- navbar 整體要搞好
+    - navbar brand
+    - single contest
 
 ---
 
 - 整理 css
-- navbar 整體要搞好
-    - navbar brand
-    - single contest
 - 整體字體大小
 - 選定 icon
 - view-post 會壞掉
+    - problem 跟 single_contest

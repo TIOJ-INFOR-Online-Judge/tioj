@@ -7,7 +7,7 @@
 <% content_for :navbar do %>
 <div class="mb-4" style="background-color:#32CD32">
   <nav class="navbar navbar-dark navbar-expand-md fw-bold">
-    <div class="container-fluid d-flex flex-wrap align-items-center">
+    <div class="container-fluid d-flex flex-wrap row-gap-3">
       <%= link_to image_tag("banner_contest.png", alt: "TIOJ contest - #{@contest.title}", skip_pipeline: true), contest_path(@contest), class: "navbar-brand" %>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
