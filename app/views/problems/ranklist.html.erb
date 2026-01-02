@@ -21,48 +21,11 @@
   </div>
 </div>
 
-<style type="text/css">
-th span{
-  padding-left: 3px;
-}
-th span.icon-asc{
-  display: none;
-}
-th span.icon-dsc{
-  display: none;
-}
-th.tablesorter-headerAsc span.icon-asc{
-  display: inline;
-}
-th.tablesorter-headerDesc span.icon-dsc{
-  display: inline;
-}
-th.tablesorter-headerDesc span.icon-non, th.tablesorter-headerAsc span.icon-non {
-  display: none;
-}
-th {
-  white-space: nowrap;
-}
-</style>
-
-<% if @submissions.size() > 50 %>
-  <span class="pager">
-    <span class="right">
-      <span class="prev">&nbsp;&nbsp;&lt; </span>
-      <span class="pagecount"></span>
-      <span class="next"> &gt;&nbsp;&nbsp;</span>
-    </span>
-  </span>
-<% end %>
-
-<table class="table table-hover tablesorter">
+<table id="ranklist-table" class="table table-hover order-column">
   <thead>
     <tr>
       <th>
         Rank
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-down-alt icon-asc"></span>
-        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>#</th>
       <th></th>
@@ -70,40 +33,22 @@ th {
       <% if @problem.ranklist_display_score %>
         <th>
           Score
-          <span class="bi bi-funnel-fill icon-non"></span>
-          <span class="bi bi-sort-down-alt icon-asc"></span>
-          <span class="bi bi-sort-up icon-dsc"></span>
         </th>
       <% end %>
       <th>
         Time (ms)
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-down-alt icon-asc"></span>
-        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Memory (KiB)
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-down-alt icon-asc"></span>
-        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Compiler
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-alpha-down icon-asc"></span>
-        <span class="bi bi-sort-alpha-up-alt icon-dsc"></span>
       </th>
       <th>
         Code Length
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-down-alt icon-asc"></span>
-        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
       <th>
         Achieved Time
-        <span class="bi bi-funnel-fill icon-non"></span>
-        <span class="bi bi-sort-down-alt icon-asc"></span>
-        <span class="bi bi-sort-up icon-dsc"></span>
       </th>
     </tr>
   </thead>
@@ -115,80 +60,46 @@ th {
     <% end %>
   </tbody>
 </table>
+
 <script>
-$.tablesorter.addParser({
-    id: 'file-size',
-    is: function(s){
-        return false;
-    },
-    format: function(s){
-        var token = s.split(" ");
-        if(token.length != 2){
-            return -1;
-        }
-        var suffix = {Bytes: 1,KB: 1024,MB: 1048576};
-        var sz = parseFloat(token[0]);
-        if(!(token[1] in suffix)){
-            return -1;
-        }
-        return sz * suffix[token[1]];
-    },
-    type: 'numeric'
-})
-$(document).ready(function()
-    {
-        $.tablesorter.customPagerControls({
-          table          : $('.table'),
-          pager          : $('.pager'),
-          currentPage    : '.right a',
-          ends           : 2,
-          aroundCurrent  : 5,
-          link           : '<a href="#">{page}</a>',
-          currentClass   : 'current',
-          adjacentSpacer : '<span>  |  <span>',
-          distanceSpacer : '<span>  &#133;  <span>',
-          addKeyboard    : true,
-          pageKeyStep    : 3
-        });
+  DataTable.type("html-num", "className", "dt-body-left");
+  DataTable.type("html-num-fmt", "className", "dt-body-left");
+  DataTable.type("num", "className", "dt-body-left");
+  DataTable.type("num-fmt", "className", "dt-body-left");
+  DataTable.type("date", "className", "dt-body-left");
 
-        $(".tablesorter").tablesorter({
-            cancelSelection: true,
-            sortList: [[0,0]],
-            headers: {
-                1: { sorter: false},
-                2: { sorter: false},
-                3: { sorter: false},
-                <%= @problem.ranklist_display_score ? 8 : 7 %>: { sorter: 'file-size'}
-            },
-            theme: 'meow' // non-existent theme
-        }).tablesorterPager({
-            container: $('.pager'),
-            savePages: false,
-            size: 50
-        });
-    }
-);
-$("table").bind("sortEnd",function() {
-    $('tbody > tr').removeClass();
-    $('tbody > tr:nth-of-type(1)').addClass('warning');
-    $('tbody > tr:nth-of-type(2),tbody > tr:nth-of-type(3)').addClass('success');
-    $('tbody > tr:nth-of-type(4),tbody > tr:nth-of-type(5)').addClass('info');
-    $('tbody > tr:nth-of-type(6),tbody > tr:nth-of-type(7)').addClass('info');
+  const table = new DataTable("#ranklist-table", {
+    pageLength: 50,
+    layout: {
+      topStart: "paging",
+      topEnd: null,
+      bottomStart: "paging",
+      bottomEnd: null,
+      // bottomEnd: 'pageLength',
+    },
+    columnDefs: [
+      { type: "file-size", target: <%= @problem.ranklist_display_score ? 8 : 7 %> },
+      // { type: "num", target: 0 },
+      { orderable: false, targets: [1, 2, 3] },
+    ],
+  });
 
-})
+  table.on("order", function() {
+    table.rows().nodes().each((el, idx) => {
+      // highlight top rows
+      el.setAttribute("class", "");
+      if (idx < 1) {
+        el.classList.add("table-warning");
+      } else if (idx < 3) {
+        el.classList.add("table-success");
+      } else if (idx < 7) {
+        el.classList.add("table-info");
+      }
+    });
+  });
 </script>
 
-<% if @submissions.size() > 50 %>
-  <span class="pager">
-    <span class="right">
-      <span class="prev">&nbsp;&nbsp;&lt; </span>
-      <span class="pagecount"></span>
-      <span class="next"> &gt;&nbsp;&nbsp;</span>
-    </span>
-  </span>
-<% end %>
-
-<div class="row">
+<div class="row mt-3">
   <div class="col-md-2">
     <%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm w-100' %>
   </div>
