@@ -41,22 +41,22 @@ $body-bg: #E6EBF0;
 @import "./verdicts";
 
 $verdict-ac:            map-get($verdicts, "ac");
-$success-text-emphasis: map-get($verdict-ac, "saturated");
+$success-text-emphasis: map-get($verdict-ac, "text");
 $success-bg-subtle:     map-get($verdict-ac, "bg");
 $success-border-subtle: map-get($verdict-ac, "border");
 
 $verdict-tle:           map-get($verdicts, "tle");
-$info-text-emphasis:    map-get($verdict-tle, "saturated");
+$info-text-emphasis:    map-get($verdict-tle, "text");
 $info-bg-subtle:        map-get($verdict-tle, "bg");
 $info-border-subtle:    map-get($verdict-tle, "border");
 
 $verdict-wa:            map-get($verdicts, "wa");
-$danger-text-emphasis:  map-get($verdict-wa, "saturated");
+$danger-text-emphasis:  map-get($verdict-wa, "text");
 $danger-bg-subtle:      map-get($verdict-wa, "bg");
 $danger-border-subtle:  map-get($verdict-wa, "border");
 
 $verdict-re:            map-get($verdicts, "re");
-$warning-text-emphasis: map-get($verdict-re, "saturated");
+$warning-text-emphasis: map-get($verdict-re, "text");
 $warning-bg-subtle:     map-get($verdict-re, "bg");
 $warning-border-subtle: map-get($verdict-re, "border");
 
