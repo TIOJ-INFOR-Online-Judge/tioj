@@ -16,10 +16,6 @@
   overflow: hidden;
 }
 
-a.bi-question-circle-fill:hover {
-  color: #1abc9c !important;
-}
-
 /* monospace form inputs */
 .code-input {
   font-family: "monofont";

@@ -185,7 +185,7 @@
             <div class="card bg-white mb-3">
               <div class="card-body small">
                 <div class="visibility-specjudge visibility-specjudge-old">
-                  Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
+                  Output <code>0</code> to stdout for <span class="text-ac">AC</span>, <span class="text-wa">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
                   <div style="line-height: 1.3;">
                     <code>argv[1]</code>: path to user's output<br>
                     <code>argv[2]</code>: path to testdata input<br>
@@ -198,13 +198,13 @@
                   <ul style="line-height: 1.4;">
                     <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
                     <li>
-                      If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
+                      If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-wa">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
                       <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
                     </li>
                   </ul>
                 </div>
                 <div class="visibility-specjudge visibility-specjudge-new">
-                  This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
+                  This program will be called even if the user program didn't terminate normally (e.g. <span class="text-tle">TLE</span>, <span class="text-sig">SIG</span>).<br>
                   The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
                   <pre class="overflow-auto p-2 border" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
                     input_file: 'path_to_testdata_input',
@@ -256,8 +256,8 @@
                     <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
                     <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
                     <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
-                    <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
-                    <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
+                    <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-wa">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
+                    <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-ac">AC</span> or 0 otherwise.</li>
                     <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
                     <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior.</li>
                   </ul>
@@ -330,7 +330,7 @@
             <%= f.label :strict_mode, help_collapse_toggle("Use strict mode", "strictModeDescription") %>
           </div>
           <div class="collapse" id="strictModeDescription" style="height: auto;">
-            <div class="card">
+            <div class="card bg-white mb-3">
               <div class="card-body small">
                 Strict mode provides more isolation measures when running user's program, including:
                 <ul style="line-height: 1.4;">
@@ -364,7 +364,7 @@
         <div class="mb-3 visibility-summary visibility-summary-custom">
           <%= f.label :summary_code, help_collapse_toggle('Summary Code', 'summaryDescription') %>
           <div class="collapse" id="summaryDescription">
-            <div class="card mb-3">
+            <div class="card bg-white mb-3">
               <div class="card-body small">
                 The program is used to calculate the total score / time / memory, and potentially custom CE messages.<br>
                 It will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:

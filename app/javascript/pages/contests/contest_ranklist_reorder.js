@@ -16,7 +16,7 @@ function acmCellText(current, user_state, first_ac) {
     text = current.state[0];
     if (current.state[1] !== null) {
       if (!first_ac) {
-        text = '<span class="text-success"><strong>' + text + '</strong></span>'
+        text = '<span class="text-ac"><strong>' + text + '</strong></span>'
       }
       let penalty = Math.floor(current.state[1] / 60000000);
       text += '<small>/' + penalty + '</small>';
@@ -29,7 +29,7 @@ function acmCellText(current, user_state, first_ac) {
       if (current.state[1] > user_state.last_solved) user_state.last_solved = current.state[1];
     } else {
       if (current.state[0]) {
-        text = '<span class="text-danger"><strong>' + text + '</strong></span>';
+        text = '<span class="text-wa"><strong>' + text + '</strong></span>';
       }
       if (current.state[2]) {
         text += '+<span style="color:#888;"><strong>' + current.state[2] + '</strong></span>';

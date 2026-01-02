@@ -47,11 +47,12 @@
 - navbar 整體要搞好
     - navbar brand
     - single contest
+- 顏色有微妙差異
 
 ---
 
-- 整理 css
 - 整體字體大小
 - 選定 icon
 - view-post 會壞掉
     - problem 跟 single_contest
+- tomselect has subtle height difference between zero tags and > 0 tags

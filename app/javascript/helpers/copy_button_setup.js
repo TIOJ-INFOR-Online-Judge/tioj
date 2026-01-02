@@ -44,8 +44,7 @@ export function copyButtonSetup() {
     const toastEl = toastTemplate.cloneNode(true); // true for a deep clone of all descendants
     toastEl.removeAttribute('id');
 
-    // TODO color here
-    toastEl.classList.add(`panel-${type}`);
+    toastEl.classList.add(`bg-${type}-subtle`, `text-${type}-emphasis`);
     toastEl.classList.add('animate__animated', 'animate__fadeInLeft');
 
     const toastBody = toastEl.querySelector('.toast-body');

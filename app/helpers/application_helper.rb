@@ -63,12 +63,12 @@ module ApplicationHelper
 
   def verdict_text(x)
     class_map = {
-      "AC" => "text-success",
-      "WA" => "text-danger",
-      "TLE" => "text-info",
+      "AC"  => "text-ac",
+      "WA"  => "text-wa",
+      "TLE" => "text-tle",
       "MLE" => "text-mle",
       "OLE" => "text-ole",
-      "RE" => "text-warning",
+      "RE"  => "text-re",
       "SIG" => "text-sig",
       "queued" => "text-muted",
     }
@@ -79,12 +79,28 @@ module ApplicationHelper
     end
   end
 
-  def help_icon(x)
-    raw '<a href="' + x + '" style="color: inherit;" class="bi bi-question-circle-fill"></a>'
+  def help_icon(href)
+    link_to(
+      '',
+      href,
+      class: "bi bi-question-circle-fill text-reset link-primary"
+    )
   end
 
-  def help_collapse_toggle(x, target)
-    raw x + ' <a class="bi bi-question-circle-fill" style="color: inherit;" data-bs-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
+  def help_collapse_toggle(desc, target)
+    href = '#' + target
+    capture do
+      concat desc + ' '
+      concat link_to(
+        '',
+        href,
+        class: "bi bi-question-circle-fill text-reset link-primary",
+        'data-bs-toggle': "collapse",
+        role: "button",
+        'area-expanded': false,
+        'aria-controls': target
+      )
+    end
   end
 
   def alert_tag(opts={}, &block)

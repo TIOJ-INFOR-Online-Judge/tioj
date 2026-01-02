@@ -8,24 +8,24 @@
     <th class="text-nowrap">Full Name</th>
     <th>Conditions</td>
   </tr>
-  <tr class="table-success">
-    <td><span class="text-success">AC</span></td>
+  <tr class="table-ac">
+    <td><span class="text-ac">AC</span></td>
     <td class="text-nowrap">Accepted</td>
     <td>Your program outputted the correct answer and terminated normally.
       <br>
       你的程式輸出了正確答案且正常結束。
     </td>
   </tr>
-  <tr class="table-danger">
-    <td><span class="text-danger">WA</span></td>
+  <tr class="table-wa">
+    <td><span class="text-wa">WA</span></td>
     <td class="text-nowrap">Wrong Answer</td>
     <td>Your program didn't output the correct answer, but it terminated normally.
       <br>
       你的程式輸出了錯誤的答案，但是有正常結束。
     </td>
   </tr>
-  <tr class="table-info">
-    <td><span class="text-info">TLE</span></td>
+  <tr class="table-tle">
+    <td><span class="text-tle">TLE</span></td>
     <td class="text-nowrap">Time Limit Exceeded</td>
     <td>Your program used too much CPU time or wall clock time.<br>The wall clock time limit is max(1.2 * TL, TL + 1s). Wall clock limit will not be triggered under normal circumstances, unless the judge server is under heavy load or your program paused by calling <code>sleep()</code>.
       <br>
@@ -44,13 +44,13 @@
   <tr class="table-ole">
     <td><span class="text-ole">OLE</span></td>
     <td class="text-nowrap">Output Limit Exceeded</td>
-    <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-danger">WA</span> because it can no longer write into stdout later.
+    <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-wa">WA</span> because it can no longer write into stdout later.
       <br>
-      你的程式使得任何檔案（包含標準輸出 (stdout)）的大小超出 Output Limit。<br>前述限制是對每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會因磁碟空間不足而寫入失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後沒辦法寫入標準輸出 (stdout) 而得到 <span class="text-danger">WA</span>。
+      你的程式使得任何檔案（包含標準輸出 (stdout)）的大小超出 Output Limit。<br>前述限制是對每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會因磁碟空間不足而寫入失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後沒辦法寫入標準輸出 (stdout) 而得到 <span class="text-wa">WA</span>。
     </td>
   </tr>
-  <tr class="table-warning">
-    <td><span class="text-warning">RE</span></td>
+  <tr class="table-re">
+    <td><span class="text-re">RE</span></td>
     <td class="text-nowrap">Runtime Error</td>
     <td>Your program terminated by exiting with a non-zero <a href="https://en.wikipedia.org/wiki/Exit_status">status code</a>.
       <br>

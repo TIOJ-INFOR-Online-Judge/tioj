@@ -71,7 +71,7 @@ function updateResult(data, cable) {
   let to_wait = waiting_verdicts.includes(data['result']);
   $('#verdict').text(verdict[data['result']]);
   $('#waiting-icon').toggleClass('d-none', !to_wait);
-  $('#overall-result').attr('class', 'card ' + (panel_class_map[data['result']] || ''));
+  $('#overall-result').attr('class', panel_class_prefix + (panel_class_map[data['result']] || panel_class_map_default));
   if (['CE', 'CLE', 'ER'].includes(data['result']) || data['message']) {
     $('#ce-message').removeClass('d-none');
   }

@@ -2,13 +2,13 @@
 
 <% waiting_verdicts = ['Validating', 'queued', 'received'] %>
 <% verdict_class_map = {
-  "AC" => "text-success",
-  "WA" => "text-danger",
-  "TLE" => "text-info",
-  "MLE" => "text-mle",
-  "OLE" => "text-ole",
-  "RE" => "text-warning",
-  "SIG" => "text-sig",
+  "AC"     => "text-ac",
+  "WA"     => "text-wa",
+  "TLE"    => "text-tle",
+  "MLE"    => "text-mle",
+  "OLE"    => "text-ole",
+  "RE"     => "text-re",
+  "SIG"    => "text-sig",
   "queued" => "text-muted",
 } %>
 <% verdict_class_map.default = '' %>

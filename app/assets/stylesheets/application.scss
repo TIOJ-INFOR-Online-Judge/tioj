@@ -1,3 +1,4 @@
+@import "bootstrap/scss/functions";
 @import "./font";
 @import "./variables";
 @import "bootstrap/scss/bootstrap";
@@ -15,3 +16,5 @@
 @import "./components/verdicts";
 
 @import "./custom_styles";
+
+@include table-variant("white", $white);
