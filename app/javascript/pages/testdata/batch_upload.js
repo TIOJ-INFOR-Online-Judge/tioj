@@ -69,7 +69,7 @@ function refreshFileListTable() {
     let tmpCell = tmpRow.insertCell();
     if (file_pairs[idx][0] === null) {
       tmpCell.innerHTML = '<span class="text-danger" style="font-style:italic;">unmatched</span>';
-      tmpRow.classList.add('warning');
+      tmpRow.classList.add('table-warning');
     } else {
       tmpCell.innerText = file_list[file_pairs[idx][0]].name;
     }
