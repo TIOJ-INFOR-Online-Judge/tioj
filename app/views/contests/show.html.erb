@@ -13,9 +13,9 @@
   <%= @contest.title %>
 </h4>
 
-<div class="row mb-3">
+<div class="row">
   <div class="col-sm-6 <% if @layout == :single_contest %>col-lg-4<% else %>col-lg-3<% end %>">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Start / End
       </h6>
@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="col-sm-6 col-lg-4">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Contest Type
       </h6>
@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="<% if @layout == :single_contest %>col-sm-12 col-lg-4<% else %>col-sm-6 col-lg-3<% end %>">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Register Before
       </h6>
@@ -56,7 +56,7 @@
   </div>
   <% unless @layout == :single_contest %>
     <div class="col-sm-6 col-lg-2">
-      <div class="card bg-light">
+      <div class="card bg-light mb-3">
         <h6 class="card-header">
           Registration Status
         </h6>
@@ -99,9 +99,9 @@
 <% end %>
 
 <% if effective_admin? %>
-  <div class="mb-3">
+  <div class="mb-3 d-flex flex-wrap gap-1">
     <% Problem.visible_states.each do |name, val| %>
-      <%= form_with url: set_contest_task_contest_path(@contest), html: {style: 'display: inline;'} do |f| %>
+      <%= form_with url: set_contest_task_contest_path(@contest) do |f| %>
         <%= f.hidden_field :alter_to, value: val %>
         <%= f.submit "Set contest tasks to #{visible_state_desc_map[name.to_s]}", class: 'btn btn-dark btn-sm' %>
       <% end %>

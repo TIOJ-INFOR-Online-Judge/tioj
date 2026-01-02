@@ -29,14 +29,14 @@
           <%= f.text_field :name, class: 'form-control' %>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-4 mb-3">
             <div>
               <%= f.label :tag_list, "Tags" %>
               <%= f.text_field :tag_list, value: @problem.tag_list.to_s, class: 'form-control' %>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 mb-3">
             <div>
               <%= f.label :solution_tag_list, "Solution Tags" %>
               <%= f.text_field :solution_tag_list, value: @problem.solution_tag_list.to_s, class: 'form-control' %>
@@ -46,7 +46,7 @@
             const tomselect_config = {
               plugins: {
                 remove_button:{
-                  title:'Remove this item',
+                  title: 'Remove this item',
                 }
               },
               persist: false,
@@ -59,7 +59,7 @@
             new TomSelect("#<%= f.field_id :solution_tag_list %>", tomselect_config);
           </script>
 
-          <div class="col-md-4">
+          <div class="col-md-4 mb-3">
             <%= f.label :visible_state %>
             <%= f.select :visible_state, Problem.visible_states.keys.map.with_index {|x, index| ["[#{index}] #{visible_state_desc_map[x].capitalize}", x]},
               {}, {class: 'form-select'} %>
@@ -71,53 +71,53 @@
           <%= f.text_area :description, class: 'form-control', rows: '9' %>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 mb-3">
             <%= f.label :input, "Input Format" %>
             <%= f.text_area :input, class: 'form-control', rows: '7' %>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <%= f.label :output, "Output Format" %>
             <%= f.text_area :output, class: 'form-control', rows: '7' %>
           </div>
         </div>
 
         <%= f.fields_for :sample_testdata do |t| %>
-          <div class="row mb-3">
-            <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6 mb-3">
               <%= t.label :input, "Sample Input", class: "sample_input" %>
               <%= t.text_area :input, class: 'form-control code-input', rows: '7' %>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
               <%= t.label :output, "Sample Output", class: "sample_output" %>
               <%= t.text_area :output, class: 'form-control code-input', rows: '7' %>
             </div>
           </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6 mb-3">
               <%= t.label :display_type, "Sample Display Type" %>
               <%= t.select :display_type, SampleTestdatum.display_types.keys.map{|key| [sample_display_type_desc_map[key], key]}, {}, {class: 'form-select'} %>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mb-3">
               <label></label><br>
               <%= t.link_to_remove "Remove this sample testdatum", class: "btn btn-danger", name: "testdatum_remove" %>
             </div>
           </div>
         <% end %>
 
-        <div class="row mb-3">
-          <div class="col-md-6"></div>
-          <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 mb-3"></div>
+          <div class="col-md-6 mb-3">
             <%= f.link_to_add "Add sample testdatum", :sample_testdata, class: "btn btn-warning", id: "testdatum_add" %>
           </div>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6 mb-3">
             <%= f.label :hint, "Hints" %>
             <%= f.text_area :hint, class: 'form-control', rows: '3' %>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 mb-3">
             <%= f.label :source, "Problem Source" %>
             <%= f.text_area :source, class: 'form-control', rows: '3' %>
           </div>
@@ -144,18 +144,18 @@
           </div>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-4 mb-3">
             <%= f.label :specjudge_type, "Judge Type" %>
             <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
               {}, {class: 'form-control'} %>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
           <%= f.label :interlib_type, "Interactive Library Type" %>
           <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
             {}, {class: 'form-control'} %>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
           <%= f.label :num_stages, help_collapse_toggle('Number of execution stages', 'stagesDescription') %>
           <div class="collapse" id="stagesDescription">
             <div class="card bg-white mb-3">
@@ -443,7 +443,7 @@
             <div class="col-lg-1">
               <%= t.number_field :score, in: 0..100000, step: :any, class: 'form-control', required: true %>
             </div>
-            <div class="col-lg-1">
+            <div class="col-lg-1 mt-2">
               <%= t.link_to_remove "Remove", class: 'btn btn-danger' %>
             </div>
           </div>

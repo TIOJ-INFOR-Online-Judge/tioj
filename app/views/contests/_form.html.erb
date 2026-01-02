@@ -12,12 +12,12 @@
     <%= f.text_field :title, class: 'form-control' %>
   </div>
 
-  <div class="row mb-3">
-    <div class="col-md-6">
+  <div class="row">
+    <div class="col-md-6 mb-3">
       <%= render 'contest_type_chooser', f: f %>
     </div>
   
-    <div class="col-md-6">
+    <div class="col-md-6 mb-3">
       <%= render 'register_mode_chooser', f: f %>
     </div>
   </div>
@@ -26,18 +26,18 @@
     <strong>Oh Geez! </strong><%= "If datetime picker isn't available, an example time format is `1996-12-19T16:39:57`." %>
   <% end %>
 
-  <div class="row mb-3">
-    <div class="col-md-4">
+  <div class="row">
+    <div class="col-md-4 mb-3">
       <%= f.label :register_before %>
       <%= f.datetime_local_field :register_before, class: 'form-control', type: 'datetime-local' %>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 mb-3">
       <%= f.label :start_time %>
       <%= f.datetime_local_field :start_time, class: 'form-control', type: 'datetime-local' %>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-4 mb-3">
       <%= f.label :end_time %>
       <%= f.datetime_local_field :end_time, class: 'form-control', type: 'datetime-local' %>
     </div>
@@ -127,7 +127,7 @@
       <div class="col-md-2">
         <%= t.number_field :problem_id, class: 'form-control', autocomplete: "off" %>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 mt-2">
         <%= t.link_to_remove "Remove this task", class: "btn btn-danger" %>
       </div>
     </div>

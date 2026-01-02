@@ -5,28 +5,28 @@
 <%= form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
-  <div class="row mb-3">
+  <div class="mb-3">
     <div class="col-md-7">
       <%= f.label :teamname %>
       <%= f.text_field :teamname, class: 'form-control' %>
     </div>
   </div>
 
-  <div class="row mb-3">
+  <div class="mb-3">
     <div class="col-md-7">
       <%= f.label :school %>
       <%= f.text_field :school, class: 'form-control' %>
     </div>
   </div>
 
-  <div class="row mb-3">
+  <div class="mb-3">
     <div class="col-md-7">
       <%= f.label :motto %>
       <%= f.text_field :motto, class: "form-control" %>
     </div>
   </div>
 
-  <div class="row mb-3">
+  <div class="mb-3">
     <div class="col-md-7">
       <%= f.label :avatar %>
       <%= f.file_field :avatar, class: "form-control" %>

@@ -48,9 +48,9 @@
 
 
 <% if not hide_old_submission %>
-  <div class="row mb-3">
+  <div class="row">
     <div class="col-md-4">
-      <div class="card bg-light">
+      <div class="card bg-light mb-3">
         <h6 class="card-header">
           TopCoder
         </h6>
@@ -73,7 +73,7 @@
     <div class="col-md-5">
       <div class="row">
         <div class="col-md-6">
-          <div class="card bg-light">
+          <div class="card bg-light mb-3">
             <h6 class="card-header">
               User's AC Ratio
             </h6>
@@ -83,7 +83,7 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div class="card bg-light">
+          <div class="card bg-light mb-3">
             <h6 class="card-header">
               Submission's AC Ratio
             </h6>
@@ -95,7 +95,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card bg-light">
+      <div class="card bg-light mb-3">
         <h6 class="card-header">
           Tags
           <div class="float-end"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
@@ -120,9 +120,9 @@
 
 
 
-<div class="row mb-3">
+<div class="row">
   <div class="col-md-6">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Input Format
       </h6>
@@ -132,7 +132,7 @@
     </div>
   </div>
   <div class="col-md-6">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Output Format
       </h6>
@@ -144,9 +144,9 @@
 </div>
 
 <% @problem.sample_testdata.each_with_index do |sample, index| %>
-  <div class="row mb-3">
+  <div class="row">
     <div class="col-md-6">
-      <div class="card bg-light copy-group">
+      <div class="card bg-light mb-3 copy-group">
         <h6 class="card-header">
           Sample Input <%= index + 1 %>
         <% if sample.display_plaintext? %>
@@ -165,7 +165,7 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card bg-light copy-group">
+      <div class="card bg-light mb-3 copy-group">
         <h6 class="card-header">
           Sample Output <%= index + 1 %>
         <% if sample.display_plaintext? %>
@@ -186,9 +186,9 @@
   </div>
 <% end %>
 
-<div class="row mb-3">
+<div class="row">
   <div class="col-md-6">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Hints
       </h6>
@@ -198,7 +198,7 @@
     </div>
   </div>
   <div class="col-md-6">
-    <div class="card bg-light">
+    <div class="card bg-light mb-3">
       <h6 class="card-header">
         Problem Source
       </h6>
