@@ -8,7 +8,7 @@
 
 <div class="row mb-3">
   <div class="col-md-6">
-    <div class="card bg-light copy-group problem-copy-group">
+    <div class="card bg-light copy-group">
       <h6 class="card-header">
         Account information (JSON)
         <button class="btn btn-secondary btn-xs float-end copy-group-btn">copy</button>
@@ -32,3 +32,7 @@
 <div>
   <%= link_to "Back to contest registrations", contest_contest_registrations_path(@contest), class: 'btn btn-success' %>
 </div>
+
+<script>
+  copyButtonSetup();
+</script>

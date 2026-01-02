@@ -5,7 +5,6 @@ import {createPopper} from '@popperjs/core';
 
 // Bootstrap & related components
 import 'bootstrap';
-import 'bootstrap-notify';
 
 // multi-select component
 import TomSelect from "tom-select"
@@ -32,9 +31,10 @@ import './globals/users';
 
 // helpers
 import './helpers/ajax_upload';
-import './helpers/init_code_copy_script';
+import { copyButtonSetup } from './helpers/copy_button_setup';
 import { buttonCheckboxSetup } from './helpers/button_checkbox_setup';
 import { renderUploadProgress, ajaxUploadFunc } from './helpers/ajax_upload';
+window.copyButtonSetup = copyButtonSetup;
 window.buttonCheckboxSetup = buttonCheckboxSetup;
 window.renderUploadProgress = renderUploadProgress;
 window.ajaxUploadFunc = ajaxUploadFunc;

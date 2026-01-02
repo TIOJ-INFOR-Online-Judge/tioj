@@ -58,6 +58,7 @@
             new TomSelect("#<%= f.field_id :tag_list %>", tomselect_config);
             new TomSelect("#<%= f.field_id :solution_tag_list %>", tomselect_config);
           </script>
+
           <div class="col-md-4">
             <%= f.label :visible_state %>
             <%= f.select :visible_state, Problem.visible_states.keys.map.with_index {|x, index| ["[#{index}] #{visible_state_desc_map[x].capitalize}", x]},

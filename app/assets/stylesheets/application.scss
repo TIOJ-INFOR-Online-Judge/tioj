@@ -7,6 +7,8 @@
 
 @import "datatables.net-bs5/css/dataTables.bootstrap5";
 
+@import "animate.css/animate.min";
+
 @import "./components/slider";
 @import "./components/nav-tabs";
 @import "./components/btn-xs";
@@ -17,7 +19,6 @@
 @import "./custom_styles";
 
 /*
-require animate.css/animate.min
 require blueimp-file-upload/css/jquery.fileupload
 require blueimp-file-upload/css/jquery.fileupload-ui
 */

@@ -118,6 +118,8 @@
   </div>
 </div>
 
+
+
 <div class="row mb-3">
   <div class="col-md-6">
     <div class="card bg-light">
@@ -144,11 +146,11 @@
 <% @problem.sample_testdata.each_with_index do |sample, index| %>
   <div class="row mb-3">
     <div class="col-md-6">
-      <div class="card bg-light copy-group problem-copy-group">
+      <div class="card bg-light copy-group">
         <h6 class="card-header">
           Sample Input <%= index + 1 %>
         <% if sample.display_plaintext? %>
-          <button class="btn btn-secondary btn-xs float-end copy-group-btn"> copy </button>
+          <%= render 'copy_button' %>
         <% end %>
         </h6>
         <div class="card-body">
@@ -163,11 +165,11 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="card bg-light copy-group problem-copy-group">
+      <div class="card bg-light copy-group">
         <h6 class="card-header">
           Sample Output <%= index + 1 %>
         <% if sample.display_plaintext? %>
-          <button class="btn btn-secondary btn-xs float-end copy-group-btn"> copy </button>
+          <%= render 'copy_button' %>
         <% end %>
         </h6>
         <div class="card-body">
@@ -292,3 +294,6 @@
   </div>
 </div>
 
+<script>
+  copyButtonSetup();
+</script>
