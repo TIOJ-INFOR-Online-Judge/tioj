@@ -46,7 +46,7 @@ th {
 </style>
 
 <% if @submissions.size() > 50 %>
-  <span class="pager">
+  <span class="pager my-3 p-2 fs-6">
     <span class="right">
       <span class="prev">&nbsp;&nbsp;&lt; </span>
       <span class="pagecount"></span>
@@ -160,7 +160,7 @@ $(document).ready(function()
                 3: { sorter: false},
                 <%= @problem.ranklist_display_score ? 8 : 7 %>: { sorter: 'file-size'}
             },
-            theme: 'meow' // non-existent theme
+            theme: 'bootstrap'
         }).tablesorterPager({
             container: $('.pager'),
             savePages: false,
@@ -170,16 +170,16 @@ $(document).ready(function()
 );
 $("table").bind("sortEnd",function() {
     $('tbody > tr').removeClass();
-    $('tbody > tr:nth-of-type(1)').addClass('warning');
-    $('tbody > tr:nth-of-type(2),tbody > tr:nth-of-type(3)').addClass('success');
-    $('tbody > tr:nth-of-type(4),tbody > tr:nth-of-type(5)').addClass('info');
-    $('tbody > tr:nth-of-type(6),tbody > tr:nth-of-type(7)').addClass('info');
+    $('tbody > tr:nth-of-type(1)').addClass('table-warning');
+    $('tbody > tr:nth-of-type(2),tbody > tr:nth-of-type(3)').addClass('table-success');
+    $('tbody > tr:nth-of-type(4),tbody > tr:nth-of-type(5)').addClass('table-info');
+    $('tbody > tr:nth-of-type(6),tbody > tr:nth-of-type(7)').addClass('table-info');
 
 })
 </script>
 
 <% if @submissions.size() > 50 %>
-  <span class="pager">
+  <span class="pager my-3 p-2 fs-6">
     <span class="right">
       <span class="prev">&nbsp;&nbsp;&lt; </span>
       <span class="pagecount"></span>
@@ -193,3 +193,5 @@ $("table").bind("sortEnd",function() {
     <%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm w-100' %>
   </div>
 </div>
+
+<%= stylesheet_link_tag "pager" %>
