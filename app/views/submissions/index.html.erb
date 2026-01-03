@@ -68,8 +68,11 @@
 </form>
 
 <script>
-  new TomSelect("#filter_status", { create: true });
-  new TomSelect("#filter_compiler", { create: true });
+  const tomselect_config = {
+    create: true,
+  };
+  new TomSelect("#filter_status", tomselect_config);
+  new TomSelect("#filter_compiler", tomselect_config);
 
   $("button:not([type='submit'])").attr("type", "button");
 </script>

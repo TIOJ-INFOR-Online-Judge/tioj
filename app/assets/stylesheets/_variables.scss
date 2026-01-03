@@ -82,12 +82,14 @@ $btn-close-hover-opacity: 1 !default;
 
 $focus-ring-box-shadow: none;
 $focus-ring-width: 0;
+$enable-shadows: false;
 
 // Form
 
 $input-bg: #fff;
 $input-border-width: 2px;
 $input-focus-border-color: $primary;
+
 
 $form-check-input-width: 1.25em;
 $form-check-input-bg: $gray-500;
@@ -102,3 +104,16 @@ $table-striped-bg: #f8f8f8;
 $table-hover-bg:   #f5f5f5; // TODO other colors variant
 $table-border-color: #ddd;
 $table-border-width: 1px;
+
+// Dropdowns
+
+$dropdown-border-color:             $gray-400 !default;
+$dropdown-link-color:               $gray-700 !default;
+$dropdown-link-hover-color:         $white;
+$dropdown-link-hover-bg:            $primary;
+
+// tom-select
+
+$select-color-item-active: shade-color($primary, 20%);
+$select-color-item: $primary;
+$select-color-item-text: $light;
