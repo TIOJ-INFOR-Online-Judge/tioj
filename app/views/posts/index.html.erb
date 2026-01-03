@@ -32,7 +32,7 @@
 <%= contest_adaptive_paginate @posts %>
 <div class="posts">
   <% @posts.each do |post| %>
-    <div class="card bg-light mb-3<% if (@contest and post.global_visible) or (@problem and post.post_type == 'solution') %> bg-warning<% end %>">
+    <div class="card mb-3 <%= post_bg_class(post, @contest, @problem) %>">
       <div class="card-body">
       <%= render partial: 'show_post', locals: {post: post}  %>
       </div>

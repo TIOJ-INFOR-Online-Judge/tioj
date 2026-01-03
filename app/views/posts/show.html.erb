@@ -1,7 +1,8 @@
 <% set_page_title "Discuss - " + @post.id.to_s %>
 
-<div class="card bg-light mb-3"><div class="card-body">
-  <%= render partial: 'show_post', locals: {post: @post}  %>
+<div class="card mb-3 <%= post_bg_class(@post, @contest, @problem) %>">
+  <div class="card-body">
+    <%= render partial: 'show_post', locals: {post: @post}  %>
   </div>
 </div>
 <%= link_to 'Back', @page_path, class: "btn btn-secondary btn-sm" %>

@@ -56,7 +56,6 @@
 - view-post 會壞掉
     - problem 跟 single_contest
 - tomselect has subtle height difference between zero tags and > 0 tags
-- teams 的功能都要檢查 registration 是不是 approved
-- test app/views/posts/index.html.erb bg-warning
 - tag's class (primary color)
+- teams 的功能都要檢查 registration 是不是 approved
 - 考慮幫 problem#show 也加 prism tag / prismjs 優化
