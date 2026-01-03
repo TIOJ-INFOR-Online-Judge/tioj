@@ -96,10 +96,9 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
     }
     compare_keys['row_team_' + team_id] = rowSummary('team_' + team_id, team_state);
   }
-  console.log({ compare_keys });
   let tbody = $('#dashboard_table_body');
   function rowEffectiveID(row) {
-    // final tie-breaker when other conditions are all the same
+    // XXX final tie-breaker when other conditions are all the same
     return row.id;
   }
   tbody.append(tbody.children().detach().sort((a, b) => {
@@ -124,7 +123,6 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
       color += 1;
     }
     row.removeClass();
-    console.log(children[i].id);
     const effective_id = children[i].id.slice(4);
     // TODO: rename it to like data.self_id
     if (effective_id === data.user_id) {

@@ -66,7 +66,6 @@ $verdicts: ();
     @include table-variant($altname, $bg);
     .table-#{$altname} {
       // --bs-table-bg: #{$bg};
-      --dt-row-hover: 150, 152, 121;
       --bs-table-hover-bg: #{darken($bg, 5%)};
     }
   }

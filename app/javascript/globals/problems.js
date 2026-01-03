@@ -1,6 +1,5 @@
 // Bottom menu in Problems#Show
 function toggleChevron(e) {
-  console.log('hi')
   return $(e.target).prev('.card-header').find('span.indicator').toggleClass('bi-chevron-down bi-chevron-up');
 }
 
