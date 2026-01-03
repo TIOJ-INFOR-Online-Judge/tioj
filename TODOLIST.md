@@ -59,3 +59,4 @@
 - teams 的功能都要檢查 registration 是不是 approved
 - test app/views/posts/index.html.erb bg-warning
 - tag's class (primary color)
+- 考慮幫 problem#show 也加 prism tag / prismjs 優化
