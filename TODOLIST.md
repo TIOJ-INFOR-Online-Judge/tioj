@@ -26,36 +26,8 @@
 - [ ] Notification system for problem issue reporting
 - [ ] Migrate to Bootstrap 4
     - [ ] Enhance posts UI
-
-- pull-right
-- condensed
-- no-display
-- panel-heading
-- data-toggle
-- glyphicon
-- tagsinput update
-- selectpicker
-- btn-block
-- form-group
-- form-inline
-- img-rounded
-- 小畫面的時候，problem/ 的各個 panel margin 要改（同個 row 的）
-- well & panel
-- `_ranklist*` 還有 tr.success / tr.info 等
-- action
-- fields
-- navbar 整體要搞好
-    - navbar brand
-    - single contest
-- 顏色有微妙差異
-
----
-
-- 整體字體大小
-- 選定 icon
-- view-post 會壞掉
-    - problem 跟 single_contest
-- tomselect has subtle height difference between zero tags and > 0 tags
-- tag's class (primary color)
-- teams 的功能都要檢查 registration 是不是 approved
-- 考慮幫 problem#show 也加 prism tag / prismjs 優化
+- [ ] maybe also include prismjs for problem#show (since some problem descrptions want it)
+    - drop prismjs-components-importer
+- [ ] tom-select has subtle height difference between different tag states
+- [ ] fix posts' polymorphic path (e.g. `/problem/:id/post` and `/single_contest/:id/post`)
+- [ ] check team functionality really checked registration approved
