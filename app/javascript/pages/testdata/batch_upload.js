@@ -153,8 +153,8 @@ export function initTestdataBatchUpload() {
           $('#progress-inner-bar-update').width((evt.loaded / evt.total * 100) + '%');
         }
       }, () => {
-        $('#progress-fade-filezip').removeClass('show');
-        $('#progress-inner-bar-filezip').width('0%');
+        $('#progress-fade-update').removeClass('show');
+        $('#progress-inner-bar-update').width('0%');
       });
     });
   });
