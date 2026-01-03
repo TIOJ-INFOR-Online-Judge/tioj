@@ -35,6 +35,12 @@ $verdicts: ();
     .text-#{$name} {
       color: $saturated !important;
     }
+
+    @if $altname != null {
+      .text-#{$altname} {
+        color: $saturated !important;
+      }
+    }
   }
 
   @include table-variant($name, $bg);
