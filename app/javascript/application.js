@@ -15,10 +15,10 @@ import './helpers/jquery-ui-slider-import';
 import 'jquery-placeholder';
 import './vendor/jquery_nested_form';
 
-// data table (for ranklist)
-import DataTable from 'datatables.net-bs5';
-import 'datatables.net-plugins/sorting/file-size.mjs';
-window.DataTable = DataTable;
+// tablesorter
+import 'tablesorter/dist/js/jquery.tablesorter';
+import 'tablesorter/dist/js/extras/jquery.tablesorter.pager.min';
+import './vendor/pager-custom-controls';
 
 // globals
 import './globals/problems';
