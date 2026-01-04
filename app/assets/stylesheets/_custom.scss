@@ -79,7 +79,7 @@ pre.code-block[class*="language-"] {
 
 // bootstrap table patch
 
-.table > :not(caption) > * > * {
-  border-bottom-width: 0px; /* Remove Bootstrap's bottom border */
-  border-top-width: 1px; /* Add a top border */
+.table > tbody > * > * {
+  border-bottom-width: 0px;
+  border-top-width: 1px;
 }
