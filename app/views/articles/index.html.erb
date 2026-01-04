@@ -13,17 +13,17 @@
 <% end %>
 
 
-<div class="card bg-light mb-3">
-  <div class="card-header">
-    <h5 class="card-title">Announcements</h5>
-  </div>
+<div class="card overflow-hidden bg-light mb-3">
+  <h5 class="card-header">
+    Announcements
+  </h5>
   <%= render 'table', articles: @articles %>
 </div>
 
-<div class="card bg-light">
-  <div class="card-header">
-    <h5 class="card-title">Course Materials</h5>
-  </div>
+<div class="card overflow-hidden bg-light mb-3">
+  <h5 class="card-header">
+    Course Materials
+  </h5>
   <%= render 'table', articles: @courses %>
 </div>
 

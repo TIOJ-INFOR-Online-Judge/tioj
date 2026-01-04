@@ -76,3 +76,10 @@ pre.code-block[class*="language-"] {
 }
 
 @include table-variant("white", $white);
+
+// bootstrap table patch
+
+.table > :not(caption) > * > * {
+  border-bottom-width: 0px; /* Remove Bootstrap's bottom border */
+  border-top-width: 1px; /* Add a top border */
+}

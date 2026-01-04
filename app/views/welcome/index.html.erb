@@ -4,17 +4,19 @@
   </div>
 <% end %>
 
-<div class="card bg-light mb-3">
-  <div class="card-body">
-    <h5>Bulletin Board<small class="float-end"><%= link_to "Show all", articles_path %></small></h5>
+<div class="card overflow-hidden bg-light mb-3">
+  <h3 class="card-header">
+    Bulletin Board<small class="float-end"><%= link_to "Show all", articles_path %></small>
+  </h3>
     <%= render 'articles/table', articles: @bulletins %>
-  </div>
 </div>
 
-<div class="card bg-light mb-3">
-  <div class="card-body">
-    <h5>Recent Contests<small class="float-end"><%= link_to "Show all", contests_path %></small></h5>
-    <table class="table table-hover table-striped">
+<div class="card overflow-hidden bg-light mb-3">
+  <h3 class="card-header">
+    Recent Contests<small class="float-end"><%= link_to "Show all", contests_path %></small>
+  </h3>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-light mb-0">
       <thead>
         <tr>
           <th>Title</th>
@@ -63,10 +65,12 @@
   </div>
 </div>
 
-<div class="card bg-light mb-3">
-  <div class="card-body">
-    <h5>Ranked Coders<small class="float-end"><%= link_to "Show all", users_path %></small></h5>
-    <table class="table table-hover table-striped">
+<div class="card overflow-hidden bg-light mb-3">
+  <h3 class="card-header">
+    Ranked Coders<small class="float-end"><%= link_to "Show all", users_path %></small>
+  </h3>
+  <div class="table-responsive">
+    <table class="table table-hover table-striped table-light mb-0">
       <thead>
         <tr>
           <th>Rank</th>
