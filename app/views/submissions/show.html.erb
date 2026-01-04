@@ -48,7 +48,7 @@
 <% end %>
 </p>
 <% infor_obj = @show_old ? @submission.old_submission : @submission %>
-<div id="overall-result" class="card mb-1 <%= panel_class_map[infor_obj.result] %>">
+<div id="overall-result" class="card mb-1 overflow-hidden <%= panel_class_map[infor_obj.result] %>">
   <div class="card-header">
     <div class="row">
       <div class="col-md-3">
@@ -93,7 +93,7 @@
 </div>
 
 <% unless no_task_verdicts.include? @submission.result %>
-  <div id="subtask-results" class="card bg-light mb-1">
+  <div id="subtask-results" class="card mb-1 overflow-hidden bg-light">
     <h5 class="card-header" data-bs-toggle="collapse" href="#collapseSubtask">
       Subtask Results
       <%= indicator_chevron_up_float_glyph %>
@@ -144,13 +144,13 @@
     </div>
   </div>
 
-  <div id="testdata-results" class="card bg-light mb-1">
+  <div id="testdata-results" class="card mb-1 overflow-hidden bg-light">
     <h5 class="card-header" data-bs-toggle="collapse" href="#collapseTestdata">
       Testdata Results
       <%= indicator_chevron_up_float_glyph %>
     </h5>
     <% if @show_detail %>
-      <div class="collapse show" id="collapseTestdata">
+      <div class="collapse show table-responsive" id="collapseTestdata">
         <table class="table table-white table-sm mb-0">
           <thead>
             <tr>
@@ -304,7 +304,7 @@
     var waiting_verdicts = <%= raw(waiting_verdicts.to_json) %>;
     var panel_class_map = <%= raw(panel_class_map.to_json) %>;
     var row_class_map = <%= raw(row_class_map.to_json) %>;
-    var panel_class_prefix = 'card mb-1 ';
+    var panel_class_prefix = 'card mb-1 overflow-hidden ';
     var panel_class_map_default = '<%= panel_class_map.default %>';
 
     initSubmissionCable();
