@@ -1,0 +1,16 @@
+@import "bootstrap/scss/functions";
+@import "./font";
+@import "./variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+
+@import "tom-select/dist/scss/tom-select.bootstrap5";
+@import "animate.css/animate.min";
+
+@import "./components/slider";
+@import "./components/nav-tabs";
+@import "./components/btn-xs";
+@import "./components/online-indicator";
+
+@import "./custom";
+@import "./verdicts";

@@ -1,49 +1,49 @@
 <%= form_for [@problem, @testdatum], html: {multipart: true, id: 'testdata-form'}, remote: true, authenticity_token: true do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @testdatum.errors, item: 'testdatum'} %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :test_input, "Input testdata" %>
     <% if @testdatum.test_input %>
       <br><%= @testdatum.test_input.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_input, class: 'form-control flat' %>
+    <%= f.file_field :test_input, class: 'form-control' %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :test_output, "Output testdata" %>
     <% if @testdatum.test_output %>
       <br><%= @testdatum.test_output.to_s.split("/").last(3).join("/") %>
     <% end %>
-    <%= f.file_field :test_output, class: 'form-control flat' %>
+    <%= f.file_field :test_output, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :time_limit, "Time Limit" %>
-    <%= f.number_field :time_limit, class: 'form-control flat' %>
+    <%= f.number_field :time_limit, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :vss_limit, "Memory Limit (VSS)" %>
-    <%= f.number_field :vss_limit, class: 'form-control flat' %>
+    <%= f.number_field :vss_limit, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :rss_limit, "Memory Limit (RSS)" %>
-    <%= f.number_field :rss_limit, class: 'form-control flat' %>
+    <%= f.number_field :rss_limit, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :output_limit, "Output Limit" %>
-    <%= f.number_field :output_limit, class: 'form-control flat' %>
+    <%= f.number_field :output_limit, class: 'form-control' %>
   </div>
 
   <div class="dummy-placeholder">
     <%= f.hidden_field :problem_id %>
   </div>
 
-  <div class="form-group flex" style="display: flex; margin-bottom: 0.5em;">
-    <div class="actions" style="margin-right: 1em; flex: 0 0 0%;">
+  <div class="d-flex mb-2">
+    <div class="me-3">
       <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-button' %>
     </div>
     <div class="fade" id="progress-fade" style="flex: 1 0 0%;">
-      <div class="progress progress-striped active" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
-        <div id="progress-inner-bar" class="progress-bar progress-bar-success" style="width: 0%;"></div>
+      <div class="progress" role="progressbar" style="margin-bottom: 0.25em; border-radius: 4px; height: 20px; background: #f0faf0;">
+        <div id="progress-inner-bar" class="progress-bar bg-success" style="width: 0%;"></div>
       </div>
       <div id="progress-text" class="progress-extended small"></div>
     </div>

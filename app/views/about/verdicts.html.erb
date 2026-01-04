@@ -1,31 +1,31 @@
 <h4 class="page-header">Verdicts</h4>
 
-<div class="well">
+<div class="card bg-light mb-3"><div class="card-body">
 
-<table style="border-collapse: unset; line-height: 1.55;" class="table">
+<table style="border-collapse: collapse; line-height: 1.55;" class="table table-light">
   <tr>
     <th>Verdict</th>
     <th class="text-nowrap">Full Name</th>
     <th>Conditions</td>
   </tr>
-  <tr class="success">
-    <td><span class="text-success">AC</span></td>
+  <tr class="table-ac">
+    <td><span class="text-ac">AC</span></td>
     <td class="text-nowrap">Accepted</td>
     <td>Your program outputted the correct answer and terminated normally.
       <br>
       你的程式輸出了正確答案且正常結束。
     </td>
   </tr>
-  <tr class="danger">
-    <td><span class="text-danger">WA</span></td>
+  <tr class="table-wa">
+    <td><span class="text-wa">WA</span></td>
     <td class="text-nowrap">Wrong Answer</td>
     <td>Your program didn't output the correct answer, but it terminated normally.
       <br>
       你的程式輸出了錯誤的答案，但是有正常結束。
     </td>
   </tr>
-  <tr class="info">
-    <td><span class="text-info">TLE</span></td>
+  <tr class="table-tle">
+    <td><span class="text-tle">TLE</span></td>
     <td class="text-nowrap">Time Limit Exceeded</td>
     <td>Your program used too much CPU time or wall clock time.<br>The wall clock time limit is max(1.2 * TL, TL + 1s). Wall clock limit will not be triggered under normal circumstances, unless the judge server is under heavy load or your program paused by calling <code>sleep()</code>.
       <br>
@@ -33,7 +33,7 @@
       實際執行時間的限制是 max(1.2 * TL, TL + 1s)。這個限制通常不會用到，除非評測系統過載，或者你的程式因為呼叫 <code>sleep()</code> 等函數而暫停。
     </td>
   </tr>
-  <tr class="mle">
+  <tr class="table-mle">
     <td><span class="text-mle">MLE</span></td>
     <td class="text-nowrap">Memory Limit Exceeded</td>
     <td>Your program used too much memory.<br>Program that used too much memory would not necessarily get an <span class="text-mle">MLE</span>; see <a href="/about/memory">Memory Accounting Types</a> for more details.
@@ -41,23 +41,23 @@
       你的程式用了太多記憶體。<br>注意並不是所有用了太多記憶體的程式都會得到 <span class="text-mle">MLE</span>，詳請請見<a href="/about/memory">相關頁面</a>。
     </td>
   </tr>
-  <tr class="ole">
+  <tr class="table-ole">
     <td><span class="text-ole">OLE</span></td>
     <td class="text-nowrap">Output Limit Exceeded</td>
-    <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-danger">WA</span> because it can no longer write into stdout later.
+    <td>Your program tried to extend a file (including stdout) larger than the output limit.<br>Note that this limit is placed on a per-file basis. There is also a limit of 2 * OL on the total output size, but this limit is enforced by setting the filesystem size and won't trigger an <span class="text-ole">OLE</span>; instead, the write operation will fail due to insufficient disk space. For example, if your program wrote too many bytes into stderr, you may get a <span class="text-wa">WA</span> because it can no longer write into stdout later.
       <br>
-      你的程式使得任何檔案（包含標準輸出 (stdout)）的大小超出 Output Limit。<br>前述限制是對每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會因磁碟空間不足而寫入失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後沒辦法寫入標準輸出 (stdout) 而得到 <span class="text-danger">WA</span>。
+      你的程式使得任何檔案（包含標準輸出 (stdout)）的大小超出 Output Limit。<br>前述限制是對每個檔案獨立的。對於所有輸出的大小總和另外有一個 2 * OL 的限制，但該限制是直接以檔案系統設置，不會觸發 <span class="text-ole">OLE</span>，而是會因磁碟空間不足而寫入失敗。舉例來說，若你的程式寫入太多內容到標準錯誤輸出 (stderr)，你可能會因為此後沒辦法寫入標準輸出 (stdout) 而得到 <span class="text-wa">WA</span>。
     </td>
   </tr>
-  <tr class="warning">
-    <td><span class="text-warning">RE</span></td>
+  <tr class="table-re">
+    <td><span class="text-re">RE</span></td>
     <td class="text-nowrap">Runtime Error</td>
     <td>Your program terminated by exiting with a non-zero <a href="https://en.wikipedia.org/wiki/Exit_status">status code</a>.
       <br>
       你的程式的 <a href="https://en.wikipedia.org/wiki/Exit_status">exit status</a> 不為 0。
     </td>
   </tr>
-  <tr class="sig">
+  <tr class="table-sig">
     <td><span class="text-sig">SIG</span></td>
     <td class="text-nowrap">Runtime Error (killed by signal)</td>
     <td>Your program was killed by a <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a>.<br>Some common causes are invalid memory access (SIGSEGV, i.e. Segmentation Fault), division by zero (SIGFPE), uncaught exceptions in C++ (SIGABRT), and invalid instruction (SIGILL). Note that SIGXFSZ is excluded since it will be interpreted as <span class="text-ole">OLE</span>.
@@ -65,7 +65,7 @@
       你的程式被 <a href="https://en.wikipedia.org/wiki/Signal_(IPC)">signal</a> 強制中止了。<br>常見的原因包括違規記憶體存取（SIGSEGV，也就是 Segmentation Fault）、除以零（SIGFPE）、非法指令 (instruction)（SIGILL），或是你有 exception 沒有 catch 到（SIGABRT）。SIGXFSZ 將會視為 <span class="text-ole">OLE</span> 而不算進此項。
     </td>
   </tr>
-  <tr class="ce">
+  <tr class="table-muted">
     <td><span class="text">CE</span></td>
     <td class="text-nowrap">Compilation Error</td>
     <td>Your program failed to compile.
@@ -73,7 +73,7 @@
       你的程式編譯失敗。
     </td>
   </tr>
-  <tr class="ce">
+  <tr class="table-muted">
     <td><span class="text">CLE</span></td>
     <td class="text-nowrap">Compilation Limit Exceeded</td>
     <td>Your program took too much time (&gt; 60 sec) or memory (&gt; 2 GiB) to compile.
@@ -103,6 +103,6 @@
   </tr>
 </table>
 
-</div>
+</div></div>
 
-<%= link_to 'Back', :back, class: 'btn btn-xs btn-default' %>
+<%= link_to 'Back', :back, class: 'btn btn-sm btn-secondary' %>

@@ -1,0 +1,89 @@
+$verdicts-raw: (
+  "ac":    (#2ecc71, #3c763d, #dff0d8, #d6e9c6, "success"),
+  "wa":    (#e74c3c, #a94442, #f2dede, #ebccd1, "danger"),
+  "tle":   (#3498db, #31708f, #d9edf7, #bce8f1, "info"),
+  "re":    (#f1c40f, #8a6d3b, #fcf8e3, #faebcc, "warning"),
+  "ole":   (#7c18c4, #4e2a69, #f3e6fc, #e4c5fc, "self"),
+  "sig":   (#f08a05, #805926, #fce9cf, #f0d4ad, null),
+  "mle":   (#a4a832, #6f7301, #f1f2d0, #d9db93, null),
+  "muted": (null,    null,    #e0e0e0, #c0c0c0, null)
+);
+
+$verdicts: ();
+
+@each $key, $values in $verdicts-raw {
+  $verdicts: map-merge($verdicts, (
+    $key: (
+      "saturated": nth($values, 1),
+      "text":      nth($values, 2),
+      "bg":        nth($values, 3),
+      "border":    nth($values, 4),
+      "altname":   nth($values, 5)
+    )
+  ));
+}
+
+/* styles derived from $verdicts */
+@each $name, $values in $verdicts {
+  $saturated: map-get($values, "saturated");
+  $text:      map-get($values, "text");
+  $bg:        map-get($values, "bg");
+  $border:    map-get($values, "border");
+  $altname:   map-get($values, "altname");
+
+  @if $saturated != null {
+    .text-#{$name} {
+      color: $saturated !important;
+    }
+
+    @if $altname != null {
+      .text-#{$altname} {
+        color: $saturated !important;
+      }
+    }
+  }
+
+  @include table-variant($name, $bg);
+
+  .verdict-panel-#{$name}  {
+    .card-header {
+      @if $text != null {
+        color: $text;
+      }
+      background-color: $bg;
+      border-color: $border;
+    }
+
+    .card-body {
+      background-color: $white;
+    }
+
+    border-color: $border;
+  }
+
+  @if $altname != null {
+    .alert-#{$altname} {
+      --bs-alert-color:        #{$text};
+      --bs-alert-bg:           #{$bg};
+      --bs-alert-border-color: #{$border};
+      --bs-alert-link-color:   #{$text};
+    }
+
+    :root {
+      --bs-#{$altname}-bg-subtle: #{$bg};
+      --bs-#{$altname}-text-emphasis: #{$text};
+    }
+
+    @include table-variant($altname, $bg);
+    .table-#{$altname} {
+      // --bs-table-bg: #{$bg};
+      --bs-table-hover-bg: #{darken($bg, 5%)};
+    }
+  }
+}
+
+/* dashboard self */
+.table-self td.highlight-if-self {
+  font-weight: bold;
+  color: map-get(map-get($verdicts, "ole"), "text");
+}

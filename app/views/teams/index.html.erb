@@ -2,18 +2,28 @@
 <h4 class="page-header">Teams</h4>
 
 
-<%= link_to 'New Team', new_team_path, class: 'btn btn-success btn-sm' %>
+<div class="mb-3">
+  <%= link_to 'New Team', new_team_path, class: 'btn btn-success' %>
+</div>
 
-<%= form_with class: "form-inline", method: :get do |f| %>
-  <%= f.label "Search Teams" %>
-  <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Teamname" %>
-  <%= f.text_field :search_username, class: "form-control input-sm flat", placeholder: "Enter Username" %>
-  <%= f.submit "Search", class: "btn btn-inverse btn-xs" %>
+<%= form_with class: "row align-items-center gap-1", method: :get do |f| %>
+  <div class="col-lg-auto">
+    <%= f.label "Search Teams" %>
+  </div>
+  <div class="col-lg-2 px-lg-0">
+    <%= f.text_field :search_teamname, class: "form-control form-control-sm", placeholder: "Enter Teamname" %>
+  </div>
+  <div class="col-lg-2 px-lg-0">
+    <%= f.text_field :search_username, class: "form-control form-control-sm", placeholder: "Enter Username" %>
+  </div>
+  <div class="col-lg-auto">
+  <%= f.submit "Search", class: "btn btn-dark btn-sm" %>
+  </div>
 <% end %>
 
 <br>
 <%= paginate @teams %>
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-sm table-striped">
   <thead>
     <tr>
       <%# <th>ID</th> %>
@@ -28,7 +38,7 @@
     <% @teams.each do |team| %>
       <tr>
         <%# <td><%= team.id %1></td> %>
-        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "rounded"), team_path(team) %></td>
         <td><%= link_to team.teamname, team_path(team) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>

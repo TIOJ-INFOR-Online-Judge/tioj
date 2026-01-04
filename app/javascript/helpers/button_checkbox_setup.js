@@ -9,10 +9,10 @@ $('.button-checkbox').each(function () {
 		color = $button.data('color'),
 		settings = {
 			on: {
-				icon: 'glyphicon glyphicon-check'
+				icon: 'bi bi-check-square'
 			},
 			off: {
-				icon: 'glyphicon glyphicon-unchecked'
+				icon: 'bi bi-square'
 			}
 		};
 
@@ -41,13 +41,13 @@ $('.button-checkbox').each(function () {
 		// Update the button's color
 		if (isChecked) {
 			$button
-				.removeClass('btn-default')
+				.removeClass('btn-secondary')
 				.addClass('btn-' + color + ' active');
 		}
 		else {
 			$button
 				.removeClass('btn-' + color + ' active')
-				.addClass('btn-default');
+				.addClass('btn-secondary');
 		}
 	}
 

@@ -6,13 +6,15 @@
   <% end %>
 </h4>
 
-<form class="form-inline" accept-charset="UTF-8" method="get">
+<form class="row align-items-center gap-1" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
   <label for="filter_problem">Quick Filter</label>
-  <div class="form-group">
-    <input id="filter_problem" name="problem_id" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
-  <div class="form-group">
-    <select id="filter_status" name="filter_status[]" class="selectpicker" multiple title="Select Result">
+  <div class="col-lg-2 px-lg-0">
+    <input id="filter_problem" name="problem_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  </div>
+  <div class="col-lg-2 px-lg-0">
+    <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple title="Select Result">
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
       <option value="TLE">Time Limit Exceeded</option>
@@ -24,18 +26,19 @@
     </select>
   </div>
   <% if current_user&.admin? %>
-    <div class="form-group">
-      <label for="all_user">
-        <input id="all_user" type="checkbox" name="all_user" value="1">List all users' submissions
-      </label>
+    <div class="col-lg-auto form-check">
+      <input id="all_user" type="checkbox" name="all_user" value="1" class="form-check-input">
+      <label for="all_user" class="form-check-label">List all users' submissions</label>
     </div>
   <% end %>
-  <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+  </div>
 </form>
 
 <script>
-$(".selectpicker").selectpicker({style: "form-control input-sm flat"});
-$("button:not([type='submit'])").attr("type", "button");
+  new TomSelect("#filter_status", { create: true });
+  $("button:not([type='submit'])").attr("type", "button");
 </script>
 
 <table class='table table-hover table-striped'>
@@ -70,7 +73,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% if current_user&.admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-sm btn-primary' %>
             <% end %>
           </td>
         <% end %>

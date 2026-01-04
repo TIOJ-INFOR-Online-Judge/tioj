@@ -5,71 +5,63 @@
   <%= user_problem_status(current_user, @problem) if user_signed_in? %> <%= @problem.id %> . <%= @problem.name %>
 </h4>
 
-<p>
-<div class="row">
-  <%= render 'submit_button' %>
-  <div class="col-md-2">
-    <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), class: 'btn btn-info btn-xs btn-block' %>
+<div class="mb-3">
+  <div class="row">
+    <%= render 'submit_button' %>
+    <div class="col-lg-2">
+      <%= link_to @layout == :single_contest ? 'My Submissions' : 'Status', contest_adaptive_polymorphic_path([@problem, :submissions]), class: 'btn btn-info btn-sm w-100' %>
+    </div>
+    <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
+      <div class="col-lg-2">
+        <%= link_to 'Discussion / Solution', problem_posts_path(@problem), class: 'btn btn-info btn-sm w-100' %>
+      </div>
+    <% end %>
+    <% if not hide_old_submission %>
+      <div class="col-lg-2">
+        <%= link_to 'Ranklist', ranklist_problem_path(@problem), class: 'btn btn-dark btn-sm w-100' %>
+      </div>
+    <% end %>
+    <div class="col-lg-2">
+      <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_adaptive_polymorphic_path([]), class: 'btn btn-secondary btn-sm w-100' %>
+    </div>
   </div>
-  <% unless @problem.discussion_disabled? or (@contest and @contest.disable_discussion? and @contest.is_running?) or @layout == :single_contest %>
-    <div class="col-md-2">
-      <%= link_to 'Discussion / Solution', problem_posts_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <% if not hide_old_submission %>
-    <div class="col-md-2">
-      <%= link_to 'Ranklist', ranklist_problem_path(@problem), class: 'btn btn-inverse btn-xs btn-block' %>
-    </div>
-  <% end %>
-  <div class="col-md-2">
-    <%= link_to 'Back to Problems List', @contest.blank? ? problems_path : contest_adaptive_polymorphic_path([]), class: 'btn btn-default btn-xs btn-block' %>
-  </div>
-</div>
-<% if effective_admin? %>
-  <div class="row" style="padding-top:10px;">
-    <div class="col-md-2">
-      <%= link_to 'Edit', edit_problem_path(@problem), class: 'btn btn-info btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
-      <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-xs btn-block' %>
-    </div>
-    <div class="col-md-2">
+
+  <% if effective_admin? %>
+    <div class="row mt-1">
+      <div class="col-lg-2">
+        <%= link_to 'Edit', edit_problem_path(@problem), class: 'btn btn-info btn-sm w-100' %>
+      </div>
+      <div class="col-lg-2">
+        <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-sm w-100' %>
+      </div>
       <% if @contest %>
-        <%= form_with url: rejudge_contest_problem_path(@contest, @problem) do |f| %>
-          <%= f.submit 'Rejudge in Contest', data: {confirm: "Are you really going to rejudge the whole problem in this contest? Out-of-contest submissions won't be affected."}, class: 'btn btn-inverse btn-xs btn-block' %>
-        <% end %>
+        <%= button_to "Rejudge in Contest", rejudge_contest_problem_path(@contest, @problem), data: { confirm: "Are you really going to rejudge the whole problem in this contest? Out-of-contest submissions won't be affected." }, form_class: "col-lg-2", class: "btn btn-dark btn-sm w-100" %>
       <% else %>
-        <%= form_with url: rejudge_problem_path(@problem) do |f| %>
-          <%= f.submit 'Rejudge', data: {confirm: "Are you really going to rejudge the whole problem? Contest submissions won't be affected."}, class: 'btn btn-inverse btn-xs btn-block' %>
-        <% end %>
+        <%= button_to "Rejudge", rejudge_problem_path(@problem), data: { confirm: "Are you really going to rejudge the whole problem? Contest submissions won't be affected." }, form_class: "col-lg-2", class: "btn btn-dark btn-sm w-100" %>
       <% end %>
+      <%= button_to "Delete All Submissions", delsub_problem_path(@problem), data: { confirm: "Are you really going to delete ALL submissions to this problem?" }, form_class: "col-lg-2", class: "btn btn-danger btn-sm w-100" %>
     </div>
-    <div class="col-md-2">
-      <%= form_with url: delsub_problem_path(@problem) do |f| %>
-        <%= f.submit 'Delete All Submissions', data: {confirm: 'Are you really going to delete ALL submissions to this problem?'}, class: 'btn btn-danger btn-xs btn-block' %>
-      <% end %>
-    </div>
-  </div>
-<% end %>
-</p>
+  <% end %>
+</div>
+
 
 <% if not hide_old_submission %>
   <div class="row">
     <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h1 class="panel-title">TopCoder</h1>
-        </div>
-        <div class="panel-body">
+      <div class="card bg-light mb-3">
+        <h6 class="card-header">
+          TopCoder
+        </h6>
+        <div class="card-body">
           <% tcoder = topcoder(@problem) %>
           <% if tcoder %>
-            <div class="bs5-row">
-              <div class="bs5-col-lg bs5-col-lg-auto">
-                <%= link_to image_tag(tcoder.avatar.thumb.to_s, class: "img-thumbnail img-responsive"), user_path(tcoder) %>
+            <div class="row">
+              <div class="col-lg col-lg-auto">
+                <%= link_to image_tag(tcoder.avatar.thumb.to_s, class: "img-thumbnail img-fluid"), user_path(tcoder) %>
               </div>
-              <div class="bs5-col-lg">
+              <div class="col-lg">
                 <%= link_to tcoder.nickname, user_path(tcoder) %><br>
-                <blockquote class="motto"><dfn><%= tcoder.motto %></dfn></blockquote>
+                <blockquote class="motto blockquote"><dfn><%= tcoder.motto %></dfn></blockquote>
               </div>
             </div>
           <% end %>
@@ -79,21 +71,21 @@
     <div class="col-md-5">
       <div class="row">
         <div class="col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">User's AC Ratio</h1>
-            </div>
-            <div class="panel-body">
+          <div class="card bg-light mb-3">
+            <h6 class="card-header">
+              User's AC Ratio
+            </h6>
+            <div class="card-body">
               <%= users_ac_ratio(@problem) %>
             </div>
           </div>
         </div>
         <div class="col-md-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h1 class="panel-title">Submission's AC Ratio</h1>
-            </div>
-            <div class="panel-body">
+          <div class="card bg-light mb-3">
+            <h6 class="card-header">
+              Submission's AC Ratio
+            </h6>
+            <div class="card-body">
               <%= submissions_ac_ratio(@problem) %>
             </div>
           </div>
@@ -101,13 +93,13 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h1 class="panel-title">Tags
-            <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
-          </h1>
-        </div>
-        <div class="panel-body">
+      <div class="card bg-light mb-3">
+        <h6 class="card-header">
+          Tags
+          <div class="float-end"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+
+        </h6>
+        <div class="card-body">
           <%= tag_list_html(@problem) %>
         </div>
       </div>
@@ -115,32 +107,34 @@
   </div>
 <% end %>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Description</h1>
-  </div>
-  <div class="panel-body">
+<div class="card bg-light mb-3">
+  <h6 class="card-header">
+    Description
+  </h6>
+  <div class="card-body">
     <%= markdown(@problem.description) %>
   </div>
 </div>
 
+
+
 <div class="row">
   <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Input Format</h1>
-      </div>
-      <div class="panel-body">
+    <div class="card bg-light mb-3">
+      <h6 class="card-header">
+        Input Format
+      </h6>
+      <div class="card-body">
         <%= markdown(@problem.input) %>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Output Format</h1>
-      </div>
-      <div class="panel-body">
+    <div class="card bg-light mb-3">
+      <h6 class="card-header">
+        Output Format
+      </h6>
+      <div class="card-body">
         <%= markdown(@problem.output) %>
       </div>
     </div>
@@ -150,14 +144,14 @@
 <% @problem.sample_testdata.each_with_index do |sample, index| %>
   <div class="row">
     <div class="col-md-6">
-      <div class="panel panel-default copy-group problem-copy-group">
-        <div class="panel-heading">
-          <h1 class="panel-title pull-left">Sample Input <%= index + 1 %></h1>
-          <% if sample.display_plaintext? %>
-            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
-          <% end %>
-        </div>
-        <div class="panel-body">
+      <div class="card bg-light mb-3 copy-group">
+        <h6 class="card-header">
+          Sample Input <%= index + 1 %>
+        <% if sample.display_plaintext? %>
+          <%= render 'copy_button' %>
+        <% end %>
+        </h6>
+        <div class="card-body">
           <% if sample.display_raw_html? %>
             <div class="mathjax_ignore sample-testdata"><%= raw sample.input.gsub(/\n/, '<br/>') %></div>
           <% elsif sample.display_markdown? %>
@@ -169,14 +163,14 @@
       </div>
     </div>
     <div class="col-md-6">
-      <div class="panel panel-default copy-group problem-copy-group">
-        <div class="panel-heading">
-          <h1 class="panel-title pull-left">Sample Output <%= index + 1 %></h1>
-          <% if sample.display_plaintext? %>
-            <button class="btn btn-default btn-xs pull-right copy-group-btn"> copy </button>
-          <% end %>
-        </div>
-        <div class="panel-body">
+      <div class="card bg-light mb-3 copy-group">
+        <h6 class="card-header">
+          Sample Output <%= index + 1 %>
+        <% if sample.display_plaintext? %>
+          <%= render 'copy_button' %>
+        <% end %>
+        </h6>
+        <div class="card-body">
           <% if sample.display_raw_html? %>
             <div class="mathjax_ignore sample-testdata"><%= raw sample.output.gsub(/\n/, '<br/>') %></div>
           <% elsif sample.display_markdown? %>
@@ -192,32 +186,32 @@
 
 <div class="row">
   <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Hints</h1>
-      </div>
-      <div class="panel-body">
+    <div class="card bg-light mb-3">
+      <h6 class="card-header">
+        Hints
+      </h6>
+      <div class="card-body">
         <%= markdown(@problem.hint) %>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h1 class="panel-title">Problem Source</h1>
-      </div>
-      <div class="panel-body">
+    <div class="card bg-light mb-3">
+      <h6 class="card-header">
+        Problem Source
+      </h6>
+      <div class="card-body">
         <%= markdown(@problem.source) %>
       </div>
     </div>
   </div>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h1 class="panel-title">Subtasks</h1>
-  </div>
-  <table class="table table-hover table-striped table-condensed">
+<div class="card bg-light mb-3">
+  <h6 class="card-header">
+    Subtasks
+  </h6>
+  <table class="table table-hover table-striped table-sm mb-0 table-light">
     <% show_cons = @problem.subtasks.map{|s| s.constraints}.any?{|x| x && x.size > 0} %>
     <thead>
       <tr>
@@ -242,58 +236,60 @@
   </table>
 </div>
 
-<div class="panel panel-default">
-  <div class="panel-heading" data-toggle="collapse" href="#collapseLimit">
-    <h1 class="panel-title">
-      Testdata and Limits
-      <i class="indicator glyphicon glyphicon-chevron-up pull-right"></i>
-    </h1>
-  </div>
-  <div class="collapse in" id="collapseLimit">
-  <table class="table table-hover table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>No.</th>
-        <th>Time Limit (ms)</th>
-        <% if @has_vss %>
-          <th>Memory Limit (VSS, KiB) <%= help_icon '/about/memory' %></th>
-        <% end %>
-        <% if @has_rss %>
-          <th>Memory Limit (RSS, KiB) <%= help_icon '/about/memory' %></th>
-        <% end %>
-        <th>Output Limit (KiB)</th>
-        <th>Subtasks</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @testdata.each_with_index do |testdatum, index| %>
+<div class="card bg-light mb-3">
+  <h6 class="card-header" data-bs-toggle="collapse" href="#collapseLimit">
+    Testdata and Limits
+    <%= indicator_chevron_up_float_glyph %>
+  </h6>
+  <div class="collapse show" id="collapseLimit">
+    <table class="table table-hover table-striped table-sm mb-0 table-light">
+      <thead>
         <tr>
-          <td><%= index %></td>
-          <td><%= testdatum.time_limit || "-" %></td>
+          <th>No.</th>
+          <th>Time Limit (ms)</th>
           <% if @has_vss %>
-            <td><%= testdatum.vss_limit || "-" %></td>
+            <th>Memory Limit (VSS, KiB) <%= help_icon '/about/memory' %></th>
           <% end %>
           <% if @has_rss %>
-            <td><%= testdatum.rss_limit || "-" %></td>
+            <th>Memory Limit (RSS, KiB) <%= help_icon '/about/memory' %></th>
           <% end %>
-          <td><%= testdatum.output_limit || "-" %></td>
-          <td>
-            <% if @tdlist[index] %>
-              <% @tdlist[index].each do |x| %>
-                <span class="subtask-icon"><%= x + 1 %></span>
-              <% end %>
-            <% end %>
-          </td>
+          <th>Output Limit (KiB)</th>
+          <th>Subtasks</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @testdata.each_with_index do |testdatum, index| %>
+          <tr>
+            <td><%= index %></td>
+            <td><%= testdatum.time_limit || "-" %></td>
+            <% if @has_vss %>
+              <td><%= testdatum.vss_limit || "-" %></td>
+            <% end %>
+            <% if @has_rss %>
+              <td><%= testdatum.rss_limit || "-" %></td>
+            <% end %>
+            <td><%= testdatum.output_limit || "-" %></td>
+            <td>
+              <% if @tdlist[index] %>
+                <% @tdlist[index].each do |x| %>
+                  <span class="subtask-icon"><%= x + 1 %></span>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 
 <div class="row">
   <%= render 'submit_button' %>
   <div class="col-md-2">
-    <%= link_to 'Back to Top', '#', class: 'btn btn-default btn-xs btn-block' %>
+    <%= link_to 'Back to Top', '#', class: 'btn btn-secondary btn-sm w-100' %>
   </div>
 </div>
+
+<script>
+  copyButtonSetup();
+</script>

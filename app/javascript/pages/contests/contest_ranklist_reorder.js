@@ -16,7 +16,7 @@ function acmCellText(current, user_state, first_ac) {
     text = current.state[0];
     if (current.state[1] !== null) {
       if (!first_ac) {
-        text = '<span class="text-success"><strong>' + text + '</strong></span>'
+        text = '<span class="text-ac"><strong>' + text + '</strong></span>'
       }
       let penalty = Math.floor(current.state[1] / 60000000);
       text += '<small>/' + penalty + '</small>';
@@ -29,7 +29,7 @@ function acmCellText(current, user_state, first_ac) {
       if (current.state[1] > user_state.last_solved) user_state.last_solved = current.state[1];
     } else {
       if (current.state[0]) {
-        text = '<span class="text-danger"><strong>' + text + '</strong></span>';
+        text = '<span class="text-wa"><strong>' + text + '</strong></span>';
       }
       if (current.state[2]) {
         text += '+<span style="color:#888;"><strong>' + current.state[2] + '</strong></span>';
@@ -67,9 +67,6 @@ import * as bounds from 'binary-search-bounds';
 import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
-  function rowUserID(row) {
-    return parseInt(row.id.slice(9));
-  }
   if (!data.participants) return;
   let compare_keys = {};
   let getValue = timestamp === -1 ? (
@@ -99,18 +96,21 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
     }
     compare_keys['row_team_' + team_id] = rowSummary('team_' + team_id, team_state);
   }
-  console.log({ compare_keys });
   let tbody = $('#dashboard_table_body');
+  function rowEffectiveID(row) {
+    // XXX final tie-breaker when other conditions are all the same
+    return row.id;
+  }
   tbody.append(tbody.children().detach().sort((a, b) => {
-    let key_a = compare_keys[a.id].concat([rowUserID(a)]);
-    let key_b = compare_keys[b.id].concat([rowUserID(b)]);
+    let key_a = compare_keys[a.id].concat([rowEffectiveID(a)]);
+    let key_b = compare_keys[b.id].concat([rowEffectiveID(b)]);
     return key_a.compare(key_b);
   }));
   let children = tbody.children();
   if (children.length === 0) return;
   let rank = 0;
   let color = 0;
-  let color_map = ['warning', 'success', 'info'];
+  let color_map = ['table-warning', 'table-success', 'table-info'];
   let prev_value = compare_keys[children[0].id][0];
   for (let i = 0; i < children.length; i++) {
     const cur_value = compare_keys[children[i].id];
@@ -123,8 +123,10 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
       color += 1;
     }
     row.removeClass();
-    if (rowUserID(children[i]) === data.user_id) {
-      row.addClass('ole');
+    const effective_id = children[i].id.slice(4);
+    // TODO: rename it to like data.self_id
+    if (effective_id === data.user_id) {
+      row.addClass('table-self');
     } else if (color < 3) {
       row.addClass(color_map[color]);
     }

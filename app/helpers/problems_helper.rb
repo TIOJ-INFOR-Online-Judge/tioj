@@ -52,27 +52,27 @@ module ProblemsHelper
 
   def user_problem_status(user, problem)
     if user_problem_ac(user, problem)
-      raw '<span class="text-success glyphicon glyphicon-ok"></span>'
+      raw '<span class="text-ac bi bi-check"></span>'
     elsif user_problem_tried(user, problem)
-      raw '<span class="text-danger glyphicon glyphicon-thumbs-down"></span>'
+      raw '<span class="text-wa bi bi-hand-thumbs-down"></span>'
     else
-      raw '<span class="text-muted glyphicon glyphicon-minus"></span>'
+      raw '<span class="text-muted bi bi-dash"></span>'
     end
   end
 
   def user_problem_status_with_infor(problem, attr_map)
     if attr_map[problem.id].cur_user_ac > 0
-      raw '<span class="text-success glyphicon glyphicon-ok"></span>'
+      raw '<span class="text-ac bi bi-check"></span>'
     elsif attr_map[problem.id].cur_user_tried > 0
-      raw '<span class="text-danger glyphicon glyphicon-thumbs-down"></span>'
+      raw '<span class="text-wa bi bi-hand-thumbs-down"></span>'
     else
-      raw '<span class="text-muted glyphicon glyphicon-minus"></span>'
+      raw '<span class="text-muted bi bi-dash"></span>'
     end
   end
 
   def tag_list_html(problem)
-    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-default' } +
-         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-xs btn-warning solution-tag no-display' }).join(" ")
+    raw (problem.tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-sm btn-secondary mb-1' } +
+         problem.solution_tags.map{ |a| link_to a, problems_tag_path(a.name), class: 'btn btn-sm btn-warning solution-tag d-none mb-1' }).join(" ")
   end
 
   def specjudge_type_desc_map
