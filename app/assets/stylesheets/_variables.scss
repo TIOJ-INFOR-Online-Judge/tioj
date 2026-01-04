@@ -97,11 +97,12 @@ $form-check-input-bg: $gray-500;
 // Links
 
 $link-decoration: none;
+$link-color: shift-color($primary, 20%);
 
 // Tables
 
 $table-striped-bg: #f8f8f8;
-$table-hover-bg:   #f5f5f5; // TODO other colors variant
+$table-hover-bg:   #f5f5f5;
 $table-border-color: #ddd;
 $table-border-width: 1px;
 
