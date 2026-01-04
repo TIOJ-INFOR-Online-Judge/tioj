@@ -6,9 +6,14 @@
   <% end %>
 </h4>
 
-<form class="d-flex align-items-center gap-2 mb-3" accept-charset="UTF-8" method="get">
+<form class="row align-items-center gap-1" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
   <label for="filter_problem">Quick Filter</label>
+  </div>
+  <div class="col-lg-2 px-lg-0">
     <input id="filter_problem" name="problem_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  </div>
+  <div class="col-lg-2 px-lg-0">
     <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple title="Select Result">
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
@@ -19,13 +24,16 @@
       <option value="SIG">Runtime Error (signal)</option>
       <option value="CE">Compilation Error</option>
     </select>
+  </div>
   <% if current_user&.admin? %>
-    <div class="form-check">
+    <div class="col-lg-auto form-check">
       <input id="all_user" type="checkbox" name="all_user" value="1" class="form-check-input">
       <label for="all_user" class="form-check-label">List all users' submissions</label>
     </div>
   <% end %>
-  <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+  </div>
 </form>
 
 <script>

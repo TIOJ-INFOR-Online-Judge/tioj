@@ -2,17 +2,23 @@
 <h4 class="page-header">Teams</h4>
 
 
-<%= link_to 'New Team', new_team_path, class: 'btn btn-success' %>
+<div class="mb-3">
+  <%= link_to 'New Team', new_team_path, class: 'btn btn-success' %>
+</div>
 
-<%= form_with class: "form d-flex align-items-center gap-2", method: :get do |f| %>
-  <%= f.label "Search Teams" %>
-  <div>
+<%= form_with class: "row align-items-center gap-1", method: :get do |f| %>
+  <div class="col-lg-auto">
+    <%= f.label "Search Teams" %>
+  </div>
+  <div class="col-lg-2 px-lg-0">
     <%= f.text_field :search_teamname, class: "form-control form-control-sm", placeholder: "Enter Teamname" %>
   </div>
-  <div>
+  <div class="col-lg-2 px-lg-0">
     <%= f.text_field :search_username, class: "form-control form-control-sm", placeholder: "Enter Username" %>
   </div>
+  <div class="col-lg-auto">
   <%= f.submit "Search", class: "btn btn-dark btn-sm" %>
+  </div>
 <% end %>
 
 <br>

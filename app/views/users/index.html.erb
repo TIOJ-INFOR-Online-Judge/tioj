@@ -1,12 +1,16 @@
 <% set_page_title "Users" %>
 <h4 class="page-header">Users</h4>
 
-<div class="d-flex align-items-center gap-2 mb-3">
+<div class="row align-items-center gap-1 mb-3">
+  <div class="col-md-auto">
   <label for="goto_user_id">Find User</label>
-  <div>
-    <input id="goto_user_id" type="text" class="form-control form-control-sm" placeholder="Enter Username"/>
   </div>
+  <div class="col-md-3 px-md-0">
+  <input id="goto_user_id" type="text" class="form-control form-control-sm" placeholder="Enter Username"/>
+  </div>
+  <div class="col-md-auto">
   <a href="#" id="goto_user" class="btn btn-dark btn-sm">Search</a>
+  </div>
 </div>
 
 <%= paginate(@users) %>

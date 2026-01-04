@@ -7,21 +7,27 @@
 </h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success' %><br>
+  <div class="mb-3">
+    <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success' %><br>
+  </div>
 <% end %>
 
-<form class="search-form d-flex align-items-center gap-2" accept-charset="UTF-8" method="get">
-  <label for="search_id">Search Problems</label>
-  <div>
-    <input style="width:150px" id="search_id" name="search_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+<form class="search-form row align-items-center gap-1" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
+    <label class="" for="search_id">Search Problems</label>
   </div>
-  <div>
+  <div class="col-lg-2 px-lg-0">
+    <input id="search_id" name="search_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  </div>
+  <div class="col-lg-2 px-lg-0">
     <input id="search_name" name="search_name" class="form-control form-control-sm" type="text" placeholder="Enter Problem Name">
   </div>
-  <div>
+  <div class="col-lg-2 px-lg-0">
     <input id="tag" name="tag" class="form-control form-control-sm" type="text" placeholder="Enter tag">
   </div>
-  <button type="submit" id="quick_search" class="btn btn-dark btn-sm">Search</button>
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_search" class="btn btn-dark btn-sm">Search</button>
+  </div>
 </form>
 
 <%# remove empty fields %>

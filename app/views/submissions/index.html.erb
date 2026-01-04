@@ -28,22 +28,35 @@
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
   <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-sm" %>
 <% else %>
-  <div class="d-flex align-items-center gap-2">
-    <label for="quick_prob_id">Quick Submit</label>
-    <input style="width:150px" id="quick_prob_id" type="number" class="form-control form-control-sm" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
-    <a href="#" id="quick_submit" class="btn btn-success btn-sm">Submit</a>
+  <div class="row align-items-center gap-1">
+    <div class="col-lg-auto">
+      <label for="quick_prob_id">Quick Submit</label>
+    </div>
+
+    <div class="col-lg-2 px-lg-0">
+      <input id="quick_prob_id" type="number" class="form-control form-control-sm" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
+    </div>
+
+    <div class="col-lg-auto">
+      <a href="#" id="quick_submit" class="btn btn-success btn-sm">Submit</a>
+    </div>
   </div>
 <% end %>
 
-<form class="d-flex align-items-center gap-2" accept-charset="UTF-8" method="get">
-  <label for="filter_user">Quick Filter</label>
-  <div>
-    <input id="filter_username" name="filter_username" class="form-control form-control-sm" type="text" placeholder="Enter Username">
+<form class="row align-items-center gap-1" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
+    <label for="filter_user">Quick Filter</label>
   </div>
-  <div>
-    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" style="width:150px;" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+
+  <div class="col-lg-2 px-lg-0">
+    <input id="filter_username" name="filter_username" class="form-control form-control-sm w-100" type="text" placeholder="Enter Username">
   </div>
-  <div>
+
+  <div class="col-lg-2 px-lg-0">
+    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  </div>
+
+  <div class="col-lg-2 px-lg-0">
     <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple aria-label="Select Result">
       <option selected disabled value="">Select Result</option>
       <option value="AC">Accepted</option>
@@ -56,7 +69,8 @@
       <option value="CE">Compilation Error</option>
     </select>
   </div>
-  <div>
+
+  <div class="col-lg-2 px-lg-0">
     <select id="filter_compiler" name="filter_compiler[]" class="form-select form-select-sm" multiple aria-label="Select Compiler">
       <option selected disabled value="">Select Compiler</option>
       <% Compiler.order(order: :asc).all.each do |x| %>
@@ -64,7 +78,10 @@
       <% end %>
     </select>
   </div>
-  <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+  </div>
 </form>
 
 <script>
