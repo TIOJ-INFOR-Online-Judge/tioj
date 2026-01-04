@@ -31,3 +31,4 @@
 - [ ] tom-select has subtle height difference between different tag states
 - [ ] fix posts' polymorphic path (e.g. `/problem/:id/post` and `/single_contest/:id/post`)
 - [ ] check team functionality really checked registration approved
+- [ ] new article era becomes 0 when there is no article

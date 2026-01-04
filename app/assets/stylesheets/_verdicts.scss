@@ -69,6 +69,11 @@ $verdicts: ();
       --bs-alert-link-color:   #{$text};
     }
 
+    :root {
+      --bs-#{$altname}-bg-subtle: #{$bg};
+      --bs-#{$altname}-text-emphasis: #{$text};
+    }
+
     @include table-variant($altname, $bg);
     .table-#{$altname} {
       // --bs-table-bg: #{$bg};
