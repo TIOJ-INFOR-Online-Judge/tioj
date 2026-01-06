@@ -31,10 +31,11 @@ class TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
     @team.generate_random_avatar
-    @team.users = [current_user]
+    @team.team_user_joints = [TeamUserJoint.new(user: current_user, team: @team)]
     if @team.save
       redirect_to @team, notice: 'Team was successfully created.'
     else
+      @team.errors.merge! @team.team_user_joints.first.errors
       render action: "new"
     end
   end
@@ -52,27 +53,14 @@ class TeamsController < ApplicationController
       return
     end
 
-    max_members_per_team = Rails.configuration.x.settings.dig(:max_members_per_team) || 10
-
-    begin
-      @team.with_lock do
-        if @team.users.count >= max_members_per_team
-          redirect_to teams_path, alert: 'Too many members!'
-          return
-        end
-
-        @team.users << current_user
-        if @team.save
-          flash[:notice] = 'Joined successfully.'
-        else
-          flash[:alert] = 'Failed to join.'
-        end
-      end
-    rescue ActiveRecord::RecordNotUnique
-      flash[:alert] = 'User has already been added to this team.'
+    team_user = TeamUserJoint.new(user: current_user, team: @team)
+    if team_user.save
+      flash[:notice] = 'Joined successfully.'
+      redirect_to @team
+    else
+      @team.errors.merge! team_user.errors
+      render action: "invite"
     end
-
-    redirect_to @team
   end
 
   def update

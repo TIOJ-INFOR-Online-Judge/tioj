@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_06_015901) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_06_045732) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -381,6 +381,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_06_015901) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "team_user_joints", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_user_joints_on_team_id_and_user_id", unique: true
+    t.index ["user_id", "team_id"], name: "index_team_user_joints_on_user_id_and_team_id", unique: true
+  end
+
   create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "avatar"
@@ -390,13 +397,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_06_015901) do
     t.datetime "updated_at", null: false
     t.string "token"
     t.index ["name"], name: "index_teams_on_name", unique: true
-  end
-
-  create_table "teams_users", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "team_id", null: false
-    t.index ["team_id", "user_id"], name: "index_teams_users_on_team_id_and_user_id", unique: true
-    t.index ["user_id", "team_id"], name: "index_teams_users_on_user_id_and_team_id", unique: true
   end
 
   create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

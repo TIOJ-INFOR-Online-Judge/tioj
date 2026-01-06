@@ -68,7 +68,7 @@ import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
   function rowUserID(row) {
-    return parseInt(row.id.slice(9));
+    return row.id.slice(4); // remove "row_"
   }
   if (!data.participants) return;
   let compare_keys = {};
