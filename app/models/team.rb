@@ -11,6 +11,10 @@
 #  updated_at :datetime         not null
 #  token      :string(255)
 #
+# Indexes
+#
+#  index_teams_on_name  (name) UNIQUE
+#
 
 require 'file_size_validator'
 
@@ -21,6 +25,7 @@ class Team < ApplicationRecord
   validates_length_of :name, in: 1..45
 
   validates :name, username_convention: true
+  validates_uniqueness_of :name
 
   validates_length_of :motto, maximum: 75
   validates :school, presence: true, length: {in: 1..64}

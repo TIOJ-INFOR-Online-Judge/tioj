@@ -11,6 +11,10 @@
 #  updated_at :datetime         not null
 #  token      :string(255)
 #
+# Indexes
+#
+#  index_teams_on_name  (name) UNIQUE
+#
 one:
   name: "Team One"
   school: "School One"
