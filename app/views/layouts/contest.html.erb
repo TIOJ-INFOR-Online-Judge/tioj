@@ -27,7 +27,7 @@
             <% if current_user.admin? %>
               <li><%= link_to "Users & Registrations", contest_contest_registrations_path(@contest) %></li>
             <% end %>
-            <li><%= link_to current_user.username, user_path(current_user) %></li>
+            <li><%= link_to current_user.username + (@team ? " (" + @team.name + ")" : ""), user_path(current_user) %></li>
             <li><%= link_to "Sign out", destroy_user_session_path, method: :delete %></li>
           <% else %>
             <li><%= link_to "Sign in", new_session_path(:user) %> </li>

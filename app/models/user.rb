@@ -47,6 +47,8 @@ class User < UserBase
 
   has_many :articles, dependent: :destroy
 
+  has_and_belongs_to_many :teams
+
   validates :username,
     uniqueness: {case_sensitive: false},
     username_convention: true,
@@ -72,7 +74,5 @@ class User < UserBase
       "remember_created_at", "reset_password_sent_at"
     ]
   end
-
-  has_and_belongs_to_many :teams
 end
 

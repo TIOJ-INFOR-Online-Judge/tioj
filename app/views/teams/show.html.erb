@@ -18,7 +18,9 @@
   <p>
 
   <% if effective_admin? or @team.users.include?(current_user) %>
-    <div>
+    <div class="copy-group">
+      <button class="btn btn-success btn-xs copy-group-btn">Copy invitation link</button>
+      <span class="no-display copy-group-code"><%= invite_team_url(@team, token: @team.token) %></span>
       <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-xs' %>
       <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
     </div>

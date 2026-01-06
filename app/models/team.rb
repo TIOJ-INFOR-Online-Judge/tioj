@@ -37,9 +37,11 @@ class Team < ApplicationRecord
     }
 
   def generate_random_avatar
-    Tempfile.create(['', '.png']) do |tmpfile|
-      Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
-      self.avatar = tmpfile
+    if self.avatar.file.nil?
+      Tempfile.create(['', '.png']) do |tmpfile|
+        Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
+        self.avatar = tmpfile
+      end
     end
   end
 
