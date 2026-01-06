@@ -51,8 +51,14 @@ class ContestsController < ApplicationController
     )
     @data[:participants] |= @contest.approved_registered_users.ids - user_team_mapping.keys
     @data[:teams] |= user_team_mapping.values
-    @participants = UserBase.where(id: @data[:participants])
+    participant_ids = @data[:participants].to_set
+    all_users = UserBase.where(id: @contest.approved_registered_users.ids.to_set | participant_ids).all
+    user_map = all_users.map { |u| [u.id, u] }.to_h
+    @participants = all_users.select { |u| participant_ids.include?(u.id) }
     @teams = Team.where(id: @data[:teams])
+    @team_users = user_team_mapping.group_by { |_, team_id| team_id }.transform_values { |pairs|
+      pairs.map { |user_id, _| user_map[user_id] }
+    }
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
 

@@ -18,7 +18,7 @@ class TeamsController < ApplicationController
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_teamname])
       @teams = @teams.where("name LIKE ?", "%#{sanitized}%")
     end
-    @teams = @teams.order(id: :desc).page(params[:page]).per(100)
+    @teams = @teams.includes(:users).order(id: :desc).page(params[:page]).per(50)
   end
 
   def show

@@ -19,8 +19,8 @@
       <%# <th>ID</th> %>
       <th></th>
       <th>Team Name</th>
+      <th>Members</th>
       <th>Motto</th>
-      <th>Created At</th>
     </tr>
   </thead>
 
@@ -30,12 +30,12 @@
         <%# <td><%= team.id %1></td> %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
         <td><%= link_to team.name, team_path(team) %></td>
+        <td><%= member_list_html(team.users, true) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>
         <% else %>
           <td></td>
         <% end %>
-        <td><%= team.created_at.strftime("%Y-%m-%d") %></td>
       </tr>
     <% end %>
   </tbody>

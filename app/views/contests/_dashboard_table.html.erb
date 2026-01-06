@@ -46,14 +46,10 @@
       <td id="cell_rank_team_<%= team.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
-        <td class="highlight-if-self"><%= link_to team.name, team_path(team) %></td>
+        <td colspan="2" class="highlight-if-self"><%= link_to team.name, team_path(team) %> (<%= member_list_html(@team_users[team.id], true) %>)</td>
       <% else %>
-        <td class="highlight-if-self"><%= team.name %></td>
+        <td colspan="2" class="highlight-if-self"><%= team.name %> (<%= member_list_html(@team_users[team.id], false) %>)</td>
       <% end %>
-      <td class="highlight-if-self">
-        <%# <%= team.nickname %1> %>
-        <%# TODO display registered team members here %>
-      </td>
       <% @tasks.each do |t|%>
         <td id="cell_item_team_<%= team.id %>_<%= t.id %>"></td>
       <% end %>
