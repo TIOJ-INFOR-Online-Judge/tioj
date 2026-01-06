@@ -26,11 +26,11 @@
 
   <tbody>
     <% @teams.each do |team| %>
-      <tr>
+      <tr class="<% if team.users.include?(current_user) %>warning<% end %>">
         <%# <td><%= team.id %1></td> %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
         <td><%= link_to team.name, team_path(team) %></td>
-        <td><%= member_list_html(team.users, true) %></td>
+        <td><%= member_list_html(team.users, true, current_user) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>
         <% else %>

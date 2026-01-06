@@ -1,5 +1,5 @@
 class TeamsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept, :renew_token, :remove_user]
   before_action :check_user_in_team!, only: [:edit, :update, :destroy, :renew_token, :remove_user]
 
@@ -18,7 +18,19 @@ class TeamsController < ApplicationController
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_teamname])
       @teams = @teams.where("name LIKE ?", "%#{sanitized}%")
     end
-    @teams = @teams.includes(:users).order(id: :desc).page(params[:page]).per(50)
+    if current_user
+      teams = Team.arel_table
+      teams_user = TeamUserJoint.arel_table
+      exists_for_user = Arel::Nodes::Exists.new(
+        teams_user.project('*').where(
+          teams_user[:team_id].eq(teams[:id]).and(teams_user[:user_id].eq(current_user.id))
+        )
+      )
+      @teams = @teams.order(exists_for_user.desc, teams[:id].desc)
+    else
+      @teams = @teams.order(id: :desc)
+    end
+    @teams = @teams.includes(:users).page(params[:page]).per(50)
   end
 
   def show

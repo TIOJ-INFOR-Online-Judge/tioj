@@ -44,6 +44,9 @@ h1 h2 h3 h4 h5 h6 {
     padding: 7px 21px;
   }
 }
+.navbar-nav > li > a {
+  padding: 15px 14px;
+}
 
 /* tabs for problem settings */
 .panel.panel-problem-settings {
