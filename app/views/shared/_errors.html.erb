@@ -1,4 +1,4 @@
-<% if errors.any? %>
+<% if errors&.any? %>
   <% alert_tag class: 'alert-danger', dismissible: false do %>
     <strong><%= pluralize(errors.count, "error") %> prohibited this <%= item %> from being saved:</strong>
     <ul>

@@ -71,14 +71,36 @@
     <%= f.text_area :description_before_contest, class: 'form-control flat', rows: "9" %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :cd_time, 'Submission CD time' %>
-    <%= f.number_field :cd_time, min: 0, max: 3600, class: 'form-control flat', required: true, value: @contest.cd_time %>
-  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :cd_time, 'Submission CD time' %>
+        <%= f.number_field :cd_time, min: 0, max: 3600, class: 'form-control flat', required: true, value: @contest.cd_time %>
+      </div>
+    </div>
 
-  <div class="form-group">
-    <%= f.label :freeze_minutes, 'Scoreboard freezing period (in minutes, 0 to disable freezing)' %>
-    <%= f.number_field :freeze_minutes, min: 0, class: 'form-control flat', required: true, value: @contest.freeze_minutes %>
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :freeze_minutes, 'Scoreboard freezing period (in minutes, 0 to disable freezing)' %>
+        <%= f.number_field :freeze_minutes, min: 0, class: 'form-control flat', required: true, value: @contest.freeze_minutes %>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= f.label :max_team_size, help_collapse_toggle('Maximum team size', 'maxTeamSizeDescription') %>
+        <div class="collapse" id="maxTeamSizeDescription" style="height: auto;">
+          <div class="panel panel-default">
+            <div class="panel-body small" style="line-height: 1.4;">
+              Set to -1 for unlimited team size, and 0 to disable team registration.<br>
+              Teams with member count over the limit can still participate, but the number of members that can register into the contest is limited to the maximum team size.<br>
+              Only affects future registrations; existing teams are not affected.
+            </div>
+          </div>
+        </div>
+        <%= f.number_field :max_team_size, min: -1, class: 'form-control flat', required: true, value: @contest.max_team_size %>
+      </div>
+    </div>
   </div>
 
   <div class="form-group">
@@ -105,11 +127,6 @@
     <%= f.label :default_single_contest, class: 'checkbox' do %>
       <%= f.check_box :default_single_contest, 'data-toggle': 'checkbox' %>
       Always go to Single Contest page by default for non-admin users
-    <% end %>
-
-    <%= f.label :allow_team_register, class: 'checkbox' do %>
-      <%= f.check_box :allow_team_register, 'data-toggle': 'checkbox' %>
-      Allow team registration
     <% end %>
   </div>
 
