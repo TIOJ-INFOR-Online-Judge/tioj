@@ -1,9 +1,22 @@
+# == Schema Information
+#
+# Table name: teams
+#
+#  id         :bigint           not null, primary key
+#  name       :string(255)
+#  avatar     :string(255)
+#  motto      :string(255)
+#  school     :string(255)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  token      :string(255)
+#
 one:
-  teamname: "Team One"
+  name: "Team One"
   school: "School One"
   motto: "Motto One"
 
 two:
-  teamname: "Team Two"
+  name: "Team Two"
   school: "School Two"
   motto: "Motto Two"

@@ -1,6 +1,6 @@
-<% set_page_title "Edit " + @team.teamname %>
+<% set_page_title "Edit " + @team.name %>
 
-<h4 class="page-header">Editing team <small><i><%= @team.teamname %></i></small></h4>
+<h4 class="page-header">Editing team <small><i><%= @team.name %></i></small></h4>
 
 <%= form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
@@ -8,8 +8,8 @@
   <div class="form-group">
     <div class="row">
       <div class="col-md-7">
-        <%= f.label :teamname %>
-        <%= f.text_field :teamname, class: 'form-control flat' %>
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control flat' %>
       </div>
     </div>
   </div>

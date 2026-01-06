@@ -1,8 +1,8 @@
-<% set_page_title @team.teamname %>
+<% set_page_title @team.name %>
 
 <div class="col-md-4">
-  <%= image_tag(@team.avatar.square.to_s, class: "img-rounded img-responsive") %><br/>
-  <h4><%= @team.teamname %></h4>
+  <%= image_tag(@team.avatar.square.to_s, class: "img-rounded img-responsive", style: 'max-width: 14em') %><br/>
+  <h4><%= @team.name %></h4>
 
   <table>
     <tr>

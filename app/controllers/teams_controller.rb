@@ -16,7 +16,7 @@ class TeamsController < ApplicationController
     end
     if params[:search_teamname].present?
       sanitized = ActiveRecord::Base.send(:sanitize_sql_like, params[:search_teamname])
-      @teams = @teams.where("teamname LIKE ?", "%#{sanitized}%")
+      @teams = @teams.where("name LIKE ?", "%#{sanitized}%")
     end
     @teams = @teams.order(id: :desc).page(params[:page]).per(100)
   end
@@ -129,7 +129,7 @@ class TeamsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def team_params
     params.require(:team).permit(
-      :teamname,
+      :name,
       :avatar, :avatar_cache,
       :motto,
       :school

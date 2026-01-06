@@ -3,7 +3,7 @@
 # Table name: teams
 #
 #  id         :bigint           not null, primary key
-#  teamname   :string(255)
+#  name       :string(255)
 #  avatar     :string(255)
 #  motto      :string(255)
 #  school     :string(255)
@@ -18,9 +18,9 @@ class Team < ApplicationRecord
   has_and_belongs_to_many :users
   accepts_nested_attributes_for :users, allow_destroy: true
 
-  validates_length_of :teamname, in: 1..45
+  validates_length_of :name, in: 1..45
 
-  validates :teamname, username_convention: true
+  validates :name, username_convention: true
 
   validates_length_of :motto, maximum: 75
   validates :school, presence: true, length: {in: 1..64}

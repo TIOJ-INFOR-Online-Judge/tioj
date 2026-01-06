@@ -6,7 +6,7 @@
 
 <%= form_with class: "form-inline", method: :get do |f| %>
   <%= f.label "Search Teams" %>
-  <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Teamname" %>
+  <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Team Name" %>
   <%= f.text_field :search_username, class: "form-control input-sm flat", placeholder: "Enter Username" %>
   <%= f.submit "Search", class: "btn btn-inverse btn-xs" %>
 <% end %>
@@ -18,7 +18,7 @@
     <tr>
       <%# <th>ID</th> %>
       <th></th>
-      <th>Teamname</th>
+      <th>Team Name</th>
       <th>Motto</th>
       <th>Created At</th>
     </tr>
@@ -29,7 +29,7 @@
       <tr>
         <%# <td><%= team.id %1></td> %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
-        <td><%= link_to team.teamname, team_path(team) %></td>
+        <td><%= link_to team.name, team_path(team) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>
         <% else %>

@@ -46,9 +46,9 @@
       <td id="cell_rank_team_<%= team.id %>" class="highlight-if-self"></td>
       <% if @layout != :single_contest %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'img-rounded'), team_path(team) %></td>
-        <td class="highlight-if-self"><%= link_to team.teamname, team_path(team) %></td>
+        <td class="highlight-if-self"><%= link_to team.name, team_path(team) %></td>
       <% else %>
-        <td class="highlight-if-self"><%= team.teamname %></td>
+        <td class="highlight-if-self"><%= team.name %></td>
       <% end %>
       <td class="highlight-if-self">
         <%# <%= team.nickname %1> %>

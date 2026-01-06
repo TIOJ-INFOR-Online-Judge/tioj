@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_06_015901) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -382,7 +382,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
   end
 
   create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "teamname"
+    t.string "name"
     t.string "avatar"
     t.string "motto"
     t.string "school"

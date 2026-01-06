@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: contest_problem_joints
+#
+#  id         :bigint           not null, primary key
+#  contest_id :bigint
+#  problem_id :bigint
+#  created_at :datetime
+#  updated_at :datetime
+#
+# Indexes
+#
+#  contest_task_ix  (contest_id,problem_id) UNIQUE
+#
 contest_four_problem_one:
   contest: four
   problem: one
