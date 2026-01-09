@@ -381,7 +381,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_06_055857) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "team_user_joints", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "team_user_joints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "team_id", null: false
     t.index ["team_id", "user_id"], name: "index_team_user_joints_on_team_id_and_user_id", unique: true

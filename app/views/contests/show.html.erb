@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <%= contest_registration_page_button(@contest, @register_status, true) %>
+  <%= contest_registration_page_button(@contest, @registration&.approved, true) %>
 <% end %>
 
 <h4 class='page-header'>
@@ -67,7 +67,15 @@
           <h1 class="panel-title">Registration Status</h1>
         </div>
         <div class="panel-body">
-          <%= contest_register_status(@register_status, true) %>
+          <%= contest_register_status(@registration&.approved, true) %>
+          <% if @registration and @contest.allow_team_register? %>
+            <br>
+            <% if @registration.team %>
+              (under team <%= link_to @registration.team.name, team_path(@registration.team) %>)
+            <% else %>
+              (individually)
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

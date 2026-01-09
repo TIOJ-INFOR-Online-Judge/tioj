@@ -136,8 +136,13 @@ module ContestsHelper
       btn_class += standalone ? 'btn-lg' : 'btn-xs'
 
       if contest.allow_team_register? then
-        btn_class += ' btn-primary'
-        button_text = standalone ? 'Change Registration' : 'Change'
+        if status.nil?
+          btn_class += ' btn-success'
+          button_text = "Register"
+        else
+          btn_class += ' btn-primary'
+          button_text = standalone ? "Change Registration" : "Change"
+        end
 
         html = button_to(
           button_text,

@@ -82,6 +82,9 @@ gem 'acts_as_list'
 # Activerecord-import for bulk insert
 gem 'activerecord-import'
 
+# Advisory locks
+gem 'with_advisory_lock'
+
 # Redis for Action Cable
 gem 'redis', '~> 4'
 

@@ -96,7 +96,7 @@ class ContestsController < ApplicationController
   end
 
   def show
-    @register_status = @contest.user_register_status(current_user)
+    @registration = @contest.find_registration(current_user)
   end
 
   def new
@@ -195,22 +195,25 @@ class ContestsController < ApplicationController
       team_id = team.id
     end
 
-    if params[:cancel] == '1'
-      @contest.contest_registrations.where(user_id: user_id, team_id: team_id).destroy_all
-      respond_to do |format|
-        format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
-        format.json { head :no_content }
-      end
-    else
-      entry = @contest.contest_registrations.new(user_id: user_id, team_id: team_id, approved: !@contest.require_approval?)
-      respond_to do |format|
-        if entry.save
-          format.html { redirect_to @contest, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
+    # lock for team size check
+    ContestRegistration.with_advisory_lock("#{@contest.id}") do
+      if params[:cancel] == '1'
+        @contest.contest_registrations.where(user_id: user_id, team_id: team_id).destroy_all
+        respond_to do |format|
+          format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
           format.json { head :no_content }
-        else
-          @registration = entry
-          format.html { render action: 'register', location: @contest }
-          format.json { render json: entry.errors, status: :unprocessable_entity }
+        end
+      else
+        entry = @contest.contest_registrations.new(user_id: user_id, team_id: team_id, approved: !@contest.require_approval?)
+        respond_to do |format|
+          if entry.save
+            format.html { redirect_to @contest, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
+            format.json { head :no_content }
+          else
+            @registration = entry
+            format.html { render action: 'register', location: @contest }
+            format.json { render json: entry.errors, status: :unprocessable_entity }
+          end
         end
       end
     end

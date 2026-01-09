@@ -44,11 +44,14 @@ class TeamsController < ApplicationController
     @team = Team.new(team_params)
     @team.generate_random_avatar
     @team.team_user_joints = [TeamUserJoint.new(user: current_user, team: @team)]
-    if @team.save
-      redirect_to @team, notice: 'Team was successfully created.'
-    else
-      @team.errors.merge! @team.team_user_joints.first.errors
-      render action: "new"
+    # We need a global lock for both team and user checks
+    Team.with_advisory_lock('member') do
+      if @team.save
+        redirect_to @team, notice: 'Team was successfully created.'
+      else
+        @team.errors.merge! @team.team_user_joints.first.errors
+        render action: "new"
+      end
     end
   end
 
@@ -66,12 +69,13 @@ class TeamsController < ApplicationController
     end
 
     team_user = TeamUserJoint.new(user: current_user, team: @team)
-    if team_user.save
-      flash[:notice] = 'Joined successfully.'
-      redirect_to @team
-    else
-      @team.errors.merge! team_user.errors
-      render action: "invite"
+    Team.with_advisory_lock('member') do
+      if team_user.save
+        redirect_to @team, notice: 'Joined successfully.'
+      else
+        @team.errors.merge! team_user.errors
+        render action: "invite"
+      end
     end
   end
 
@@ -103,21 +107,15 @@ class TeamsController < ApplicationController
   def remove_user
     user_to_remove = User.find(params[:user_id])
 
-    @team.with_lock do
-      if @team.users.count == 1 && user_to_remove == @team.users.first
-        flash[:alert] = "The last member cannot be removed from the team. Please delete the team instead."
-        redirect_to edit_team_path(@team)
-        return
-      end
-
-      if @team.users.delete(user_to_remove)
-        flash[:notice] = "User #{user_to_remove.username} was successfully removed from the team."
+    team_user = @team.team_user_joints.find_by(user_id: user_to_remove.id)
+    Team.with_advisory_lock('member') do
+      if team_user.destroy
+        redirect_to edit_team_path(@team), notice: "User #{user_to_remove.username} was successfully removed from the team."
       else
-        flash[:alert] = "Failed to remove user #{user_to_remove.username} from the team."
+        @team.errors.merge! team_user.errors
+        render action: "edit"
       end
     end
-
-    redirect_to edit_team_path(@team)
   end
 
   private

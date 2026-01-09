@@ -1,29 +1,43 @@
 <h4 class="page-header">Edit registrations of <%= @contest.title %></h4>
 
+<% alert_tag do %>
+  This contest allows team registration.
+  <% if @registration.nil? || !@registration.persisted? %>
+  You can register either as a team or as an individual.
+  <% elsif @registration.team.nil? %>
+  If you want to register as a team, please unregister first.
+  <% else %>
+  If you want to switch team or register as individual, please unregister first.
+  <% end %>
+<% end %>
+
 <%= render partial: "shared/errors", locals: {errors: @registration&.errors, item: 'Registration'} %>
 
 <% if @registration.nil? || !@registration.persisted? %>
 
-  <div class="form-group">
-    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-      <label>As team</label>
-      <%= f.collection_select :team_id, @teams, :id, :name, {}, { class: 'form-control flat' } %>
-      <%= contest_register_status(nil, true) %>
-      <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
-    <% end %>
+  <div class="row">
+    <div class="col-sm-9 col-md-6 col-lg-4">
+      <div class="form-group">
+        <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+          <div>Register as team</div>
+          <%= f.collection_select :team_id, @teams, :id, :name, {}, { class: 'form-control flat' } %>
+          <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+        <% end %>
+      </div>
+
+      <div class="form-group">
+        <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+          <div>Register as individual</div>
+          <div>
+            <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <hr>
 
-  <div class="form-group">
-    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-      <label>As individual</label>
-      <div>
-        <%= contest_register_status(nil, true) %>
-        <%= f.submit 'Register', class: 'btn btn-success btn-xs' %>
-      </div>
-    <% end %>
-  </div>
 
 <% elsif @registration.team.nil? %>
 

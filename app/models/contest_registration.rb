@@ -34,15 +34,12 @@ class ContestRegistration < ApplicationRecord
   validate :validate_max_team_size, on: :create
 
   def validate_max_team_size
-    logger.fatal "Validating team size for contest #{contest.id} and team #{team&.id}"
-    logger.fatal "Contest max team size: #{contest.max_team_size}"
     return if team.nil? || contest.max_team_size == -1
     if contest.max_team_size == 0
       errors.add(:team, "registration is not allowed for this contest")
     else
       registration_list = contest.contest_registrations.where(team_id: team.id).map{|reg| reg.id }.to_set
       registration_list.add(self.id)
-      logger.fatal "Current team registration list: #{registration_list.to_a}"
       if registration_list.size > contest.max_team_size
         errors.add(:team, "exceeds the maximum team size of #{contest.max_team_size}")
       end
