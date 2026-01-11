@@ -1,7 +1,8 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :set_team, only: [:show, :edit, :update, :destroy, :invite, :invite_accept, :renew_token, :remove_user]
+  before_action :set_team, except: [:index, :new, :create]
   before_action :check_user_in_team!, only: [:edit, :update, :destroy, :renew_token, :remove_user]
+  before_action :authenticate_admin!, only: [:add_user]
 
   def index
     if params[:search_username].present?
@@ -104,16 +105,34 @@ class TeamsController < ApplicationController
     redirect_to edit_team_path(@team)
   end
 
+  def add_user
+    user_to_add = User.find_by(username: params[:username])
+    if not user_to_add
+      redirect_to @team, alert: 'No such user.'
+      return
+    end
+
+    team_user = TeamUserJoint.new(user: user_to_add, team: @team)
+    Team.with_advisory_lock('member') do
+      if team_user.save
+        redirect_to @team, notice: "User #{user_to_add.username} was successfully added to the team."
+      else
+        @team.errors.merge! team_user.errors
+        render action: "show"
+      end
+    end
+  end
+
   def remove_user
     user_to_remove = User.find(params[:user_id])
 
     team_user = @team.team_user_joints.find_by(user_id: user_to_remove.id)
     Team.with_advisory_lock('member') do
       if team_user.destroy
-        redirect_to edit_team_path(@team), notice: "User #{user_to_remove.username} was successfully removed from the team."
+        redirect_to @team, notice: "User #{user_to_remove.username} was successfully removed from the team."
       else
         @team.errors.merge! team_user.errors
-        render action: "edit"
+        render action: "show"
       end
     end
   end
