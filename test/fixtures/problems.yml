@@ -32,9 +32,12 @@
 #  summary_type           :integer          not null
 #  summary_code           :text(4294967295)
 #  summary_compiler_id    :bigint
+#  hackprog_compiler_id   :bigint
+#  hackprog_code          :text(65535)
 #
 # Indexes
 #
+#  index_problems_on_hackprog_compiler_id   (hackprog_compiler_id)
 #  index_problems_on_name                   (name)
 #  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
 #  index_problems_on_summary_compiler_id    (summary_compiler_id)
@@ -42,6 +45,7 @@
 #
 # Foreign Keys
 #
+#  fk_rails_...  (hackprog_compiler_id => compilers.id)
 #  fk_rails_...  (specjudge_compiler_id => compilers.id)
 #  fk_rails_...  (summary_compiler_id => compilers.id)
 #

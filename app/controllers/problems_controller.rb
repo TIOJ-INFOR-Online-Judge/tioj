@@ -3,7 +3,7 @@ class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old, :rejudge]
   before_action :set_testdata, only: [:show]
-  before_action :set_compiler, only: [:new, :edit]
+  before_action :set_compiler, only: [:new, :edit, :update, :create]
   before_action :reduce_list, only: [:create, :update]
   before_action :check_visibility!, only: [:show, :ranklist, :ranklist_old]
   layout :set_contest_layout, only: [:show]
@@ -253,6 +253,8 @@ class ProblemsController < ApplicationController
       :summary_type,
       :summary_compiler_id,
       :summary_code,
+      :hackprog_compiler_id,
+      :hackprog_code,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,

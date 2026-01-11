@@ -32,9 +32,12 @@
 #  summary_type           :integer          not null
 #  summary_code           :text(4294967295)
 #  summary_compiler_id    :bigint
+#  hackprog_compiler_id   :bigint
+#  hackprog_code          :text(65535)
 #
 # Indexes
 #
+#  index_problems_on_hackprog_compiler_id   (hackprog_compiler_id)
 #  index_problems_on_name                   (name)
 #  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
 #  index_problems_on_summary_compiler_id    (summary_compiler_id)
@@ -42,13 +45,14 @@
 #
 # Foreign Keys
 #
+#  fk_rails_...  (hackprog_compiler_id => compilers.id)
 #  fk_rails_...  (specjudge_compiler_id => compilers.id)
 #  fk_rails_...  (summary_compiler_id => compilers.id)
 #
 
 class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
-  enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
+  enum :specjudge_type, {none: 0, old: 1, new: 2, hack: 3}, prefix: :specjudge
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :summary_type, {none: 0, custom: 1}, prefix: :summary
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion
@@ -78,11 +82,16 @@ class Problem < ApplicationRecord
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
   belongs_to :summary_compiler, class_name: 'Compiler', optional: true
+  belongs_to :hackprog_compiler, class_name: 'Compiler', optional: true
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
   validates_length_of :interlib_impl, maximum: 5000000
   validates_length_of :summary_code, maximum: 5000000
+  validates_length_of :hackprog_code, maximum: 5000000
+
+  validates_presence_of :hackprog_compiler, if: :specjudge_hack?
+  validates_presence_of :hackprog_code, if: :specjudge_hack?
 
   validates :code_length_limit, numericality: { in: 1..16777216 }
 

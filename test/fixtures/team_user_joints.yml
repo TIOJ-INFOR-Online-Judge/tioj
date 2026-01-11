@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: team_user_joints
+#
+#  user_id :bigint           not null
+#  team_id :bigint           not null
+#  id      :bigint           not null, primary key
+#
+# Indexes
+#
+#  index_team_user_joints_on_team_id_and_user_id  (team_id,user_id) UNIQUE
+#  index_team_user_joints_on_user_id_and_team_id  (user_id,team_id) UNIQUE
+#
 <%
   userone_id = ActiveRecord::FixtureSet.identify(:userOne)
   usertwo_id = ActiveRecord::FixtureSet.identify(:userTwo)
