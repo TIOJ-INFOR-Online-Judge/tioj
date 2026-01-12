@@ -2,39 +2,40 @@
 #
 # Table name: problems
 #
-#  id                       :bigint           not null, primary key
-#  name                     :string(255)
-#  description              :text(16777215)
-#  source                   :text(16777215)
-#  created_at               :datetime
-#  updated_at               :datetime
-#  input                    :text(16777215)
-#  output                   :text(16777215)
-#  hint                     :text(16777215)
-#  visible_state            :integer          default("invisible")
-#  sjcode                   :text(4294967295)
-#  interlib                 :text(4294967295)
-#  specjudge_type           :integer          not null
-#  interlib_type            :integer          not null
-#  specjudge_compiler_id    :bigint
-#  discussion_visibility    :integer          default("enabled")
-#  interlib_impl            :text(4294967295)
-#  score_precision          :integer          default(2)
-#  verdict_ignore_td_list   :string(255)      not null
-#  num_stages               :integer          default(1)
-#  judge_between_stages     :boolean          default(FALSE)
-#  default_scoring_args     :string(255)
-#  strict_mode              :boolean          default(FALSE)
-#  skip_group               :boolean          default(FALSE)
-#  ranklist_display_score   :boolean          default(FALSE)
-#  code_length_limit        :integer          default(5000000)
-#  specjudge_compile_args   :string(255)
-#  summary_type             :integer          not null
-#  summary_code             :text(4294967295)
-#  summary_compiler_id      :bigint
-#  problem_prog_compiler_id :bigint
-#  problem_prog_code        :text(65535)
-#  problem_prog_stage_list  :string(255)      default(""), not null
+#  id                          :bigint           not null, primary key
+#  name                        :string(255)
+#  description                 :text(16777215)
+#  source                      :text(16777215)
+#  created_at                  :datetime
+#  updated_at                  :datetime
+#  input                       :text(16777215)
+#  output                      :text(16777215)
+#  hint                        :text(16777215)
+#  visible_state               :integer          default("invisible")
+#  sjcode                      :text(4294967295)
+#  interlib                    :text(4294967295)
+#  specjudge_type              :integer          not null
+#  interlib_type               :integer          not null
+#  specjudge_compiler_id       :bigint
+#  discussion_visibility       :integer          default("enabled")
+#  interlib_impl               :text(4294967295)
+#  score_precision             :integer          default(2)
+#  verdict_ignore_td_list      :string(255)      not null
+#  num_stages                  :integer          default(1)
+#  judge_between_stages        :boolean          default(FALSE)
+#  default_scoring_args        :string(255)
+#  strict_mode                 :boolean          default(FALSE)
+#  skip_group                  :boolean          default(FALSE)
+#  ranklist_display_score      :boolean          default(FALSE)
+#  code_length_limit           :integer          default(5000000)
+#  specjudge_compile_args      :string(255)
+#  summary_type                :integer          not null
+#  summary_code                :text(4294967295)
+#  summary_compiler_id         :bigint
+#  problem_prog_compiler_id    :bigint
+#  problem_prog_code           :text(65535)
+#  problem_prog_stage_list     :string(255)      default(""), not null
+#  judge_abnormally_terminated :boolean          default(FALSE), not null
 #
 # Indexes
 #

@@ -111,6 +111,7 @@ class FetchChannel < ApplicationCable::Channel
         problem_prog_compiler: problem.problem_prog_compiler&.name,
         problem_prog_code: problem.problem_prog_code || "",
         judge_between_stages: problem.judge_between_stages,
+        judge_abnormally_terminated: problem.judge_abnormally_terminated,
         default_scoring_args: ApplicationController.shellsplit_safe(problem.default_scoring_args),
       },
       td: problem.testdata.map.with_index { |t, index|

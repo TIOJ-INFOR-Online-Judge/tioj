@@ -231,6 +231,7 @@ class ProblemsController < ApplicationController
       :specjudge_compile_args,
       :sjcode,
       :judge_between_stages,
+      :judge_abnormally_terminated,
       :default_scoring_args,
       :interlib_type,
       :interlib,

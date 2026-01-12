@@ -221,9 +221,9 @@
       <div class="panel panel-default">
         <div class="panel-body small">
           <div class="visibility-specjudge visibility-specjudge-old">
-            Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
+            Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise.<br>
             The following information is given via <code>argv</code>:
-            <ul style="line-height: 1.3;">
+            <ul style="line-height: 1.3; margin-bottom: 4px;">
               <li><code>argv[1]</code>: path to user's output</li>
               <li><code>argv[2]</code>: path to testdata input</li>
               <li><code>argv[3]</code>: path to testdata output (answer)</li>
@@ -231,9 +231,21 @@
               <li><code>argv[5]</code>: path to source code</li>
               <li><code>argv[6]</code>: current stage number</li>
             </ul>
+            Additional information is given via standard input. It contains 5 lines each with a single string:<br>
+            <ul style="line-height: 1.3; margin-bottom: 4px;">
+              <li>1st line: original verdict (<code>NONE</code> if terminated normally)</li>
+              <li>2nd line: testdata index</li>
+              <li>3rd line: time (in us)</li>
+              <li>4th line: VSS (in KiB)</li>
+              <li>5th line: RSS (in KiB)</li>
+            </ul>
             Notes:
             <ul style="line-height: 1.4;">
-              <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
+              <li>
+                After outputting <code>0</code>, one can optionally output several space-separated <code>SPECJUDGE_OVERRIDE_[CMD] [VAL]</code> pairs to set the judge result.
+                <code>[CMD]</code> can be one of <code>SCORE</code>, <code>VERDICT</code>, <code>TIME_US</code>, <code>VSS_KIB</code> or <code>RSS_KIB</code>, which overrides the score, verdict, time, VSS, or RSS with <code>[VAL]</code> respectively.
+                <ul><li>Overriding time in intermediate stages also changes the later stages' time value, and effectively changes the time limit of the remaining stages (calculated by TL - time value), so it is possible to set adaptive time limits using this behavior. Setting it to a negative value is allowed.</li></ul>
+              </li>
               <li>
                 If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
                 <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
@@ -241,7 +253,6 @@
             </ul>
           </div>
           <div class="visibility-specjudge visibility-specjudge-new">
-            This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
             The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
             <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
               input_file: 'path_to_testdata_input',
@@ -313,6 +324,10 @@
     <%= f.label :judge_between_stages, class: 'checkbox' do %>
       <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
       Invoke special judge between stages (only applicable if number of stages &gt; 1)
+    <% end %>
+    <%= f.label :judge_abnormally_terminated, class: 'checkbox' do %>
+      <%= f.check_box :judge_abnormally_terminated, 'data-toggle': 'checkbox' %>
+      Invoke special judge even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>)
     <% end %>
   </div>
 
