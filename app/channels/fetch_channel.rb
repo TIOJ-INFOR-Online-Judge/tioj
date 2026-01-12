@@ -78,7 +78,7 @@ class FetchChannel < ApplicationCable::Channel
     problem = submission.problem
     user = submission.user
     td_count = problem.testdata.count
-    verdict_ignore_set = Subtask.td_list_str_to_arr(problem.verdict_ignore_td_list, td_count)
+    verdict_ignore_set = NumberListStr.to_arr(problem.verdict_ignore_td_list, td_count)
     priority = submission.priority * (2 ** 32) - submission.id
     data = {
       submission_id: submission.id,
@@ -107,8 +107,9 @@ class FetchChannel < ApplicationCable::Channel
         interlib_impl: problem.interlib_impl || "",
         strict_mode: problem.strict_mode,
         num_stages: problem.num_stages,
-        hackprog_compiler: problem.hackprog_compiler&.name,
-        hackprog_code: problem.hackprog_code || "",
+        problem_prog_stages: problem.problem_prog_stage_arr,
+        problem_prog_compiler: problem.problem_prog_compiler&.name,
+        problem_prog_code: problem.problem_prog_code || "",
         judge_between_stages: problem.judge_between_stages,
         default_scoring_args: ApplicationController.shellsplit_safe(problem.default_scoring_args),
       },

@@ -163,48 +163,74 @@
     </div>
   </div>
 
-  <div class="form-group visibility-specjudge visibility-specjudge-hack">
-    <%= f.label :hackprog_compiler_id, "Hack Program Compiler" %>
-    <%= f.select :hackprog_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.hackprog_compiler_id || @compiler[0].id),
-        {}, {class: 'form-control flat'} %>
+  <div class="form-group">
+    <%= f.label :_problem_prog_enabled, class: 'checkbox' do %>
+      <%= f.check_box :_problem_prog_enabled, 'data-toggle': 'checkbox', checked: !@problem.problem_prog_stage_list.empty? %>
+      <%= help_collapse_toggle('Enable Problem Program', 'problemProgDescription') %>
+    <% end %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-hack">
-    <%= f.label :hackprog_code, help_collapse_toggle("Hack Program Code", "hacksjDescription") %>
-    <div class="collapse" id="hacksjDescription" style="height: auto;">
-      <div class="panel panel-default">
-        <div class="panel-body small">
-          This program will be executed instead of user's submission, except for stage <code>0</code>.
-          You can then use new-style special judge to write validator/checker logic.
-        </div>
+  <div class="collapse" id="problemProgDescription" style="height: auto;">
+    <div class="panel panel-default">
+      <div class="panel-body small" style="line-height: 1.4;">
+        Add a problem program so that at some specific stages, the problem program will be executed instead of the user's program. This can be used to build hacking problems.<br>
+        Note that when setting up a hacking problem, the special judge must configure the <code>time_us</code> output to (problem TL - intended TL of the program being hacked) before the stage (see the description of special judge for details about overriding <code>time_us</code>). Otherwise, the user can just run the program to near the TL to cause TLE on the program to be hacked, because the time limit is by default shared by all stages.
       </div>
     </div>
-    <%= f.text_area :hackprog_code, class: 'form-control flat code-input', rows: '7' %>
   </div>
 
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
-    <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
-    <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
-        {}, {class: 'form-control flat'} %>
+  <div class="row visibility-problem-prog visibility-problem-prog-1">
+    <div class="col-lg-6">
+      <div class="form-group">
+        <%= f.label :problem_prog_compiler_id, "Problem Program Compiler" %>
+        <%= f.select :problem_prog_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.problem_prog_compiler_id || @compiler[0].id),
+            {}, {class: 'form-control flat'} %>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <%= f.label :problem_prog_stage_list, raw("Problem Program Stage List (0-based stage number, examples: <code>0</code>, <code>1,3</code>, <code>0,2-4</code>)") %>
+        <%= f.text_field :problem_prog_stage_list, class: 'form-control flat' %>
+      </div>
+    </div>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
-    <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
-    <%= f.text_field :specjudge_compile_args, class: 'form-control flat' %>
+  <div class="form-group visibility-problem-prog visibility-problem-prog-1">
+    <%= f.label :problem_prog_code, "Problem Program Code" %>
+    <%= f.text_area :problem_prog_code, class: 'form-control flat code-input', rows: '7' %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
+  <hr class="visibility-problem-prog visibility-problem-prog-1" style="border-top: 2px solid #ddd">
+
+  <div class="row visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+    <div class="col-lg-6">
+      <div class="form-group">
+        <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
+        <%= f.select :specjudge_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.specjudge_compiler_id || @compiler[0].id),
+            {}, {class: 'form-control flat'} %>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <%= f.label :specjudge_compile_args, 'Additional compilation arguments of special judge program' %>
+        <%= f.text_field :specjudge_compile_args, class: 'form-control flat' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
     <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
     <div class="collapse" id="sjDescription" style="height: auto;">
       <div class="panel panel-default">
         <div class="panel-body small">
           <div class="visibility-specjudge visibility-specjudge-old">
             Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
-            <div style="line-height: 1.3;">
-              <code>argv[1]</code>: path to user's output<br>
-              <code>argv[2]</code>: path to testdata input<br>
-              <code>argv[3]</code>: path to testdata output (answer)<br>
-              <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
-              <code>argv[5]</code>: path to source code<br>
-              <code>argv[6]</code>: current stage number<br>
-            </div>
+            The following information is given via <code>argv</code>:
+            <ul style="line-height: 1.3;">
+              <li><code>argv[1]</code>: path to user's output</li>
+              <li><code>argv[2]</code>: path to testdata input</li>
+              <li><code>argv[3]</code>: path to testdata output (answer)</li>
+              <li><code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</li>
+              <li><code>argv[5]</code>: path to source code</li>
+              <li><code>argv[6]</code>: current stage number</li>
+            </ul>
             Notes:
             <ul style="line-height: 1.4;">
               <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
@@ -214,7 +240,7 @@
               </li>
             </ul>
           </div>
-          <div class="visibility-specjudge visibility-specjudge-new visibility-specjudge-hack">
+          <div class="visibility-specjudge visibility-specjudge-new">
             This program will be called even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>).<br>
             The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
             <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
@@ -268,11 +294,11 @@
               <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
               <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
               <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
-              <li><code>tempdir</code> is a temporary directory that can be used to store any temporary files needed during judging. The files within it will be kept between all stages in multistage problems (with special judge between stages), thus can be used to pass information between stages.</li>
+              <li><code>tempdir</code> is a temporary directory that can be used to store any temporary files needed during judging. The files within it will be kept between all stages in multistage problems (with special judge between stages), and thus can be used to pass information between stages.</li>
               <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
               <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
               <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems (with special judge between stages), the message will be passed to the next stage.</li>
-              <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior.</li>
+              <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior. Setting <code>time_us</code> to a negative value is allowed.</li>
             </ul>
           </div>
           <div style="line-height: 1.4;">
@@ -283,7 +309,7 @@
     </div>
     <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-hack">
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
     <%= f.label :judge_between_stages, class: 'checkbox' do %>
       <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
       Invoke special judge between stages (only applicable if number of stages &gt; 1)
@@ -308,6 +334,7 @@
     </div>
     <%= f.text_field :default_scoring_args, class: 'form-control flat' %>
   </div>
+  <hr class="visibility-specjudge visibility-specjudge-old visibility-specjudge-new" style="border-top: 2px solid #ddd">
 
   <div class="form-group visibility-interlib visibility-interlib-header">
     <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
@@ -317,6 +344,7 @@
     <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
     <%= f.text_area :interlib_impl, class: 'form-control flat code-input', rows: '7' %>
   </div>
+  <hr class="visibility-interlib visibility-interlib-header" style="border-top: 2px solid #ddd">
 
   <div class="form-group">
     <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
@@ -357,7 +385,7 @@
   </div>
   
   <div class="form-group visibility-summary visibility-summary-none">
-    <%= f.label :score_precision %>
+    <%= f.label :score_precision, "Score Precision" %>
     <%= f.number_field :score_precision, in: 0..6, class: 'form-control flat', required: true %>
   </div>
 
@@ -421,8 +449,9 @@
     </div>
     <%= f.text_area :summary_code, class: 'form-control flat code-input', rows: '7' %>
   </div>
+  <hr class="visibility-summary visibility-summary-custom" style="border-top: 2px solid #ddd">
 
-  <%= f.label nil, raw("Testdata Sets (testdata no. starts from 0, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)") %><br>
+  <%= f.label nil, raw("Testdata Sets (0-based testdata number, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)") %><br>
   <%= f.fields_for :subtasks do |t| %>
     <div class="form-group">
       <div class="row">
@@ -453,13 +482,9 @@
   <%= f.link_to_add "Add a range", :subtasks, class: 'btn btn-warning' %>
 
   <br><br>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="form-group">
-        <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
-        <%= f.text_field :verdict_ignore_td_list, class: 'form-control flat' %>
-      </div>
-    </div>
+  <div class="form-group">
+    <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
+    <%= f.text_field :verdict_ignore_td_list, class: 'form-control flat' %>
   </div>
 
 </div>
@@ -467,7 +492,6 @@
   </div>
 </div>
 
-  <hr>
   <div class="actions">
     <span class="flex-container-bottom-align">
       <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>

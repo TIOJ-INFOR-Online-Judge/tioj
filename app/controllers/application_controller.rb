@@ -160,14 +160,6 @@ class ApplicationController < ActionController::Base
     query.to_a
   end
 
-  def reduce_td_list(str, sz)
-    Subtask.td_list_str_to_arr(str, sz).chunk_while{|x, y|
-      x + 1 == y
-    }.map{|x|
-      x.size == 1 ? x[0].to_s : x[0].to_s + '-' + x[-1].to_s
-    }.join(',')
-  end
-
   def inverse_td_list(prob)
     sz = prob.testdata.count
     prob.subtasks.map.with_index{|x, i| x.td_list_arr(sz).map{|y| [y, i]}}

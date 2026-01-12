@@ -2,57 +2,58 @@
 #
 # Table name: problems
 #
-#  id                     :bigint           not null, primary key
-#  name                   :string(255)
-#  description            :text(16777215)
-#  source                 :text(16777215)
-#  created_at             :datetime
-#  updated_at             :datetime
-#  input                  :text(16777215)
-#  output                 :text(16777215)
-#  hint                   :text(16777215)
-#  visible_state          :integer          default("invisible")
-#  sjcode                 :text(4294967295)
-#  interlib               :text(4294967295)
-#  specjudge_type         :integer          not null
-#  interlib_type          :integer          not null
-#  specjudge_compiler_id  :bigint
-#  discussion_visibility  :integer          default("enabled")
-#  interlib_impl          :text(4294967295)
-#  score_precision        :integer          default(2)
-#  verdict_ignore_td_list :string(255)      not null
-#  num_stages             :integer          default(1)
-#  judge_between_stages   :boolean          default(FALSE)
-#  default_scoring_args   :string(255)
-#  strict_mode            :boolean          default(FALSE)
-#  skip_group             :boolean          default(FALSE)
-#  ranklist_display_score :boolean          default(FALSE)
-#  code_length_limit      :integer          default(5000000)
-#  specjudge_compile_args :string(255)
-#  summary_type           :integer          not null
-#  summary_code           :text(4294967295)
-#  summary_compiler_id    :bigint
-#  hackprog_compiler_id   :bigint
-#  hackprog_code          :text(65535)
+#  id                       :bigint           not null, primary key
+#  name                     :string(255)
+#  description              :text(16777215)
+#  source                   :text(16777215)
+#  created_at               :datetime
+#  updated_at               :datetime
+#  input                    :text(16777215)
+#  output                   :text(16777215)
+#  hint                     :text(16777215)
+#  visible_state            :integer          default("invisible")
+#  sjcode                   :text(4294967295)
+#  interlib                 :text(4294967295)
+#  specjudge_type           :integer          not null
+#  interlib_type            :integer          not null
+#  specjudge_compiler_id    :bigint
+#  discussion_visibility    :integer          default("enabled")
+#  interlib_impl            :text(4294967295)
+#  score_precision          :integer          default(2)
+#  verdict_ignore_td_list   :string(255)      not null
+#  num_stages               :integer          default(1)
+#  judge_between_stages     :boolean          default(FALSE)
+#  default_scoring_args     :string(255)
+#  strict_mode              :boolean          default(FALSE)
+#  skip_group               :boolean          default(FALSE)
+#  ranklist_display_score   :boolean          default(FALSE)
+#  code_length_limit        :integer          default(5000000)
+#  specjudge_compile_args   :string(255)
+#  summary_type             :integer          not null
+#  summary_code             :text(4294967295)
+#  summary_compiler_id      :bigint
+#  problem_prog_compiler_id :bigint
+#  problem_prog_code        :text(65535)
+#  problem_prog_stage_list  :string(255)      default(""), not null
 #
 # Indexes
 #
-#  index_problems_on_hackprog_compiler_id   (hackprog_compiler_id)
-#  index_problems_on_name                   (name)
-#  index_problems_on_specjudge_compiler_id  (specjudge_compiler_id)
-#  index_problems_on_summary_compiler_id    (summary_compiler_id)
-#  index_problems_on_visible_state          (visible_state)
+#  index_problems_on_name                      (name)
+#  index_problems_on_problem_prog_compiler_id  (problem_prog_compiler_id)
+#  index_problems_on_specjudge_compiler_id     (specjudge_compiler_id)
+#  index_problems_on_summary_compiler_id       (summary_compiler_id)
+#  index_problems_on_visible_state             (visible_state)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (hackprog_compiler_id => compilers.id)
+#  fk_rails_...  (problem_prog_compiler_id => compilers.id)
 #  fk_rails_...  (specjudge_compiler_id => compilers.id)
 #  fk_rails_...  (summary_compiler_id => compilers.id)
 #
 
 class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
-  enum :specjudge_type, {none: 0, old: 1, new: 2, hack: 3}, prefix: :specjudge
+  enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :summary_type, {none: 0, custom: 1}, prefix: :summary
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion
@@ -82,16 +83,21 @@ class Problem < ApplicationRecord
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
   belongs_to :summary_compiler, class_name: 'Compiler', optional: true
-  belongs_to :hackprog_compiler, class_name: 'Compiler', optional: true
+  belongs_to :problem_prog_compiler, class_name: 'Compiler', optional: true
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000
   validates_length_of :interlib_impl, maximum: 5000000
   validates_length_of :summary_code, maximum: 5000000
-  validates_length_of :hackprog_code, maximum: 5000000
+  validates_length_of :problem_prog_code, maximum: 5000000
 
-  validates_presence_of :hackprog_compiler, if: :specjudge_hack?
-  validates_presence_of :hackprog_code, if: :specjudge_hack?
+  validates_presence_of :specjudge_compiler, unless: :specjudge_none?
+  validates_presence_of :summary_compiler, unless: :summary_none?
+  validates_presence_of :problem_prog_compiler, if: :has_problem_prog?
+
+  validate :judge_between_stages_only_if_specjudge
+  validate :problem_prog_stage_list_format
+  validate :verdict_ignore_td_list_format
 
   validates :code_length_limit, numericality: { in: 1..16777216 }
 
@@ -102,5 +108,21 @@ class Problem < ApplicationRecord
     if specjudge_none? and judge_between_stages
       errors.add(:judge_between_stages, "Can only judge between stages when using special judge")
     end
+  end
+
+  def problem_prog_stage_list_format
+    problem_prog_stage_list = NumberListStr.reduce(problem_prog_stage_list, num_stages)
+  end
+
+  def verdict_ignore_td_list_format
+    verdict_ignore_td_list = NumberListStr.reduce(verdict_ignore_td_list, testdata.count)
+  end
+
+  def has_problem_prog?
+    !problem_prog_stage_list.empty?
+  end
+
+  def problem_prog_stage_arr
+    NumberListStr.to_arr(problem_prog_stage_list, num_stages)
   end
 end
