@@ -86,7 +86,8 @@ gem 'activerecord-import'
 gem 'with_advisory_lock'
 
 # Redis for Action Cable
-gem 'redis', '~> 4'
+gem 'redis', '~> 5'
+gem 'connection_pool', '~> 2'
 
 # Sentry for monitoring
 gem 'sentry-ruby'
