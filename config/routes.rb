@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :announcements
+  resources :announcements, except: [:show, :new]
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -65,7 +65,7 @@ Rails.application.routes.draw do
       post 'rejudge', on: :member
       resources :submissions, only: [:index, :create, :new]
     end
-    resources :announcements
+    resources :announcements, except: [:show, :new]
     resources :posts do
       resources :comments, except: [:index]
     end
