@@ -302,7 +302,7 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.7.0)
+    prism (1.8.0)
     psych (5.3.1)
       date
       stringio
@@ -383,7 +383,7 @@ GEM
     ruby2_keywords (0.0.5)
     rubyntlm (0.6.5)
       base64
-    rubyzip (2.4.1)
+    rubyzip (3.2.2)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -454,7 +454,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.7.4)
-    zstd-ruby (1.5.7.1)
+    zstd-ruby (2.0.5)
 
 PLATFORMS
   ruby
@@ -491,7 +491,7 @@ DEPENDENCIES
   rdoc (~> 6)
   redcarpet
   redis (~> 5)
-  rubyzip (~> 2)
+  rubyzip (~> 3)
   sassc-rails
   sdoc
   selenium-webdriver
@@ -502,7 +502,7 @@ DEPENDENCIES
   tzinfo-data
   web-console
   with_advisory_lock
-  zstd-ruby (~> 1.5, >= 1.5.6.7)
+  zstd-ruby (~> 2)
 
 BUNDLED WITH
    2.6.5

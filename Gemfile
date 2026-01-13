@@ -48,8 +48,8 @@ gem 'nested_form'
 gem 'carrierwave'
 gem 'mini_magick'
 # compression
-gem 'zstd-ruby', '~> 1.5', '>= 1.5.6.7'
-gem 'rubyzip', '~> 2', require: 'zip'
+gem 'zstd-ruby', '~> 2'
+gem 'rubyzip', '~> 3', require: 'zip'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
@@ -87,7 +87,7 @@ gem 'with_advisory_lock'
 
 # Redis for Action Cable
 gem 'redis', '~> 5'
-gem 'connection_pool', '~> 2'
+gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
 
 # Sentry for monitoring
 gem 'sentry-ruby'
