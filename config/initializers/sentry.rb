@@ -13,5 +13,6 @@ if Rails.configuration.x.settings.dig(:sentry_dsn)
         sample_rate&.dig(:normal) == nil ? 0.02 : sample_rate[:normal]
       end
     end
+    config.excluded_exceptions += ['URI::InvalidURIError']
   end
 end
