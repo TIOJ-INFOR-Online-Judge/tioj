@@ -77,7 +77,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :freeze_minutes, 'Scoreboard freezing period (in minutes, 0 to disable freezing)' %>
+    <%= f.label :freeze_minutes, 'Scoreboard frozen period until end of contest (in minutes. 0 to disable freezing, 60 to freeze scoreboard for the last hour, etc.)' %>
     <%= f.number_field :freeze_minutes, min: 0, class: 'form-control flat', required: true, value: @contest.freeze_minutes %>
   </div>
 
