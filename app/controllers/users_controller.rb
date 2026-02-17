@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_current!, only: [:changed_problems, :changed_submissions]
   before_action :set_user, only: [:show, :changed_problems, :changed_submissions]
+  before_action :ensure_permission_for_role, only: [:index]
 
   def index
     all_users = get_sorted_user(nil, params[:role_id])
@@ -72,5 +73,16 @@ class UsersController < ApplicationController
       redirect_to users_path, alert: "Username '#{params[:id]}' not found."
       return
     end
+  end
+
+  def ensure_permission_for_role
+    if params[:role_id].blank?
+      return
+    end
+    role = Role.find_by(id: params[:role_id])
+    if role.nil? || !role.show_rank
+      redirect_to(users_path, alert: "Unable to filter by role") and return
+    end
+    return
   end
 end
