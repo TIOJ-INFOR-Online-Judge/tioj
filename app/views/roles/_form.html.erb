@@ -7,6 +7,11 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :show_rank, 'Show In Ranking Board' %> <br>
+    <%= f.check_box :show_rank, class: 'form-check-input' %>
+  </div>
+
+  <div class="form-group">
     <%= f.label :problem_ids, 'Problems' %> <br>
     <!-- need a more elegant way to send request -->
     <% Problem.all.each do |prob| %>
@@ -54,9 +59,12 @@
     <% end %>
     <%= hidden_field_tag 'role[user_ids][]', '' %>
   </div>
+  
+  
+
 
   <hr>
-
+ 
   <div class="form-group">
     <%= f.submit :class=>"btn btn-primary"%>
   </div>

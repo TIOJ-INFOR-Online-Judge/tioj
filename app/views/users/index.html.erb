@@ -9,6 +9,20 @@
   <a href="#" id="goto_user" class="btn btn-inverse btn-xs">Search</a>
 </div>
 
+
+<div class="form-inline">
+  <div class="form-group">
+    <label for="role_id">Filter by Role:</label>
+    <%= form_tag users_path, method: :get, id: "role-filter-form" do %>
+      <%= select_tag :role_id, 
+            options_from_collection_for_select(Role.where(show_rank: true), "id", "name", params[:role_id]), 
+            include_blank: "All Roles", 
+            class: "form-control",
+            onchange: "this.form.submit();" %> 
+    <% end %>
+  </div>
+</div>
+
 <%= paginate(@users) %>
 <table class ="table table-hover table-striped">
   <thead>
@@ -22,7 +36,6 @@
       <th>AC Ratio</th>
     </tr>
   </thead>
-
   <tbody>
     <% @users.each_with_index do |user, idx| %>
       <tr>

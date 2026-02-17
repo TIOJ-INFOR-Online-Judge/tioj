@@ -58,6 +58,7 @@ class RolesController < ApplicationController
     params.require(:role).permit(
       :id,
       :name,
+      :show_rank,
       user_ids: [],
       problem_ids: [],
     )

@@ -14,6 +14,14 @@ services:
       args:
         MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
         TIOJ_KEY: $FETCH_KEY
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./
+          target: /tioj
+          initial_sync: true
+        - action: rebuild
+          path: Gemfile
     environment:
       - RAILS_ENV=production
       - SMTP_USERNAME
@@ -24,9 +32,9 @@ services:
       - MAIL_SENDER
       - ALLOW_REGISTER
     volumes:
-      - /srv/ioic2024_tioj/web-td:/tioj/td
-      - /srv/ioic2024_tioj/web-log:/tioj/log
-      - /srv/ioic2024_tioj/public:/tioj/public
+      - /srv/tioj-web/web-td:/tioj/td
+      - /srv/tioj-web/web-log:/tioj/log
+      - /srv/tioj-web/public:/tioj/public
     depends_on:
       - db
     networks:
@@ -34,12 +42,12 @@ services:
     ports:
       - "4002:4000"
     logging: *default-logging
-    container_name: ioic2024_tioj_web
+    container_name: tioj-web
     restart: always
   db:
     image: mysql:8.0
     volumes:
-      - /srv/ioic2024_tioj/db:/var/lib/mysql
+      - /srv/tioj-web/db:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE=tioj_production
