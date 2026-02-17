@@ -151,8 +151,6 @@ class ApplicationController < ActionController::Base
   end
 
   def get_sorted_user(limit = nil, role_id = nil)
-    # 1. Start with the raw SQL attributes
-    # We use 'problems_roles' (exactly as it appears in your schema.rb)
     problem_filter = if role_id.present?
       "AND s.problem_id IN (SELECT problem_id FROM problems_roles WHERE role_id = #{ActiveRecord::Base.connection.quote(role_id)})"
     else
@@ -168,7 +166,7 @@ class ApplicationController < ActionController::Base
     ]
 
     query = User.select(*attributes)
-                .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
+                .joins("LEFT JOIN submissions s ON s.user_id = users.id")
 
     if role_id.present?
       query = query.joins("INNER JOIN roles_users ON roles_users.user_id = users.id")
@@ -181,23 +179,6 @@ class ApplicationController < ActionController::Base
     query.to_a
   end
   
-#  def get_sorted_user(limit = nil, role_id = nil)
-#    attributes = [
-#      "users.*",
-#      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.problem_id END) ac",
-#      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) acsub",
-#      "COUNT(s.id) sub",
-#      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) / COUNT(s.id) acratio",
-#    ]
-#    query = User.select(*attributes)
-#        .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
-#        .group(:id).order('ac DESC', 'acratio DESC', 'sub DESC', :id)
-#    if limit
-#      query = query.limit(limit)
-#    end
-#    query.to_a
-#  end
-
   def reduce_td_list(str, sz)
     Subtask.td_list_str_to_arr(str, sz).chunk_while{|x, y|
       x + 1 == y
