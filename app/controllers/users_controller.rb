@@ -3,7 +3,9 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :changed_problems, :changed_submissions]
 
   def index
-    @users = Kaminari.paginate_array(get_sorted_user).page(params[:page]).per(25)
+    all_users = get_sorted_user(nil, params[:role_id])
+    @users = Kaminari.paginate_array(all_users).page(params[:page]).per(25)
+    #@users = Kaminari.paginate_array(get_sorted_user).page(params[:page]).per(25)
   end
 
   def show

@@ -150,23 +150,35 @@ class ApplicationController < ActionController::Base
     @annos = Announcement.where(contest_id: contest_id).order(:id).all.to_a
   end
 
-  def get_sorted_user(limit = nil)
+  def get_sorted_user(limit = nil, role_id = nil)
+    problem_filter = if role_id.present?
+      "AND s.problem_id IN (SELECT problem_id FROM problems_roles WHERE role_id = #{ActiveRecord::Base.connection.quote(role_id)})"
+    else
+      ""
+    end
+
     attributes = [
       "users.*",
-      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.problem_id END) ac",
-      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) acsub",
-      "COUNT(s.id) sub",
-      "COUNT(DISTINCT CASE WHEN s.result = 'AC' THEN s.id END) / COUNT(s.id) acratio",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' #{problem_filter} THEN s.problem_id END) ac",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' #{problem_filter} THEN s.id END) acsub",
+      "COUNT(DISTINCT CASE WHEN (1=1) #{problem_filter} THEN s.id END) sub",
+      "COUNT(DISTINCT CASE WHEN s.result = 'AC' #{problem_filter} THEN s.id END) / COUNT(DISTINCT CASE WHEN (1=1) #{problem_filter} THEN s.id END) acratio",
     ]
+
     query = User.select(*attributes)
-        .joins("LEFT JOIN submissions s ON s.user_id = users.id AND s.contest_id IS NULL")
-        .group(:id).order('ac DESC', 'acratio DESC', 'sub DESC', :id)
-    if limit
-      query = query.limit(limit)
+                .joins("LEFT JOIN submissions s ON s.user_id = users.id")
+
+    if role_id.present?
+      query = query.joins("INNER JOIN roles_users ON roles_users.user_id = users.id")
+                   .where("roles_users.role_id = ?", role_id)
     end
+
+    query = query.group("users.id").order('ac DESC', 'acratio DESC', 'sub DESC', 'users.id')
+
+    query = query.limit(limit) if limit
     query.to_a
   end
-
+  
   def reduce_td_list(str, sz)
     Subtask.td_list_str_to_arr(str, sz).chunk_while{|x, y|
       x + 1 == y
