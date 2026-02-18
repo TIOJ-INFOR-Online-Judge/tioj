@@ -21,10 +21,27 @@ shared:
 
   # Sign up settings (default: false)
   disable_registration: false
-  unicode_username: false
 
   # Old submission views (default: false)
   old_submission_views: false
+
+  # Username & team name settings (these two sections show the default values)
+  # These are only checked when a new user or team is created. Existing users / teams won't
+  # be checked.
+  username_settings:
+    min_length: 3
+    max_length: 20
+    # If false, only allow /[A-Za-z][A-Za-z0-9_.\-]+/; otherwise, allow all names that
+    # does not contain non-printable characters
+    # Note: For username specifically (does not apply to team names), purely numeric names,
+    # names containing slashes, "sign_in" and "sign_up" are additionally banned
+    allow_unicode: false
+  team_name_settings:
+    min_length: 1
+    max_length: 50
+    allow_unicode: true
+    # Allow teams with duplicate names
+    allow_duplicate: false
 
   # Team settings
   # These are only checked when users tries to join a team. Existing teams won't be checked.

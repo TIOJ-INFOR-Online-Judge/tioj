@@ -13,7 +13,7 @@
 #
 # Indexes
 #
-#  index_teams_on_name  (name) UNIQUE
+#  index_teams_on_name  (name)
 #
 
 require 'file_size_validator'
@@ -24,10 +24,8 @@ class Team < ApplicationRecord
 
   accepts_nested_attributes_for :users, allow_destroy: true
 
-  validates_length_of :name, in: 1..45
-
-  validates :name, username_convention: true
-  validates_uniqueness_of :name
+  validates :name, team_name_convention: true
+  validates_uniqueness_of :name, if: -> { !Rails.configuration.x.settings.dig(:team_name_settings, :allow_duplicate) }
 
   validates_length_of :motto, maximum: 75
   validates :school, presence: true, length: {in: 1..64}
@@ -51,6 +49,10 @@ class Team < ApplicationRecord
 
   def generate_token
     self.token = SecureRandom.hex(20)
+  end
+
+  def select_display_str
+    "#{name} (#{users.map(&:username).join(', ')})"
   end
 end
 

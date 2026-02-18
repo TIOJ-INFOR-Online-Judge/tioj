@@ -13,7 +13,7 @@
 #
 # Indexes
 #
-#  index_teams_on_name  (name) UNIQUE
+#  index_teams_on_name  (name)
 #
 one:
   name: "Team One"

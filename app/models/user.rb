@@ -51,7 +51,6 @@ class User < UserBase
 
   validates :username,
     uniqueness: {case_sensitive: false},
-    username_convention: true,
     on: :create
 
   validates :school, presence: true, length: {in: 1..64}
