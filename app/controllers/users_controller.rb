@@ -8,8 +8,10 @@ class UsersController < ApplicationController
     @users = Kaminari.paginate_array(all_users).page(params[:page]).per(25)
     if current_user&.admin?
       @filterRoles = Role.where(show_rank: true)
+    elsif current_user
+      @filterRoles = current_user&.roles.where(show_rank: true)
     else
-      @filterRoles = current_user.roles.where(show_rank: true)
+      @filterRoles = Role.none
     end
   end
 
