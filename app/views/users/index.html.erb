@@ -15,7 +15,7 @@
     <label for="role_id">Filter by Role:</label>
     <%= form_tag users_path, method: :get, id: "role-filter-form" do %>
       <%= select_tag :role_id, 
-            options_from_collection_for_select(Role.where(show_rank: true), "id", "name", params[:role_id]), 
+            options_from_collection_for_select(@filterRoles, "id", "name", params[:role_id]), 
             include_blank: "All Roles", 
             class: "form-control",
             onchange: "this.form.submit();" %> 

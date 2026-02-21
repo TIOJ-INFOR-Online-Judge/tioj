@@ -6,7 +6,11 @@ class UsersController < ApplicationController
   def index
     all_users = get_sorted_user(nil, params[:role_id])
     @users = Kaminari.paginate_array(all_users).page(params[:page]).per(25)
-    #@users = Kaminari.paginate_array(get_sorted_user).page(params[:page]).per(25)
+    if current_user&.admin?
+      @filterRoles = Role.where(show_rank: true)
+    else
+      @filterRoles = current_user.roles.where(show_rank: true)
+    end
   end
 
   def show
@@ -81,8 +85,14 @@ class UsersController < ApplicationController
     end
     role = Role.find_by(id: params[:role_id])
     if role.nil? || !role.show_rank
-      redirect_to(users_path, alert: "Unable to filter by role") and return
+      redirect_to(users_path, alert: "Unable to Filter By Role.") and return
     end
+
+    unless current_user&.admin? or current_user.roles.exists?(id: params[:role_id])
+      flash[:alert] = 'Insufficient User Permissions.'
+      redirect_to action: 'index'
+    end
+    
     return
   end
 end
