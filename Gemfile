@@ -107,4 +107,5 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'puma'
+  gem 'minitest', '~> 5'
 end

@@ -248,8 +248,7 @@ GEM
       logger
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
-    minitest (6.0.1)
-      prism (~> 1.5)
+    minitest (5.27.0)
     msgpack (1.8.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
@@ -302,7 +301,6 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (1.8.0)
     psych (5.3.1)
       date
       stringio
@@ -481,6 +479,7 @@ DEPENDENCIES
   mathjax-rails-3
   mechanize
   mini_magick
+  minitest (~> 5)
   mysql2
   nested_form
   omniauth
