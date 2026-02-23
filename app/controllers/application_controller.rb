@@ -8,8 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :store_location
   before_action :set_anno
   mattr_accessor :verdict
-  mattr_accessor :v2i
-  mattr_accessor :i2v
+  mattr_accessor :judge_verdict
   helper_method :effective_admin?
 
   include SingleContestAuthenticationConcern
@@ -22,35 +21,21 @@ class ApplicationController < ActionController::Base
     "OLE" => "Output Limit Exceeded",
     "RE" => "Runtime Error",
     "SIG" => "Runtime Error (killed by signal)",
+    "JRE" => "Judge Runtime Error",
     "EE" => "Execution Error",
     "CE" => "Compilation Error",
     "CLE" => "Compilation Limit Exceeded",
-    "ER" => "Judge Compilation Error",
+    "JCE" => "Judge Compilation Error",
     "JE" => "Judge Error",
     "queued" => "Waiting for judge server",
     "received" => "Queued in judge server",
     "Validating" => "Validating",
   }
-  @@v2i = {
-    "AC" => 0,
-    "WA" => 1,
-    "TLE" => 2,
-    "MLE" => 3,
-    "OLE" => 4,
-    "RE" => 5,
-    "SIG" => 6,
-    "EE" => 7,
-    "CE" => 8,
-    "CLE" => 9,
-    "ER" => 10,
-    "JE" => 11,
-  }
-  @@i2v = @@v2i.map{|x, y| [y, x]}.to_h
+  @@judge_verdict = Set["AC", "WA", "TLE", "MLE", "OLE", "RE", "SIG", "JRE", "EE", "CE", "CLE", "JCE", "JE"]
 
   def set_verdict_hash
     @verdict = @@verdict
-    @v2i = @@v2i
-    @i2v = @@i2v
+    @judge_verdict = @@judge_verdict
   end
 
   def store_location
