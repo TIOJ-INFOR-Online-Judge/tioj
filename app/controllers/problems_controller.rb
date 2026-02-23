@@ -201,6 +201,7 @@ class ProblemsController < ApplicationController
     end
     if params[:specjudge_type] == 'none'
       params[:judge_between_stages] = false
+      params[:judge_abnormally_terminated] = false
     end
     params
   end

@@ -46,7 +46,7 @@ module ApplicationCable
       version = request.params['version']
       reject_unauthorized_connection if not key or not version
       n_version = Gem::Version.new(version)
-      reject_unauthorized_connection unless n_version >= Gem::Version.new('2.1.0') && n_version < Gem::Version.new('3')
+      reject_unauthorized_connection unless n_version >= Gem::Version.new('2.2.0') && n_version < Gem::Version.new('3')
       judge = JudgeServer.find_by(key: key)
       reject_unauthorized_connection if not judge or (not (judge.ip || "").empty? and judge.ip != request.remote_ip)
       judge
