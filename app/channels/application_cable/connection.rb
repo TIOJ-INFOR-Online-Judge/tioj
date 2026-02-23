@@ -1,21 +1,14 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     identified_by :judge_server, :current_user, :single_contest
-    
-    def initialize(*args)
-      super
-      @mutex = Mutex.new
-    end
 
     def connect
       if request.params['key']
-        @mutex.synchronize do
+        JudgeServer.with_advisory_lock("online_status") do
           return if @disconnected
           judge_server = find_judge_server
-          judge_server.with_lock do
-            reject_unauthorized_connection if judge_server.online
-            judge_server.update(online: true)
-          end
+          reject_unauthorized_connection if judge_server.online
+          judge_server.update(online: true)
           self.judge_server = judge_server
         end
       else
@@ -23,13 +16,18 @@ module ApplicationCable
       end
     end
 
+    def send_welcome_message
+      # Override welcome message to provide server version information. This allows the judge server to detect version mismatch.
+      transmit type: ActionCable::INTERNAL[:message_types][:welcome], version: Tioj::VERSION
+    end
+
     def disconnect
-      # connect and disconnect may be called in different thread simutaneously, thus use a mutex to prevent races
-      @mutex.synchronize do
+      # connect and disconnect may be called in different thread simutaneously
+      JudgeServer.with_advisory_lock("online_status") do
         if self.judge_server
           begin
             self.judge_server.update(online: false)
-          rescue ActiveRecord::StatementInvalid => e
+          rescue ActiveRecord::StatementInvalid
             # This happens once in a while when the server restarts;
             #  disconnect the connection pool to prevent the server being stuck by ~1min because of stale connections
             ActiveRecord::Base.connection_pool.disconnect

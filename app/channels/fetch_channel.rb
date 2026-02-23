@@ -38,7 +38,7 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
-    submission.with_lock do
+    Submission.with_advisory_lock("#{submission.id}") do
       submission.update(**update_hash)
     end
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
@@ -59,8 +59,8 @@ class FetchChannel < ApplicationCable::Channel
       submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
       flag = false
       if submission
-        submission.with_lock do
-          if submission.result == "received"
+        Submission.with_advisory_lock("#{submission.id}") do
+          if submission.result != "queued"
             if i != n_retry
               flag = true
               next # breaks with_lock
@@ -163,20 +163,18 @@ class FetchChannel < ApplicationCable::Channel
     }
     subtask_scores = nil
     update_hash = nil
-    submission.with_lock do
-      # This insert needs to be protected because simultaneous inserts
-      #  can cause deadlock because of gap locks
-      SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-      return if not ['Validating', 'received'].include?(submission.result)
-      if submission.problem.summary_none?
-        subtask_scores = submission.calc_subtask_result
-        score = subtask_scores.sum{|x| x[:score]}
-        max_score = BigDecimal('1e+12')
-        score = score.clamp(-max_score, max_score).round(6)
-        update_hash = {score: score}
-      else
-        update_hash = {}
-      end
+    SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
+    return if not ['Validating', 'received'].include?(submission.result)
+    if submission.problem.summary_none?
+      subtask_scores = submission.calc_subtask_result
+      score = subtask_scores.sum{|x| x[:score]}
+      max_score = BigDecimal('1e+12')
+      score = score.clamp(-max_score, max_score).round(6)
+      update_hash = {score: score}
+    else
+      update_hash = {}
+    end
+    Submission.with_advisory_lock("#{submission.id}") do
       submission.update_self_with_subtask_result(update_hash, subtask_scores)
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
