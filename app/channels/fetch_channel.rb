@@ -23,13 +23,12 @@ class FetchChannel < ApplicationCable::Channel
     if data[:message]
       update_hash[:message] = data[:message]
     end
-    v2i = ApplicationController.v2i
-    update_hash[:result] = ApplicationController.i2v[v2i.fetch(data[:verdict], v2i['JE'])]
+    update_hash[:result] = ApplicationController.judge_verdict.include?(data[:verdict]) ? data[:verdict] : 'JE'
     if submission.problem.summary_custom?
       update_hash[:score] = int_to_score(data[:score])
       update_hash[:total_time] = (BigDecimal(data[:total_time]) / 1000).round(0)
       update_hash[:total_memory] = data[:total_memory]
-    elsif ['JE', 'ER', 'CE', 'CLE'].include? update_hash[:result]
+    elsif ['JE', 'JCE', 'CE', 'CLE'].include? update_hash[:result]
       update_hash[:score] = 0
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0

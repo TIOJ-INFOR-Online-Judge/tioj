@@ -32,7 +32,7 @@ class ContestsHelperTest < ActionView::TestCase
 
   test "ranklist_data ioi-style negative score is correct" do
     submissions = [
-      Submission.new(user_id: 1, problem_id: 1, result: "ER", score: 0),
+      Submission.new(user_id: 1, problem_id: 1, result: "JCE", score: 0),
       Submission.new(user_id: 1, problem_id: 1, result: "WA", score: -10),
       Submission.new(user_id: 1, problem_id: 1, result: "JE", score: 0),
       Submission.new(user_id: 1, problem_id: 2, result: "WA", score: 0),
