@@ -126,9 +126,9 @@ class ApplicationController < ActionController::Base
       @layout = :application
     end
 
-    if @layout == :application
-      @contest = nil
-    else
+    @contest = nil
+    @team = nil
+    unless @layout == :application
       if controller_name == 'contests'
         contest_param = params[:id]
       else
@@ -136,6 +136,9 @@ class ApplicationController < ActionController::Base
       end
       contest_id = contest_param && contest_param.to_i
       @contest = Contest.find(contest_id)
+      if current_user
+        @team = @contest.find_registration(current_user)&.team
+      end
     end
     # used in ActionCable
     session[:current_single_contest] = @layout == :single_contest ? @contest&.id : nil

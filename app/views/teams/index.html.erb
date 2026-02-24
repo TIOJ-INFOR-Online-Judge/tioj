@@ -1,0 +1,43 @@
+<% set_page_title "Teams" %>
+<h4 class="page-header">Teams</h4>
+
+
+<%= link_to 'New Team', new_team_path, class: 'btn btn-success btn-sm' %>
+
+<%= form_with class: "form-inline", method: :get do |f| %>
+  <%= f.label "Search Teams" %>
+  <%= f.text_field :search_teamname, class: "form-control input-sm flat", placeholder: "Enter Team Name" %>
+  <%= f.text_field :search_username, class: "form-control input-sm flat", placeholder: "Enter Username" %>
+  <%= f.submit "Search", class: "btn btn-inverse btn-xs" %>
+<% end %>
+
+<br>
+<%= paginate @teams %>
+<table class="table table-hover table-condensed table-striped">
+  <thead>
+    <tr>
+      <%# <th>ID</th> %>
+      <th></th>
+      <th>Team Name</th>
+      <th>Members</th>
+      <th>Motto</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @teams.each do |team| %>
+      <tr class="<% if team.users.include?(current_user) %>warning<% end %>">
+        <%# <td><%= team.id %1></td> %>
+        <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "img-rounded"), team_path(team) %></td>
+        <td><%= link_to team.name, team_path(team) %></td>
+        <td><%= member_list_html(team.users, true, current_user) %></td>
+        <% unless team.motto.blank? %>
+          <td><div class="motto"><%= team.motto %></div></td>
+        <% else %>
+          <td></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @teams %>

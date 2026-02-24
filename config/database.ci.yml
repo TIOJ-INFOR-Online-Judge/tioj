@@ -1,0 +1,7 @@
+test:
+  adapter: mysql2
+  username: root
+  password: somepassword
+  host: 127.0.0.1 # prevent to use socket, since the db is in docker container
+  encoding: utf8mb4
+  database: tioj_test

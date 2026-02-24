@@ -44,7 +44,7 @@
         <% if user_signed_in? %>
           <td style="white-space: nowrap;">
             <%= contest_register_status(@registrations[contest.id], false) %>
-            <%= contest_register_button(contest, @registrations[contest.id], false) %>
+            <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
           </td>
         <% end %>
         <td><%= contest.start_time.to_fs(:clean_min) %></td>

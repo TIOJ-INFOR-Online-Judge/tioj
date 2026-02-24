@@ -37,7 +37,7 @@ class Visicon
 
   def draw_image
     Tempfile.create(['', '.png']) do |tmpfile|
-      MiniMagick::Tool::Convert.new do |img|
+      MiniMagick.convert do |img|
         img.size "#{@img_size}x#{@img_size}"
         img.xc 'white'
         img << tmpfile.path
