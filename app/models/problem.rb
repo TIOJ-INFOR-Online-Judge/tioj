@@ -84,6 +84,8 @@ class Problem < ApplicationRecord
 
   belongs_to :specjudge_compiler, class_name: 'Compiler', optional: true
   belongs_to :summary_compiler, class_name: 'Compiler', optional: true
+  belongs_to :problem_prog_compiler, class_name: 'Compiler', optional: true
+
 
   validates_length_of :sjcode, maximum: 5000000
   validates_length_of :interlib, maximum: 5000000

@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
-  create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2026_02_09_033746) do
+  create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
     t.string "resource_id", null: false
@@ -25,7 +25,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
-  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
@@ -35,7 +35,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
-  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "active_storage_blobs", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
     t.string "filename", null: false
     t.string "content_type"
@@ -47,13 +47,13 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
-  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "active_storage_variant_records", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "admin_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "admin_users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -72,7 +72,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["username"], name: "index_admin_users_on_username", unique: true
   end
 
-  create_table "announcements", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "announcements", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.string "body"
     t.datetime "created_at", null: false
@@ -81,7 +81,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["contest_id"], name: "index_announcements_on_contest_id"
   end
 
-  create_table "articles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "articles", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
@@ -94,7 +94,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["category", "pinned", "era"], name: "index_articles_on_category_and_pinned_and_era"
   end
 
-  create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "article_id"
     t.string "path"
     t.datetime "created_at"
@@ -102,7 +102,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["article_id"], name: "index_attachments_on_article_id"
   end
 
-  create_table "ban_compilers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "ban_compilers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "compiler_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -117,7 +117,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.binary "code", size: :long
   end
 
-  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
@@ -129,7 +129,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "compilers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "compilers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "format_type"
@@ -140,7 +140,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["name"], name: "index_compilers_on_name", unique: true
   end
 
-  create_table "contest_problem_joints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "contest_problem_joints", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "contest_id"
     t.bigint "problem_id"
     t.datetime "created_at"
@@ -162,7 +162,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["user_id", "approved"], name: "index_contest_registrations_on_user_id_and_approved"
   end
 
-  create_table "contests", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "contests", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "description", size: :medium
     t.datetime "start_time"
@@ -185,7 +185,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
-  create_table "judge_servers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "judge_servers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "ip"
     t.string "key"
@@ -194,34 +194,34 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.boolean "online", default: false
   end
 
-  create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "old_submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "old_submission_id"
     t.integer "position"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "time"
-    t.integer "rss"
+    t.bigint "time"
+    t.bigint "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["old_submission_id"], name: "index_old_submission_testdata_results_on_old_submission_id"
   end
 
-  create_table "old_submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "old_submissions", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.bigint "problem_id"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
+    t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder"
     t.index ["problem_id", "result"], name: "index_old_submissions_on_problem_id_and_result"
     t.index ["problem_id"], name: "index_old_submissions_on_problem_id"
     t.index ["submission_id"], name: "index_old_submissions_on_submission_id", unique: true
   end
 
-  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "posts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.bigint "user_id"
@@ -239,7 +239,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
-  create_table "problems", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "problems", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.text "description", size: :medium
     t.text "source", size: :medium
@@ -280,7 +280,32 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["visible_state"], name: "index_problems_on_visible_state"
   end
 
-  create_table "sample_testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "problems_roles", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "problem_id"
+    t.bigint "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id"], name: "index_problems_roles_on_problem_id"
+    t.index ["role_id"], name: "index_problems_roles_on_role_id"
+  end
+
+  create_table "roles", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "show_rank", default: false, null: false
+  end
+
+  create_table "roles_users", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "role_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_roles_users_on_role_id"
+    t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
+  create_table "sample_testdata", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.text "input", size: :medium
     t.text "output", size: :medium
@@ -307,23 +332,23 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["submission_id"], name: "index_submission_subtask_results_on_submission_id", unique: true
   end
 
-  create_table "submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "submission_testdata_results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "submission_id"
     t.integer "position"
     t.string "result"
     t.decimal "time", precision: 12, scale: 3
-    t.integer "rss"
+    t.bigint "rss"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "vss"
+    t.bigint "vss"
     t.string "message_type"
     t.text "message", size: :medium
     t.index ["submission_id", "position"], name: "index_submission_testdata_results_on_submission_id_and_position", unique: true
     t.index ["submission_id"], name: "index_submission_testdata_results_on_submission_id"
   end
 
-  create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "submissions", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "result", default: "queued"
     t.decimal "score", precision: 18, scale: 6, default: "0.0"
     t.datetime "created_at"
@@ -331,8 +356,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.bigint "problem_id", default: 0
     t.bigint "user_id", default: 0
     t.bigint "contest_id"
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
     t.bigint "code_length", default: 0, null: false
@@ -340,10 +365,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.integer "priority", default: 20, null: false
     t.index ["code_content_id"], name: "index_submissions_on_code_content_id"
     t.index ["compiler_id"], name: "fk_rails_55e5b9f361"
-    t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler", order: { id: :desc }
-    t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder", order: { score: :desc }
+    t.index ["contest_id", "compiler_id", "id"], name: "index_submissions_contest_compiler"
+    t.index ["contest_id", "problem_id", "result", "score", "total_time", "total_memory"], name: "index_submissions_topcoder"
     t.index ["contest_id", "problem_id", "user_id", "result"], name: "index_submissions_problem_query"
-    t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result", order: { id: :desc }
+    t.index ["contest_id", "result", "id"], name: "index_submissions_contest_result"
     t.index ["contest_id", "user_id", "problem_id", "result"], name: "index_submissions_user_query"
     t.index ["contest_id"], name: "index_submissions_on_contest_id"
     t.index ["result", "priority", "id"], name: "index_submissions_fetch", order: { priority: :desc }
@@ -351,7 +376,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
-  create_table "subtasks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "subtasks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at"
@@ -361,7 +386,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["problem_id"], name: "index_subtasks_on_problem_id"
   end
 
-  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "tag_id"
     t.bigint "taggable_id"
     t.string "taggable_type"
@@ -380,7 +405,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
   end
 
-  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -404,7 +429,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.index ["name"], name: "index_teams_on_name"
   end
 
-  create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.string "test_input"
     t.string "test_output"
@@ -419,7 +444,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
     t.boolean "output_compressed", default: false
   end
 
-  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "email"
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
