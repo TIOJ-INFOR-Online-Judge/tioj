@@ -255,8 +255,8 @@ After=syslog.target network.target
 
 [Service]
 Type=simple
-StandardOut=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=tioj-judge
 ExecStart=/usr/bin/nice -n -10 tioj-judge -v
 ExecStop=/bin/kill -s INT \$MAINPID

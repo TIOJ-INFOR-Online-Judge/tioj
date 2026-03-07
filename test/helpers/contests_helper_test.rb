@@ -48,6 +48,7 @@ class ContestsHelperTest < ActionView::TestCase
         "1_3" => [{timestamp: 6000000, state: [-10, true, 0]}],
       },
       participants: [1],
+      teams: [],
       first_ac: {},
     }
     assert_equal expected_result, ranklist_data(submissions, start_time, freeze_start, 'ioi')
@@ -69,6 +70,7 @@ class ContestsHelperTest < ActionView::TestCase
         ],
       },
       participants: [1],
+      teams: [],
       first_ac: {},
     }
     assert_equal expected_result, ranklist_data(submissions, start_time, freeze_start, 'ioi')
@@ -101,6 +103,7 @@ class ContestsHelperTest < ActionView::TestCase
         "2_2" => [{timestamp: 8000000, state: [1, 8000000, 0]}],
       },
       participants: [1, 2],
+      teams: [],
       first_ac: {1 => 1, 2 => 2},
     }
     assert_equal expected_result, ranklist_data(submissions, start_time, freeze_start, 'acm')
@@ -130,6 +133,7 @@ class ContestsHelperTest < ActionView::TestCase
         ],
       },
       participants: [1, 2],
+      teams: [],
       first_ac: {},
     }
     assert_equal expected_result, ranklist_data(submissions, start_time, freeze_start, 'acm')
@@ -166,6 +170,7 @@ class ContestsHelperTest < ActionView::TestCase
         ],
       },
       participants: [1],
+      teams: [],
       first_ac: {},
     }
     assert_equal expected_result, ranklist_data(submissions, start_time, freeze_start, 'ioi_new')
@@ -183,3 +188,4 @@ class ContestsHelperTest < ActionView::TestCase
     assert_equal [1, 2], ranklist_data(submissions, start_time, freeze_start, 'ioi')[:participants]
   end
 end
+

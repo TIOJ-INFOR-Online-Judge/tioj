@@ -105,6 +105,8 @@ class User < UserBase
   devise :validatable
 
   has_many :articles, dependent: :destroy
+  has_many :team_user_joints
+  has_many :teams, through: :team_user_joints
 
   validates :username,
     uniqueness: {case_sensitive: false},

@@ -11,3 +11,12 @@ acCode:
 
 invisibleCode:
   code: somecode
+
+team_code_one:
+  code: "user_one_code"
+
+team_code_two:
+  code: "user_two_code"
+
+non_team_code:
+  code: "user_three_code"

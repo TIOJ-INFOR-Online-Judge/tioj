@@ -53,6 +53,26 @@ userOne:
   gradyear: 123
   admin: false
 
+userTwo:
+  email: userTwo@example.org
+  encrypted_password: <%= User.new.send(:password_digest, 'userTwo') %>
+  username: userTwo
+  name: userTwoName
+  nickname: userTwoNck
+  school: userTwoSchool
+  gradyear: 123
+  admin: false
+
+userThree:
+  email: userThree@example.org
+  encrypted_password: <%= User.new.send(:password_digest, 'userThree') %>
+  username: userThree
+  name: userThreeName
+  nickname: userThreeNck
+  school: userThreeSchool
+  gradyear: 123
+  admin: false
+
 adminOne:
   email: adminOne@example.org
   encrypted_password: <%= User.new.send(:password_digest, 'adminOne') %>

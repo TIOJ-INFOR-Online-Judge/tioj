@@ -5,8 +5,7 @@ class ProblemsController < ApplicationController
   before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old, :rejudge]
   before_action :set_testdata, only: [:show]
-  before_action :set_compiler, only: [:new, :edit]
-  before_action :reduce_list, only: [:create, :update]
+  before_action :set_compiler, only: [:new, :edit, :update, :create]
   before_action :check_visibility!, only: [:show, :ranklist, :ranklist_old]
   layout :set_contest_layout, only: [:show]
 
@@ -165,19 +164,6 @@ class ProblemsController < ApplicationController
     @compiler = @compiler.order(order: :asc).to_a
   end
 
-  def reduce_list
-    if problem_params[:subtasks_attributes]
-      problem_params[:subtasks_attributes].each do |x, y|
-        params[:problem][:subtasks_attributes][x][:td_list] = \
-            reduce_td_list(y[:td_list], @problem ? @problem.testdata.count : 0)
-      end
-    end
-    if problem_params[:verdict_ignore_td_list]
-      params[:problem][:verdict_ignore_td_list] = \
-          reduce_td_list(problem_params[:verdict_ignore_td_list], @problem ? @problem.testdata.count : 0)
-    end
-  end
-
   def recalc_score
     return if @problem.summary_custom?
     num_tds = @problem.testdata.count
@@ -223,6 +209,7 @@ class ProblemsController < ApplicationController
     end
     if params[:specjudge_type] == 'none'
       params[:judge_between_stages] = false
+      params[:judge_abnormally_terminated] = false
     end
     params
   end
@@ -253,6 +240,7 @@ class ProblemsController < ApplicationController
       :specjudge_compile_args,
       :sjcode,
       :judge_between_stages,
+      :judge_abnormally_terminated,
       :default_scoring_args,
       :interlib_type,
       :interlib,
@@ -261,6 +249,9 @@ class ProblemsController < ApplicationController
       :summary_type,
       :summary_compiler_id,
       :summary_code,
+      :problem_prog_stage_list,
+      :problem_prog_compiler_id,
+      :problem_prog_code,
       :ranklist_display_score,
       :strict_mode,
       :skip_group,

@@ -356,7 +356,10 @@ GEM
     rdoc (6.12.0)
       psych (>= 4.0.0)
     redcarpet (3.6.1)
-    redis (4.8.1)
+    redis (5.4.1)
+      redis-client (>= 0.22.0)
+    redis-client (0.26.4)
+      connection_pool
     regexp_parser (2.10.0)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -370,7 +373,7 @@ GEM
     ruby2_keywords (0.0.5)
     rubyntlm (0.6.5)
       base64
-    rubyzip (2.4.1)
+    rubyzip (3.2.2)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -382,11 +385,11 @@ GEM
     sdoc (2.6.1)
       rdoc (>= 5.0)
     securerandom (0.4.1)
-    selenium-webdriver (4.29.1)
+    selenium-webdriver (4.41.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
+      rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     sentry-rails (5.22.4)
       railties (>= 5.0)
@@ -433,10 +436,13 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    with_advisory_lock (7.5.0)
+      activerecord (>= 7.2)
+      zeitwerk (>= 2.7)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.18)
-    zstd-ruby (1.5.6.6)
+    zeitwerk (2.7.5)
+    zstd-ruby (2.0.5)
 
 PLATFORMS
   ruby
@@ -452,6 +458,7 @@ DEPENDENCIES
   bullet
   capybara
   carrierwave
+  connection_pool (~> 2)
   devise
   dotenv
   friendly_id
@@ -463,6 +470,7 @@ DEPENDENCIES
   mathjax-rails-3
   mechanize
   mini_magick
+  minitest (~> 5)
   mysql2
   nested_form
   omniauth
@@ -472,8 +480,8 @@ DEPENDENCIES
   rails (~> 7)
   rdoc (~> 6)
   redcarpet
-  redis (~> 4)
-  rubyzip (~> 2)
+  redis (~> 5)
+  rubyzip (~> 3)
   sassc-rails
   sdoc
   selenium-webdriver
@@ -483,7 +491,8 @@ DEPENDENCIES
   terser
   tzinfo-data
   web-console
-  zstd-ruby
+  with_advisory_lock
+  zstd-ruby (~> 2)
 
 BUNDLED WITH
    2.6.5

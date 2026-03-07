@@ -19,5 +19,5 @@ class SampleTestdatum < ActiveRecord::Base
   default_scope { order('id ASC') }
 
   belongs_to :problem
-  enum :display_type, {plaintext: 0, markdown: 1}, prefix: :display
+  enum :display_type, {plaintext: 0, raw_html: 1, markdown: 2}, prefix: :display
 end
