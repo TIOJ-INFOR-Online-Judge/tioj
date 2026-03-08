@@ -11,7 +11,7 @@
     <%= f.label "Search Teams" %>
   </div>
   <div class="col-lg-2 px-lg-0">
-    <%= f.text_field :search_teamname, class: "form-control form-control-sm", placeholder: "Enter Teamname" %>
+    <%= f.text_field :search_teamname, class: "form-control form-control-sm", placeholder: "Enter Team Name" %>
   </div>
   <div class="col-lg-2 px-lg-0">
     <%= f.text_field :search_username, class: "form-control form-control-sm", placeholder: "Enter Username" %>
@@ -28,24 +28,24 @@
     <tr>
       <%# <th>ID</th> %>
       <th></th>
-      <th>Teamname</th>
+      <th>Team Name</th>
+      <th>Members</th>
       <th>Motto</th>
-      <th>Created At</th>
     </tr>
   </thead>
 
   <tbody>
     <% @teams.each do |team| %>
-      <tr>
+      <tr class="<% if team.users.include?(current_user) %>warning<% end %>">
         <%# <td><%= team.id %1></td> %>
         <td><%= link_to image_tag(team.avatar.mini_thumb.to_s, class: "rounded"), team_path(team) %></td>
-        <td><%= link_to team.teamname, team_path(team) %></td>
+        <td><%= link_to team.name, team_path(team) %></td>
+        <td><%= member_list_html(team.users, true, current_user) %></td>
         <% unless team.motto.blank? %>
           <td><div class="motto"><%= team.motto %></div></td>
         <% else %>
           <td></td>
         <% end %>
-        <td><%= team.created_at.strftime("%Y-%m-%d") %></td>
       </tr>
     <% end %>
   </tbody>

@@ -21,7 +21,7 @@
 #  register_mode              :integer          default("no_register"), not null
 #  register_before            :datetime         not null
 #  default_single_contest     :boolean          default(FALSE), not null
-#  allow_team_register        :boolean          default(FALSE), not null
+#  max_team_size              :integer          default(0), not null
 #
 # Indexes
 #
@@ -98,5 +98,9 @@ class Contest < ApplicationRecord
 
   def user_can_submit?(usr)
     usr && (no_register? || find_registration(usr)&.approved)
+  end
+
+  def allow_team_register?
+    max_team_size != 0
   end
 end

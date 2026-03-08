@@ -5,7 +5,8 @@ class ContestsController < ApplicationController
   before_action :check_started!, only: [:dashboard]
   before_action :set_tasks, only: [:show, :dashboard, :dashboard_update, :set_contest_task]
   before_action :calculate_ranking, only: [:dashboard, :dashboard_update]
-  layout :set_contest_layout, only: [:show, :edit, :register, :dashboard, :sign_in]
+  before_action :set_team_and_registration, only: [:register, :register_update]
+  layout :set_contest_layout, only: [:show, :edit, :register, :register_update, :dashboard, :sign_in]
 
   def set_contest_task
     redirect_to contest_path(@contest)
@@ -51,8 +52,14 @@ class ContestsController < ApplicationController
     )
     @data[:participants] |= @contest.approved_registered_users.ids - user_team_mapping.keys
     @data[:teams] |= user_team_mapping.values
-    @participants = UserBase.where(id: @data[:participants])
+    participant_ids = @data[:participants].to_set
+    all_users = UserBase.where(id: @contest.approved_registered_users.ids.to_set | participant_ids).all
+    user_map = all_users.map { |u| [u.id, u] }.to_h
+    @participants = all_users.select { |u| participant_ids.include?(u.id) }
     @teams = Team.where(id: @data[:teams])
+    @team_users = user_team_mapping.group_by { |_, team_id| team_id }.transform_values { |pairs|
+      pairs.map { |user_id, _| user_map[user_id] }
+    }
     @data[:tasks] = @tasks.map(&:id)
     @data[:contest_type] = @contest.contest_type
 
@@ -89,7 +96,7 @@ class ContestsController < ApplicationController
   end
 
   def show
-    @register_status = @contest.user_register_status(current_user)
+    @registration = @contest.find_registration(current_user)
   end
 
   def new
@@ -162,15 +169,6 @@ class ContestsController < ApplicationController
   end
 
   def register
-    @teams = current_user.teams
-    @registration = @contest.find_registration(current_user)
-    team = @registration&.team
-    if team.present?
-      @teammate_registrations = @contest.contest_registrations
-                                  .where(team: team)
-                                  .includes(:user)
-                                  .map { |reg| [reg.user, reg] }
-    end
   end
 
   def register_update
@@ -197,22 +195,25 @@ class ContestsController < ApplicationController
       team_id = team.id
     end
 
-    if params[:cancel] == '1'
-      @contest.contest_registrations.where(user_id: user_id, team_id: team_id).destroy_all
-      respond_to do |format|
-        format.html { redirect_back fallback_location: root_path, notice: 'Successfully unregistered.' }
-        format.json { head :no_content }
-      end
-    else
-      entry = @contest.contest_registrations.new(user_id: user_id, team_id: team_id, approved: !@contest.require_approval?)
-      respond_to do |format|
-        begin
-          entry.save!
-          format.html { redirect_back fallback_location: root_path, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
+    # lock for team size check
+    ContestRegistration.with_advisory_lock("#{@contest.id}") do
+      if params[:cancel] == '1'
+        @contest.contest_registrations.where(user_id: user_id, team_id: team_id).destroy_all
+        respond_to do |format|
+          format.html { redirect_to @contest, notice: 'Successfully unregistered.' }
           format.json { head :no_content }
-        rescue ActiveRecord::RecordNotUnique
-          format.html { redirect_back fallback_location: root_path, alert: 'Registration failed.' }
-          format.json { render json: @entry.errors, status: :unprocessable_entity }
+        end
+      else
+        entry = @contest.contest_registrations.new(user_id: user_id, team_id: team_id, approved: !@contest.require_approval?)
+        respond_to do |format|
+          if entry.save
+            format.html { redirect_to @contest, notice: @contest.require_approval? ? 'Registration request sent. Approval is pending.' : 'Successfully registered.' }
+            format.json { head :no_content }
+          else
+            @registration = entry
+            format.html { render action: 'register', location: @contest }
+            format.json { render json: entry.errors, status: :unprocessable_entity }
+          end
         end
       end
     end
@@ -250,6 +251,18 @@ class ContestsController < ApplicationController
 
   def set_tasks
     @tasks = @contest.contest_problem_joints.order("id ASC").includes(:problem).map{|e| e.problem}
+  end
+
+  def set_team_and_registration
+    @teams = current_user.teams
+    @registration = @contest.find_registration(current_user)
+    team = @registration&.team
+    if team.present?
+      @teammate_registrations = @contest.contest_registrations
+                                  .where(team: team)
+                                  .includes(:user)
+                                  .map { |reg| [reg.user, reg] }
+    end
   end
 
   def tasks_valid?
@@ -301,7 +314,7 @@ class ContestsController < ApplicationController
       :hide_old_submission,
       :skip_group,
       :default_single_contest,
-      :allow_team_register,
+      :max_team_size,
       compiler_ids: [],
       contest_problem_joints_attributes: [
         :id,

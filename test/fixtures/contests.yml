@@ -21,7 +21,7 @@
 #  register_mode              :integer          default("no_register"), not null
 #  register_before            :datetime         not null
 #  default_single_contest     :boolean          default(FALSE), not null
-#  allow_team_register        :boolean          default(FALSE), not null
+#  max_team_size              :integer          default(0), not null
 #
 # Indexes
 #
@@ -51,7 +51,7 @@ two:
   cd_time: 15
   disable_discussion: false
   register_mode: 'require_approval'
-  allow_team_register: false
+  max_team_size: 0
 
 three:
   title: contestThree
@@ -64,7 +64,7 @@ three:
   cd_time: 15
   disable_discussion: false
   register_mode: 'require_approval'
-  allow_team_register: true
+  max_team_size: -1
 
 four:
   title: contestFour
@@ -77,4 +77,4 @@ four:
   cd_time: 60
   disable_discussion: false
   register_mode: 'free_register'
-  allow_team_register: true
+  max_team_size: -1

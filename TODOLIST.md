@@ -6,7 +6,7 @@
 - [x] Batch upload testdata
 - [ ] Revisit all JSON endpoints
 - [x] Revisit all ActiveAdmin pages & Upgrade to ActiveAdmin 3
-- [ ] Teaming in contest (from ntuicpc?)
+- [x] Teaming in contest (from ntuicpc?)
 ---
 - [ ] Cache computation-intensive results (AC count of problem (Redis) / user (DB))
 - [ ] Problem import & export

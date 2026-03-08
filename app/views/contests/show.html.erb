@@ -1,12 +1,18 @@
 <% set_page_title @contest.title %>
 
 <% if @layout != :single_contest %>
-  <% if effective_admin? %>
-    <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-sm" %>
-  <% end %>
-  <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-sm" %>
-  <%= contest_registration_page_button(@contest, @register_status, true) %>
+  <div class="row">
+    <% if effective_admin? %>
+      <div class="col-md-2">
+        <%= link_to "Alter Contest Announcement", contest_announcements_path(@contest), class: "btn btn-info btn-sm" %>
+      </div>
+    <% end %>
+    <div class="col-md-2">
+      <%= link_to "Go to Single Contest page", single_contest_path(@contest), class: "btn btn-success btn-sm" %>
+    </div>
+  </div>
 
+  <%= contest_registration_page_button(@contest, @registration&.approved, true) %>
 <% end %>
 
 <h4 class="page-header">
@@ -61,7 +67,15 @@
           Registration Status
         </h6>
         <div class="card-body">
-          <%= contest_register_status(@register_status, true) %>
+          <%= contest_register_status(@registration&.approved, true) %>
+          <% if @registration and @contest.allow_team_register? %>
+            <br>
+            <% if @registration.team %>
+              (under team <%= link_to @registration.team.name, team_path(@registration.team) %>)
+            <% else %>
+              (individually)
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

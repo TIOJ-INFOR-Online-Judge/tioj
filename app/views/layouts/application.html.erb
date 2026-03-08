@@ -23,8 +23,8 @@
           <li class="nav-item"><%= link_to "Discuss", posts_path, class: "nav-link" %></li>
           <li class="nav-item"><%= link_to "About", about_url, class: "nav-link" %></li>
           <li class="nav-item"><%= link_to "Rank", users_path, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Teams", teams_path, class: "nav-link" %></li>
           <% if current_user %>
-            <li class="nav-item"><%= link_to "Teams", teams_path, class: "nav-link" %></li>
             <li class="nav-item"><%= link_to current_user.username, user_path(current_user), class: "nav-link" %></li>
             <li class="nav-item"><%= link_to "Sign out", destroy_user_session_path, method: :delete, class: "nav-link" %></li>
           <% else %>

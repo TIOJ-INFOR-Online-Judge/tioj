@@ -71,6 +71,20 @@
     <%= f.number_field :freeze_minutes, min: 0, class: 'form-control', required: true, value: @contest.freeze_minutes %>
   </div>
 
+  <div class="mb-3">
+    <%= f.label :max_team_size, help_collapse_toggle('Maximum team size', 'maxTeamSizeDescription') %>
+    <div class="collapse" id="maxTeamSizeDescription" style="height: auto;">
+      <div class="card bg-white mb-3">
+        <div class="card-body small" style="line-height: 1.4;">
+          Set to -1 for unlimited team size, and 0 to disable team registration.<br>
+          Teams with member count over the limit can still participate, but the number of members that can register into the contest is limited to the maximum team size.<br>
+          Only affects future registrations; existing teams are not affected.
+        </div>
+      </div>
+    </div>
+    <%= f.number_field :max_team_size, min: -1, class: 'form-control flat', required: true, value: @contest.max_team_size %>
+  </div>
+
   <div class="d-flex flex-column gap-2 mb-3">
     <div class="form-check">
       <%= f.check_box :dashboard_during_contest, class: 'form-check-input' %>
@@ -95,10 +109,6 @@
     <div class="form-check">
       <%= f.check_box :default_single_contest, class: 'form-check-input' %>
       <%= f.label :default_single_contest, 'Always go to Single Contest page by default for non-admin users', class: 'form-check-label' %>
-    </div>
-    <div class="form-check">
-      <%= f.check_box :allow_team_register, class: 'form-check-input' %>
-      <%= f.label :allow_team_register, 'Allow team registration', class: 'form-check-label' %>
     </div>
   </div>
 

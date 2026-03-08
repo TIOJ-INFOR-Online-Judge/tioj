@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -181,7 +181,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
     t.integer "register_mode", default: 0, null: false
     t.datetime "register_before", null: false
     t.boolean "default_single_contest", default: false, null: false
-    t.boolean "allow_team_register", default: false, null: false
+    t.integer "max_team_size", default: 0, null: false
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
@@ -269,7 +269,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
     t.integer "summary_type", null: false
     t.text "summary_code", size: :long
     t.bigint "summary_compiler_id"
+    t.bigint "problem_prog_compiler_id"
+    t.text "problem_prog_code"
+    t.string "problem_prog_stage_list", default: "", null: false
+    t.boolean "judge_abnormally_terminated", default: false, null: false
     t.index ["name"], name: "index_problems_on_name"
+    t.index ["problem_prog_compiler_id"], name: "index_problems_on_problem_prog_compiler_id"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["summary_compiler_id"], name: "index_problems_on_summary_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
@@ -381,21 +386,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "team_user_joints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_user_joints_on_team_id_and_user_id", unique: true
+    t.index ["user_id", "team_id"], name: "index_team_user_joints_on_user_id_and_team_id", unique: true
+  end
+
   create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "teamname"
+    t.string "name"
     t.string "avatar"
     t.string "motto"
     t.string "school"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "token"
-  end
-
-  create_table "teams_users", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "team_id", null: false
-    t.index ["team_id", "user_id"], name: "index_teams_users_on_team_id_and_user_id", unique: true
-    t.index ["user_id", "team_id"], name: "index_teams_users_on_user_id_and_team_id", unique: true
+    t.index ["name"], name: "index_teams_on_name"
   end
 
   create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -451,6 +457,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_25_121150) do
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
   add_foreign_key "contest_registrations", "teams"
+  add_foreign_key "problems", "compilers", column: "problem_prog_compiler_id"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "problems", "compilers", column: "summary_compiler_id"
   add_foreign_key "submission_subtask_results", "submissions"

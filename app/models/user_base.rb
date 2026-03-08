@@ -65,7 +65,7 @@ class UserBase < ApplicationRecord
 
   validates_presence_of :username, :nickname
   validates_length_of :nickname, in: 1..12
-  validates_length_of :username, in: 3..20
+  validates :username, username_convention: true
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,

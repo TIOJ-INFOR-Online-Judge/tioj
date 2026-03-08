@@ -1,33 +1,42 @@
 <h4 class="page-header">Edit registrations of <%= @contest.title %></h4>
 
-<% if @registration.nil? %>
+<% alert_tag do %>
+  This contest allows team registration.
+  <% if @registration.nil? || !@registration.persisted? %>
+  You can register either as a team or as an individual.
+  <% elsif @registration.team.nil? %>
+  If you want to register as a team, please unregister first.
+  <% else %>
+  If you want to switch team or register as individual, please unregister first.
+  <% end %>
+<% end %>
 
-  <div class="mb-3">
-    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+<%= render partial: "shared/errors", locals: {errors: @registration&.errors, item: 'Registration'} %>
+
+<% if @registration.nil? || !@registration.persisted? %>
+
+  <div class="row">
+    <div class="col-sm-9 col-md-6 col-lg-4">
       <div class="mb-3">
-        <label>As team</label>
-        <%= f.collection_select :team_id, @teams, :id, :teamname, {}, { class: 'form-control' } %>
+        <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+          <div>Register as team</div>
+          <%= f.collection_select :team_id, @teams, :id, :select_display_str, {}, { class: 'form-control' } %>
+          <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
+        <% end %>
       </div>
+
       <div class="mb-3">
-        <%= contest_register_status(@registration&.approved, true) %>
-        <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
+        <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
+          <div>Register as individual</div>
+          <div>
+            <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
 
   <hr>
-
-  <div class="mb-3">
-    <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-      <div class="mb-3">
-        <label>As individual</label>
-      </div>
-      <div class="mb-3">
-        <%= contest_register_status(@registration&.approved, true) %>
-        <%= f.submit 'Register', class: 'btn btn-success btn-sm' %>
-      </div>
-    <% end %>
-  </div>
 
 <% elsif @registration.team.nil? %>
 
@@ -48,26 +57,21 @@
 
   <div class="mb-3">
     <%= form_with url: register_update_contest_path(@contest), local: true do |f| %>
-      <div class="mb-3">
-        <label>As team</label>
-        <%=
-          f.collection_select :team_id, @teams, :id, :teamname,
-            { selected: @registration.user.id },
-            { class: 'form-control', disabled: true }
-          %>
-        <%= f.hidden_field :cancel, value: 1 %>
-        <%= f.hidden_field :team_id, value: @registration.team.id %>
-      </div>
-
-      <div class="mb-3">
-        <%= contest_register_status(@registration&.approved, true) %>
-        <%= f.submit 'Unregister', class: 'btn btn-danger btn-sm' %>
-      </div>
+      <label>As team</label>
+      <%=
+        f.collection_select :team_id, @teams, :id, :select_display_str,
+          { selected: @registration.user.id },
+          { class: 'form-control', disabled: true }
+        %>
+      <%= f.hidden_field :cancel, value: 1 %>
+      <%= f.hidden_field :team_id, value: @registration.team.id %>
+      <%= contest_register_status(@registration&.approved, true) %>
+      <%= f.submit 'Unregister', class: 'btn btn-danger btn-sm' %>
     <% end %>
   </div>
 
   <label>
-    Team <i><%= @registration.team.teamname %></i>
+    Team <i><%= @registration.team.name %></i>
   </label>
   <table class="table table-hover table-striped table-sm">
     <thead>
@@ -102,6 +106,5 @@
 
 <% end %>
 
-<div>
-  <%= link_to "Back", :back, class: 'btn btn-secondary btn-sm' %>
-</div>
+
+<%= link_to 'Back to Contest', @contest, class: 'btn btn-secondary btn-sm' %>

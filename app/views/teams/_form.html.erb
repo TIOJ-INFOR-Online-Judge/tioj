@@ -1,0 +1,66 @@
+<% if @team.persisted? %>
+  <% set_page_title "Edit " + @team.name %>
+<% else %>
+  <% set_page_title "New Team" %>
+<% end %>
+
+<%= form_for @team, html: {class: 'form', id: 'team-form'} do |f| %>
+  <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
+
+
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-md-7">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-md-7">
+        <%= f.label :school %>
+        <%= f.text_field :school, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-md-7">
+        <%= f.label :motto %>
+        <%= f.text_field :motto, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <div class="row">
+      <div class="col-md-7">
+        <%= f.label :avatar %>
+        <%= f.file_field :avatar, class: "form-control" %>
+        <%= f.hidden_field :avatar_cache %>
+      </div>
+    </div>
+  </div>
+
+  <% if @team.persisted? %>
+    <% alert_tag class: 'alert-warning' do %>
+      <strong>Oh Geez! </strong>
+      <%= "Use the following URL to invite members to this team. Anyone with this URL can join this team." %>
+    <% end %>
+    <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
+
+    <div style="margin-bottom: 8px;">
+      <%= link_to 'Renew Invitation URL', renew_token_team_path(@team), method: :post, class: 'btn btn-danger btn-sm' %>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
+  </div>
+<% end %>
+
+<%= javascript_include_tag "prism" %>
+<%= stylesheet_link_tag "prism" %>

@@ -149,26 +149,62 @@
             <%= f.label :specjudge_type, "Judge Type" %>
             <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
               {}, {class: 'form-control'} %>
-        </div>
-        <div class="col-md-4 mb-3">
-          <%= f.label :interlib_type, "Interactive Library Type" %>
-          <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
-            {}, {class: 'form-control'} %>
-        </div>
-        <div class="col-md-4 mb-3">
-          <%= f.label :num_stages, help_collapse_toggle('Number of execution stages', 'stagesDescription') %>
-          <div class="collapse" id="stagesDescription">
-            <div class="card bg-white mb-3">
-              <div class="card-body small" style="line-height: 1.4;">
-                The user's program will be run this number of times. If greater than 1, the 0-based stage number will be given via <code>argv[1]</code>.<br>
-                Each stage's output will be the input of the next stage; The last stage's output is the final answer.<br>
-                Special judge can be configured to run between stages for more checking; see the description of special judge program for more details.
+          </div>
+          <div class="col-md-4 mb-3">
+            <%= f.label :interlib_type, "Interactive Library Type" %>
+            <%= f.select :interlib_type, Problem.interlib_types.keys.map.with_index {|x, index| ["[#{index}] #{interlib_type_desc_map[x]}", x]},
+              {}, {class: 'form-control'} %>
+          </div>
+          <div class="col-md-4 mb-3">
+            <%= f.label :num_stages, help_collapse_toggle('Number of execution stages', 'stagesDescription') %>
+            <div class="collapse" id="stagesDescription">
+              <div class="card bg-white mb-3">
+                <div class="card-body small" style="line-height: 1.4;">
+                  The user's program will be run this number of times. If greater than 1, the 0-based stage number will be given via <code>argv[1]</code>.<br>
+                  Each stage's output will be the input of the next stage; The last stage's output is the final answer.<br>
+                  Special judge can be configured to run between stages for more checking; see the description of special judge program for more details.
+                </div>
               </div>
             </div>
+            <%= f.number_field :num_stages, in: 1..10, class: 'form-control', required: true %>
           </div>
-          <%= f.number_field :num_stages, in: 1..10, class: 'form-control', required: true %>
         </div>
+
+        <div class="mb-3">
+          <%= f.check_box :_problem_prog_enabled, class: 'form-check-input', checked: !@problem.problem_prog_stage_list.empty? %>
+          <%= f.label :_problem_prog_enabled, help_collapse_toggle('Enable Problem Program', 'problemProgDescription') %>
         </div>
+        <div class="collapse" id="problemProgDescription" style="height: auto;">
+            <div class="card bg-white mb-3">
+              <div class="card-body small">
+              Add a problem program so that at some specific stages, the problem program will be executed instead of the user's program. This can be used to build hacking problems.<br>
+              Note that when setting up a hacking problem, the special judge must configure the <code>time_us</code> output to (problem TL - intended TL of the program being hacked) before the stage (see the description of special judge for details about overriding <code>time_us</code>). Otherwise, the user can just run the program to near the TL to cause TLE on the program to be hacked, because the time limit is by default shared by all stages.
+            </div>
+          </div>
+        </div>
+
+        <div class="row visibility-problem-prog visibility-problem-prog-1">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <%= f.label :problem_prog_compiler_id, "Problem Program Compiler" %>
+              <%= f.select :problem_prog_compiler_id, options_for_select(@compiler.map{|x| [x.description, x.id]}, @problem.problem_prog_compiler_id || @compiler[0].id),
+                {}, {class: 'form-control'} %>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <%= f.label :problem_prog_stage_list do %>
+                Problem Program Stage List (0-based stage number, e.g.: <code>0</code>, <code>1,3</code>, <code>0,2-4</code>)
+              <% end %>
+              <%= f.text_field :problem_prog_stage_list, class: 'form-control' %>
+            </div>
+          </div>
+        </div>
+        <div class="mb-3 visibility-problem-prog visibility-problem-prog-1">
+          <%= f.label :problem_prog_code, "Problem Program Code" %>
+          <%= f.text_area :problem_prog_code, class: 'form-control code-input', rows: '7' %>
+        </div>
+        <hr class="visibility-problem-prog visibility-problem-prog-1" style="border-top: 2px solid #ddd">
 
         <div class="mb-3 visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
           <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
@@ -185,18 +221,31 @@
             <div class="card bg-white mb-3">
               <div class="card-body small">
                 <div class="visibility-specjudge visibility-specjudge-old">
-                  Output <code>0</code> to stdout for <span class="text-ac">AC</span>, <span class="text-wa">WA</span> otherwise. This program will only be called when the user program terminated normally.<br>
-                  <div style="line-height: 1.3;">
-                    <code>argv[1]</code>: path to user's output<br>
-                    <code>argv[2]</code>: path to testdata input<br>
-                    <code>argv[3]</code>: path to testdata output (answer)<br>
-                    <code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)<br>
-                    <code>argv[5]</code>: path to source code<br>
-                    <code>argv[6]</code>: current stage number<br>
-                  </div>
+                  Output <code>0</code> to stdout for <span class="text-ac">AC</span>, <span class="text-wa">WA</span> otherwise.<br>
+                  The following information is given via <code>argv</code>:
+                  <ul style="line-height: 1.3; margin-bottom: 4px;">
+                    <li><code>argv[1]</code>: path to user's output</li>
+                    <li><code>argv[2]</code>: path to testdata input</li>
+                    <li><code>argv[3]</code>: path to testdata output (answer)</li>
+                    <li><code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c90/c99/c11/haskell/python2/python3)</li>
+                    <li><code>argv[5]</code>: path to source code</li>
+                    <li><code>argv[6]</code>: current stage number</li>
+                  </ul>
+                  Additional information is given via standard input. It contains 5 lines each with a single string:<br>
+                  <ul style="line-height: 1.3; margin-bottom: 4px;">
+                    <li>1st line: original verdict (<code>NONE</code> if terminated normally)</li>
+                    <li>2nd line: testdata index</li>
+                    <li>3rd line: time (in us)</li>
+                    <li>4th line: VSS (in KiB)</li>
+                    <li>5th line: RSS (in KiB)</li>
+                  </ul>
                   Notes:
                   <ul style="line-height: 1.4;">
-                    <li>After outputting <code>0</code>, one can optionally output several space-separated <code>CMD VAL</code> pairs to set the judge result. <code>CMD</code> can be one of <code>SPECJUDGE_OVERRIDE_SCORE</code> and <code>SPECJUDGE_OVERRIDE_VERDICT</code>, which overrides the score and verdict with <code>VAL</code>, respectively.</li>
+                    <li>
+                      After outputting <code>0</code>, one can optionally output several space-separated <code>SPECJUDGE_OVERRIDE_[CMD] [VAL]</code> pairs to set the judge result.
+                      <code>[CMD]</code> can be one of <code>SCORE</code>, <code>VERDICT</code>, <code>TIME_US</code>, <code>VSS_KIB</code> or <code>RSS_KIB</code>, which overrides the score, verdict, time, VSS, or RSS with <code>[VAL]</code> respectively.
+                      <ul><li>Overriding time in intermediate stages also changes the later stages' time value, and effectively changes the time limit of the remaining stages (calculated by TL - time value), so it is possible to set adaptive time limits using this behavior. Setting it to a negative value is allowed.</li></ul>
+                    </li>
                     <li>
                       If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-wa">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
                       <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
@@ -224,6 +273,7 @@
                     original_verdict: 'TLE',
                     message_type: '',
                     message: '',
+                    tempdir: 'path_to_tempdir',
                     limits: {
                       time_us: 1000000,
                       vss_kib: 262144,
@@ -256,10 +306,12 @@
                     <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
                     <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
                     <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
+                    <li><code>tempdir</code> is a temporary directory that can be used to store any temporary files needed during judging. The files within it will be kept between all stages in multistage problems (with special judge between stages), and thus can be used to pass information between stages.</li>
                     <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-wa">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
                     <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-ac">AC</span> or 0 otherwise.</li>
-                    <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li>
-                    <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior.</li>
+                    <%# <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems with special judge between stages, it can also be used to pass some information between stages.</li> %>
+                    <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems (with special judge between stages), the message will be passed to the next stage.</li>
+                    <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior. Setting <code>time_us</code> to a negative value is allowed.</li>
                   </ul>
                 </div>
                 <div style="line-height: 1.4;">
@@ -270,11 +322,22 @@
           </div>
           <%= f.text_area :sjcode, class: 'form-control code-input', rows: '7' %>
         </div>
-        <div class="mb-3 visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
-          <%= f.check_box :judge_between_stages, class: 'form-check-input' %>
-          <%= f.label :judge_between_stages, class: 'form-check-label' do %>
-            Invoke special judge between stages (only applicable if number of stages &gt; 1)
-          <% end %>
+        <div class="visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+          <div class="d-flex flex-column gap-2 mb-3">
+            <div>
+              <%= f.check_box :judge_between_stages, class: 'form-check-input' %>
+              <%= f.label :judge_between_stages, class: 'form-check-label' do %>
+                Invoke special judge between stages (only applicable if number of stages &gt; 1)
+              <% end %>
+            </div>
+
+            <div>
+              <%= f.check_box :judge_abnormally_terminated, class: 'form-check-input' %>
+              <%= f.label :judge_abnormally_terminated, class: 'form-check-label' do %>
+                Invoke special judge even if the user program didn't terminate normally (e.g. <span class="text-tle">TLE</span>, <span class="text-sig">SIG</span>)
+              <% end %>
+            </div>
+          </div>
         </div>
 
         <div class="mb-3 visibility-specjudge visibility-specjudge-none">
@@ -296,6 +359,8 @@
           <%= f.text_field :default_scoring_args, class: 'form-control' %>
         </div>
 
+        <hr class="visibility-specjudge visibility-specjudge-old visibility-specjudge-new" style="border-top: 2px solid #ddd">
+
         <div class="mb-3 visibility-interlib visibility-interlib-header">
           <div class="col">
             <%= f.label :interlib, raw('Interactive Library Header ( #include "lib' + @problem.id.to_s.rjust(4, '0') + '.h" )') %>
@@ -306,6 +371,8 @@
           <%= f.label :interlib_impl, raw("Interactive Library Implementation (will be linked with user's program)") %>
           <%= f.text_area :interlib_impl, class: 'form-control code-input', rows: '7' %>
         </div>
+
+        <hr class="visibility-interlib visibility-interlib-header" style="border-top: 2px solid #ddd">
 
         <div class="mb-3">
           <%= f.label :code_length_limit, 'Code length limit (bytes)' %>
@@ -352,7 +419,7 @@
         </div>
 
         <div class="mb-3 visibility-summary visibility-summary-none">
-          <%= f.label :score_precision %>
+          <%= f.label :score_precision, "Score Precision" %>
           <%= f.number_field :score_precision, in: 0..6, class: 'form-control', required: true %>
         </div>
 
@@ -419,7 +486,7 @@
 
         <div class="mb-3">
           <label>
-            Testdata Sets (testdata no. starts from 0, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)
+            Testdata Sets (0-based testdata number, examples: <code>0</code>, <code>1-4</code>, <code>2,4,9-11,13-18</code>)
           </label>
         </div>
 
@@ -452,7 +519,7 @@
           <%= f.link_to_add "Add a range", :subtasks, class: 'btn btn-warning' %>
         </div>
 
-        <div>
+        <div class="mb-3">
           <%= f.label :verdict_ignore_td_list, "Testdata list to ignore in overall verdict calculation (needs rejudge)" %>
           <%= f.text_field :verdict_ignore_td_list, class: 'form-control' %>
         </div>
