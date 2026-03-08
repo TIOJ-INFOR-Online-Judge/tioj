@@ -37,26 +37,38 @@ module ApplicationHelper
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end
 
+  def indicator_chevron_up_float_glyph
+    raw '<span class="indicator bi bi-chevron-up float-end"></span>'
+  end
+
+  def indicator_chevron_down_glyph
+    raw '<span class="indicator bi bi-chevron-down"></span>'
+  end
+
+  def alert_glyph
+    raw '<span class="bi bi-exclamation-triangle-fill"></span>'
+  end
+
   def destroy_glyph
-    return raw '<span class="glyphicon glyphicon-trash"></span>'
+    raw '<span class="bi bi-trash"></span>'
   end
 
   def edit_glyph
-    return raw '<span class="fui-new"></span>'
+    raw '<span class="bi bi-pencil-square"></span>'
   end
 
   def pin_glyph
-    return raw '<span class="glyphicon glyphicon-pushpin"></span>'
+    raw '<span class="bi bi-pin-angle-fill"></span>'
   end
 
   def verdict_text(x)
     class_map = {
-      "AC" => "text-success",
-      "WA" => "text-danger",
-      "TLE" => "text-info",
+      "AC"  => "text-ac",
+      "WA"  => "text-wa",
+      "TLE" => "text-tle",
       "MLE" => "text-mle",
       "OLE" => "text-ole",
-      "RE" => "text-warning",
+      "RE"  => "text-re",
       "SIG" => "text-sig",
       "queued" => "text-muted",
     }
@@ -67,12 +79,28 @@ module ApplicationHelper
     end
   end
 
-  def help_icon(x)
-    raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+  def help_icon(href)
+    link_to(
+      '',
+      href,
+      class: "bi bi-question-circle-fill text-reset link-primary"
+    )
   end
 
-  def help_collapse_toggle(x, target)
-    raw x + ' <a class="glyphicon glyphicon-question-sign" style="color: inherit;" data-toggle="collapse" href="#' + target + '" role="button" aria-expanded="false" aria-controls="collapseExample"></a>'
+  def help_collapse_toggle(desc, target)
+    href = '#' + target
+    capture do
+      concat desc + ' '
+      concat link_to(
+        '',
+        href,
+        class: "bi bi-question-circle-fill text-reset link-primary",
+        'data-bs-toggle': "collapse",
+        role: "button",
+        'area-expanded': false,
+        'aria-controls': target
+      )
+    end
   end
 
   def alert_tag(opts={}, &block)
@@ -83,9 +111,7 @@ module ApplicationHelper
     ret = raw '<div class="alert' + cls + '" role="alert">'
     if dismissible
       ret += raw <<~HTML
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-        <span class="sr-only">Close</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
       </button>
       HTML
     end

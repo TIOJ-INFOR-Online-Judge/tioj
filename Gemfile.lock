@@ -138,6 +138,12 @@ GEM
     connection_pool (2.5.5)
     crass (1.0.6)
     csv (3.3.5)
+    dartsass-sprockets (3.2.1)
+      railties (>= 4.0.0)
+      sassc-embedded (~> 1.80.1)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     date (3.5.1)
     devise (4.9.4)
       bcrypt (~> 3.0)
@@ -164,6 +170,9 @@ GEM
       activerecord (>= 4.0.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
+    google-protobuf (4.33.2)
+      bigdecimal
+      rake (>= 13)
     has_scope (0.9.0)
       actionpack (>= 7.0)
       activesupport (>= 7.0)
@@ -382,14 +391,11 @@ GEM
     rubyntlm (0.6.5)
       base64
     rubyzip (3.2.2)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
+    sass-embedded (1.97.1)
+      google-protobuf (~> 4.31)
+      rake (>= 13)
+    sassc-embedded (1.80.8)
+      sass-embedded (~> 1.80)
     sdoc (2.6.5)
       rdoc (>= 5.0)
     securerandom (0.4.1)
@@ -469,6 +475,7 @@ DEPENDENCIES
   capybara
   carrierwave
   connection_pool (~> 2)
+  dartsass-sprockets (~> 3.2)
   devise
   friendly_id
   jbuilder
@@ -491,7 +498,6 @@ DEPENDENCIES
   redcarpet
   redis (~> 5)
   rubyzip (~> 3)
-  sassc-rails
   sdoc
   selenium-webdriver
   sentry-rails

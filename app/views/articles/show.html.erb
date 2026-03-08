@@ -1,28 +1,31 @@
 <% set_page_title @article.title %>
 <h4 class="page-header"><%= @article.title %></h4>
 
-<div class="well">
+<div class="card bg-light">
+  <div class="card-body">
+    <p>
+      <%= markdown(@article.content) %>
+    </p>
 
-<p>
-  <%= markdown(@article.content) %>
-</p>
+    <% if not @article.attachments.blank? %>
+    <p>
+      <strong>Attachments: </strong><br>
+      <% @article.attachments.each do |a| %>
+        <%= link_to (a.path_identifier.to_s + " (" + number_to_human_size(a.path.file.size).to_s + ")"), a.path.to_s %><br>
+      <% end %>
+    </p>
+    <% end %>
 
-<% if not @article.attachments.blank? %>
-<p>
-  <strong>Attachments: </strong><br>
-  <% @article.attachments.each do |a| %>
-    <%= link_to (a.path_identifier.to_s + " (" + number_to_human_size(a.path.file.size).to_s + ")"), a.path.to_s %><br>
-  <% end %>
-</p>
-<% end %>
+    <p>
+      <dfn>
+        Last authored by: <%= link_to @article.user.nickname, user_path(@article.user) %>, <%= @article.updated_at.to_fs(:clean) %>
+      </dfn>
+    </p>
 
-<p>
-  <dfn>
-    Last authored by: <%= link_to @article.user.nickname, user_path(@article.user) %>, <%= @article.updated_at.to_fs(:clean) %>
-  </dfn>
-</p>
+    <%= link_to 'Back to Bulletin', articles_path, class: 'btn btn-sm btn-secondary' %>
+    <% if current_user&.admin? %>
+      <%= link_to 'Edit', edit_article_path(@article), class: 'btn btn-info btn-sm' %>
+    <% end %>
+  </div>
+</div>
 
-<%= link_to 'Back to Bulletin', articles_path, class: 'btn btn-xs btn-default' %>
-<% if current_user&.admin? %>
-  <%= link_to 'Edit', edit_article_path(@article), class: 'btn btn-info btn-xs' %>
-<% end %>

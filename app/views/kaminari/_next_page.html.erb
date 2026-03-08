@@ -1,3 +1,3 @@
-<li class="next">
-  <%= link_to '', current_page.last? ? '#' : url, rel: 'next', remote: remote, class: "fui-arrow-right" %>
+<li class="page-item<% if current_page.last? %> disabled <% end %>">
+  <%= link_to '', current_page.last? ? '#' : url, rel: 'next', remote: remote, class: "page-link bi bi-chevron-right" %>
 </li>

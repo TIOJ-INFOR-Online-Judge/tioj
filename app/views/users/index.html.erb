@@ -1,12 +1,16 @@
 <% set_page_title "Users" %>
 <h4 class="page-header">Users</h4>
 
-<div class="form-inline">
-  <div class="form-group">
-    <label for="goto_user_id">Find User</label>
-    <input id="goto_user_id" type="text" class="form-control input-sm flat" placeholder="Enter Username"/>
+<div class="row align-items-center gap-1 mb-3">
+  <div class="col-md-auto">
+  <label for="goto_user_id">Find User</label>
   </div>
-  <a href="#" id="goto_user" class="btn btn-inverse btn-xs">Search</a>
+  <div class="col-md-3 px-md-0">
+  <input id="goto_user_id" type="text" class="form-control form-control-sm" placeholder="Enter Username"/>
+  </div>
+  <div class="col-md-auto">
+  <a href="#" id="goto_user" class="btn btn-dark btn-sm">Search</a>
+  </div>
 </div>
 
 <%= paginate(@users) %>
@@ -27,7 +31,7 @@
     <% @users.each_with_index do |user, idx| %>
       <tr>
         <td><% offset = [params[:page].to_i, 1].max %><%= (offset-1) * 25 + idx + 1 %></td>
-        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
+        <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "rounded"), user_path(user) %></td>
         <td><%= link_to user.username, user_path(user) %></td>
         <td><%= user.nickname %></td>
         <% unless user.motto.blank? %>

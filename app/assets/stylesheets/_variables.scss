@@ -1,0 +1,121 @@
+//
+// Colors
+//
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #ecf0f1 !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #b4bcc2 !default;
+$gray-600: #95a5a6 !default;
+$gray-700: #7b8a8b !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$blue:    #2c3e50 !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #e74c3c !default;
+$orange:  #fd7e14 !default;
+$yellow:  #f1c40f !default;
+$green:   #2ecc71 !default;
+$teal:    #1abc9c !default;
+$cyan:    #3498db !default;
+
+$primary:       $teal !default;
+$secondary:     $gray-500 !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
+
+$min-contrast-ratio:   1.65 !default;
+
+$body-bg: #E6EBF0;
+
+// Fonts
+
+// stylelint-disable-next-line value-keyword-case
+$font-family-sans-serif:      Lato, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !default;
+// $font-size-base: 1.125rem;
+$headings-font-weight: 700;
+
+// Navbar
+
+$navbar-padding-y:                 1.125rem;
+$navbar-nav-link-padding-x:        1.125rem;
+$navbar-dark-color:                $white;
+$navbar-dark-hover-color:          $primary;
+$navbar-dark-active-color:         $primary;
+$navbar-dark-brand-color:          $white;
+$navbar-dark-brand-hover-color:    $primary;
+
+// Pagination
+
+$pagination-color:                 $white !default;
+$pagination-bg:                    $success !default;
+$pagination-border-width:          0 !default;
+$pagination-border-color:          transparent !default;
+$pagination-hover-color:           $white !default;
+$pagination-hover-bg:              darken($pagination-bg, 5%) !default;
+$pagination-hover-border-color:    transparent !default;
+$pagination-active-bg:             darken($pagination-bg, 10%) !default;
+$pagination-active-border-color:   transparent !default;
+$pagination-disabled-color:        $gray-200 !default;
+$pagination-disabled-bg:           lighten($pagination-bg, 25%) !default;
+$pagination-disabled-border-color: transparent !default;
+$pagination-focus-color:           $pagination-color !default;
+$pagination-focus-bg:              $pagination-active-bg !default;
+
+// Close
+
+$btn-close-color:         $gray-700 !default;
+$btn-close-opacity:       .4 !default;
+$btn-close-hover-opacity: 1 !default;
+
+// focus ring (btn, input)
+
+$focus-ring-box-shadow: none;
+$focus-ring-width: 0;
+$enable-shadows: false;
+
+// Form
+
+$input-bg: #fff;
+$input-border-width: 2px;
+$input-focus-border-color: $primary;
+
+$form-check-input-width: 1.25em;
+$form-check-input-bg: $gray-500;
+
+// Links
+
+$link-decoration: none;
+$link-color: shift-color($primary, 20%);
+
+// Tables
+
+$table-striped-bg: #f8f8f8;
+$table-hover-bg: #f5f5f5;
+$table-striped-bg-factor: .02;
+$table-hover-bg-factor: .03;
+$table-border-color: #ddd;
+$table-border-width: 1px;
+
+// Dropdowns
+
+$dropdown-border-color:             $gray-400 !default;
+$dropdown-link-color:               $gray-700 !default;
+$dropdown-link-hover-color:         $white;
+$dropdown-link-hover-bg:            $primary;
+
+// tom-select
+
+$select-color-item-active: shade-color($primary, 20%);
+$select-color-item: $primary;
+$select-color-item-text: $light;

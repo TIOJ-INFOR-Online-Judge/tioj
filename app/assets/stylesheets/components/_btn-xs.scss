@@ -1,0 +1,10 @@
+$btn-padding-x-xs: $btn-padding-x * .75;
+$btn-padding-y-xs: $btn-padding-y * .75;
+$btn-font-size-xs: $btn-font-size * .75;
+
+.btn-xs {
+  padding:       $btn-padding-y-xs $btn-padding-x-xs;
+  font-size:     $btn-font-size-xs;
+  line-height:   0.875;
+  border-radius: .25rem;
+}

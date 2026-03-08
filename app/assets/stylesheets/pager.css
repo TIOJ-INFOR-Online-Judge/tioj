@@ -1,0 +1,43 @@
+.pager {
+  background-color: #34495e;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-block;
+}
+.pager li:first-child > a,
+.pager li:first-child > span {
+  border-left: none;
+  border-radius: 6px 0 0 6px;
+}
+.pager li > a,
+.pager li > span {
+  background: none;
+  border: none;
+  border-left: 2px solid #2c3e50;
+  color: #ffffff;
+  padding: 9px 15px 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 0 6px 6px 0;
+  line-height: 1.313;
+}
+.pager li > a:hover,
+.pager li > span:hover,
+.pager li > a:focus,
+.pager li > span:focus {
+  background-color: #2c3e50;
+}
+.pager li > a:active,
+.pager li > span:active {
+  background-color: #2c3e50;
+}
+.pager li > a [class*="fui-"] + span,
+.pager li > span [class*="fui-"] + span {
+  margin-left: 8px;
+}
+.pager li > a span + [class*="fui-"],
+.pager li > span span + [class*="fui-"] {
+  margin-left: 8px;
+}

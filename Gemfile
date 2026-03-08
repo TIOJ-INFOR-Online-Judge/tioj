@@ -12,12 +12,12 @@ gem 'bootsnap', require: false
 # Use mysql2 as the database for Active Record
 gem 'mysql2'
 
-# Use SCSS for stylesheets
-gem 'sassc-rails'
-
 # Use jsbuilding-rails for JavaScript
 gem 'sprockets', '~> 4'
 gem 'jsbundling-rails'
+
+# Use SCSS for stylesheets
+gem "dartsass-sprockets", "~> 3.2"
 
 # User
 gem 'devise'

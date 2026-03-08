@@ -1,6 +1,6 @@
 // Bottom menu in Problems#Show
 function toggleChevron(e) {
-  return $(e.target).prev('.panel-heading').find('i.indicator').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+  return $(e.target).prev('.card-header').find('span.indicator').toggleClass('bi-chevron-down bi-chevron-up');
 }
 
 function updateQuickSubmit() {
@@ -31,7 +31,7 @@ $(() => {
   $('#quick_prob_id').trigger('input');
   $('#toggle-solution-tag').on('click', function() {
     $(this).text(($(this).hasClass('active') ? 'Show' : 'Hide') + ' solution-related tags');
-    $('.solution-tag').toggleClass('no-display');
+    $('.solution-tag').toggleClass('d-none');
     return $(this).toggleClass('active');
   });
 });

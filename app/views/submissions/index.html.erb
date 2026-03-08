@@ -2,13 +2,13 @@
 
 <% waiting_verdicts = ['Validating', 'queued', 'received'] %>
 <% verdict_class_map = {
-  "AC" => "text-success",
-  "WA" => "text-danger",
-  "TLE" => "text-info",
-  "MLE" => "text-mle",
-  "OLE" => "text-ole",
-  "RE" => "text-warning",
-  "SIG" => "text-sig",
+  "AC"     => "text-ac",
+  "WA"     => "text-wa",
+  "TLE"    => "text-tle",
+  "MLE"    => "text-mle",
+  "OLE"    => "text-ole",
+  "RE"     => "text-re",
+  "SIG"    => "text-sig",
   "queued" => "text-muted",
 } %>
 <% verdict_class_map.default = '' %>
@@ -26,27 +26,39 @@
 
 <% if @problem %>
   <% submit_link = contest_adaptive_polymorphic_path([@problem, :submission], action: :new) %>
-  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-xs" %>
+  <%= link_to 'Submit to Problem', submit_link, class: "btn btn-success btn-sm" %>
 <% else %>
-  <div class="form-inline">
-    <div class="form-group">
+  <div class="row align-items-center gap-1 mb-3 mb-lg-1">
+    <div class="col-lg-auto">
       <label for="quick_prob_id">Quick Submit</label>
-      <input style="width:150px" id="quick_prob_id" type="number" class="form-control input-sm flat" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
     </div>
-    <a href="#" id="quick_submit" class="btn btn-success btn-xs">Submit</a>
+
+    <div class="col-lg-2 px-lg-0">
+      <input id="quick_prob_id" type="number" class="form-control form-control-sm" min="1" max="<%= Problem.count %>" placeholder="Enter Problem ID"/>
+    </div>
+
+    <div class="col-lg-auto">
+      <a href="#" id="quick_submit" class="btn btn-success btn-sm">Submit</a>
+    </div>
   </div>
 <% end %>
 
-<form class="form-inline" accept-charset="UTF-8" method="get">
-  <label for="filter_user">Quick Filter</label>
-  <div class="form-group">
-    <input id="filter_username" name="filter_username" class="form-control input-sm flat" type="text" placeholder="Enter Username">
+<form class="row align-items-center gap-1 mb-3" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
+    <label for="filter_user">Quick Filter</label>
   </div>
-  <div class="form-group">
-    <input id="filter_problem" name="filter_problem" class="form-control input-sm flat" style="width:150px;" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+
+  <div class="col-lg-2 px-lg-0">
+    <input id="filter_username" name="filter_username" class="form-control form-control-sm w-100" type="text" placeholder="Enter Username">
   </div>
-  <div class="form-group">
-    <select id="filter_status" name="filter_status[]" class="selectpicker" multiple title="Select Result">
+
+  <div class="col-lg-2 px-lg-0">
+    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+  </div>
+
+  <div class="col-lg-2 px-lg-0">
+    <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple aria-label="Select Result">
+      <option selected disabled value="">Select Result</option>
       <option value="AC">Accepted</option>
       <option value="WA">Wrong Answer</option>
       <option value="TLE">Time Limit Exceeded</option>
@@ -57,19 +69,29 @@
       <option value="CE">Compilation Error</option>
     </select>
   </div>
-  <div class="form-group">
-    <select id="filter_compiler" name="filter_compiler[]" class="selectpicker" multiple title="Select Compiler">
+
+  <div class="col-lg-2 px-lg-0">
+    <select id="filter_compiler" name="filter_compiler[]" class="form-select form-select-sm" multiple aria-label="Select Compiler">
+      <option selected disabled value="">Select Compiler</option>
       <% Compiler.order(order: :asc).all.each do |x| %>
         <option value="<%= x.id %>"><%= x.name %></option>
       <% end %>
     </select>
   </div>
-  <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_filter" class="btn btn-dark btn-sm">Filter</button>
+  </div>
 </form>
 
 <script>
-$(".selectpicker").selectpicker({style: "form-control input-sm flat"});
-$("button:not([type='submit'])").attr("type", "button");
+  const tomselect_config = {
+    create: true,
+  };
+  new TomSelect("#filter_status", tomselect_config);
+  new TomSelect("#filter_compiler", tomselect_config);
+
+  $("button:not([type='submit'])").attr("type", "button");
 </script>
 
 <table class='table table-hover table-striped'>
@@ -88,7 +110,7 @@ $("button:not([type='submit'])").attr("type", "button");
       <th>Score</th>
       <th>Submit Time</th>
       <% if effective_admin? %>
-         <th></th>
+        <th></th>
       <% end %>
     </tr>
   </thead>
@@ -111,7 +133,7 @@ $("button:not([type='submit'])").attr("type", "button");
         <% if effective_admin? %>
           <td>
             <%= form_with url: rejudge_submission_path(submission) do |f| %>
-              <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+              <%= f.submit 'Rejudge', class: 'btn btn-sm btn-primary' %>
             <% end %>
           </td>
         <% end %>
@@ -122,12 +144,12 @@ $("button:not([type='submit'])").attr("type", "button");
 <%= contest_adaptive_paginate @submissions %>
 
 <% if not waiting_submissions.empty? %>
-<script>
-var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
+  <script>
+    var verdict_class_map = <%= raw(verdict_class_map.to_json) %>;
 
-initSubmissionCable();
-$(document).ready(function() {
-  subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
-});
-</script>
+    initSubmissionCable();
+    $(document).ready(function() {
+      subscribeSubmission(<%= raw(waiting_submissions.to_json) %>, updateMultipleSubmissions);
+    });
+  </script>
 <% end %>

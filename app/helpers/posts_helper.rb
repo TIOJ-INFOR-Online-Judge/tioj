@@ -7,4 +7,12 @@ module PostsHelper
     end
     ret + " - #{post.created_at.to_fs(:clean)}"
   end
+
+  def post_bg_class(post, contest, problem)
+    if (contest and post.global_visible) or (problem and post.post_type == 'solution')
+      "bg-warning-subtle"
+    else
+      "bg-light"
+    end
+  end
 end

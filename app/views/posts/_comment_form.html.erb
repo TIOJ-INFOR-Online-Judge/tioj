@@ -6,15 +6,15 @@
 <% end %>
 <h5>New comment</h5>
 <%= form_for form_target do |f| %>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :title, 'Title: ' %>
     <%= f.text_field :title, class: 'form-control' %>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :content, raw('Content: (All characters are rendered with <a href="https://guides.github.com/features/mastering-markdown/" >Markdown</a>)') %><br>
     <%= f.text_area :content, class: 'form-control' %>
   </div>
   <div class="submit_comment" >
-    <%= f.submit "Create Comment", class: "btn btn-primary btn-xs" %>
+    <%= f.submit "Create Comment", class: "btn btn-primary btn-sm" %>
   </div>
 <% end %>
