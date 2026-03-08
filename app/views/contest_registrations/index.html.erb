@@ -172,33 +172,33 @@
           </div>
         </th>
       </tr>
-      <thead>
-        <tbody>
-          <% @unapproved_users.each do |item| %>
-            <tr>
-              <% team = item.team %>
-              <% user = item.user %>
-              <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'rounded'), user_path(user) %></td>
-              <td>
-                <%= link_to user.username, user_path(user) %>
-                <% if @duplicate_names.include?(user.username) %>
-                  <span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><%= alert_glyph %></span>
-                <% end %>
-              </td>
-              <td><%= user.nickname %></td>
-              <td>
-                <% if team.present? %>
-                  <%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'rounded'), team_path(team) %>
-                  <%= link_to team.teamname, team_path(team) %>
-                <% end %>
-              </td>
-              <td>
-                <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-sm btn-info' %>
-                <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-sm btn-danger' %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
+    </thead>
+    <tbody>
+      <% @unapproved_users.each do |item| %>
+        <tr>
+          <% team = item.team %>
+          <% user = item.user %>
+          <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: 'rounded'), user_path(user) %></td>
+          <td>
+            <%= link_to user.username, user_path(user) %>
+            <% if @duplicate_names.include?(user.username) %>
+              <span class="text-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="This user is shadowed by a contest user. When approved, they won't be able to login from the Single Contest page."><%= alert_glyph %></span>
+            <% end %>
+          </td>
+          <td><%= user.nickname %></td>
+          <td>
+            <% if team.present? %>
+              <%= link_to image_tag(team.avatar.mini_thumb.to_s, class: 'rounded'), team_path(team) %>
+              <%= link_to team.teamname, team_path(team) %>
+            <% end %>
+          </td>
+          <td>
+            <%= link_to 'Approve', contest_contest_registration_path(@contest, item), method: :patch, class:'btn btn-sm btn-info' %>
+            <%= link_to 'Delete', contest_contest_registration_path(@contest, item), method: :delete, class:'btn btn-sm btn-danger' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
   </table>
 <% else %>
   No currently unapproved registrations.
