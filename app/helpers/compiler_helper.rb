@@ -9,10 +9,10 @@ module CompilerHelper
     ["language-c", ".c", "c11/gnu c compiler 11.2.0 | options: -O2 -std=c11 -lm", "c11"],
     ["language-c", ".c", "c99/gnu c compiler 11.2.0 | options: -O2 -std=c99 -lm", "c99"],
     ["language-c", ".c", "c90/gnu c compiler 11.2.0 | options: -O2 -ansi -lm", "c90"],
-    ["language-rust", ".rs", "rust 2021/rustc 1.75.0| options:-O", "rust"],
     ["language-python", ".py", "python2/CPython 2.7.18 | options: -m py_compile", "python2"],
     ["language-python", ".py", "python3/CPython 3.10.4 with numpy & PIL | options: -m py_compile", "python3"],
     ["language-haskell", ".hs", "haskell/glasgow haskell compiler 8.8.4 with haskell platform | options: -O", "haskell"],
+    ["language-rust", ".rs", "rust 2021/rustc 1.75.0| options: -O --edition=2021", "rust 2021"],
   ]
 
   def self.generate_table
