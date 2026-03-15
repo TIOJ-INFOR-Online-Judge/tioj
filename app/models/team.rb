@@ -24,7 +24,7 @@ class Team < ApplicationRecord
 
   accepts_nested_attributes_for :users, allow_destroy: true
 
-  validates :name, team_name_convention: true
+  validates :name, team_name_convention: true, on: :create
   validates_uniqueness_of :name, if: -> { !Rails.configuration.x.settings.dig(:team_name_settings, :allow_duplicate) }
 
   validates_length_of :motto, maximum: 75
