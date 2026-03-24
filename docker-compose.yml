@@ -23,9 +23,10 @@ services:
       - MAIL_HOSTNAME
       - MAIL_SENDER
     volumes:
-      - /srv/tioj/web-td:/tioj/td
-      - /srv/tioj/web-log:/tioj/log
-      - /srv/tioj/public:/tioj/public
+      - web-td:/tioj/td
+      - web-log:/tioj/log
+      - web-public:/tioj/public
+      # - .:/tioj
     depends_on:
       - db
     networks:
@@ -37,7 +38,7 @@ services:
   db:
     image: mysql:8.0
     volumes:
-      - /srv/tioj/db:/var/lib/mysql
+      - db-data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_DATABASE=tioj_production
@@ -62,17 +63,25 @@ services:
     pid: host
     logging: *default-logging
     restart: always
+    profiles:
+      - donotstart
   dufs:
     image: sigoden/dufs
     container_name: dufs
     ports:
-    - 5000:5000
+    - 5001:5000
     volumes:
-    - /srv/tioj/public/pmisc:/data
+    - web-public:/data
     networks:
       - app
     command: /data --allow-upload -a admin:$FILE_UPLOAD_PASSWORD@/:rw -b 0.0.0.0
     restart: always
+
+volumes:
+  db-data:
+  web-td:
+  web-log:
+  web-public:
 
 networks:
   app:

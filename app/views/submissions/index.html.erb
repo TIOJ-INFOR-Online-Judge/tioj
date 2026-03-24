@@ -65,6 +65,14 @@
     </select>
   </div>
   <button type="submit" id="quick_filter" class="btn btn-inverse btn-xs">Filter</button>
+  <% if user_signed_in? %>
+    <% filtering_my_submissions = params[:filter_user_id].to_s == current_user.id.to_s %>
+    <% if filtering_my_submissions %>
+      <%= link_to 'All Submissions', url_for(request.query_parameters.except(:filter_user_id, :page)), class: 'btn btn-default btn-xs' %>
+    <% else %>
+      <%= link_to 'My Submission', url_for(request.query_parameters.merge(filter_user_id: current_user.id, page: nil)), class: 'btn btn-primary btn-xs' %>
+    <% end %>
+  <% end %>
 </form>
 
 <script>
