@@ -169,6 +169,7 @@ GEM
       activesupport (>= 7.0)
     hashie (5.1.0)
       logger
+    http-accept (1.7.0)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
     i18n (1.14.8)
@@ -269,6 +270,7 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
+    netrc (0.11.0)
     nio4r (2.7.5)
     nkf (0.2.0)
     nokogiri (1.19.3)
@@ -374,6 +376,11 @@ GEM
     responders (3.2.0)
       actionpack (>= 7.0)
       railties (>= 7.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.4.4)
     ruby-vips (2.3.0)
       ffi (~> 1.12)
@@ -490,6 +497,7 @@ DEPENDENCIES
   rdoc (~> 6)
   redcarpet
   redis (~> 5)
+  rest-client
   rubyzip (~> 3)
   sassc-rails
   sdoc

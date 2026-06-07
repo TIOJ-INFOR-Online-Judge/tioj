@@ -36,6 +36,8 @@
 #  problem_prog_code           :text(65535)
 #  problem_prog_stage_list     :string(255)      default(""), not null
 #  judge_abnormally_terminated :boolean          default(FALSE), not null
+#  proxyjudge_type             :integer          default("none"), not null
+#  proxyjudge_args             :string(255)
 #
 # Indexes
 #
@@ -64,6 +66,7 @@ one:
   interlib_type: none
   visible_state: public
   summary_type: none
+  proxyjudge_type: none
 
 invisible:
   name: ProblemInvisible
@@ -77,3 +80,4 @@ invisible:
   interlib_type: none
   visible_state: invisible
   summary_type: none
+  proxyjudge_type: none

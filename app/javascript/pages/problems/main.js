@@ -15,6 +15,7 @@ export function initProblemForm() {
 
   setGroupVisibility('interlib', $('#problem_interlib_type').val());
   setGroupVisibility('specjudge', $('#problem_specjudge_type').val());
+  setGroupVisibility('proxyjudge', $('#problem_proxyjudge_type').val());
   setGroupVisibility('summary', $('#problem_summary_type').val());
   setGroupVisibility('problem-prog', $('#problem__problem_prog_enabled').is(':checked') ? '1' : '0');
   $('#problem_interlib_type').on('change', function() {
@@ -22,6 +23,9 @@ export function initProblemForm() {
   });
   $('#problem_specjudge_type').on('change', function() {
     setGroupVisibility('specjudge', this.value);
+  });
+  $('#problem_proxyjudge_type').on('change', function() {
+    setGroupVisibility('proxyjudge', this.value);
   });
   $('#problem_summary_type').on('change', function() {
     setGroupVisibility('summary', this.value);
