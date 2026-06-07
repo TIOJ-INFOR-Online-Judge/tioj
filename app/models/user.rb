@@ -42,64 +42,15 @@
 #  fk_rails_...  (contest_id => contests.id)
 #  fk_rails_...  (last_compiler_id => compilers.id)
 #
-
-require 'file_size_validator'
-
-class UserBase < ApplicationRecord
-  self.table_name = "users"
-
-  has_many :submissions, dependent: :destroy, foreign_key: :user_id
-  has_many :posts, dependent: :destroy, foreign_key: :user_id
-  has_many :comments, dependent: :destroy, foreign_key: :user_id
-
-  has_many :contest_registrations, dependent: :destroy, foreign_key: :user_id
-  has_many :registered_contests, source: :contest, through: :contest_registrations
-
-  belongs_to :last_compiler, class_name: 'Compiler', optional: true
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :rememberable, :trackable
-  devise :registerable unless Rails.configuration.x.settings.dig(:disable_registration)
-  devise :recoverable if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
-
-  validates_presence_of :username, :nickname
-  validates_length_of :nickname, in: 1..12
-  validates_length_of :username, in: 3..20
-
-  mount_uploader :avatar, AvatarUploader
-  validates :avatar,
-    #presence: true,
-    file_size: {
-      maximum: 5.megabytes.to_i
-    }
-
-  attr_accessor :login
-  def self.find_for_database_authentication(warden_conditions)
-    conditions = warden_conditions.dup
-    if login = conditions.delete(:login)
-      where(conditions).where(["lower(username) = :value OR lower(email) = :value", { value: login.downcase }]).first
-    else
-      where(conditions).first
-    end
-  end
-
-  def generate_random_avatar
-    Tempfile.create(['', '.png']) do |tmpfile|
-      Visicon.new(SecureRandom.random_bytes(16), '', 128).draw_image.write(tmpfile.path)
-      self.avatar = tmpfile
-    end
-  end
-end
-
 class User < UserBase
   devise :validatable
 
   has_many :articles, dependent: :destroy
+  has_many :team_user_joints
+  has_many :teams, through: :team_user_joints
 
   validates :username,
     uniqueness: {case_sensitive: false},
-    username_convention: true,
     on: :create
 
   validates :school, presence: true, length: {in: 1..64}
@@ -111,12 +62,16 @@ class User < UserBase
 
   extend FriendlyId
   friendly_id :username
+
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "created_at", "updated_at", "id", "id_value", "username", "email", "admin",
+      "motto", "name", "nickname", "avatar", "gradyear", "school",
+      "current_sign_in_at", "last_sign_in_at",
+      "current_sign_in_ip", "last_sign_in_ip", "sign_in_count",
+      "last_compiler_id", "last_submit_time",
+      "remember_created_at", "reset_password_sent_at"
+    ]
+  end
 end
 
-class ContestUser < UserBase
-  belongs_to :contest
-  validates :username,
-    uniqueness: {case_sensitive: false, scope: :contest_id},
-    username_convention: true
-  validates_uniqueness_of :nickname, scope: :contest_id
-end

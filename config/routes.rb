@@ -1,5 +1,15 @@
 Rails.application.routes.draw do
-  resources :announcements
+  resources :teams do
+    member do
+      get :invite
+      post :invite, to: 'teams#invite_accept'
+      post :add_user
+      post :renew_token
+      delete 'users/:user_id', to: 'teams#remove_user', as: :remove_user
+    end
+  end
+
+  resources :announcements, except: [:show, :new]
 
   devise_for :users, controllers: {registrations: "registrations", passwords: "users/passwords"}
   devise_for :admin_users, ActiveAdmin::Devise.config
@@ -55,7 +65,7 @@ Rails.application.routes.draw do
       post 'rejudge', on: :member
       resources :submissions, only: [:index, :create, :new]
     end
-    resources :announcements
+    resources :announcements, except: [:show, :new]
     resources :posts do
       resources :comments, except: [:index]
     end
@@ -77,7 +87,8 @@ Rails.application.routes.draw do
 
     member do
       post 'set_contest_task'
-      post 'register'
+      get 'register'
+      post 'register_update'
       get 'dashboard'
       get 'dashboard_update'
     end

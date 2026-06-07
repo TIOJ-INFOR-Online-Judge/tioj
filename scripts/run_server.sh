@@ -30,6 +30,7 @@ EOF
     sleep 1
   done
   redis-server & disown
+  cron
 fi
 
 if rails db:exists; then

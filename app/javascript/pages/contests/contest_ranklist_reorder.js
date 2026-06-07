@@ -1,4 +1,4 @@
-Array.prototype.compare = function (arr){
+Array.prototype.compare = function (arr) {
   for (var ind = 0; ind < Math.min(this.length, arr.length); ind++) {
     if (arr[ind] !== this[ind]) {
       return this[ind] < arr[ind] ? -1 : 1;
@@ -68,7 +68,7 @@ import Decimal from 'decimal.js/decimal';
 
 function reorderTableInternal(data, timestamp, initUserState, cellText, rowSummary) {
   function rowUserID(row) {
-    return parseInt(row.id.slice(9));
+    return row.id.slice(4); // remove "row_"
   }
   if (!data.participants) return;
   let compare_keys = {};
@@ -78,16 +78,28 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
     (value) => value ? value[bounds.le(value, null, (x, y) => x.timestamp > timestamp ? 1 : -1)] : value
   );
   for (const user_id of data.participants) {
-    let user_state = {...initUserState};
+    let user_state = { ...initUserState };
     for (const prob_id of data.tasks) {
-      let key = user_id + '_' + prob_id;
+      let key = 'user_' + user_id + '_' + prob_id;
       let value = data.result[key];
       let current = getValue(value);
-      let first_ac = data.first_ac[String(prob_id)] === user_id;
+      let first_ac = data.first_ac[String(prob_id)] === 'user_' + user_id;
       $('#cell_item_' + key).html(cellText(current, user_state, first_ac));
     }
-    compare_keys['row_user_' + user_id] = rowSummary(user_id, user_state);
+    compare_keys['row_user_' + user_id] = rowSummary('user_' + user_id, user_state);
   }
+  for (const team_id of data.teams) {
+    let team_state = { ...initUserState };
+    for (const prob_id of data.tasks) {
+      let key = 'team_' + team_id + '_' + prob_id;
+      let value = data.result[key];
+      let current = getValue(value);
+      let first_ac = data.first_ac[String(prob_id)] === 'team_' + team_id;
+      $('#cell_item_' + key).html(cellText(current, team_state, first_ac));
+    }
+    compare_keys['row_team_' + team_id] = rowSummary('team_' + team_id, team_state);
+  }
+  // console.log({ compare_keys });
   let tbody = $('#dashboard_table_body');
   tbody.append(tbody.children().detach().sort((a, b) => {
     let key_a = compare_keys[a.id].concat([rowUserID(a)]);
@@ -103,7 +115,7 @@ function reorderTableInternal(data, timestamp, initUserState, cellText, rowSumma
   for (let i = 0; i < children.length; i++) {
     const cur_value = compare_keys[children[i].id];
     const row = $(children[i]);
-    if (i === 0 || cur_value.compare(compare_keys[children[i-1].id]) !== 0) {
+    if (i === 0 || cur_value.compare(compare_keys[children[i - 1].id]) !== 0) {
       rank = i;
     }
     if (cur_value[0] !== prev_value) {
@@ -125,7 +137,7 @@ export function contestRanklistReorder(data, timestamp) {
     reorderTableInternal(
       data,
       timestamp,
-      {solved: 0, tot_penalty: 0, last_solved: -1},
+      { solved: 0, tot_penalty: 0, last_solved: -1 },
       acmCellText,
       acmRowSummary
     );
@@ -133,7 +145,7 @@ export function contestRanklistReorder(data, timestamp) {
     reorderTableInternal(
       data,
       timestamp,
-      {score: new Decimal(0)},
+      { score: new Decimal(0) },
       ioiCellText,
       ioiRowSummary
     );

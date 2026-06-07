@@ -17,14 +17,12 @@ class ProblemsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "problem visibility should be correct" do
-    assert_raise ActionController::RoutingError do
-      get problem_url(@problem_invisible)
-    end
+    get problem_url(@problem_invisible)
+    assert_response :missing
 
     sign_in users(:userOne)
-    assert_raise ActionController::RoutingError do
-      get problem_url(@problem_invisible)
-    end
+    get problem_url(@problem_invisible)
+    assert_response :missing
     sign_out :user
 
     sign_in users(:adminOne)

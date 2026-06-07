@@ -24,7 +24,7 @@
 !/public/fonts
 !/public/images
 !/public/static
-!/public/robots.txt
+!/public/robots.txt.example
 
 passenger.*.pid.lock
 

@@ -30,8 +30,9 @@
     (private post)
   <% end %>
 </div>
+  <%= link_to "View Post", contest_adaptive_polymorphic_path([post]), class:'btn btn-primary btn-xs'%>
 <% if allow_edit(post) %>
-  <%= link_to "Edit Post", contest_adaptive_polymorphic_path([post], action: :edit), class:'btn btn-primary btn-xs'%>
+  <%= link_to "Edit Post", contest_adaptive_polymorphic_path([post], action: :edit), class:'btn btn-info btn-xs'%>
   <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, class:'btn btn-danger btn-xs' %>
 <% end %>
 <% if post.comments.present? %>
@@ -49,7 +50,7 @@
 <% end %><%# if post.comments.present? %>
 <% if user_signed_in? and (effective_admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
   <div class="new_comment" style="display:inline">
-    <button class="new_comment btn btn-info btn-xs">New Comment</button>
+    <button class="new_comment btn btn-success btn-xs">New Comment</button>
     <div class="new_comment_form well well-lg" style="margin-top: 1rem; margin-bottom: 0; padding-top: 1rem;">
       <%= render partial: 'comment_form', locals: {post: post}  %>
     </div><%# new_comment_form %>

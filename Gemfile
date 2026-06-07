@@ -48,8 +48,8 @@ gem 'nested_form'
 gem 'carrierwave'
 gem 'mini_magick'
 # compression
-gem 'zstd-ruby'
-gem 'rubyzip', require: 'zip'
+gem 'zstd-ruby', '~> 2'
+gem 'rubyzip', '~> 3', require: 'zip'
 
 # Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
 gem 'mathjax-rails-3'
@@ -58,7 +58,7 @@ gem 'mathjax-rails-3'
 gem 'acts-as-taggable-on'
 
 # Active Admin, db admin tool: https://github.com/gregbell/active_admin
-gem 'activeadmin', '~> 2'
+gem 'activeadmin', '~> 3'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
@@ -83,8 +83,12 @@ gem 'acts_as_list'
 # Activerecord-import for bulk insert
 gem 'activerecord-import'
 
+# Advisory locks
+gem 'with_advisory_lock'
+
 # Redis for Action Cable
-gem 'redis', '~> 4'
+gem 'redis', '~> 5'
+gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
 
 # Sentry for monitoring
 gem 'sentry-ruby'
@@ -104,4 +108,5 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'puma'
+  gem 'minitest', '~> 5'
 end

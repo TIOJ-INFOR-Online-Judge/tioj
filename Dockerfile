@@ -1,4 +1,4 @@
-FROM ruby:3.1.2
+FROM ruby:3.3.7
 
 RUN apt update && apt upgrade -y
 
@@ -9,7 +9,7 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
 RUN echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt update -y
-RUN apt install -y rsync netcat nodejs yarn redis-server --no-install-recommends
+RUN apt install -y rsync netcat-openbsd nodejs yarn redis-server cron --no-install-recommends
 
 ARG MYSQL_ROOT_PASSWORD
 ENV PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -18,6 +18,7 @@ ENV TIOJ_KEY=$TIOJ_KEY
 
 COPY Gemfile Gemfile.lock package.json yarn.lock /tioj/
 WORKDIR /tioj
+RUN echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
 RUN MAKEFLAGS='-j2' bundle install
 RUN yarn install --frozen-lockfile
 

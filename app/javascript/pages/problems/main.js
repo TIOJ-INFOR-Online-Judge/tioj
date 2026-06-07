@@ -11,10 +11,13 @@ export function initProblemForm() {
   });
   buttonCheckboxSetup();
 
+  let prog_stage_list = $('#problem_problem_prog_stage_list').val();
+
   setGroupVisibility('interlib', $('#problem_interlib_type').val());
   setGroupVisibility('specjudge', $('#problem_specjudge_type').val());
   setGroupVisibility('proxyjudge', $('#problem_proxyjudge_type').val());
   setGroupVisibility('summary', $('#problem_summary_type').val());
+  setGroupVisibility('problem-prog', $('#problem__problem_prog_enabled').is(':checked') ? '1' : '0');
   $('#problem_interlib_type').on('change', function() {
     setGroupVisibility('interlib', this.value);
   });
@@ -26,5 +29,14 @@ export function initProblemForm() {
   });
   $('#problem_summary_type').on('change', function() {
     setGroupVisibility('summary', this.value);
+  });
+  $('#problem__problem_prog_enabled').on('change', function() {
+    setGroupVisibility('problem-prog', this.checked ? '1' : '0');
+    if (this.checked) {
+      $('#problem_problem_prog_stage_list').val(prog_stage_list);
+    } else {
+      prog_stage_list = $('#problem_problem_prog_stage_list').val();
+      $('#problem_problem_prog_stage_list').val('');
+    }
   });
 }

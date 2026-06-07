@@ -7,8 +7,8 @@
 #  problem_id    :bigint
 #  result        :string(255)
 #  score         :decimal(18, 6)
-#  total_time    :integer
-#  total_memory  :integer
+#  total_time    :bigint
+#  total_memory  :bigint
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

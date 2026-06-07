@@ -1,6 +1,6 @@
-if Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn
+if Rails.configuration.x.settings.dig(:sentry_dsn)
   Sentry.init do |config|
-    config.dsn = Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credentials.sentry_dsn
+    config.dsn = Rails.configuration.x.settings.dig(:sentry_dsn)
     config.breadcrumbs_logger = [:active_support_logger, :http_logger]
     config.traces_sampler = lambda do |sampling_context|
       unless sampling_context[:parent_sampled].nil?
@@ -13,5 +13,6 @@ if Rails.configuration.x.settings.dig(:sentry_dsn) || Rails.application.credenti
         sample_rate&.dig(:normal) == nil ? 0.02 : sample_rate[:normal]
       end
     end
+    config.excluded_exceptions += ['URI::InvalidURIError']
   end
 end

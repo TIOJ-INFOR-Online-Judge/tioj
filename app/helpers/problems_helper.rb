@@ -121,4 +121,12 @@ module ProblemsHelper
       "invisible" => "invisible",
     }
   end
+
+  def sample_display_type_desc_map
+    {
+      "plaintext" => "Plaintext",
+      "raw_html" => "Raw HTML",
+      "markdown" => "Markdown",
+    }
+  end
 end

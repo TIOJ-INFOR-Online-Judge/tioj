@@ -1,8 +1,12 @@
 ActiveAdmin.register Submission do
-  permit_params :id, :problem_id, :user_id, :contest_id, :compiler, :result, :score, :_result, :code_length, :total_time, :total_memory
+  permit_params :result, :score, :total_time, :total_memory, :message
   includes :compiler
   includes :code_content
   includes :user
+
+  controller do
+    actions :all, :except => [:create, :new]
+  end
 
   index do
     selectable_column
@@ -26,7 +30,17 @@ ActiveAdmin.register Submission do
       row('Code') { |x| x.code_content.code_utf8 }
     end
   end
-  
+
+  form do |f|
+    f.semantic_errors
+    f.inputs do
+      f.input :result
+      f.input :score
+      f.input :total_time
+      f.input :total_memory
+    end
+    f.actions
+  end
 
   preserve_default_filters!
   remove_filter :old_submission

@@ -5,7 +5,7 @@
 /* =============================================================
  * flatui-checkbox v0.0.3
  * ============================================================ */
- 
+
 !function ($) {
 
  /* CHECKBOX PUBLIC CLASS DEFINITION
@@ -16,51 +16,56 @@
   }
 
   Checkbox.prototype = {
-    
+
     constructor: Checkbox
-    
-  , init: function (element, options) {      
+
+  , init: function (element, options) {
     var $el = this.$element = $(element)
-    
-    this.options = $.extend({}, $.fn.checkbox.defaults, options);      
-    $el.before(this.options.template);    
-    this.setState(); 
-  }  
-   
-  , setState: function () {    
+
+    this.options = $.extend({}, $.fn.checkbox.defaults, options);
+    $el.before(this.options.template);
+    this.applyInputStyles();
+    $el.on('change.checkbox', $.proxy(this.setState, this));
+    this.setState();
+  }
+
+  , applyInputStyles: function () {
+      this.$element.css({
+        display: 'block',
+        opacity: 0,
+        zIndex: -1
+      });
+  }
+
+  , setState: function () {
       var $el = this.$element
         , $parent = $el.closest('.checkbox');
-        
-        $el.prop('disabled') && $parent.addClass('disabled');   
-        $el.prop('checked') && $parent.addClass('checked');
-    }  
-    
-  , toggle: function () {    
-      var ch = 'checked'
-        , $el = this.$element
-        , $parent = $el.closest('.checkbox')
-        , checked = $el.prop(ch)
+
+        $parent.toggleClass('disabled', $el.prop('disabled'));
+        $parent.toggleClass('checked', $el.prop('checked'));
+    }
+
+  , toggle: function () {
+      var $el = this.$element
         , e = $.Event('toggle')
-      
+
       if ($el.prop('disabled') == false) {
-        // modified here
-        $parent.toggleClass(ch) && checked ? $el.prop(ch, false) : $el.prop(ch, ch);
-        $el.trigger(e).trigger('change'); 
+        $el.prop('checked', !$el.prop('checked'));
+        this.setState();
+        $el.trigger(e).trigger('change');
       }
-    }  
-    
-  , setCheck: function (option) {    
-      var d = 'disabled'
-        , ch = 'checked'
-        , $el = this.$element
-        , $parent = $el.closest('.checkbox')
+    }
+
+  , setCheck: function (option) {
+      var $el = this.$element
         , checkAction = option == 'check' ? true : false
         , e = $.Event(option)
-      
-      $parent[checkAction ? 'addClass' : 'removeClass' ](ch) && checkAction ? $el.prop(ch, ch) : $el.removeAttr(ch);
-      $el.trigger(e).trigger('change');       
-    }  
-      
+
+      $el.prop('checked', checkAction);
+      this.setState();
+      $el.trigger(e).trigger('change');
+    }
+
   }
 
 
@@ -77,10 +82,10 @@
       if (!data) $this.data('checkbox', (data = new Checkbox(this, options)));
       if (option == 'toggle') data.toggle()
       if (option == 'check' || option == 'uncheck') data.setCheck(option)
-      else if (option) data.setState(); 
+      else if (option) data.setState();
     });
   }
-  
+
   $.fn.checkbox.defaults = {
     template: '<span class="icons"><span class="first-icon fui-checkbox-unchecked"></span><span class="second-icon fui-checkbox-checked"></span></span>'
   }
@@ -100,13 +105,18 @@
 
   $(document).on('click.checkbox.data-api', '[data-toggle^=checkbox], .checkbox', function (e) {
     var $checkbox = $(e.target);
-    if (e.target.tagName != "A") {      
-      e && e.preventDefault() && e.stopPropagation();
-      if (!$checkbox.hasClass('checkbox')) $checkbox = $checkbox.closest('.checkbox');
-      $checkbox.find(':checkbox').checkbox('toggle');
-    }
+    if (e.target.tagName == "A") return;
+
+    var $target = $(e.target);
+    if ($target.is(':checkbox')) return;
+
+    var $checkbox = $target.hasClass('checkbox') ? $target : $target.closest('.checkbox');
+    if ($checkbox.is('label')) return;
+
+    e && e.preventDefault() && e.stopPropagation();
+    $checkbox.find(':checkbox').first().checkbox('toggle').trigger('focus');
   });
-  
+
   $(function () {
     $('[data-toggle="checkbox"]').each(function () {
       var $checkbox = $(this);

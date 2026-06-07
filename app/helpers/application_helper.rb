@@ -25,14 +25,14 @@ module ApplicationHelper
     if text == nil
       return
     end
-    renderer = Redcarpet::Render::HTML.new(hard_wrap: true, escape_html: true)
+    renderer = Redcarpet::Render::HTML.new(hard_wrap: true, escape_html: true, safe_links_only: true)
     options = {
       autolink: true,
       no_intra_emphasis: true,
       fenced_code_blocks: true,
       lax_html_blocks: true,
       strikethrough: true,
-      superscript: true
+      superscript: true,
     }
     Redcarpet::Markdown.new(renderer, options).render(text).html_safe
   end

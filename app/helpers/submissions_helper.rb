@@ -27,4 +27,14 @@ module SubmissionsHelper
     prefix = '0' * [0, 6 - ret.length].max
     raw("<span style=\"visibility: hidden;\">#{prefix}</span>" + ret)
   end
+
+  def user_can_view?(user, submission, contest)
+    return true if user&.id == submission.user_id
+    if contest && contest == submission.contest
+      sub_team = contest.find_registration(submission.user)&.team
+      team = contest.find_registration(user)&.team
+      return true if team && team == sub_team
+    end
+    false
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_12_053019) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -154,8 +154,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.boolean "approved", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "team_id"
     t.index ["contest_id", "approved"], name: "index_contest_registrations_on_contest_id_and_approved"
+    t.index ["contest_id", "team_id"], name: "index_contest_registrations_on_contest_id_and_team_id"
     t.index ["contest_id", "user_id"], name: "index_contest_registrations_on_contest_id_and_user_id", unique: true
+    t.index ["team_id"], name: "index_contest_registrations_on_team_id"
     t.index ["user_id", "approved"], name: "index_contest_registrations_on_user_id_and_approved"
   end
 
@@ -178,6 +181,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.integer "register_mode", default: 0, null: false
     t.datetime "register_before", null: false
     t.boolean "default_single_contest", default: false, null: false
+    t.integer "max_team_size", default: 0, null: false
     t.index ["start_time", "end_time"], name: "index_contests_on_start_time_and_end_time"
   end
 
@@ -195,8 +199,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.integer "position"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "time"
-    t.integer "rss"
+    t.bigint "time"
+    t.bigint "rss"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["old_submission_id"], name: "index_old_submission_testdata_results_on_old_submission_id"
@@ -207,8 +211,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.bigint "problem_id"
     t.string "result"
     t.decimal "score", precision: 18, scale: 6
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["problem_id", "result", "score", "total_time", "total_memory"], name: "index_old_submissions_topcoder", order: { score: :desc }
@@ -265,9 +269,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.integer "summary_type", null: false
     t.text "summary_code", size: :long
     t.bigint "summary_compiler_id"
+    t.bigint "problem_prog_compiler_id"
+    t.text "problem_prog_code"
+    t.string "problem_prog_stage_list", default: "", null: false
+    t.boolean "judge_abnormally_terminated", default: false, null: false
     t.integer "proxyjudge_type", default: 0, null: false
     t.string "proxyjudge_args"
     t.index ["name"], name: "index_problems_on_name"
+    t.index ["problem_prog_compiler_id"], name: "index_problems_on_problem_prog_compiler_id"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"
     t.index ["summary_compiler_id"], name: "index_problems_on_summary_compiler_id"
     t.index ["visible_state"], name: "index_problems_on_visible_state"
@@ -279,6 +288,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.text "output", size: :medium
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "display_type", default: 0, null: false
     t.index ["problem_id"], name: "index_sample_testdata_on_problem_id"
   end
 
@@ -304,11 +314,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.integer "position"
     t.string "result"
     t.decimal "time", precision: 12, scale: 3
-    t.integer "rss"
+    t.bigint "rss"
     t.decimal "score", precision: 18, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "vss"
+    t.bigint "vss"
     t.string "message_type"
     t.text "message", size: :medium
     t.index ["submission_id", "position"], name: "index_submission_testdata_results_on_submission_id_and_position", unique: true
@@ -323,8 +333,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.bigint "problem_id", default: 0
     t.bigint "user_id", default: 0
     t.bigint "contest_id"
-    t.integer "total_time"
-    t.integer "total_memory"
+    t.bigint "total_time"
+    t.bigint "total_memory"
     t.text "message", size: :medium
     t.bigint "compiler_id", null: false
     t.bigint "code_length", default: 0, null: false
@@ -381,6 +391,24 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "team_user_joints", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id", "user_id"], name: "index_team_user_joints_on_team_id_and_user_id", unique: true
+    t.index ["user_id", "team_id"], name: "index_team_user_joints_on_user_id_and_team_id", unique: true
+  end
+
+  create_table "teams", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "avatar"
+    t.string "motto"
+    t.string "school"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "token"
+    t.index ["name"], name: "index_teams_on_name"
+  end
+
   create_table "testdata", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "problem_id"
     t.string "test_input"
@@ -433,6 +461,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_065624) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "announcements", "contests"
   add_foreign_key "ban_compilers", "compilers"
+  add_foreign_key "contest_registrations", "teams"
+  add_foreign_key "problems", "compilers", column: "problem_prog_compiler_id"
   add_foreign_key "problems", "compilers", column: "specjudge_compiler_id"
   add_foreign_key "problems", "compilers", column: "summary_compiler_id"
   add_foreign_key "submission_subtask_results", "submissions"

@@ -26,7 +26,7 @@
               <li><%= link_to "Q & A", strip_contest_prefix(single_contest_posts_path(@contest)) %></li>
               <li><%= link_to "Dashboard", strip_contest_prefix(dashboard_single_contest_path(@contest)) %></li>
             <% end %>
-            <li><p class="navbar-text"><%= current_user.username %></p></li>
+            <li><p class="navbar-text"><%= current_user.username %><% if @team %> (<%= @team.name %>)<% end %></p></li>
             <li><%= link_to('Sign out', strip_contest_prefix(sign_out_single_contest_path(@contest)), method: :delete) %></li>
           <% else %>
             <li><%= link_to('Sign in', strip_contest_prefix(sign_in_single_contest_path(@contest))) %></li>

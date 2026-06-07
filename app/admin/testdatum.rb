@@ -1,6 +1,10 @@
 ActiveAdmin.register Testdatum do
   includes :problem
 
+  controller do
+    actions :all, :except => [:edit, :update, :destroy, :create, :new]
+  end
+
   index do
     selectable_column
     id_column

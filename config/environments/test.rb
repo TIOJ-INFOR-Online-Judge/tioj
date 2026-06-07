@@ -38,10 +38,10 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  if Rails.configuration.x.settings.dig(:mail_settings) || Rails.application.credentials.mail_settings
-    config.action_mailer.default_url_options = Rails.configuration.x.settings.dig(:mail_settings, :url_options) || Rails.application.credentials.mail_settings.url_options
+  if Rails.configuration.x.settings.dig(:mail_settings)
+    config.action_mailer.default_url_options = Rails.configuration.x.settings.dig(:mail_settings, :url_options)
     config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = Rails.configuration.x.settings.dig(:mail_settings, :smtp_settings) || Rails.application.credentials.mail_settings.smtp_settings
+    config.action_mailer.smtp_settings = Rails.configuration.x.settings.dig(:mail_settings, :smtp_settings)
   end
 
   # Tell Action Mailer not to deliver emails to the real world.
