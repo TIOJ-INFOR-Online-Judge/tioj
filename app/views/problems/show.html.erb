@@ -33,6 +33,7 @@
     <div class="col-md-2">
       <%= link_to 'Manage Testdata', problem_testdata_path(@problem), class: 'btn btn-warning btn-xs btn-block' %>
     </div>
+    <% if @problem.proxyjudge_none? %>
     <div class="col-md-2">
       <% if @contest %>
         <%= form_with url: rejudge_contest_problem_path(@contest, @problem) do |f| %>
@@ -44,6 +45,7 @@
         <% end %>
       <% end %>
     </div>
+    <% end %>
     <div class="col-md-2">
       <%= form_with url: delsub_problem_path(@problem) do |f| %>
         <%= f.submit 'Delete All Submissions', data: {confirm: 'Are you really going to delete ALL submissions to this problem?'}, class: 'btn btn-danger btn-xs btn-block' %>

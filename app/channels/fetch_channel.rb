@@ -50,24 +50,28 @@ class FetchChannel < ApplicationCable::Channel
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago, proxyjudge_type: :none).update_all(result: "queued")
   end
 
   def fetch_submission(data)
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
+      submission = Submission.where(result: "queued", proxyjudge_type: :none).order(priority: :desc, id: :asc).first
       flag = false
       if submission
-        submission.with_lock do
-          if submission.result == "received"
-            if i != n_retry
-              flag = true
-              next # breaks with_lock
+        retry_op(3) do |is_first|
+          submission.reload if not is_first
+          submission.with_lock do
+            if submission.result == "received"
+              if i != n_retry
+                flag = true
+                next # breaks with_lock
+              end
+              return
             end
-            return
+            submission.update(result: "received")
           end
-          submission.update(result: "received")
+          next if flag
         end
         next if flag
       else
@@ -182,5 +186,21 @@ class FetchChannel < ApplicationCable::Channel
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
     ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({result: submission.result, id: submission.id}))
+  end
+
+  def retry_op(retry_times=4, interval=0.3)
+    is_first = true
+    begin
+      yield(is_first)
+    rescue ActiveRecord::Deadlocked => e
+      retry_times -= 1
+      is_first = false
+      if retry_times > 0
+        sleep interval
+        retry
+      else
+        raise e
+      end
+    end
   end
 end

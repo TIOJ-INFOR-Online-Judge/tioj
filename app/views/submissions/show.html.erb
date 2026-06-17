@@ -40,10 +40,12 @@
   <% end %>
 <% end %>
 <% if effective_admin? && !@show_old %>
-  <%= form_with url: rejudge_submission_path(@submission), html: {style: 'display: inline;'} do |f| %>
-    <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+  <% if @problem.proxyjudge_none? %>
+    <%= form_with url: rejudge_submission_path(@submission), html: {style: 'display: inline;'} do |f| %>
+      <%= f.submit 'Rejudge', class: 'btn btn-xs btn-primary' %>
+    <% end %>
+    <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), class: 'btn btn-info btn-xs' %>
   <% end %>
-  <%= link_to 'Edit', contest_adaptive_polymorphic_path([@submission], action: :edit), class: 'btn btn-info btn-xs' %>
   <%= link_to 'Destroy', @submission, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-xs btn-danger' %>
 <% end %>
 </p>

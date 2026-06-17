@@ -83,6 +83,15 @@ module ProblemsHelper
     }
   end
 
+  def proxyjudge_type_desc_map
+    {
+      "none" => "None (TIOJ native)",
+      "codeforces" => "Codeforces",
+      "poj" => "PKU JudgeOnline (POJ)",
+      "qoj" => "QOJ",
+    }
+  end
+
   def interlib_type_desc_map
     {
       "none" => "No interactive library",
