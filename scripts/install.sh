@@ -232,8 +232,8 @@ sudo sed -Ei "/^ *location \/[^a-z]/, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.
 cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
 [Unit]
 Description=Nginx Server
-After=syslog.target
-Requires=network.target remote-fs.target nss-lookup.target mysql.service
+After=syslog.target network.target remote-fs.target nss-lookup.target mysql.service
+Wants=network.target remote-fs.target nss-lookup.target mysql.service
 
 [Service]
 Type=forking
