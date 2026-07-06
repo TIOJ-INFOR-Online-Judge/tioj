@@ -1,6 +1,3 @@
-- [ ] JRE as WA option
-- [ ] Move specjudge introduction to Wiki
----
 - [x] GitHub pipeline
 - [x] Modify rejudge behavior
     - Lower priority
