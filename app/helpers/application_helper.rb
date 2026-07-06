@@ -67,8 +67,12 @@ module ApplicationHelper
     end
   end
 
-  def help_icon(x)
-    raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+  def help_icon(x, new_window = false)
+    if new_window
+      raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign" target="_blank" rel="noopener noreferrer"></a>'
+    else
+      raw '<a href="' + x + '" style="color: inherit;" class="glyphicon glyphicon-question-sign"></a>'
+    end
   end
 
   def help_collapse_toggle(x, target)

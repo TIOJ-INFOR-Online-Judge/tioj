@@ -134,7 +134,7 @@
   <div class="row">
     <div class="col-md-4">
       <div class="form-group">
-        <%= f.label :specjudge_type, "Judge Type" %>
+        <%= f.label :specjudge_type, raw('Special Judge Mode ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#special-judge-modes', true) %>
         <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
           {}, {class: 'form-control flat'} %>
       </div>
@@ -154,7 +154,7 @@
             <div class="panel-body small" style="line-height: 1.4;">
               The user's program will be run this number of times. If greater than 1, the 0-based stage number will be given via <code>argv[1]</code>.<br>
               Each stage's output will be the input of the next stage; The last stage's output is the final answer.<br>
-              Special judge can be configured to run between stages for more checking; see the description of special judge program for more details.
+              Special judge can be configured to run between stages for more checking. See <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#multi-stage-problems" target="_blank">TIOJ wiki</a> for more details about multi-stage problems.
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@
   </div>
   <hr class="visibility-problem-prog visibility-problem-prog-1" style="border-top: 2px solid #ddd">
 
-  <div class="row visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="row visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis">
     <div class="col-lg-6">
       <div class="form-group">
         <%= f.label :specjudge_compiler_id, "Special Judge Compiler" %>
@@ -215,112 +215,11 @@
     </div>
   </div>
 
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
-    <%= f.label :sjcode, help_collapse_toggle('Special Judge Code', 'sjDescription') %>
-    <div class="collapse" id="sjDescription" style="height: auto;">
-      <div class="panel panel-default">
-        <div class="panel-body small">
-          <div class="visibility-specjudge visibility-specjudge-old">
-            Output <code>0</code> to stdout for <span class="text-success">AC</span>, <span class="text-danger">WA</span> otherwise.<br>
-            The following information is given via <code>argv</code>:
-            <ul style="line-height: 1.3; margin-bottom: 4px;">
-              <li><code>argv[1]</code>: path to user's output</li>
-              <li><code>argv[2]</code>: path to testdata input</li>
-              <li><code>argv[3]</code>: path to testdata output (answer)</li>
-              <li><code>argv[4]</code>: language (c++98/c++11/c++14/c++17/c++20/c90/c99/c11/rust 2021/haskell/python2/python3)</li>
-              <li><code>argv[5]</code>: path to source code</li>
-              <li><code>argv[6]</code>: current stage number</li>
-            </ul>
-            Additional information is given via standard input. It contains 5 lines each with a single string:<br>
-            <ul style="line-height: 1.3; margin-bottom: 4px;">
-              <li>1st line: original verdict (<code>NONE</code> if terminated normally)</li>
-              <li>2nd line: testdata index</li>
-              <li>3rd line: time (in us)</li>
-              <li>4th line: VSS (in KiB)</li>
-              <li>5th line: RSS (in KiB)</li>
-            </ul>
-            Notes:
-            <ul style="line-height: 1.4;">
-              <li>
-                After outputting <code>0</code>, one can optionally output several space-separated <code>SPECJUDGE_OVERRIDE_[CMD] [VAL]</code> pairs to set the judge result.
-                <code>[CMD]</code> can be one of <code>SCORE</code>, <code>VERDICT</code>, <code>TIME_US</code>, <code>VSS_KIB</code> or <code>RSS_KIB</code>, which overrides the score, verdict, time, VSS, or RSS with <code>[VAL]</code> respectively.
-                <ul><li>Overriding time in intermediate stages also changes the later stages' time value, and effectively changes the time limit of the remaining stages (calculated by TL - time value), so it is possible to set adaptive time limits using this behavior. Setting it to a negative value is allowed.</li></ul>
-              </li>
-              <li>
-                If this is a multistage problem and "Invoke special judge between stages" is set, the special judge will be invoked after each stage is completed, and <code>argv[6]</code> will be the 0-based previously completed stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if the special judge outputs <code>0</code>, the judging process will continue normally; otherwise, the final result will be <span class="text-danger">WA</span> and all the remaining stages will be skipped. Also, the file <code>argv[1]</code> can be overwritten, and it will be passed down to the next stage's input.
-                <ul><li>If the verdict is overriden in the intermediate stages, all the remaining stages will be skipped and the final result will be set to that verdict.</li></ul>
-              </li>
-            </ul>
-          </div>
-          <div class="visibility-specjudge visibility-specjudge-new">
-            The program will be provided a metadata file; the path is in <code>argv[1]</code>. It is a JSON file with the following fields:
-            <pre class="pre-scrollable" style="max-height: 200px; line-height: 1.2;"><%= JSON.pretty_generate({
-              input_file: 'path_to_testdata_input',
-              answer_file: 'path_to_testdata_answer',
-              user_output_file: 'path_to_user_output',
-              user_code_file: 'path_to_user_source_code',
-              problem_id: 1234,
-              submission_id: 123456,
-              contest_id: -1,
-              submitter_id: 123,
-              submitter_name: 'username',
-              submitter_nickname: 'nickname',
-              submission_time: 1656430000000000,
-              compiler: 'c++14/python2/etc.',
-              testdata_index: 0,
-              current_stage: 0,
-              original_verdict: 'TLE',
-              message_type: '',
-              message: '',
-              tempdir: 'path_to_tempdir',
-              limits: {
-                time_us: 1000000,
-                vss_kib: 262144,
-                rss_kib: 0,
-                output_kib: 262144,
-              },
-              stats: {
-                exit_code: 0,
-                real_us: 512345,
-                user_us: 412345,
-                sys_us: 98765,
-                max_vss_kib: 80004,
-                max_rss_kib: 68488,
-              },
-            }) %></pre>
-            The program must output a JSON object to stdout with the following fields (all fields are optional; see below for more details):
-            <pre style="line-height: 1.2;"><%= JSON.pretty_generate({
-              verdict: 'AC',
-              score: '1.35',
-              time_us: 123456,
-              vss_kib: 66888,
-              rss_kib: 44888,
-              message_type: 'text',
-              message: 'meow',
-            }) %></pre>
-            Notes:
-            <ul style="line-height: 1.4;">
-              <li><code>original_verdict</code> will be an empty string if user's program terminated normally.</li>
-              <li><code>contest_id</code> will be -1 if it is not a contest submission.</li>
-              <li><code>submission_time</code> is the created time of the submission, given by microseconds after UNIX epoch.</li>
-              <li>For multistage problems, <code>current_time_us</code> is the total CPU time (user + sys) of all stages, while <code>stats</code> is the execution stats of the recently finished stage.</li>
-              <li>For multistage problems with "Invoke special judge between stages" set, the special judge will be invoked after each stage is completed, and <code>current_stage</code> will be the 0-based recently finished stage number (from 0 to [number of stages - 1], inclusive). For all intermediate stages, if <code>verdict</code> is given, it will be regarded as the final result and all the remaining stages will be skipped. If the judging process should continue normally, <code>verdict</code> should be an empty string. Also, the file <code>user_output_file</code> can be overwritten, and it will be passed down to the next stage's input.</li>
-              <li><code>tempdir</code> is a temporary directory that can be used to store any temporary files needed during judging. The files within it will be kept between all stages in multistage problems (with special judge between stages), and thus can be used to pass information between stages.</li>
-              <li>Omitting <code>verdict</code> is the same as using the value of <code>original_verdict</code>. In case that <code>original_verdict</code> is empty, the final verdict is <span class="text-danger">WA</span> if it is the last stage, or empty (continue normally) otherwise.</li>
-              <li><code>score</code> can be given by float or string. If omitted, it will be 100 if <span class="text-success">AC</span> or 0 otherwise.</li>
-              <li><code>message_type</code> should be either <code>text</code> or <code>html</code>. No message will be displayed or passed to the next stage if either <code>message_type</code> or <code>message</code> is omitted. The maximum message length is 32 KiB. In multistage problems (with special judge between stages), the message will be passed to the next stage.</li>
-              <li>Specifying <code>time_us</code>, <code>vss_kib</code> or <code>rss_kib</code> will override the displayed time / memory value. Overriding <code>time_us</code> in intermediate stages also changes <code>current_time_us</code> and thus effectively changes the time limit of the remaining stages (calculated by TL - <code>current_time_us</code>), so it is possible to set adaptive time limits using this behavior. Setting <code>time_us</code> to a negative value is allowed.</li>
-            </ul>
-          </div>
-          <div style="line-height: 1.4;">
-            <code>#include "testlib.h"</code> (<a href="https://github.com/MikeMirzayanov/testlib/tree/6daa79fdc9c2b113be8d40f828e3dc81e67ce33d">docs</a>) and <code>#include "nlohmann/json.hpp"</code> (<a href="https://github.com/nlohmann/json/tree/v3.10.5">docs</a>) are provided for C++ special judge programs. If you're using <code>testlib</code>, note that the <code>argv</code> format of TIOJ is different from that required by the library, thus some preprocessing is needed before calling <code>registerTestlibCmd</code>.
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis">
+    <%= f.label :sjcode, raw('Special Judge Code ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#special-judge-modes', true) %>
     <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
   </div>
-  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new">
+  <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis">
     <%= f.label :judge_between_stages, class: 'checkbox' do %>
       <%= f.check_box :judge_between_stages, 'data-toggle': 'checkbox' %>
       Invoke special judge between stages (only applicable if number of stages &gt; 1)
@@ -328,6 +227,10 @@
     <%= f.label :judge_abnormally_terminated, class: 'checkbox' do %>
       <%= f.check_box :judge_abnormally_terminated, 'data-toggle': 'checkbox' %>
       Invoke special judge even if the user program didn't terminate normally (e.g. <span class="text-info">TLE</span>, <span class="text-sig">SIG</span>)
+    <% end %>
+    <%= f.label :judge_re_as_wa, class: 'checkbox' do %>
+      <%= f.check_box :judge_re_as_wa, 'data-toggle': 'checkbox' %>
+      Treat special judge abnormally terminating as <span class="text-danger">WA</span> (instead of JRE)
     <% end %>
   </div>
 
@@ -349,7 +252,7 @@
     </div>
     <%= f.text_field :default_scoring_args, class: 'form-control flat' %>
   </div>
-  <hr class="visibility-specjudge visibility-specjudge-old visibility-specjudge-new" style="border-top: 2px solid #ddd">
+  <hr class="visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis" style="border-top: 2px solid #ddd">
 
   <div class="form-group visibility-interlib visibility-interlib-header">
     <%= f.label :interlib, raw('Interactive Library Header ( <code>#include "lib' + @problem.id.to_s.rjust(4, '0') + '.h"</code> )') %>
@@ -384,7 +287,7 @@
         <div class="panel-body small">
           Strict mode provides more isolation measures when running user's program, including:
           <ul style="line-height: 1.4;">
-            <li>(C/C++/Haskell only) Compile to static executable and run it without any shared libraries present (to avoid calling shared libraries that are not meant to be used; also reduces base memory usage)</li>
+            <li>(C/C++/Haskell/Rust only) Compile to static executable and run it without any shared libraries present (to avoid calling shared libraries that are not meant to be used; also reduces base memory usage)</li>
             <li>Use pipes instead of regular files for stdin/stdout (to avoid re-opening or seeking)</li>
             <li>Block the program from creating any files</li>
           </ul>

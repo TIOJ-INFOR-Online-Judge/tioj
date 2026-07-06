@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_05_234638) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_06_013213) do
   create_table "active_admin_comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body", size: :medium
@@ -273,6 +273,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_05_234638) do
     t.text "problem_prog_code"
     t.string "problem_prog_stage_list", default: "", null: false
     t.boolean "judge_abnormally_terminated", default: false, null: false
+    t.boolean "judge_re_as_wa", default: false, null: false
     t.index ["name"], name: "index_problems_on_name"
     t.index ["problem_prog_compiler_id"], name: "index_problems_on_problem_prog_compiler_id"
     t.index ["specjudge_compiler_id"], name: "index_problems_on_specjudge_compiler_id"

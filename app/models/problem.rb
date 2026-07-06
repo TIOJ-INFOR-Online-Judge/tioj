@@ -36,6 +36,7 @@
 #  problem_prog_code           :text(65535)
 #  problem_prog_stage_list     :string(255)      default(""), not null
 #  judge_abnormally_terminated :boolean          default(FALSE), not null
+#  judge_re_as_wa              :boolean          default(FALSE), not null
 #
 # Indexes
 #
@@ -54,7 +55,7 @@
 
 class Problem < ApplicationRecord
   enum :visible_state, {public: 0, contest: 1, invisible: 2}, prefix: :visible
-  enum :specjudge_type, {none: 0, old: 1, new: 2}, prefix: :specjudge
+  enum :specjudge_type, {none: 0, old: 1, new: 2, polygon: 3, kattis: 4}, prefix: :specjudge
   enum :interlib_type, {none: 0, header: 1}, prefix: :interlib
   enum :summary_type, {none: 0, custom: 1}, prefix: :summary
   enum :discussion_visibility, {disabled: 0, readonly: 1, enabled: 2}, prefix: :discussion
