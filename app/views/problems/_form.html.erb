@@ -134,7 +134,7 @@
   <div class="row">
     <div class="col-md-4">
       <div class="form-group">
-        <%= f.label :specjudge_type, raw('Special Judge Mode ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#special-judge-modes', true) %>
+        <%= f.label :specjudge_type, raw('Special Judge Mode ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problems#special-judge-modes', true) %>
         <%= f.select :specjudge_type, Problem.specjudge_types.keys.map.with_index {|x, index| ["[#{index}] #{specjudge_type_desc_map[x]}", x]},
           {}, {class: 'form-control flat'} %>
       </div>
@@ -154,7 +154,7 @@
             <div class="panel-body small" style="line-height: 1.4;">
               The user's program will be run this number of times. If greater than 1, the 0-based stage number will be given via <code>argv[1]</code>.<br>
               Each stage's output will be the input of the next stage; The last stage's output is the final answer.<br>
-              Special judge can be configured to run between stages for more checking. See <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#multi-stage-problems" target="_blank">TIOJ wiki</a> for more details about multi-stage problems.
+              Special judge can be configured to run between stages for more checking. See <a href="https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problems#multi-stage-problems" target="_blank">TIOJ wiki</a> for more details about multi-stage problems.
             </div>
           </div>
         </div>
@@ -216,7 +216,7 @@
   </div>
 
   <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis">
-    <%= f.label :sjcode, raw('Special Judge Code ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problem#special-judge-modes', true) %>
+    <%= f.label :sjcode, raw('Special Judge Code ') + help_icon('https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Problems#special-judge-modes', true) %>
     <%= f.text_area :sjcode, class: 'form-control flat code-input', rows: '7' %>
   </div>
   <div class="form-group visibility-specjudge visibility-specjudge-old visibility-specjudge-new visibility-specjudge-polygon visibility-specjudge-kattis">
