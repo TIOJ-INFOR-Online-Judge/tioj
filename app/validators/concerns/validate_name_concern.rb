@@ -2,7 +2,7 @@ module ValidateNameConcern
   private
 
   def validate_name(record, field, value, is_username)
-    return if value.blank?
+    # return if value.blank?
 
     settings = Rails.configuration.x.settings.dig(is_username ? :username_settings : :team_name_settings)
     settings ||= {}

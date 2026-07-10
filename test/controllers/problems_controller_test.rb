@@ -73,4 +73,18 @@ class ProblemsControllerTest < ActionDispatch::IntegrationTest
     patch problem_url(@problem), params: { problem: { name: @problem.name } }
     assert_no_permission
   end
+
+  test "normal user should not rejudge problem" do
+    sign_in users(:userOne)
+
+    post rejudge_problem_url(@problem)
+    assert_no_permission
+  end
+
+  test "normal user should not delete submissions" do
+    sign_in users(:userOne)
+
+    post delsub_problem_url(@problem)
+    assert_no_permission
+  end
 end

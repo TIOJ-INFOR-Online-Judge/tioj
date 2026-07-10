@@ -80,6 +80,8 @@ module ProblemsHelper
       "none" => "Default compare",
       "old" => "Old-style special judge",
       "new" => "New-style special judge",
+      "polygon" => "Polygon-style special judge",
+      "kattis" => "Kattis-style special judge",
     }
   end
 
