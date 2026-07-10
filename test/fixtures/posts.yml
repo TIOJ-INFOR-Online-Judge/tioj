@@ -1,0 +1,13 @@
+one:
+  title: Test Post
+  content: Some content
+  user: userOne
+  global_visible: true
+  post_type: discuss
+
+two:
+  title: Another Post
+  content: Another content
+  user: userTwo
+  global_visible: true
+  post_type: discuss
