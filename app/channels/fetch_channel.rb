@@ -1,16 +1,22 @@
 class FetchChannel < ApplicationCable::Channel
   def subscribed
+    return reject unless judge_server
+
     stream_from "fetch_#{judge_server.id}"
     stream_from 'fetch'
   end
 
   def td_result(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
     update_td_results(data[:results], submission)
   end
 
   def submission_result(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
@@ -45,6 +51,8 @@ class FetchChannel < ApplicationCable::Channel
   end
 
   def report_queued(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
@@ -53,6 +61,8 @@ class FetchChannel < ApplicationCable::Channel
   end
 
   def fetch_submission(data)
+    return unless authorized_judge_server?
+
     n_retry = 5
     for i in 1..n_retry
       submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
@@ -142,6 +152,16 @@ class FetchChannel < ApplicationCable::Channel
   end
 
   private
+
+  # A failed subscription callback can leave an Action Cable channel object in the
+  # connection's subscription map, so each privileged RPC also verifies the
+  # connection identity before changing state.
+  def authorized_judge_server?
+    return true if judge_server
+
+    reject
+    false
+  end
 
   def int_to_score(x)
     (x / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6'))
