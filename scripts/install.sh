@@ -62,7 +62,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
       imagemagick nodejs yarn redis-server \
       libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev \
-      ghc python2 python3-numpy python3-pil
+      ghc python2 python3-numpy python3-pil rustc
   if [ "$UBUNTU_DIST" != "22.04" ]; then
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
@@ -79,7 +79,7 @@ elif grep -q 'Arch Linux' /etc/*-release; then
   DIST=Arch
   sudo pacman -Syu --noconfirm --needed \
       base-devel git mariadb imagemagick nodejs yarn redis libyaml \
-      cmake ninja boost ghc python-numpy python-pillow
+      cmake ninja boost ghc python-numpy python-pillow rust
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
@@ -201,11 +201,9 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
-mkdir -p build
-cd build
-cmake -G Ninja ..
-ninja -j $(($(nproc)-2))
-sudo ninja install
+cmake -B build -G Ninja
+cmake --build build -j $(($(nproc)-2))
+cmake --install build
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
@@ -232,8 +230,8 @@ sudo sed -Ei "/^ *location \/[^a-z]/, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.
 cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
 [Unit]
 Description=Nginx Server
-After=syslog.target
-Requires=network.target remote-fs.target nss-lookup.target mysql.service
+After=syslog.target network.target remote-fs.target nss-lookup.target mysql.service
+Wants=network.target remote-fs.target nss-lookup.target mysql.service
 
 [Service]
 Type=forking
