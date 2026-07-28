@@ -260,8 +260,8 @@ class TestdataController < ApplicationController
         end
         in_dest = "#{tmp_folder}/#{in_entry.name}"
         out_dest = "#{tmp_folder}/#{out_entry.name}"
-        in_entry.extract(in_dest)
-        out_entry.extract(out_dest)
+        in_entry.extract(in_dest, destination_directory: "/")
+        out_entry.extract(out_dest, destination_directory: "/")
         td_pair_dest << [in_dest, out_dest]
       end
     end
