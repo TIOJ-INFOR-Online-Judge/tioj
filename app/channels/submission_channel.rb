@@ -8,8 +8,8 @@ class SubmissionChannel < ApplicationCable::Channel
       with_detail = submission&.tasks_allowed_for(current_user, effective_admin?)
       stream_from "submission_#{submission.id}_subtasks"
       stream_from "submission_#{submission.id}_testdata" if with_detail
-      stream_from "submission_#{submission.id}_overall"
-      init_data(submission, with_detail)
+      stream_from "submission_#{submission.id}_overall#{effective_admin? ? '' : '_nojce'}"
+      init_data(submission, with_detail, effective_admin?)
     else
       reject && return if params[:id].size > 20
       submissions = Submission.where(id: params[:id])
@@ -17,8 +17,8 @@ class SubmissionChannel < ApplicationCable::Channel
       submissions = submissions.filter{|s| s.allowed_for(current_user, effective_admin?)}
       reject && return if not submissions
       submissions.each do |s|
-        stream_from "submission_#{s.id}_overall"
-        init_data(s, false, true)
+        stream_from "submission_#{s.id}_overall_nojce"
+        init_data(s, false, false, true)
       end
     end
   end
@@ -28,7 +28,7 @@ class SubmissionChannel < ApplicationCable::Channel
 
   private
 
-  def init_data(submission, with_detail, overall_only = false)
+  def init_data(submission, with_detail, with_jce, overall_only = false)
     unless overall_only
       ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: submission.get_subtask_result})
       ActionCable.server.broadcast("submission_#{submission.id}_testdata", {
@@ -39,8 +39,10 @@ class SubmissionChannel < ApplicationCable::Channel
         end
       }) if with_detail
     end
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", [:id, :score, :result, :total_time, :total_memory, :message].map{|attr|
+    msg = [:id, :score, :result, :total_time, :total_memory].map{|attr|
       [attr, submission.read_attribute(attr)]
-    }.to_h)
+    }.to_h
+    msg[:message] = submission.read_attribute(:message) if with_jce or submission.result != 'JCE'
+    ActionCable.server.broadcast("submission_#{submission.id}_overall#{with_jce ? '' : '_nojce'}", msg)
   end
 end

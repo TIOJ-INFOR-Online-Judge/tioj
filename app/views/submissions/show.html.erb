@@ -266,8 +266,8 @@
         <h1 class="panel-title">Compilation Error Message</h1>
     </div>
     <div class="panel-body">
-      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.message.present? %> no-display<% end %>" style="margin: 0;"><code class=""><%= @submission.message || "" %></code></pre>
-      <span id="ce-message-none" <% if @submission.message.present? %>class="no-display"<% end %>>
+      <pre id="ce-message-content" class="pre-scrollable<% unless @submission.visible_message(effective_admin?) %> no-display<% end %>" style="margin: 0;"><code class=""><%= @submission.visible_message(effective_admin?) || "" %></code></pre>
+      <span id="ce-message-none" <% if @submission.visible_message(effective_admin?) %>class="no-display"<% end %>>
         Sorry, no compilation error message available.
       </span>
     </div>
