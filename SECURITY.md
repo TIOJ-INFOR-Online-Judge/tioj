@@ -15,12 +15,7 @@ Please include, where possible:
 
 ## Supported versions
 
-| Version | Supported |
-| --- | --- |
-| 3.5.1 | Yes |
-| &lt; 3.5.1 | No |
-
-In general, only the latest TIOJ release receives security fixes. Users running an older
+Only the **latest TIOJ release** receives security fixes. Users running an older
 version should upgrade before reporting issues where possible.
 
 ## Security best practices
