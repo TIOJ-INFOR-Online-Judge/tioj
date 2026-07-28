@@ -119,66 +119,62 @@ th {
   </tbody>
 </table>
 <script>
-$.tablesorter.addParser({
-    id: 'file-size',
-    is: function(s){
-        return false;
-    },
-    format: function(s){
-        var token = s.split(" ");
-        if(token.length != 2){
-            return -1;
-        }
-        var suffix = {Bytes: 1,KB: 1024,MB: 1048576};
-        var sz = parseFloat(token[0]);
-        if(!(token[1] in suffix)){
-            return -1;
-        }
-        return sz * suffix[token[1]];
-    },
-    type: 'numeric'
-})
-$(document).ready(function()
-    {
-        $.tablesorter.customPagerControls({
-          table          : $('.table'),
-          pager          : $('.pager'),
-          currentPage    : '.right a',
-          ends           : 2,
-          aroundCurrent  : 5,
-          link           : '<a href="#">{page}</a>',
-          currentClass   : 'current',
-          adjacentSpacer : '<span>  |  <span>',
-          distanceSpacer : '<span>  &#133;  <span>',
-          addKeyboard    : true,
-          pageKeyStep    : 3
-        });
-
-        $(".tablesorter").tablesorter({
-            cancelSelection: true,
-            sortList: [[0,0]],
-            headers: {
-                1: { sorter: false},
-                2: { sorter: false},
-                3: { sorter: false},
-                <%= @problem.ranklist_display_score ? 8 : 7 %>: { sorter: 'file-size'}
-            },
-            theme: 'meow' // non-existent theme
-        }).tablesorterPager({
-            container: $('.pager'),
-            savePages: false,
-            size: 50
-        });
-    }
-);
+$(document).ready(function() {
+    $.tablesorter.addParser({
+        id: 'file-size',
+        is: function(s){
+            return false;
+        },
+        format: function(s){
+            var token = s.split(" ");
+            if(token.length != 2){
+                return -1;
+            }
+            var suffix = {Bytes: 1,KB: 1024,MB: 1048576};
+            var sz = parseFloat(token[0]);
+            if(!(token[1] in suffix)){
+                return -1;
+            }
+            return sz * suffix[token[1]];
+        },
+        type: 'numeric'
+    });
+    $.tablesorter.customPagerControls({
+        table          : $('.table'),
+        pager          : $('.pager'),
+        currentPage    : '.right a',
+        ends           : 2,
+        aroundCurrent  : 5,
+        link           : '<a href="#">{page}</a>',
+        currentClass   : 'current-page',
+        adjacentSpacer : '<span>&ensp;|&ensp;</span>',
+        distanceSpacer : '<span>&ensp;&#133;&ensp;</span>',
+        addKeyboard    : true,
+        pageKeyStep    : 3
+    });
+    $(".tablesorter").tablesorter({
+        cancelSelection: true,
+        sortList: [[0,0]],
+        headers: {
+            1: {sorter: false},
+            2: {sorter: false},
+            3: {sorter: false},
+            <%= @problem.ranklist_display_score ? 8 : 7 %>: { sorter: 'file-size'}
+        },
+        theme: 'meow' // non-existent theme
+    }).tablesorterPager({
+        container: $('.pager'),
+        savePages: false,
+        size: 50
+    });
+});
 $("table").bind("sortEnd",function() {
     $('tbody > tr').removeClass();
     $('tbody > tr:nth-of-type(1)').addClass('warning');
     $('tbody > tr:nth-of-type(2),tbody > tr:nth-of-type(3)').addClass('success');
     $('tbody > tr:nth-of-type(4),tbody > tr:nth-of-type(5)').addClass('info');
     $('tbody > tr:nth-of-type(6),tbody > tr:nth-of-type(7)').addClass('info');
-
-})
+});
 </script>
 
 <% if @submissions.size() > 50 %>
