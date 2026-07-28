@@ -21,7 +21,7 @@ class FetchChannel < ApplicationCable::Channel
     submission = Submission.find(data[:submission_id])
     if ['Validating', 'queued'].include? data[:verdict]
       submission.update(result: data[:verdict])
-      ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
+      broadcast_overall(submission, {id: submission.id, result: data[:verdict]})
       return
     end
     update_td_results(data[:td_results], submission) if data[:td_results]
@@ -46,7 +46,7 @@ class FetchChannel < ApplicationCable::Channel
     Submission.with_advisory_lock("#{submission.id}") do
       submission.update(**update_hash)
     end
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
+    broadcast_overall(submission, update_hash.merge({id: submission.id}))
     notify_contest_channel(submission.contest_id, submission.user_id)
   end
 
@@ -145,7 +145,7 @@ class FetchChannel < ApplicationCable::Channel
       },
     }
     ActionCable.server.broadcast("fetch_#{judge_server.id}", {type: 'submission', data: data})
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", {result: 'received', id: submission.id})
+    broadcast_overall(submission, {result: 'received', id: submission.id})
   end
 
   def unsubscribed
@@ -199,6 +199,12 @@ class FetchChannel < ApplicationCable::Channel
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({result: submission.result, id: submission.id}))
+    broadcast_overall(submission, update_hash.merge({result: submission.result, id: submission.id}))
+  end
+
+  def broadcast_overall(submission, msg)
+    msg_nojce = msg[:result] == 'JCE' ? msg.except(:message) : msg
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", msg)
+    ActionCable.server.broadcast("submission_#{submission.id}_overall_nojce", msg_nojce)
   end
 end

@@ -113,6 +113,15 @@ pre.code-block[class*="language-"] {
   overflow: hidden;
 }
 
+/* tablesorter */
+.pager span.pagecount {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.pager a.current-page {
+  color: #eefffc;
+}
+
 /* misc */
 label.checkbox.checked { /* not change label color when checkbox is checked */
   color: unset;

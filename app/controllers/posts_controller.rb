@@ -150,7 +150,6 @@ class PostsController < ApplicationController
     params.require(:post).permit(
       :title,
       :content,
-      :user_id,
       :problem_id,
       :post_type,
       :global_visible,

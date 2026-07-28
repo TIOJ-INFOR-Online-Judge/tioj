@@ -131,4 +131,8 @@ class Submission < ApplicationRecord
   def created_at_usec
     created_at.to_i * 1000000 + created_at.usec
   end
+
+  def visible_message(is_admin)
+    is_admin || result != 'JCE' ? message : nil
+  end
 end
