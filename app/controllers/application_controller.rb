@@ -27,8 +27,9 @@ class ApplicationController < ActionController::Base
     "CLE" => "Compilation Limit Exceeded",
     "JCE" => "Judge Compilation Error",
     "JE" => "Judge Error",
-    "queued" => "Waiting for judge server",
-    "received" => "Queued in judge server",
+    "waiting" => "Waiting for judge server",
+    "received" => "Transmitting data to judge server",
+    "queued" => "Queued in judge server",
     "Validating" => "Validating",
   }
   @@judge_verdict = Set["AC", "WA", "TLE", "MLE", "OLE", "RE", "SIG", "JRE", "EE", "CE", "CLE", "JCE", "JE"]

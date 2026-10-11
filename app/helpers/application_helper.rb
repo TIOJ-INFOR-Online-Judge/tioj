@@ -58,7 +58,7 @@ module ApplicationHelper
       "OLE" => "text-ole",
       "RE" => "text-warning",
       "SIG" => "text-sig",
-      "queued" => "text-muted",
+      "waiting" => "text-muted",
     }
     if class_map[x]
       return raw '<span class="' + class_map[x] + '">' + x + '</span>'

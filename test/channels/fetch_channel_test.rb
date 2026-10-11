@@ -77,7 +77,7 @@ class FetchChannelTest < ActionCable::Channel::TestCase
   test "a no-key subscription retained after a callback failure cannot fetch work" do
     connection, identifier = callback_failed_connection
     submission = submissions(:ac)
-    submission.update!(result: "queued", priority: 1_000_000)
+    submission.update!(result: "waiting", priority: 1_000_000)
 
     assert_no_changes -> { submission.reload.result } do
       perform_action(connection, identifier, action: "fetch_submission")

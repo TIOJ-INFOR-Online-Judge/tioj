@@ -1,6 +1,6 @@
 <% set_page_title "Submissions" %>
 
-<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% waiting_verdicts = ['Validating', 'waiting', 'received', 'queued'] %>
 <% verdict_class_map = {
   "AC" => "text-success",
   "WA" => "text-danger",
@@ -9,7 +9,7 @@
   "OLE" => "text-ole",
   "RE" => "text-warning",
   "SIG" => "text-sig",
-  "queued" => "text-muted",
+  "waiting" => "text-muted",
 } %>
 <% verdict_class_map.default = '' %>
 <% waiting_submissions = [] %>

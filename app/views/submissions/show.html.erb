@@ -5,7 +5,7 @@
   <h4 class="page-header">Results of submission #<%= @submission.id %></h4>
 <% end %>
 
-<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% waiting_verdicts = ['Validating', 'waiting', 'received', 'queued'] %>
 <% will_update = !@show_old && waiting_verdicts.include?(@submission.result) %>
 <% panel_class_map = {
   'WA' => 'panel-danger',

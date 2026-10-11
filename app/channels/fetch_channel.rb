@@ -19,7 +19,7 @@ class FetchChannel < ApplicationCable::Channel
 
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
-    if ['Validating', 'queued'].include? data[:verdict]
+    if ['Validating', 'waiting', 'queued'].include? data[:verdict]
       submission.update(result: data[:verdict])
       broadcast_overall(submission, {id: submission.id, result: data[:verdict]})
       return
@@ -57,7 +57,7 @@ class FetchChannel < ApplicationCable::Channel
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+    Submission.where(result: ["received", "queued", "Validating"], updated_at: ..40.second.ago).update_all(result: "waiting")
   end
 
   def fetch_submission(data)
@@ -65,11 +65,11 @@ class FetchChannel < ApplicationCable::Channel
 
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
+      submission = Submission.where(result: "waiting").order(priority: :desc, id: :asc).first
       flag = false
       if submission
         Submission.with_advisory_lock("#{submission.id}") do
-          if submission.result != "queued"
+          if submission.result != "waiting"
             if i != n_retry
               flag = true
               next # breaks with_lock
@@ -184,7 +184,7 @@ class FetchChannel < ApplicationCable::Channel
     subtask_scores = nil
     update_hash = nil
     SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-    return if not ['Validating', 'received'].include?(submission.result)
+    return if not ['Validating', 'received', 'queued'].include?(submission.result)
     if submission.problem.summary_none?
       subtask_scores = submission.calc_subtask_result
       score = subtask_scores.sum{|x| x[:score]}
