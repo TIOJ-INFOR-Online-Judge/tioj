@@ -213,7 +213,7 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
-cmake -B build -G Ninja
+cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 cmake --build build -j $(($(nproc)-2))
 cmake --install build
 
