@@ -53,7 +53,9 @@ if grep -q 'Ubuntu' /etc/*-release; then
   curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
   echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+  if [[ "$UBUNTU_DIST" != "26.04" ]]; then
+    sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+  fi
   sudo apt -y update
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       build-essential ca-certificates curl git cmake ninja-build g++-15 rvm \
