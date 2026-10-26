@@ -45,8 +45,12 @@ trap Cleanup EXIT
 if grep -q 'Ubuntu' /etc/*-release; then
   DIST=Ubuntu
   UBUNTU_DIST=$( . /etc/os-release && printf '%s' "$VERSION_ID" )
+  case "$UBUNTU_DIST" in
+    22.04|24.04|26.04) ;;
+    *) echo "Unsupported Ubuntu release: $UBUNTU_DIST (expected 22.04, 24.04 or 26.04)"; exit 1 ;;
+  esac
   sudo apt -y update
-  sudo apt -y install software-properties-common
+  sudo apt -y install software-properties-common ca-certificates curl gnupg
   sudo apt-add-repository -y ppa:rael-gc/rvm
   sudo mkdir -p /etc/apt/keyrings
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
@@ -57,20 +61,28 @@ if grep -q 'Ubuntu' /etc/*-release; then
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
   sudo apt -y update
+  UBUNTU_EXTRA_PACKAGES=()
+  if [[ "$UBUNTU_DIST" == "26.04" ]]; then
+    # Ubuntu 26.04's static OpenSSL requires libjitterentropy.a.
+    UBUNTU_EXTRA_PACKAGES+=(libjitterentropy3-dev)
+  fi
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       build-essential ca-certificates curl git cmake ninja-build g++-15 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
       imagemagick nodejs yarn redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev libjitterentropy3-dev \
-      ghc python3-numpy python3-pil rustc
+      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev libsqlite3-dev libssl-dev zlib1g-dev \
+      ghc python3-numpy python3-pil rustc "${UBUNTU_EXTRA_PACKAGES[@]}"
   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
     --slave /usr/bin/g++ g++ /usr/bin/g++-15 \
     --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-15 \
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-15 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-15 # Use GCC 15 as default
 
-  if [[ "$UBUNTU_DIST" == "26.04" ]]; then
-    cd /tmp
+  if [[ "$UBUNTU_DIST" == "22.04" ]]; then
+    sudo DEBIAN_FRONTEND=noninteractive apt -y install python2
+  else
+    PYTHON2_BUILD_DIR=$(mktemp -d)
+    cd "$PYTHON2_BUILD_DIR"
     curl -fsSLO https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
     echo 'da3080e3b488f648a3d7a4560ddee895284c3380b11d6de75edb986526b9a814  Python-2.7.18.tgz' | sha256sum -c -
     tar -xzf Python-2.7.18.tgz
@@ -79,8 +91,8 @@ if grep -q 'Ubuntu' /etc/*-release; then
     CC='gcc -std=gnu17' CXX='g++ -std=gnu++17' ./configure --prefix=/usr/local --without-ensurepip --disable-shared
     make -j"$(nproc)"
     sudo make install
-  else
-    sudo DEBIAN_FRONTEND=noninteractive apt -y install python2
+    cd "$SCRIPT_DIR"
+    rm -rf "$PYTHON2_BUILD_DIR"
   fi
 
   # Setup mysql
