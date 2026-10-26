@@ -226,8 +226,10 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
 cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-cmake --build build -j $(($(nproc)-2))
-cmake --install build
+JUDGE_BUILD_JOBS=$(nproc)
+if (( JUDGE_BUILD_JOBS > 2 )); then JUDGE_BUILD_JOBS=$((JUDGE_BUILD_JOBS-2)); fi
+cmake --build build -j "$JUDGE_BUILD_JOBS"
+sudo cmake --install build
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
