@@ -69,7 +69,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       build-essential ca-certificates curl git cmake ninja-build g++-15 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs yarn redis-server \
+      imagemagick nodejs yarn redis-server cron xxd \
       libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev libsqlite3-dev libssl-dev zlib1g-dev \
       ghc python3-numpy python3-pil rustc "${UBUNTU_EXTRA_PACKAGES[@]}"
   sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
@@ -295,4 +295,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
-sudo echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
+printf '30 3 * * * %s "%s/tioj/scripts/trim_sessions.sh"\n' "$USER" "$WORKDIR" | sudo tee /etc/cron.d/tioj-trim-sessions > /dev/null
