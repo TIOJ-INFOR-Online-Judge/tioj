@@ -54,6 +54,7 @@ services:
     tmpfs:
       - /tmp:exec
     privileged: true
+    cgroup: host
     network_mode: host
     pid: host
     logging: *default-logging
