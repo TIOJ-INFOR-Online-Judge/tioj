@@ -73,10 +73,10 @@ if grep -q 'Ubuntu' /etc/*-release; then
     echo 'da3080e3b488f648a3d7a4560ddee895284c3380b11d6de75edb986526b9a814  Python-2.7.18.tgz' | sha256sum -c -
     tar -xzf Python-2.7.18.tgz
     cd Python-2.7.18
-    CC='gcc -std=gnu17' CXX='g++ -std=gnu++17' ./configure --prefix=/opt/python2 --without-ensurepip --disable-shared
+    # /usr is mounted in compile and execution sandboxes; /opt is not.
+    CC='gcc -std=gnu17' CXX='g++ -std=gnu++17' ./configure --prefix=/usr/local --without-ensurepip --disable-shared
     make -j"$(nproc)"
     sudo make install
-    sudo ln -sfn /opt/python2/bin/python2.7 /usr/local/bin/python2
   else
     sudo DEBIAN_FRONTEND=noninteractive apt -y install python2
   fi
