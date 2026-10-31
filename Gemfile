@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'passenger', '~> 6', require: 'phusion_passenger/rack_handler'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7'
-gem 'rdoc', '~> 6'
+gem 'rails', '~> 8'
+gem 'rdoc', '~> 8'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -86,8 +86,8 @@ gem 'activerecord-import'
 gem 'with_advisory_lock'
 
 # Redis for Action Cable
-gem 'redis', '~> 5'
-gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
+gem 'redis', '~> 6'
+# gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
 
 # Sentry for monitoring
 gem 'sentry-ruby'

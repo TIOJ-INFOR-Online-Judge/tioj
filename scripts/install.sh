@@ -47,28 +47,28 @@ if grep -q 'Ubuntu' /etc/*-release; then
   UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
   sudo apt -y update
   sudo apt -y install software-properties-common
-  sudo apt-add-repository -y ppa:rael-gc/rvm
   sudo mkdir -p /etc/apt/keyrings
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
-  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-  echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
+  if [ "$UBUNTU_DIST" == "26.04" ]; then
+    sudo add-apt-repository -y ppa:jdxcode/mise
+  else
+    sudo apt install -y extrepo
+    sudo extrepo enable mise
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
   sudo apt -y update
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
-      git cmake ninja-build g++-11 rvm \
+      git g++-15 cmake ninja-build curl mise imagemagick redis-server \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs yarn redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev \
-      ghc python2 python3-numpy python3-pil rustc
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
-      --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
-      --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 \
-      --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
-      --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 # Use GCC 11 as default
+      libseccomp-dev libnl-genl-3-dev libsqlite3-dev libbsd-dev \
+      libz-dev libbz2-dev libssl-dev libboost-all-dev libzstd-dev
+  if [ "$UBUNTU_DIST" == "26.04" ]; then
+    sudo install -y libjitterentropy3-dev
+  else
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-15 \
+      --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-15 \
+      --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-15 \
+      --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-15 # Use GCC 15 as default
   fi
 
   # Setup mysql
@@ -78,12 +78,10 @@ if grep -q 'Ubuntu' /etc/*-release; then
 elif grep -q 'Arch Linux' /etc/*-release; then
   DIST=Arch
   sudo pacman -Syu --noconfirm --needed \
-      base-devel git mariadb imagemagick nodejs yarn redis libyaml \
-      cmake ninja boost ghc python-numpy python-pillow rust
+      base-devel git mariadb imagemagick redis mise libyaml cmake ninja boost
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
-  curl -L get.rvm.io | sudo bash -
 
   # build libseccomp, libnl, openssl, sqlite, libbsd, libzstd with static libs
   mkdir -p "$WORKDIR/build"
@@ -126,12 +124,11 @@ else
   exit 1
 fi
 
-# Setup RVM
-sudo usermod -a -G rvm $USER
-echo 'source "/etc/profile.d/rvm.sh"' >> ~/.bashrc
-source "/etc/profile.d/rvm.sh"
-newgrp rvm <<< 'rvm install 3.3.7; rvm alias create default 3.3.7'
-rvm use 3.3.7
+# Setup mise
+mise plugin add ghc
+# ghc install sometimes fail
+mise install ghc@9.10 || mise install ghc@9.10
+mise use -g ghc@9.10 python@2.7 python@3.14 rust@1.93 node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
 
 # Clone git repos
 cd "$WORKDIR"
@@ -149,8 +146,7 @@ passenger_version="$(grep -Po ' passenger \(\K\d.*(?=\))' Gemfile.lock | head -1
 gem install passenger:"$passenger_version" -N
 PASSENGER_LOG=$(sudo mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
-export rvmsudo_secure_path=1
-rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
+sudo -E env "PATH=$PATH" bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
 MAKEFLAGS='-j4' bundle install
 
 # Install yarn packages
@@ -258,6 +254,7 @@ StandardError=journal
 SyslogIdentifier=tioj-judge
 ExecStart=/usr/bin/nice -n -10 tioj-judge -v
 ExecStop=/bin/kill -s INT \$MAINPID
+Environment="PATH=/root/.local/share/mise/installs/rust/1.93:/root/.local/share/mise/installs/python/3.14/bin:/root/.local/share/mise/installs/python/2.7/bin:/root/.local/share/mise/installs/ghc/9.10/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 [Install]
 WantedBy=multi-user.target

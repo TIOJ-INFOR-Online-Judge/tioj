@@ -16,8 +16,6 @@
 #  index_teams_on_name  (name)
 #
 
-require 'file_size_validator'
-
 class Team < ApplicationRecord
   has_many :team_user_joints
   has_many :users, through: :team_user_joints

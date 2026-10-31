@@ -7,10 +7,10 @@ require "rails/all"
 Bundler.require(*Rails.groups)
 
 module Tioj
-  VERSION = '3.5.3'
+  VERSION = '3.5.4'
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 8.1
     config.time_zone = "Taipei"
     config.site_name = "TIOJ INFOR Online Judge"
     config.exceptions_app = self.routes

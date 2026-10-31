@@ -43,8 +43,6 @@
 #  fk_rails_...  (last_compiler_id => compilers.id)
 #
 
-require 'file_size_validator'
-
 class UserBase < ApplicationRecord
   self.table_name = "users"
 
