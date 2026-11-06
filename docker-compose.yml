@@ -1,7 +1,6 @@
 version: "3.7"
 
-x-logging:
-  &default-logging
+x-logging: &default-logging
   driver: "json-file"
   options:
     max-size: "100m"
@@ -34,7 +33,7 @@ services:
       - "4000:4000"
     logging: *default-logging
   db:
-    image: mysql:8.0
+    image: mysql:8.4
     volumes:
       - /srv/tioj/db:/var/lib/mysql
     environment:
@@ -44,7 +43,7 @@ services:
       - app
     logging: *default-logging
   judge:
-    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#06a8c94fd3d45ead68c805c3689cdb556db056ae
+    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#57b0538b0b3eef7e3ef4a905a6b56056888a3bdc
     environment:
       TIOJ_URL: "http://localhost:4000"
       TIOJ_KEY: $FETCH_KEY

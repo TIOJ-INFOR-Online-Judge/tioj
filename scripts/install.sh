@@ -59,11 +59,16 @@ if grep -q 'Ubuntu' /etc/*-release; then
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
       git g++-15 cmake ninja-build curl mise imagemagick redis-server \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      libseccomp-dev libnl-genl-3-dev libsqlite3-dev libbsd-dev \
-      libz-dev libbz2-dev libssl-dev libboost-all-dev libzstd-dev
+      libseccomp-dev libnl-genl-3-dev libsqlite3-dev libbsd-dev libgmp-dev \
+      libz-dev libbz2-dev libreadline-dev libssl-dev libboost-all-dev libzstd-dev
   if [ "$UBUNTU_DIST" == "26.04" ]; then
-    sudo install -y libjitterentropy3-dev
+    sudo apt install -y g++ libjitterentropy3-dev
   else
+    if [ "$UBUNTU_DIST" == "24.04" ]; then
+      sudo rm /etc/alternatives/cpp
+    fi
+    sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-15 60 \
+      --slave /usr/bin/c++ c++ /usr/bin/g++-15
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
       --slave /usr/bin/g++ g++ /usr/bin/g++-15 \
       --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-15 \
@@ -72,48 +77,57 @@ if grep -q 'Ubuntu' /etc/*-release; then
   fi
 
   # Setup mysql
-  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD'; flush privileges;"
 
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
   DIST=Arch
   sudo pacman -Syu --noconfirm --needed \
-      base-devel git mariadb imagemagick redis mise libyaml cmake ninja boost
+      base-devel git mariadb imagemagick redis mise libyaml cmake ninja boost zlib-static cronie \
+      libseccomp libnl openssl sqlite libbsd zstd # first install it to get version
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
 
   # build libseccomp, libnl, openssl, sqlite, libbsd, libzstd with static libs
+  export MAKEFLAGS="-j$(nproc)"
   mkdir -p "$WORKDIR/build"
   cd "$WORKDIR/build"
   mkdir -p libseccomp libnl openssl sqlite libbsd zstd
   cd libseccomp
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libseccomp/-/raw/main/PKGBUILD
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q libseccomp | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libseccomp/-/raw/$VER/PKGBUILD
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../libnl
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libnl/-/raw/main/PKGBUILD
-  sed -i "s/^depends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q libnl | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libnl/-/raw/$VER/PKGBUILD
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   sed -Ei '/sbindir/, /disable-static/ s/(--d| \\).*//' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../openssl
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/PKGBUILD
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/ca-dir.patch
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q openssl | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/$VER/PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/$VER/ca-dir.patch
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/; "'s|make DESTDIR|make PATH="/usr/bin/core_perl:$PATH" DESTDIR|' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../sqlite
+  VER="$(pacman -Q sqlite | cut -d' ' -f2)"
   for i in PKGBUILD license.txt sqlite-lemon-system-template.patch; do
-    curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/sqlite/-/raw/main/$i
+    curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/sqlite/-/raw/$VER/$i
   done
   sed -i "s/^options=./\0'staticlibs' !'lto' /; /disable-static/ d" PKGBUILD
   makepkg -si --noconfirm
   cd ../libbsd
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libbsd/-/raw/main/PKGBUILD
+  VER="$(pacman -Q libbsd | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libbsd/-/raw/$VER/PKGBUILD
   sed -i "/rm.*libbsd\.a/ d" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../zstd
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/zstd/-/raw/main/PKGBUILD
-  sed -i "s/makedepends.*$/\0\noptions=('staticlibs' !'lto')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
+  VER="$(pacman -Q zstd | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/zstd/-/raw/$VER/PKGBUILD
+  sed -i "s/pkgrel.*$/\0\noptions=('staticlibs' !'lto')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
+  sed -i "s|patch -Np1.*$|\0\nsed -i 's/contentChecksum_t/LZ4F_contentChecksum_t/g' programs/fileio.c|" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
 
   # Setup mysql
@@ -129,6 +143,8 @@ mise plugin add ghc
 # ghc install sometimes fail
 mise install ghc@9.10 || mise install ghc@9.10
 mise use -g ghc@9.10 python@2.7 python@3.14 rust@1.93 node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+eval $(mise activate bash)
+pip3 install numpy~=2.5.0 Pillow~=13.0.0
 
 # Clone git repos
 cd "$WORKDIR"
@@ -144,9 +160,9 @@ fi
 cd "$WORKDIR/tioj"
 passenger_version="$(grep -Po ' passenger \(\K\d.*(?=\))' Gemfile.lock | head -1)"
 gem install passenger:"$passenger_version" -N
-PASSENGER_LOG=$(sudo mktemp -d)
+PASSENGER_LOG=$(sudo TMPDIR=/var/tmp mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
-sudo -E env "PATH=$PATH" bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
+sudo setsid env "PATH=$PATH" "HOME=$HOME" bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
 MAKEFLAGS='-j4' bundle install
 
 # Install yarn packages
@@ -197,9 +213,9 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
-cmake -B build -G Ninja
+cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 cmake --build build -j $(($(nproc)-2))
-cmake --install build
+sudo cmake --install build
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
@@ -254,7 +270,10 @@ StandardError=journal
 SyslogIdentifier=tioj-judge
 ExecStart=/usr/bin/nice -n -10 tioj-judge -v
 ExecStop=/bin/kill -s INT \$MAINPID
-Environment="PATH=/root/.local/share/mise/installs/rust/1.93:/root/.local/share/mise/installs/python/3.14/bin:/root/.local/share/mise/installs/python/2.7/bin:/root/.local/share/mise/installs/ghc/9.10/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=$HOME/.local/share/mise/installs/rust/1.93:$HOME/.local/share/mise/installs/python/3.14/bin:$HOME/.local/share/mise/installs/python/2.7/bin:$HOME/.local/share/mise/installs/ghc/9.10/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="TIOJ_JUDGE_MOUNTS=$HOME/.local/share/mise:$HOME/.cargo:$HOME/.rustup"
+Environment="CARGO_HOME=$HOME/.cargo"
+Environment="RUSTUP_HOME=$HOME/.rustup"
 
 [Install]
 WantedBy=multi-user.target
@@ -266,4 +285,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
-sudo echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
+printf '30 3 * * * %s "%s/tioj/scripts/trim_sessions.sh"\n' "$USER" "$WORKDIR" | sudo tee /etc/cron.d/tioj-trim-sessions > /dev/null

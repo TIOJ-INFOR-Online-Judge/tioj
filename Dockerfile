@@ -1,15 +1,14 @@
-FROM ruby:3.3.7
+FROM ubuntu:26.04
 
-RUN apt update && apt upgrade -y
+RUN apt update -y && apt upgrade -y
+RUN apt install --no-install-recommends -y \
+    build-essential curl rsync netcat-openbsd redis-server cron extrepo \
+    libmysqlclient-dev imagemagick
 
-# Yarn & nodejs setup
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
-RUN mkdir -p /etc/apt/keyrings
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt update -y
-RUN apt install -y rsync netcat-openbsd nodejs yarn redis-server cron --no-install-recommends
+RUN extrepo enable mise && apt update -y
+RUN apt install -y mise
+RUN mise use -g node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+ENV PATH="/root/.local/share/mise/shims:${PATH}"
 
 ARG MYSQL_ROOT_PASSWORD
 ENV PASSWORD=$MYSQL_ROOT_PASSWORD
@@ -43,7 +42,6 @@ production:\n\
 > config/database.yml
 
 RUN EDITOR=true rails credentials:edit
-RUN rails assets:precompile
 
 # Move public/ to public-tmp/ since we're going to override it with 'volumes';
 #  run_server moves it back

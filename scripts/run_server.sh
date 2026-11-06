@@ -25,6 +25,8 @@ shared:
     sender: ${MAIL_SENDER:-$SMTP_USERNAME}
 EOF
     fi
+
+    rails assets:precompile
   fi
   until timeout 2s nc -z db 3306; do
     sleep 1
@@ -38,4 +40,5 @@ if rails db:exists; then
 else
   rails db:setup
 fi
-/usr/local/bundle/bin/passenger start --port 4000
+
+passenger start --port 4000
