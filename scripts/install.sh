@@ -42,6 +42,7 @@ function Cleanup {
 trap Cleanup EXIT
 
 # Install dependencies
+export MAKEFLAGS="-j$(nproc)"
 if grep -q 'Ubuntu' /etc/*-release; then
   DIST=Ubuntu
   UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
@@ -90,7 +91,6 @@ elif grep -q 'Arch Linux' /etc/*-release; then
   sudo systemctl start mysql
 
   # build libseccomp, libnl, openssl, sqlite, libbsd, libzstd with static libs
-  export MAKEFLAGS="-j$(nproc)"
   mkdir -p "$WORKDIR/build"
   cd "$WORKDIR/build"
   mkdir -p libseccomp libnl openssl sqlite libbsd zstd
@@ -163,7 +163,7 @@ gem install passenger:"$passenger_version" -N
 PASSENGER_LOG=$(sudo TMPDIR=/var/tmp mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
 sudo setsid env "PATH=$PATH" "HOME=$HOME" bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
-MAKEFLAGS='-j4' bundle install
+bundle install --retry 3
 
 # Install yarn packages
 yarn install --frozen-lockfile
@@ -214,7 +214,7 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
 cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-cmake --build build -j $(($(nproc)-2))
+cmake --build build -j $(nproc)
 sudo cmake --install build
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null

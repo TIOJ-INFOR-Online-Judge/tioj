@@ -2,11 +2,11 @@ FROM ubuntu:26.04
 
 RUN apt update -y && apt upgrade -y
 RUN apt install --no-install-recommends -y \
-    build-essential curl rsync netcat-openbsd redis-server cron extrepo \
-    libmysqlclient-dev imagemagick
+    software-properties-common build-essential curl rsync netcat-openbsd \
+    redis-server cron extrepo libmysqlclient-dev imagemagick
 
-RUN extrepo enable mise && apt update -y
-RUN apt install -y mise
+RUN add-apt-repository -y ppa:jdxcode/mise && \
+    apt install -y mise
 RUN mise use -g node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
 ENV PATH="/root/.local/share/mise/shims:${PATH}"
 
@@ -18,7 +18,7 @@ ENV TIOJ_KEY=$TIOJ_KEY
 COPY Gemfile Gemfile.lock package.json yarn.lock /tioj/
 WORKDIR /tioj
 RUN echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
-RUN MAKEFLAGS='-j2' bundle install
+RUN MAKEFLAGS="-j$(nproc)" bundle install
 RUN yarn install --frozen-lockfile
 
 COPY . /tioj

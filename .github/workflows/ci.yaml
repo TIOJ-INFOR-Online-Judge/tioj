@@ -2,18 +2,18 @@ name: CI tests
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
     branches: [main]
 
 jobs:
   tests:
     name: Rails CI Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
 
     services:
       mysql-container:
-        image: mysql:8.0
+        image: mysql:8.4
         env:
           MYSQL_ROOT_PASSWORD: somepassword
         ports:
@@ -21,20 +21,23 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3.7"
-          bundler-cache: true
+        uses: actions/checkout@v6
 
       - name: Install dependencies
+        # runner is amd64v3 which mise PPA does not provide natively
         run: |
-          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          sudo apt-get update && sudo apt-get -yqq install imagemagick yarn libzstd-dev libmysqlclient-dev
-          bundle install --jobs 4 --retry 3
+          sudo apt update -y
+          sudo apt install --no-install-recommends -y \
+            software-properties-common build-essential curl rsync netcat-openbsd \
+            redis-server cron extrepo libmysqlclient-dev imagemagick
+          sudo add-apt-repository -y ppa:jdxcode/mise
+          sudo sed -i '/^Types:/a Architectures: amd64' /etc/apt/sources.list.d/jdxcode-ubuntu-mise-resolute.sources
+          sudo apt update -y
+          sudo apt install -y mise
+          mise use -g node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+          eval $(mise activate bash)
+          echo "PATH=$PATH" >> $GITHUB_ENV
+          MAKEFLAGS="-j$(nproc)" bundle install --retry 3
 
       - name: Run Tests
         env:
