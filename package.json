@@ -2,6 +2,7 @@
   "name": "app",
   "dependencies": {
     "@activeadmin/activeadmin": "^3",
+    "@mathjax/mathjax-newcm-font": "^4.1.3",
     "@popperjs/core": "^2.11.7",
     "@rails/actioncable": "^8.1.401",
     "animate.css": "^4.1.1",
@@ -17,12 +18,14 @@
     "jquery-ui": "^1.13.2",
     "jquery-ujs": "^1.2.3",
     "jszip": "^3.10.1",
+    "mathjax": "^4.1.3",
     "prismjs": "^1.30.0",
     "prismjs-components-importer": "^0.2.0",
     "tablesorter": "^2.31.3"
   },
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
+    "mathjax:copy": "rm -rf public/assets/mathjax && mkdir -p public/assets/mathjax && cp -R node_modules/mathjax/. public/assets/mathjax/ && cp -R node_modules/@mathjax/mathjax-newcm-font public/assets/mathjax/mathjax-newcm-font",
+    "build": "yarn mathjax:copy && esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
   },
   "resolutions": {
     "jquery": "3.7.1"

@@ -229,8 +229,6 @@ GEM
       net-pop
       net-smtp
     marcel (1.2.1)
-    mathjax-rails-3 (3.2.2.3)
-      railties (>= 3.0)
     matrix (0.4.3)
     mechanize (2.14.1)
       addressable (~> 2.8)
@@ -479,7 +477,6 @@ DEPENDENCIES
   json
   kaminari
   listen
-  mathjax-rails-3
   mechanize
   mini_magick
   minitest (~> 5)
@@ -507,4 +504,4 @@ DEPENDENCIES
   zstd-ruby (~> 2)
 
 BUNDLED WITH
-  4.0.23
+  4.0.20

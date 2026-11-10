@@ -198,6 +198,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mathjax/mathjax-newcm-font@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "@mathjax/mathjax-newcm-font@npm:4.1.3"
+  checksum: 10c0/f2eea839bf3aed897c46d26f6d0d9d7c3015c4285b00611ebfbefe9fb813592b2c406485226a62169322b1fe73192be323faaf22803d26017dafccc024caf3fc
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.11.7":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
@@ -224,6 +231,7 @@ __metadata:
   resolution: "app@workspace:."
   dependencies:
     "@activeadmin/activeadmin": "npm:^3"
+    "@mathjax/mathjax-newcm-font": "npm:^4.1.3"
     "@popperjs/core": "npm:^2.11.7"
     "@rails/actioncable": "npm:^8.1.401"
     animate.css: "npm:^4.1.1"
@@ -239,6 +247,7 @@ __metadata:
     jquery-ui: "npm:^1.13.2"
     jquery-ujs: "npm:^1.2.3"
     jszip: "npm:^3.10.1"
+    mathjax: "npm:^4.1.3"
     prismjs: "npm:^1.30.0"
     prismjs-components-importer: "npm:^0.2.0"
     tablesorter: "npm:^2.31.3"
@@ -495,6 +504,15 @@ __metadata:
   dependencies:
     immediate: "npm:~3.0.5"
   checksum: 10c0/56dd113091978f82f9dc5081769c6f3b947852ecf9feccaf83e14a123bc630c2301439ce6182521e5fbafbde88e88ac38314327a4e0493a1bea7e0699a7af808
+  languageName: node
+  linkType: hard
+
+"mathjax@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "mathjax@npm:4.1.3"
+  dependencies:
+    "@mathjax/mathjax-newcm-font": "npm:^4.1.3"
+  checksum: 10c0/744ca3ff7e9dfbbfd0f4fa35f9b98acc5b2ae51d34458918820a18d55cfabbb9ee229a7e7c01fc0fb6c7fa34ffc16d242ade7082899691b4c889cf8441538315
   languageName: node
   linkType: hard
 

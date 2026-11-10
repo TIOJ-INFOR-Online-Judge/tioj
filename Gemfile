@@ -51,9 +51,6 @@ gem 'mini_magick'
 gem 'zstd-ruby', '~> 2'
 gem 'rubyzip', '~> 3', require: 'zip'
 
-# Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
-gem 'mathjax-rails-3'
-
 # Tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
 

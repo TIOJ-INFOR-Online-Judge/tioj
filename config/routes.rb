@@ -135,8 +135,6 @@ Rails.application.routes.draw do
 
   get 'fetch/testdata' => 'fetch#testdata'
 
-  mathjax 'mathjax'
-
   get 'about' => 'about#index', as: :about
 
   get 'problems/:id/*file' => redirect{ |path, req| "/#{path[:file]}"}, format: false, id: /[0-9]+/

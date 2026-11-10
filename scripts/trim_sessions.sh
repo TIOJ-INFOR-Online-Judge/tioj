@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -f /etc/profile.d/rvm.sh ]; then
-  source "/etc/profile.d/rvm.sh"
-fi
+eval $(mise activate bash)
 
 cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null
 cd ..
