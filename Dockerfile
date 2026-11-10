@@ -7,7 +7,7 @@ RUN apt install --no-install-recommends -y \
 
 RUN add-apt-repository -y ppa:jdxcode/mise && \
     apt install -y mise
-RUN mise use -g node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+RUN mise use -g node@26 yarn@4 ruby@4.0 gem:rubocop@1.92
 ENV PATH="/root/.local/share/mise/shims:${PATH}"
 
 ARG MYSQL_ROOT_PASSWORD
@@ -15,7 +15,7 @@ ENV PASSWORD=$MYSQL_ROOT_PASSWORD
 ARG TIOJ_KEY
 ENV TIOJ_KEY=$TIOJ_KEY
 
-COPY Gemfile Gemfile.lock package.json yarn.lock /tioj/
+COPY Gemfile Gemfile.lock package.json .yarnrc.yml yarn.lock /tioj/
 WORKDIR /tioj
 RUN echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
 RUN MAKEFLAGS="-j$(nproc)" bundle install

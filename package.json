@@ -1,6 +1,5 @@
 {
   "name": "app",
-  "private": "true",
   "dependencies": {
     "@activeadmin/activeadmin": "^3",
     "@popperjs/core": "^2.11.7",

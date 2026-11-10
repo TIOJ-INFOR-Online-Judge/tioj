@@ -36,6 +36,7 @@ passenger.*.pid.lock
 /config/credentials.yml.enc
 
 # Javascript related
+/.yarn/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /node_modules
