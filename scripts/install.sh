@@ -65,9 +65,7 @@ if grep -q 'Ubuntu' /etc/*-release; then
   if [ "$UBUNTU_DIST" == "26.04" ]; then
     sudo apt install -y g++ libjitterentropy3-dev
   else
-    if [ "$UBUNTU_DIST" == "24.04" ]; then
-      sudo rm /etc/alternatives/cpp
-    fi
+    sudo rm -f /etc/alternatives/cpp
     sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-15 60 \
       --slave /usr/bin/c++ c++ /usr/bin/g++-15
     sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
@@ -140,11 +138,12 @@ fi
 
 # Setup mise
 mise plugin add ghc
-# ghc install sometimes fail
-mise install ghc@9.10 || mise install ghc@9.10
-mise use -g ghc@9.10 python@2.7 python@3.14 rust@1.93 node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+# set timeout to prevent ghc download fail
+export MISE_FETCH_REMOTE_VERSIONS_TIMEOUT=300
+mise install python@2.7 python@3.14 rust@1.93 ghc@9.10
+mise exec python@3.14 -- pip3 install numpy~=2.5.0 Pillow~=13.0.0
+mise use -g node@26 yarn@4 ruby@4.0 gem:rubocop@1.92
 eval $(mise activate bash)
-pip3 install numpy~=2.5.0 Pillow~=13.0.0
 
 # Clone git repos
 cd "$WORKDIR"
@@ -216,10 +215,14 @@ cd "$WORKDIR/tioj-judge"
 cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 cmake --build build -j $(nproc)
 sudo cmake --install build
+sudo useradd -r tioj-judge -s /usr/sbin/nologin -d /var/lib/tioj-judge
+chmod 711 $HOME
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
 tioj_key = $FETCH_KEY
+uid = $(id -u tioj-judge)
+gid = $(id -g tioj-judge)
 parallel = 2
 max_submission_queue_size = 20
 EOF
