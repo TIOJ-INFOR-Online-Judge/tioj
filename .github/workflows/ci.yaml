@@ -42,4 +42,5 @@ jobs:
         run: |
           cp config/database.ci.yml config/database.yml
           bundle exec rails db:prepare
+          bundle exec rails zeitwerk:check
           bundle exec rails test

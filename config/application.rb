@@ -9,7 +9,8 @@ Bundler.require(*Rails.groups)
 module Tioj
   VERSION = '3.5.3'
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
+    # Preserve existing framework defaults while upgrading Rails.
+    # Adopt newer defaults separately after reviewing their deployment impact.
     config.load_defaults 7.0
     config.time_zone = "Taipei"
     config.site_name = "TIOJ INFOR Online Judge"
