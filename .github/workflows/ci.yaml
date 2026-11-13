@@ -27,6 +27,7 @@ jobs:
         # runner is amd64v3 which mise PPA does not provide natively
         run: |
           sudo apt update -y
+          sudo apt autoremove mysql-server -y
           sudo apt install --no-install-recommends -y \
             software-properties-common build-essential curl rsync netcat-openbsd \
             redis-server cron extrepo libmysqlclient-dev imagemagick
