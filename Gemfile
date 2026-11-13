@@ -1,9 +1,11 @@
 source 'https://rubygems.org'
 
+ruby '>= 3.2.0'
+
 gem 'passenger', '~> 6', require: 'phusion_passenger/rack_handler'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7'
+gem 'rails', '~> 8.1.4', '>= 8.1.4.1'
 gem 'rdoc', '~> 6'
 
 # Reduces boot times through caching; required in config/boot.rb
@@ -70,9 +72,6 @@ gem 'mechanize'
 # friendly id for SEO
 gem 'friendly_id'
 
-# annotate (showing model info in model.rb)
-gem 'annotate'
-
 # Timezone data
 gem 'tzinfo-data'
 
@@ -87,13 +86,16 @@ gem 'with_advisory_lock'
 
 # Redis for Action Cable
 gem 'redis', '~> 5'
-gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
+gem 'connection_pool', '~> 2' # Redis integration requires the 2.x API.
 
 # Sentry for monitoring
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
 group :development do
+  # Annotate models after database migrations.
+  gem 'annotaterb', '~> 4'
+
   # Bullet for debugging
   gem 'bullet', group: 'development'
   gem 'listen', group: 'development'
