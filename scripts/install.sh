@@ -44,35 +44,59 @@ trap Cleanup EXIT
 # Install dependencies
 if grep -q 'Ubuntu' /etc/*-release; then
   DIST=Ubuntu
-  UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
+  UBUNTU_DIST=$( . /etc/os-release && printf '%s' "$VERSION_ID" )
+  case "$UBUNTU_DIST" in
+    22.04|24.04|26.04) ;;
+    *) echo "Unsupported Ubuntu release: $UBUNTU_DIST (expected 22.04, 24.04 or 26.04)"; exit 1 ;;
+  esac
   sudo apt -y update
-  sudo apt -y install software-properties-common
+  sudo apt -y install software-properties-common ca-certificates curl gnupg
   sudo apt-add-repository -y ppa:rael-gc/rvm
   sudo mkdir -p /etc/apt/keyrings
   curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
   curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
   echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
+  if [[ "$UBUNTU_DIST" != "26.04" ]]; then
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
   sudo apt -y update
+  UBUNTU_EXTRA_PACKAGES=()
+  if [[ "$UBUNTU_DIST" == "26.04" ]]; then
+    # Ubuntu 26.04's static OpenSSL requires libjitterentropy.a.
+    UBUNTU_EXTRA_PACKAGES+=(libjitterentropy3-dev)
+  fi
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
-      git cmake ninja-build g++-11 rvm \
+      build-essential ca-certificates curl git cmake ninja-build g++-15 rvm \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs yarn redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev \
-      ghc python2 python3-numpy python3-pil rustc
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
-      --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
-      --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 \
-      --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
-      --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 # Use GCC 11 as default
+      imagemagick nodejs yarn redis-server cron xxd \
+      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev libsqlite3-dev libssl-dev zlib1g-dev \
+      ghc python3-numpy python3-pil rustc "${UBUNTU_EXTRA_PACKAGES[@]}"
+  sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
+    --slave /usr/bin/g++ g++ /usr/bin/g++-15 \
+    --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-15 \
+    --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-15 \
+    --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-15 # Use GCC 15 as default
+
+  if [[ "$UBUNTU_DIST" == "22.04" ]]; then
+    sudo DEBIAN_FRONTEND=noninteractive apt -y install python2
+  else
+    PYTHON2_BUILD_DIR=$(mktemp -d)
+    cd "$PYTHON2_BUILD_DIR"
+    curl -fsSLO https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+    echo 'da3080e3b488f648a3d7a4560ddee895284c3380b11d6de75edb986526b9a814  Python-2.7.18.tgz' | sha256sum -c -
+    tar -xzf Python-2.7.18.tgz
+    cd Python-2.7.18
+    # /usr is mounted in compile and execution sandboxes; /opt is not.
+    CC='gcc -std=gnu17' CXX='g++ -std=gnu++17' ./configure --prefix=/usr/local --without-ensurepip --disable-shared
+    make -j"$(nproc)"
+    sudo make install
+    cd "$SCRIPT_DIR"
+    rm -rf "$PYTHON2_BUILD_DIR"
   fi
 
   # Setup mysql
-  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD'; flush privileges;"
 
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
@@ -201,9 +225,11 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
-cmake -B build -G Ninja
-cmake --build build -j $(($(nproc)-2))
-cmake --install build
+cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+JUDGE_BUILD_JOBS=$(nproc)
+if (( JUDGE_BUILD_JOBS > 2 )); then JUDGE_BUILD_JOBS=$((JUDGE_BUILD_JOBS-2)); fi
+cmake --build build -j "$JUDGE_BUILD_JOBS"
+sudo cmake --install build
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
@@ -269,4 +295,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
-sudo echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
+printf '30 3 * * * %s "%s/tioj/scripts/trim_sessions.sh"\n' "$USER" "$WORKDIR" | sudo tee /etc/cron.d/tioj-trim-sessions > /dev/null
