@@ -30,7 +30,7 @@
 passenger.*.pid.lock
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/config/*.key
 /config/database.yml
 /config/settings.yml
 /config/credentials.yml.enc
