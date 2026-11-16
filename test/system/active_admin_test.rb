@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class AnnouncementsTest < ApplicationSystemTestCase
+class ActiveAdminTest < ApplicationSystemTestCase
   setup do
     @announcement = announcements(:one)
   end
@@ -36,6 +36,7 @@ class AnnouncementsTest < ApplicationSystemTestCase
     row.find(:css, 'a.edit_link').click
     check "Admin"
     click_button "Update User"
+    assert_text "User was successfully updated."
 
     visit admin_users_url
     row = page.find(:css, 'td.col-username', text: /^userOne$/i).find(:xpath, './parent::tr')

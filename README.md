@@ -8,3 +8,11 @@ Documentation is available in [Wiki](https://github.com/TIOJ-INFOR-Online-Judge/
 ## Get Started
 
 See [Wiki](https://github.com/TIOJ-INFOR-Online-Judge/tioj/wiki/Get-Started) for instructions to install TIOJ.
+
+## Development tools
+
+Model annotations are managed by AnnotateRb using `.annotaterb.yml`.
+Development database migrations update annotations automatically.
+
+Run `bundle exec annotaterb models` to update annotations manually.
+Set `ANNOTATERB_SKIP_ON_DB_TASKS=1` to skip automatic annotations.

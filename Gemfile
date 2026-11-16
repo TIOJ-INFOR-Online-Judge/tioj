@@ -67,9 +67,6 @@ gem 'mechanize'
 # friendly id for SEO
 gem 'friendly_id'
 
-# annotate (showing model info in model.rb)
-gem 'annotate'
-
 # Timezone data
 gem 'tzinfo-data'
 
@@ -84,13 +81,15 @@ gem 'with_advisory_lock'
 
 # Redis for Action Cable
 gem 'redis', '~> 6'
-# gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
 
 # Sentry for monitoring
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
 group :development do
+  # Annotate models after database migrations.
+  gem 'annotaterb'
+
   # Bullet for debugging
   gem 'bullet', group: 'development'
   gem 'listen', group: 'development'

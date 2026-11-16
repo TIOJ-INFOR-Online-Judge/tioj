@@ -101,9 +101,9 @@ GEM
       activesupport (>= 6.1)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
-    annotate (2.6.5)
-      activerecord (>= 2.3.0)
-      rake (>= 0.8.7)
+    annotaterb (4.26.0)
+      activerecord (>= 6.0.0)
+      activesupport (>= 6.0.0)
     anonymous_loader (0.1.5)
       version_gem (~> 1.1, >= 1.1.17)
     arbre (1.7.0)
@@ -465,7 +465,7 @@ DEPENDENCIES
   activerecord-session_store
   acts-as-taggable-on
   acts_as_list
-  annotate
+  annotaterb
   bootsnap
   bullet
   capybara
