@@ -43,7 +43,7 @@ services:
       - app
     logging: *default-logging
   judge:
-    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#df422f2900b3dab33dc3576205010fe793fd938d
+    build: https://github.com/TIOJ-INFOR-Online-Judge/tioj-judge.git#v2.5.0
     environment:
       TIOJ_URL: "http://localhost:4000"
       TIOJ_KEY: $FETCH_KEY
