@@ -35,7 +35,7 @@ jobs:
           sudo sed -i '/^Types:/a Architectures: amd64' /etc/apt/sources.list.d/jdxcode-ubuntu-mise-resolute.sources
           sudo apt update -y
           sudo apt install -y mise
-          mise use -g node@22 npm:yarn@1.22 ruby@4.0 gem:rubocop@1.92
+          mise use -g node@26 yarn@4 ruby@4.0 gem:rubocop@1.92
           eval $(mise activate bash)
           echo "PATH=$PATH" >> $GITHUB_ENV
           MAKEFLAGS="-j$(nproc)" bundle install --retry 3
