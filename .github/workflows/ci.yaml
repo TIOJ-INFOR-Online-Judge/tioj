@@ -48,3 +48,4 @@ jobs:
           bundle exec rails db:prepare
           bundle exec rails zeitwerk:check
           bundle exec rails test
+          bundle exec rails test:system
