@@ -75,7 +75,10 @@ class Submission < ApplicationRecord
 
   def allowed_for(cur_user, override_admin = nil)
     effective_admin = override_admin.nil? ? cur_user&.admin? : override_admin
-    return true if effective_admin || !contest?
+    return true if effective_admin
+    return false if problem.visible_invisible?
+    return false if problem.visible_contest? && !contest&.is_started?
+    return true unless contest?
     return false if created_at >= contest.freeze_after && cur_user&.id != user_id
     return false unless contest.is_ended? || cur_user&.id == user_id
     true
