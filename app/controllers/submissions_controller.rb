@@ -146,7 +146,7 @@ class SubmissionsController < ApplicationController
         if user_signed_in?
           user_ids = [current_user.id]
           registration = @contest.find_registration(current_user)
-          if registration&.team
+          if registration&.approved? && registration.team
             registered_members = @contest.contest_registrations.where(team: registration.team).select(:user_id).map(&:user_id)
             user_ids += registered_members
           end
