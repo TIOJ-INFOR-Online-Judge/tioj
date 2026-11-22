@@ -258,10 +258,10 @@ class TestdataController < ApplicationController
         if in_entry.size + out_entry.size >= TESTDATUM_LIMIT
           raise ArgumentError.new("Individual testdata should not exceed 2 GiB")
         end
+        in_entry.extract(in_entry.name, destination_directory: tmp_folder)
+        out_entry.extract(out_entry.name, destination_directory: tmp_folder)
         in_dest = "#{tmp_folder}/#{in_entry.name}"
         out_dest = "#{tmp_folder}/#{out_entry.name}"
-        in_entry.extract(in_dest)
-        out_entry.extract(out_dest)
         td_pair_dest << [in_dest, out_dest]
       end
     end

@@ -5,7 +5,7 @@
   <h4 class="page-header">Results of submission #<%= @submission.id %></h4>
 <% end %>
 
-<% waiting_verdicts = ['Validating', 'queued', 'received'] %>
+<% waiting_verdicts = ['Validating', 'waiting', 'received', 'queued'] %>
 <% will_update = !@show_old && waiting_verdicts.include?(@submission.result) %>
 <% panel_class_map = {
   'AC'  => 'verdict-panel-ac',
@@ -28,7 +28,7 @@
   'SIG' => 'table-sig',
   'OLE' => 'table-ole',
 } %>
-<% no_task_verdicts = ['CE', 'CLE', 'ER', 'JE'] %>
+<% no_task_verdicts = ['CE', 'CLE', 'JCE', 'JE'] %>
 
 <p>
 <%= link_to 'Back to Submissions List', contest_adaptive_polymorphic_path([:submissions]), class: 'btn btn-secondary btn-sm' %>
@@ -259,13 +259,13 @@
 </div>
 
 <% if effective_admin? or user_can_view?(current_user, @submission, @contest) %>
-  <div id="ce-message" class="card bg-light mb-2<% unless ['CE', 'CLE', 'ER'].include?(@submission.result) or @submission.message.present? %> d-none <% end %>">
+  <div id="ce-message" class="card bg-light mb-2<% unless ['CE', 'CLE', 'JCE'].include?(@submission.result) or @submission.visible_message(effective_admin?) %> d-none <% end %>">
     <h5 class="card-header">
       Compilation Error Message
     </h5>
     <div class="card-body">
-      <pre id="ce-message-content" class="overflow-auto border border-2 rounded p-2 m-1<% unless @submission.message.present? %> d-none <% end %>"><code class=""><%= @submission.message || "" %></code></pre>
-      <span id="ce-message-none" <% if @submission.message.present? %>class="d-none "<% end %>>
+      <pre id="ce-message-content" class="overflow-auto border border-2 rounded p-2 m-1<% unless @submission.visible_message(effective_admin?) %> d-none <% end %>"><code class=""><%= @submission.visible_message(effective_admin?) || "" %></code></pre>
+      <span id="ce-message-none" <% if @submission.visible_message(effective_admin?) %>class="d-none "<% end %>>
         Sorry, no compilation error message available.
       </span>
     </div>

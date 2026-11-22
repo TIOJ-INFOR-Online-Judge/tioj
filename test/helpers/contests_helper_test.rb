@@ -32,7 +32,7 @@ class ContestsHelperTest < ActionView::TestCase
 
   test "ranklist_data ioi-style negative score is correct" do
     submissions = [
-      Submission.new(user_id: 1, problem_id: 1, result: "ER", score: 0),
+      Submission.new(user_id: 1, problem_id: 1, result: "JCE", score: 0),
       Submission.new(user_id: 1, problem_id: 1, result: "WA", score: -10),
       Submission.new(user_id: 1, problem_id: 1, result: "JE", score: 0),
       Submission.new(user_id: 1, problem_id: 2, result: "WA", score: 0),
@@ -81,7 +81,7 @@ class ContestsHelperTest < ActionView::TestCase
     submissions = [
       Submission.new(user_id: 1, problem_id: 1, result: "WA", score: 50),
       Submission.new(user_id: 1, problem_id: 1, result: "CLE", score: 70), # CE not count
-      Submission.new(user_id: 1, problem_id: 1, result: "queued", score: 70),
+      Submission.new(user_id: 1, problem_id: 1, result: "waiting", score: 70),
       Submission.new(user_id: 1, problem_id: 1, result: "AC", score: 0),
       Submission.new(user_id: 1, problem_id: 1, result: "Validating", score: 70), # should ignore because already AC
       Submission.new(user_id: 1, problem_id: 1, result: "WA", score: 70), # should ignore because already AC

@@ -43,8 +43,6 @@
 #  fk_rails_...  (last_compiler_id => compilers.id)
 #
 
-require 'file_size_validator'
-
 class UserBase < ApplicationRecord
   self.table_name = "users"
 
@@ -65,7 +63,7 @@ class UserBase < ApplicationRecord
 
   validates_presence_of :username, :nickname
   validates_length_of :nickname, in: 1..12
-  validates :username, username_convention: true
+  validates :username, username_convention: true, on: :create
 
   mount_uploader :avatar, AvatarUploader
   validates :avatar,

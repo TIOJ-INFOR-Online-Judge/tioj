@@ -1,6 +1,6 @@
 class ProblemsController < ApplicationController
   before_action :authenticate_user_and_running_if_single_contest!, only: [:show]
-  before_action :authenticate_admin!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_admin!, except: [:index, :show, :ranklist, :ranklist_old]
   before_action :set_problem, only: [:show, :edit, :update, :destroy, :ranklist, :ranklist_old, :rejudge]
   before_action :set_testdata, only: [:show]
   before_action :set_compiler, only: [:new, :edit, :update, :create]
@@ -37,7 +37,7 @@ class ProblemsController < ApplicationController
     SubmissionTestdataResult.where(submission_id: sub_ids).delete_all
     subtask_results = SubmissionSubtaskResult.where(submission_id: sub_ids)
     priority = @contest ? Submission::PRIORITY[:batch_rejudge_contest] : Submission::PRIORITY[:batch_rejudge_normal]
-    subs.update_all(result: 'queued', priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil)
+    subs.update_all(result: 'waiting', priority: priority, score: 0, total_time: nil, total_memory: nil, message: nil)
     subtask_results.update_all(result: subs.first.calc_subtask_result) if subs.first
     ActionCable.server.broadcast('fetch', {type: 'notify', action: 'problem_rejudge', problem_id: params[:problem_id].to_i})
     ContestProblemJoint.where(problem_id: params[:id]).each do |x|

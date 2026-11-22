@@ -42,80 +42,90 @@ function Cleanup {
 trap Cleanup EXIT
 
 # Install dependencies
+export MAKEFLAGS="-j$(nproc)"
 if grep -q 'Ubuntu' /etc/*-release; then
   DIST=Ubuntu
   UBUNTU_DIST=`cat /etc/lsb-release | grep "RELEASE" | awk -F= '{ print $2 }'`
   sudo apt -y update
   sudo apt -y install software-properties-common
-  sudo apt-add-repository -y ppa:rael-gc/rvm
   sudo mkdir -p /etc/apt/keyrings
-  curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg
-  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-  echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
+  if [ "$UBUNTU_DIST" == "26.04" ]; then
+    sudo add-apt-repository -y ppa:jdxcode/mise
+  else
+    sudo apt install -y extrepo
+    sudo extrepo enable mise
     sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
   fi
   sudo apt -y update
   sudo DEBIAN_FRONTEND=noninteractive apt -y install \
-      git cmake ninja-build g++-11 rvm \
+      git g++-15 cmake ninja-build curl mise imagemagick redis-server \
       mysql-server mysql-client libmysqlclient-dev libcurl4-openssl-dev \
-      imagemagick nodejs yarn redis-server \
-      libseccomp-dev libnl-3-dev libnl-genl-3-dev libboost-all-dev libzstd-dev \
-      ghc python2 python3-numpy python3-pil
-  if [ "$UBUNTU_DIST" != "22.04" ]; then
-    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 \
-      --slave /usr/bin/g++ g++ /usr/bin/g++-11 \
-      --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 \
-      --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 \
-      --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 # Use GCC 11 as default
+      libseccomp-dev libnl-genl-3-dev libsqlite3-dev libbsd-dev libgmp-dev \
+      libz-dev libbz2-dev libreadline-dev libssl-dev libboost-all-dev libzstd-dev
+  if [ "$UBUNTU_DIST" == "26.04" ]; then
+    sudo apt install -y g++ libjitterentropy3-dev
+  else
+    sudo rm -f /etc/alternatives/cpp
+    sudo update-alternatives --install /usr/bin/cpp cpp /usr/bin/cpp-15 60 \
+      --slave /usr/bin/c++ c++ /usr/bin/g++-15
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 60 \
+      --slave /usr/bin/g++ g++ /usr/bin/g++-15 \
+      --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-15 \
+      --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-15 \
+      --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-15 # Use GCC 15 as default
   fi
 
   # Setup mysql
-  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH mysql_native_password BY '$DB_PASSWORD'; flush privileges;"
+  sudo mysql <<< "ALTER USER '$DB_USERNAME'@'localhost' IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD'; flush privileges;"
 
   REDIS_SERVICE=redis-server
 elif grep -q 'Arch Linux' /etc/*-release; then
   DIST=Arch
   sudo pacman -Syu --noconfirm --needed \
-      base-devel git mariadb imagemagick nodejs yarn redis libyaml \
-      cmake ninja boost ghc python-numpy python-pillow
+      base-devel git mariadb imagemagick redis mise libyaml cmake ninja boost zlib-static cronie \
+      libseccomp libnl openssl sqlite libbsd zstd # first install it to get version
   sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
   sudo systemctl enable mysql
   sudo systemctl start mysql
-  curl -L get.rvm.io | sudo bash -
 
   # build libseccomp, libnl, openssl, sqlite, libbsd, libzstd with static libs
   mkdir -p "$WORKDIR/build"
   cd "$WORKDIR/build"
   mkdir -p libseccomp libnl openssl sqlite libbsd zstd
   cd libseccomp
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libseccomp/-/raw/main/PKGBUILD
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q libseccomp | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libseccomp/-/raw/$VER/PKGBUILD
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../libnl
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libnl/-/raw/main/PKGBUILD
-  sed -i "s/^depends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q libnl | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libnl/-/raw/$VER/PKGBUILD
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
   sed -Ei '/sbindir/, /disable-static/ s/(--d| \\).*//' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../openssl
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/PKGBUILD
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/main/ca-dir.patch
-  sed -i "s/^makedepends.*$/\0\noptions=('staticlibs' !'lto')/" PKGBUILD
+  VER="$(pacman -Q openssl | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/$VER/PKGBUILD
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/openssl/-/raw/$VER/ca-dir.patch
+  sed -i "s/^pkgrel.*$/\0\noptions=('staticlibs' !'lto')/; "'s|make DESTDIR|make PATH="/usr/bin/core_perl:$PATH" DESTDIR|' PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../sqlite
+  VER="$(pacman -Q sqlite | cut -d' ' -f2)"
   for i in PKGBUILD license.txt sqlite-lemon-system-template.patch; do
-    curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/sqlite/-/raw/main/$i
+    curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/sqlite/-/raw/$VER/$i
   done
   sed -i "s/^options=./\0'staticlibs' !'lto' /; /disable-static/ d" PKGBUILD
   makepkg -si --noconfirm
   cd ../libbsd
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libbsd/-/raw/main/PKGBUILD
+  VER="$(pacman -Q libbsd | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/libbsd/-/raw/$VER/PKGBUILD
   sed -i "/rm.*libbsd\.a/ d" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
   cd ../zstd
-  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/zstd/-/raw/main/PKGBUILD
-  sed -i "s/makedepends.*$/\0\noptions=('staticlibs' !'lto')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
+  VER="$(pacman -Q zstd | cut -d' ' -f2)"
+  curl -O https://gitlab.archlinux.org/archlinux/packaging/packages/zstd/-/raw/$VER/PKGBUILD
+  sed -i "s/pkgrel.*$/\0\noptions=('staticlibs' !'lto')/; /-DZSTD_BUILD_STATIC=OFF/ d" PKGBUILD
+  sed -i "s|patch -Np1.*$|\0\nsed -i 's/contentChecksum_t/LZ4F_contentChecksum_t/g' programs/fileio.c|" PKGBUILD
   makepkg -si --skippgpcheck --nocheck --noconfirm
 
   # Setup mysql
@@ -126,12 +136,14 @@ else
   exit 1
 fi
 
-# Setup RVM
-sudo usermod -a -G rvm $USER
-echo 'source "/etc/profile.d/rvm.sh"' >> ~/.bashrc
-source "/etc/profile.d/rvm.sh"
-newgrp rvm <<< 'rvm install 3.3.7; rvm alias create default 3.3.7'
-rvm use 3.3.7
+# Setup mise
+mise plugin add ghc
+# set timeout to prevent ghc download fail
+export MISE_FETCH_REMOTE_VERSIONS_TIMEOUT=300
+mise install python@2.7 python@3.14 rust@1.93 ghc@9.10
+mise exec python@3.14 -- pip3 install numpy~=2.5.0 Pillow~=13.0.0
+mise use -g node@26 yarn@4 ruby@4.0 gem:rubocop@1.92
+eval $(mise activate bash)
 
 # Clone git repos
 cd "$WORKDIR"
@@ -147,11 +159,10 @@ fi
 cd "$WORKDIR/tioj"
 passenger_version="$(grep -Po ' passenger \(\K\d.*(?=\))' Gemfile.lock | head -1)"
 gem install passenger:"$passenger_version" -N
-PASSENGER_LOG=$(sudo mktemp -d)
+PASSENGER_LOG=$(sudo TMPDIR=/var/tmp mktemp -d)
 sudo chmod 755 $PASSENGER_LOG
-export rvmsudo_secure_path=1
-rvmsudo -b bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
-MAKEFLAGS='-j4' bundle install
+sudo setsid env "PATH=$PATH" "HOME=$HOME" bash -c "passenger-install-nginx-module --force-colors --auto --auto-download --languages ruby > $PASSENGER_LOG/log 2>&1; touch $PASSENGER_LOG/finished 2> /dev/null"
+bundle install --retry 3
 
 # Install yarn packages
 yarn install --frozen-lockfile
@@ -201,15 +212,17 @@ TIOJ_KEY=$FETCH_KEY rails db:setup
 
 # Setup judge client
 cd "$WORKDIR/tioj-judge"
-mkdir -p build
-cd build
-cmake -G Ninja ..
-ninja -j $(($(nproc)-2))
-sudo ninja install
+cmake -B build -G Ninja -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+cmake --build build -j $(nproc)
+sudo cmake --install build
+sudo useradd -r tioj-judge -s /usr/sbin/nologin -d /var/lib/tioj-judge
+chmod 711 $HOME
 
 sudo tee /etc/tioj-judge.conf <<EOF > /dev/null
 tioj_url = http://localhost
 tioj_key = $FETCH_KEY
+uid = $(id -u tioj-judge)
+gid = $(id -g tioj-judge)
 parallel = 2
 max_submission_queue_size = 20
 EOF
@@ -232,8 +245,8 @@ sudo sed -Ei "/^ *location \/[^a-z]/, /\}/ s|^ {8}|\0# |" /opt/nginx/conf/nginx.
 cat <<EOF | sudo tee /etc/systemd/system/nginx.service > /dev/null
 [Unit]
 Description=Nginx Server
-After=syslog.target
-Requires=network.target remote-fs.target nss-lookup.target mysql.service
+After=syslog.target network.target remote-fs.target nss-lookup.target mysql.service
+Wants=network.target remote-fs.target nss-lookup.target mysql.service
 
 [Service]
 Type=forking
@@ -260,6 +273,10 @@ StandardError=journal
 SyslogIdentifier=tioj-judge
 ExecStart=/usr/bin/nice -n -10 tioj-judge -v
 ExecStop=/bin/kill -s INT \$MAINPID
+Environment="PATH=$HOME/.local/share/mise/installs/rust/1.93:$HOME/.local/share/mise/installs/python/3.14/bin:$HOME/.local/share/mise/installs/python/2.7/bin:$HOME/.local/share/mise/installs/ghc/9.10/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="TIOJ_JUDGE_MOUNTS=$HOME/.local/share/mise:$HOME/.cargo:$HOME/.rustup"
+Environment="CARGO_HOME=$HOME/.cargo"
+Environment="RUSTUP_HOME=$HOME/.rustup"
 
 [Install]
 WantedBy=multi-user.target
@@ -271,4 +288,4 @@ sudo systemctl enable tioj-judge
 sudo systemctl start "$REDIS_SERVICE"
 sudo systemctl start nginx
 sudo systemctl start tioj-judge
-sudo echo '30 3 * * * /tioj/scripts/trim_sessions.sh' >> /etc/crontab
+printf '30 3 * * * %s "%s/tioj/scripts/trim_sessions.sh"\n' "$USER" "$WORKDIR" | sudo tee /etc/cron.d/tioj-trim-sessions > /dev/null

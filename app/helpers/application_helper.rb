@@ -70,7 +70,7 @@ module ApplicationHelper
       "OLE" => "text-ole",
       "RE"  => "text-re",
       "SIG" => "text-sig",
-      "queued" => "text-muted",
+      "waiting" => "text-muted",
     }
     if class_map[x]
       return raw '<span class="' + class_map[x] + '">' + x + '</span>'
@@ -79,11 +79,13 @@ module ApplicationHelper
     end
   end
 
-  def help_icon(href)
+  def help_icon(href, new_window = false)
     link_to(
       '',
       href,
-      class: "bi bi-question-circle-fill text-reset link-primary"
+      class: "bi bi-question-circle-fill text-reset link-primary",
+      target: new_window ? "_blank" : nil,
+      rel: new_window ? "noopener noreferrer" : nil
     )
   end
 

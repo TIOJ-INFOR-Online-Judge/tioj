@@ -1,21 +1,27 @@
 class FetchChannel < ApplicationCable::Channel
   def subscribed
+    return reject unless judge_server
+
     stream_from "fetch_#{judge_server.id}"
     stream_from 'fetch'
   end
 
   def td_result(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
     update_td_results(data[:results], submission)
   end
 
   def submission_result(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     submission = Submission.find(data[:submission_id])
-    if ['Validating', 'queued'].include? data[:verdict]
+    if ['Validating', 'waiting', 'queued'].include? data[:verdict]
       submission.update(result: data[:verdict])
-      ActionCable.server.broadcast("submission_#{submission.id}_overall", {id: submission.id, result: data[:verdict]})
+      broadcast_overall(submission, {id: submission.id, result: data[:verdict]})
       return
     end
     update_td_results(data[:td_results], submission) if data[:td_results]
@@ -23,13 +29,12 @@ class FetchChannel < ApplicationCable::Channel
     if data[:message]
       update_hash[:message] = data[:message]
     end
-    v2i = ApplicationController.v2i
-    update_hash[:result] = ApplicationController.i2v[v2i.fetch(data[:verdict], v2i['JE'])]
+    update_hash[:result] = ApplicationController.judge_verdict.include?(data[:verdict]) ? data[:verdict] : 'JE'
     if submission.problem.summary_custom?
       update_hash[:score] = int_to_score(data[:score])
       update_hash[:total_time] = (BigDecimal(data[:total_time]) / 1000).round(0)
       update_hash[:total_memory] = data[:total_memory]
-    elsif ['JE', 'ER', 'CE', 'CLE'].include? update_hash[:result]
+    elsif ['JE', 'JCE', 'CE', 'CLE'].include? update_hash[:result]
       update_hash[:score] = 0
       update_hash[:total_time] = 0
       update_hash[:total_memory] = 0
@@ -38,29 +43,33 @@ class FetchChannel < ApplicationCable::Channel
       update_hash[:total_time] = tds.map{|i| i.time}.sum.round(0)
       update_hash[:total_memory] = tds.map{|i| i.rss}.max || 0
     end
-    submission.with_lock do
+    Submission.with_advisory_lock("#{submission.id}") do
       submission.update(**update_hash)
     end
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({id: submission.id}))
+    broadcast_overall(submission, update_hash.merge({id: submission.id}))
     notify_contest_channel(submission.contest_id, submission.user_id)
   end
 
   def report_queued(data)
+    return unless authorized_judge_server?
+
     data = data.deep_symbolize_keys
     # judge client will report every 10 seconds if has submission queued; 30 seconds otherwise
     Submission.where(id: data[:submission_ids]).update_all(updated_at: Time.now)
     # requeue dead submissions
-    Submission.where(result: ["received", "Validating"], updated_at: ..40.second.ago).update_all(result: "queued")
+    Submission.where(result: ["received", "queued", "Validating"], updated_at: ..40.second.ago).update_all(result: "waiting")
   end
 
   def fetch_submission(data)
+    return unless authorized_judge_server?
+
     n_retry = 5
     for i in 1..n_retry
-      submission = Submission.where(result: "queued").order(priority: :desc, id: :asc).first
+      submission = Submission.where(result: "waiting").order(priority: :desc, id: :asc).first
       flag = false
       if submission
-        submission.with_lock do
-          if submission.result == "received"
+        Submission.with_advisory_lock("#{submission.id}") do
+          if submission.result != "waiting"
             if i != n_retry
               flag = true
               next # breaks with_lock
@@ -112,6 +121,7 @@ class FetchChannel < ApplicationCable::Channel
         problem_prog_code: problem.problem_prog_code || "",
         judge_between_stages: problem.judge_between_stages,
         judge_abnormally_terminated: problem.judge_abnormally_terminated,
+        judge_re_as_wa: problem.judge_re_as_wa,
         default_scoring_args: ApplicationController.shellsplit_safe(problem.default_scoring_args),
       },
       td: problem.testdata.map.with_index { |t, index|
@@ -135,13 +145,23 @@ class FetchChannel < ApplicationCable::Channel
       },
     }
     ActionCable.server.broadcast("fetch_#{judge_server.id}", {type: 'submission', data: data})
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", {result: 'received', id: submission.id})
+    broadcast_overall(submission, {result: 'received', id: submission.id})
   end
 
   def unsubscribed
   end
 
   private
+
+  # A failed subscription callback can leave an Action Cable channel object in the
+  # connection's subscription map, so each privileged RPC also verifies the
+  # connection identity before changing state.
+  def authorized_judge_server?
+    return true if judge_server
+
+    reject
+    false
+  end
 
   def int_to_score(x)
     (x / BigDecimal('1e+6')).round(6).clamp(BigDecimal('-1e+6'), BigDecimal('1e+6'))
@@ -163,24 +183,28 @@ class FetchChannel < ApplicationCable::Channel
     }
     subtask_scores = nil
     update_hash = nil
-    submission.with_lock do
-      # This insert needs to be protected because simultaneous inserts
-      #  can cause deadlock because of gap locks
-      SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
-      return if not ['Validating', 'received'].include?(submission.result)
-      if submission.problem.summary_none?
-        subtask_scores = submission.calc_subtask_result
-        score = subtask_scores.sum{|x| x[:score]}
-        max_score = BigDecimal('1e+12')
-        score = score.clamp(-max_score, max_score).round(6)
-        update_hash = {score: score}
-      else
-        update_hash = {}
-      end
+    SubmissionTestdataResult.import(results, on_duplicate_key_update: [:result, :time, :vss, :rss, :score, :message_type, :message])
+    return if not ['Validating', 'received', 'queued'].include?(submission.result)
+    if submission.problem.summary_none?
+      subtask_scores = submission.calc_subtask_result
+      score = subtask_scores.sum{|x| x[:score]}
+      max_score = BigDecimal('1e+12')
+      score = score.clamp(-max_score, max_score).round(6)
+      update_hash = {score: score}
+    else
+      update_hash = {}
+    end
+    Submission.with_advisory_lock("#{submission.id}") do
       submission.update_self_with_subtask_result(update_hash, subtask_scores)
     end
     ActionCable.server.broadcast("submission_#{submission.id}_subtasks", {subtask_scores: subtask_scores})
     ActionCable.server.broadcast("submission_#{submission.id}_testdata", {testdata: results})
-    ActionCable.server.broadcast("submission_#{submission.id}_overall", update_hash.merge({result: submission.result, id: submission.id}))
+    broadcast_overall(submission, update_hash.merge({result: submission.result, id: submission.id}))
+  end
+
+  def broadcast_overall(submission, msg)
+    msg_nojce = msg[:result] == 'JCE' ? msg.except(:message) : msg
+    ActionCable.server.broadcast("submission_#{submission.id}_overall", msg)
+    ActionCable.server.broadcast("submission_#{submission.id}_overall_nojce", msg_nojce)
   end
 end

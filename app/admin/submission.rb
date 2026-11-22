@@ -49,6 +49,7 @@ ActiveAdmin.register Submission do
   remove_filter :problem
   remove_filter :user
   remove_filter :code_content
+  remove_filter :code_length
   filter :problem_id
   filter :user_id
   filter :contest_id

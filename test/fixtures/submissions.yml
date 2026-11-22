@@ -3,7 +3,7 @@
 # Table name: submissions
 #
 #  id              :bigint           not null, primary key
-#  result          :string(255)      default("queued")
+#  result          :string(255)      default("waiting")
 #  score           :decimal(18, 6)   default(0.0)
 #  created_at      :datetime
 #  updated_at      :datetime

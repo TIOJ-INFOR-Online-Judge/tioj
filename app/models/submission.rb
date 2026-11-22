@@ -3,7 +3,7 @@
 # Table name: submissions
 #
 #  id              :bigint           not null, primary key
-#  result          :string(255)      default("queued")
+#  result          :string(255)      default("waiting")
 #  score           :decimal(18, 6)   default(0.0)
 #  created_at      :datetime
 #  updated_at      :datetime
@@ -75,7 +75,10 @@ class Submission < ApplicationRecord
 
   def allowed_for(cur_user, override_admin = nil)
     effective_admin = override_admin.nil? ? cur_user&.admin? : override_admin
-    return true if effective_admin || !contest?
+    return true if effective_admin
+    return false if problem.visible_invisible?
+    return false if problem.visible_contest? && !contest&.is_started?
+    return true unless contest?
     return false if created_at >= contest.freeze_after && cur_user&.id != user_id
     return false unless contest.is_ended? || cur_user&.id == user_id
     true
@@ -130,5 +133,9 @@ class Submission < ApplicationRecord
 
   def created_at_usec
     created_at.to_i * 1000000 + created_at.usec
+  end
+
+  def visible_message(is_admin)
+    is_admin || result != 'JCE' ? message : nil
   end
 end

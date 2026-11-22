@@ -1,4 +1,4 @@
-- [ ] GitHub pipeline
+- [x] GitHub pipeline
 - [x] Modify rejudge behavior
     - Lower priority
     - Separate contest and non-contest submissions

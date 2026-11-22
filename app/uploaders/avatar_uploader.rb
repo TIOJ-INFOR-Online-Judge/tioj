@@ -16,7 +16,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{model.id}"
   end
 
-  def extension_white_list
+  def extension_allowlist
     %w(jpg jpeg gif png)
   end
 
@@ -54,7 +54,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-  # def extension_white_list
+  # def extension_allowlist
   #   %w(jpg jpeg gif png)
   # end
 

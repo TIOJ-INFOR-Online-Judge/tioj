@@ -106,9 +106,9 @@ module ContestsHelper
         effective_id = "team_#{team_id}"
         teams << team_id
       end
-      next if ['CE', 'ER', 'CLE', 'JE'].include?(sub.result) && sub.created_at < freeze_start
+      next if ['JRE', 'EE', 'CE', 'CLE', 'JCE', 'JE'].include?(sub.result) && sub.created_at < freeze_start
       key = "#{effective_id}_#{sub.problem_id}"
-      is_waiting = ['queued', 'received', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
+      is_waiting = ['waiting', 'received', 'queued', 'Validating'].include?(sub.result) || sub.created_at >= freeze_start
       orig_state = res[key][-1]&.dig(:state)
       new_state = func.call(sub, start_time, orig_state, is_waiting)
       res[key] << {timestamp: submission_rel_timestamp(sub, start_time), state: new_state} unless new_state.nil?

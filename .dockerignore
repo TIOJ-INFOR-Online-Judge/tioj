@@ -39,4 +39,6 @@ passenger.*.pid.lock
 README.md
 Dockerfile
 docker-compose.yml
+install.sh
+.dockerignore
 .git

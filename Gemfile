@@ -3,8 +3,8 @@ source 'https://rubygems.org'
 gem 'passenger', '~> 6', require: 'phusion_passenger/rack_handler'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 7'
-gem 'rdoc', '~> 6'
+gem 'rails', '~> 8'
+gem 'rdoc', '~> 8'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
@@ -51,9 +51,6 @@ gem 'mini_magick'
 gem 'zstd-ruby', '~> 2'
 gem 'rubyzip', '~> 3', require: 'zip'
 
-# Mathjax, can render latex equation: https://github.com/pmq20/mathjax-rails
-gem 'mathjax-rails-3'
-
 # Tagging feature: https://github.com/mbleigh/acts-as-taggable-on
 gem 'acts-as-taggable-on'
 
@@ -70,9 +67,6 @@ gem 'mechanize'
 # friendly id for SEO
 gem 'friendly_id'
 
-# annotate (showing model info in model.rb)
-gem 'annotate'
-
 # Timezone data
 gem 'tzinfo-data'
 
@@ -86,14 +80,16 @@ gem 'activerecord-import'
 gem 'with_advisory_lock'
 
 # Redis for Action Cable
-gem 'redis', '~> 5'
-gem 'connection_pool', '~> 2' # ActiveSupport 7 breaks with 3.x
+gem 'redis', '~> 6'
 
 # Sentry for monitoring
 gem 'sentry-ruby'
 gem 'sentry-rails'
 
 group :development do
+  # Annotate models after database migrations.
+  gem 'annotaterb'
+
   # Bullet for debugging
   gem 'bullet', group: 'development'
   gem 'listen', group: 'development'

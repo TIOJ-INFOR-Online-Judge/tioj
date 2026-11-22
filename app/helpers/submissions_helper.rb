@@ -32,8 +32,8 @@ module SubmissionsHelper
     return true if user&.id == submission.user_id
     if contest && contest == submission.contest
       sub_team = contest.find_registration(submission.user)&.team
-      team = contest.find_registration(user)&.team
-      return true if team && team == sub_team
+      registration = contest.find_registration(user)
+      return true if registration&.approved? && registration.team && registration.team == sub_team
     end
     false
   end
