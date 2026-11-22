@@ -15,7 +15,7 @@ class SubmissionChannel < ApplicationCable::Channel
       submissions = Submission.where(id: params[:id])
       submissions = submissions.where(contest_id: single_contest.id) if single_contest
       submissions = submissions.filter{|s| s.allowed_for(current_user, effective_admin?)}
-      reject && return if not submissions
+      reject && return if submissions.empty?
       submissions.each do |s|
         stream_from "submission_#{s.id}_overall_nojce"
         init_data(s, false, false, true)
