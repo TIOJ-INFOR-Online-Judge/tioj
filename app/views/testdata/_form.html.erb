@@ -56,7 +56,7 @@ $(function () {
   $('#testdata-form').submit(function (event) {
     event.preventDefault();
     ajaxUploadFunc()($(this).attr('action'), new FormData(this), (finished, evt) => {
-      $('#progress-fade').addClass('in');
+      $('#progress-fade').addClass('show');
       if (finished) {
         $('#progress-inner-bar').width('100%');
         $('#progress-text').text('Processing...');
@@ -65,7 +65,7 @@ $(function () {
         $('#progress-inner-bar').width((evt.loaded / evt.total * 100) + '%');
       }
     }, () => {
-      $('#progress-fade').removeClass('in');
+      $('#progress-fade').removeClass('show');
       $('#progress-inner-bar').width('0%');
       $('#submit-button').removeAttr('disabled');
     });

@@ -205,9 +205,7 @@
                   <td id="td-score-<%= i %>"></td>
                 <% end %>
                 <td>
-                  <% if task&.message_type and user_can_view?(current_user, @submission, @contest) %>
-                    <%= indicator_chevron_down_glyph %>
-                  <% end %>
+                  <%= indicator_chevron_down_glyph(hidden: !(task&.message_type and user_can_view?(current_user, @submission, @contest))) %>
                 </td>
               <% end %> <%# tr %>
               <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> d-none <% end %>" id="<%= collapse_id %>">

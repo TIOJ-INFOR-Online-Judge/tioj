@@ -41,8 +41,10 @@ module ApplicationHelper
     raw '<span class="indicator bi bi-chevron-up float-end"></span>'
   end
 
-  def indicator_chevron_down_glyph
-    raw '<span class="indicator bi bi-chevron-down"></span>'
+  def indicator_chevron_down_glyph(hidden: false)
+    classes = 'indicator bi bi-chevron-down'
+    classes += ' d-none' if hidden
+    content_tag(:span, '', class: classes)
   end
 
   def alert_glyph
