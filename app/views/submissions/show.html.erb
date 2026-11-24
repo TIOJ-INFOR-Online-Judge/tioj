@@ -205,7 +205,7 @@
                   <td id="td-score-<%= i %>"></td>
                 <% end %>
                 <td>
-                  <%= indicator_chevron_down_glyph(hidden: !(task&.message_type and user_can_view?(current_user, @submission, @contest))) %>
+                  <%= indicator_chevron_down_glyph(hidden: !(task&.message_type and (effective_admin? or current_user&.id == @submission.user_id))) %>
                 </td>
               <% end %> <%# tr %>
               <tr id="td-message-row-<%= i %>" class="collapse collapse-no-anim<% unless task&.message_type and (effective_admin? or current_user&.id == @submission.user_id) %> d-none <% end %>" id="<%= collapse_id %>">
@@ -257,7 +257,7 @@
 </div>
 
 <% if effective_admin? or user_can_view?(current_user, @submission, @contest) %>
-  <div id="ce-message" class="card bg-light mb-2<% unless ['CE', 'CLE', 'JCE'].include?(@submission.result) or @submission.visible_message(effective_admin?) %> d-none <% end %>">
+  <div id="ce-message" class="card bg-light mb-2<% unless ['CE', 'CLE', 'JCE'].include?(@submission.result) or @submission.message.present? %> d-none <% end %>">
     <h5 class="card-header">
       Compilation Error Message
     </h5>

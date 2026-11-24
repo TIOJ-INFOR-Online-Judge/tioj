@@ -47,6 +47,16 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "successful submission with an empty message hides the compilation message card" do
+    sign_in users(:userOne)
+    @submission.update!(message: "")
+
+    get submission_url(@submission)
+
+    assert_response :success
+    assert_select '#ce-message.d-none', count: 1
+  end
+
   test "submission visibility should be correct" do
     get submission_url(@submission_invisible)
     assert_response :missing
