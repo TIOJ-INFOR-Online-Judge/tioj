@@ -199,6 +199,35 @@ pre.code-block[class*="language-"] {
   }
 }
 
+.submission-filters .ts-wrapper.multi .ts-control {
+  flex-wrap: nowrap;
+  height: 31px;
+  min-height: 31px;
+  max-height: 31px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.submission-filters .ts-wrapper.multi .ts-control > .item {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.submission-filters .ts-wrapper.multi .ts-control > input {
+  flex: 0 0 auto;
+  min-width: 14ch;
+}
+
+.submission-filters .ts-dropdown {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+
 #notification-toast-container .toast.bg-success-subtle {
   border-color: #d6e9c6;
 }

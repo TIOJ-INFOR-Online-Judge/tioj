@@ -27,6 +27,21 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "guest can view running contest submissions with selected filters" do
+    compiler = compilers(:c99)
+    get contest_submissions_url(@contest_four)
+    assert_response :success
+
+    get contest_submissions_url(@contest_four), params: {
+      filter_status: ['WA'], filter_compiler: [compiler.id.to_s]
+    }
+    assert_response :success
+    assert_select '#filter_status option[selected][value="WA"]', count: 1
+    assert_select "#filter_compiler option[selected][value='#{compiler.id}']", count: 1
+    assert_select 'table.table', count: 1
+    assert_select 'table.table tbody tr', count: 0
+  end
+
   test "should get submission" do
     get submission_url(@submission)
     assert_response :success

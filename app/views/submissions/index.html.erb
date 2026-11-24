@@ -44,39 +44,37 @@
   </div>
 <% end %>
 
-<form class="row align-items-center gap-1 mb-3" accept-charset="UTF-8" method="get">
+<form class="row align-items-center gap-1 mb-3 submission-filters" accept-charset="UTF-8" method="get">
   <div class="col-lg-auto">
     <label for="filter_user">Quick Filter</label>
   </div>
 
   <div class="col-lg-2 px-lg-0">
-    <input id="filter_username" name="filter_username" class="form-control form-control-sm w-100" type="text" placeholder="Enter Username">
+    <input id="filter_username" name="filter_username" class="form-control form-control-sm w-100" type="text" placeholder="Enter Username" value="<%= params[:filter_username] %>">
   </div>
 
   <div class="col-lg-2 px-lg-0">
-    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+    <input id="filter_problem" name="filter_problem" class="form-control form-control-sm" type="number" value="<%= params[:filter_problem] %>" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
 
   <div class="col-lg-2 px-lg-0">
-    <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple aria-label="Select Result">
-      <option selected disabled value="">Select Result</option>
-      <option value="AC">Accepted</option>
-      <option value="WA">Wrong Answer</option>
-      <option value="TLE">Time Limit Exceeded</option>
-      <option value="MLE">Memory Limit Exceeded</option>
-      <option value="OLE">Output Limit Exceeded</option>
-      <option value="RE">Runtime Error</option>
-      <option value="SIG">Runtime Error (signal)</option>
-      <option value="CE">Compilation Error</option>
+    <select id="filter_status" name="filter_status[]" class="form-select form-select-sm" multiple placeholder="Select Result" aria-label="Select Result">
+      <%= options_for_select([
+        ["Accepted", "AC"],
+        ["Wrong Answer", "WA"],
+        ["Time Limit Exceeded", "TLE"],
+        ["Memory Limit Exceeded", "MLE"],
+        ["Output Limit Exceeded", "OLE"],
+        ["Runtime Error", "RE"],
+        ["Runtime Error (signal)", "SIG"],
+        ["Compilation Error", "CE"],
+      ], @filter_status) %>
     </select>
   </div>
 
   <div class="col-lg-2 px-lg-0">
-    <select id="filter_compiler" name="filter_compiler[]" class="form-select form-select-sm" multiple aria-label="Select Compiler">
-      <option selected disabled value="">Select Compiler</option>
-      <% Compiler.order(order: :asc).all.each do |x| %>
-        <option value="<%= x.id %>"><%= x.name %></option>
-      <% end %>
+    <select id="filter_compiler" name="filter_compiler[]" class="form-select form-select-sm" multiple placeholder="Select Compiler" aria-label="Select Compiler">
+      <%= options_from_collection_for_select(Compiler.order(order: :asc), :id, :name, @filter_compiler.map(&:to_i)) %>
     </select>
   </div>
 
@@ -87,7 +85,11 @@
 
 <script>
   const tomselect_config = {
-    create: true,
+    create: false,
+    hidePlaceholder: true,
+    plugins: {
+      remove_button: { title: "Remove this filter" },
+    },
   };
   new TomSelect("#filter_status", tomselect_config);
   new TomSelect("#filter_compiler", tomselect_config);

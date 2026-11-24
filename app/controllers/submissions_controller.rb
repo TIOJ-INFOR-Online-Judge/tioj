@@ -137,6 +137,9 @@ class SubmissionsController < ApplicationController
   end
 
   def set_submissions
+    @filter_status = normalize_filter_values(params[:filter_status])
+    @filter_compiler = normalize_filter_values(params[:filter_compiler])
+
     @submissions = Submission
     @submissions = @submissions.where(problem_id: params[:problem_id]) if params[:problem_id]
     if @contest
@@ -177,13 +180,13 @@ class SubmissionsController < ApplicationController
     end
     @submissions = @submissions.where(user_id: params[:filter_user_id]) if params[:filter_user_id].present?
 
-    filter_status = params[:filter_status]
-    filter_status = filter_status.values if filter_status.is_a?(ActionController::Parameters)
-    @submissions = @submissions.where(result: filter_status) if filter_status.present?
+    @submissions = @submissions.where(result: @filter_status) if @filter_status.present?
+    @submissions = @submissions.where(compiler_id: @filter_compiler.map(&:to_i)) if @filter_compiler.present?
+  end
 
-    filter_compiler = params[:filter_compiler]
-    filter_compiler = filter_compiler.values if filter_compiler.is_a?(ActionController::Parameters)
-    @submissions = @submissions.where(compiler_id: filter_compiler.map(&:to_i)) if filter_compiler.present?
+  def normalize_filter_values(values)
+    values = values.values if values.is_a?(ActionController::Parameters)
+    Array(values).reject(&:blank?).map(&:to_s)
   end
 
   def set_submission
