@@ -14,4 +14,4 @@
 #
 contest_four_problem_one:
   contest: four
-  problem: one
+  problem_id: 1

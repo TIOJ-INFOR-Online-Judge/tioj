@@ -16,13 +16,13 @@
 #
 
 one_1:
-  problem: one
+  problem_id: 1
   score: 50
   td_list: '0'
   constraints: text
 
 one_2:
-  problem: one
+  problem_id: 1
   score: 50
   td_list: '1'
   constraints: text
