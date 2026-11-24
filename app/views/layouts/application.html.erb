@@ -7,10 +7,10 @@
 <% content_for :navbar do %>
 <div class="mb-4" style="background-color:#003365">
   <nav class="navbar navbar-dark navbar-expand-md fw-bold">
-    <div class="container-fluid d-flex flex-wrap row-gap-3">
-      <%= link_to image_tag("banner.png", alt: "TIOJ", skip_pipeline: true), root_path, class: "nav-brand" %>
+    <div class="container-fluid d-flex flex-wrap row-gap-3 row-gap-md-0 row-gap-xl-3">
+      <%= link_to image_tag("banner.png", alt: "TIOJ", skip_pipeline: true, class: "d-block"), root_path, class: "nav-brand py-md-2 py-xl-0 ms-md-3 ms-xl-0" %>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler border-0 rounded-0 py-2 px-2 px-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 

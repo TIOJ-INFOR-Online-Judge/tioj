@@ -87,3 +87,19 @@ $verdicts: ();
   font-weight: bold;
   color: map-get(map-get($verdicts, "ole"), "text");
 }
+
+// Keep the result page's original text and grid colors while retaining verdict backgrounds.
+#overall-result,
+#subtask-results,
+#testdata-results {
+  color: #34495e;
+
+  .table,
+  .table > :not(caption) > tr {
+    --bs-table-color: #34495e;
+    --bs-table-border-color: #ddd;
+    --bs-table-striped-color: #34495e;
+    --bs-table-hover-color: #34495e;
+    --bs-table-active-color: #34495e;
+  }
+}

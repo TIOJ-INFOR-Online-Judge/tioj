@@ -177,9 +177,9 @@ module ContestsHelper
 
   def contest_register_status(status, text)
     status_class = case
-      when status.nil? then 'bi bi-x text-danger'
-      when status then 'bi bi-check text-success'
-      else 'bi bi-play-fill text-warning'
+      when status.nil? then 'bi bi-x text-danger contest-registration-status-icon'
+      when status then 'bi bi-check-lg text-success contest-registration-status-icon'
+      else 'bi bi-play-fill text-warning contest-registration-status-icon'
     end
     status_class += ' align-middle' unless text
     show_text = case

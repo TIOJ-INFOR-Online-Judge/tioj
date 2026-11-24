@@ -6,8 +6,73 @@
 .page-header {
   margin: 10px 0 15px;
 }
-.page-header small {
-  color: #30617C;
+#page-content {
+  color: #34495e;
+  font-size: 18px;
+  line-height: 31px;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+    line-height: 1.1;
+  }
+
+  h1 { font-size: 61px; }
+  h2 { font-size: 53px; }
+  h3 { font-size: 40px; }
+  h4 { font-size: 29px; }
+  h5 { font-size: 28px; }
+  h6 { font-size: 24px; font-weight: 400; }
+
+  h1, h2, h3 { margin: 30px 0 15px; }
+  h4, h5, h6 { margin: 15px 0; }
+
+  .card > .card-header {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+
+    .card-title {
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: inherit;
+      margin: 0;
+    }
+  }
+
+  .well-lg .card-title {
+    font-size: 28px;
+    line-height: 1.1;
+    margin: 15px 0;
+
+    small {
+      font-size: 75%;
+      font-weight: 400;
+      line-height: 1;
+    }
+  }
+
+  .page-header {
+    border-bottom: 1px solid #eeeeee;
+    margin: 10px 0 15px;
+    padding-bottom: 14px;
+  }
+
+  .page-header small {
+    color: #30617C;
+    font-size: 75%;
+    font-weight: 400;
+  }
+}
+
+.well-card {
+  background-color: #f5f5f5;
+  border-color: #e3e3e3;
+  margin-bottom: 20px;
+
+  > .card-body {
+    padding: 19px;
+  }
 }
 
 .motto {
@@ -29,10 +94,44 @@
   font-size: 13px;
   height: 18px;
   min-width: 18px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   bottom: 2px;
   position: relative;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.problem-status-icon {
+  color: #bdc3c7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  font-size: 26px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.page-header .problem-status-icon {
+  font-size: 38px;
+}
+
+.problem-status-icon.bi-dash::before {
+  transform: scaleY(2);
+}
+
+// Scale the glyph without changing the shared status icon box.
+.problem-status-icon.bi-hand-thumbs-down::before {
+  transform: scale(.78);
+}
+
+.contest-registration-status-icon {
+  font-size: 22px;
 }
 
 /* pill-like element in submission subtask */
@@ -77,9 +176,33 @@ pre.code-block[class*="language-"] {
 
 @include table-variant("white", $white);
 
+// Keep Bootstrap 5 compact tables at the Bootstrap 3 condensed row height.
+.table-sm {
+  line-height: 1.42857143;
+}
+
 // bootstrap table patch
 
 .table > tbody > * > * {
   border-bottom-width: 0px;
   border-top-width: 1px;
+}
+
+// Preserve the homepage well backgrounds and lighter striped rows.
+.well-lg {
+  background-color: #f5f5f5;
+
+  .table {
+    --bs-table-bg: transparent;
+    --bs-table-striped-bg: #f9f9f9;
+    --bs-table-hover-bg: #f5f5f5;
+  }
+}
+
+#notification-toast-container .toast.bg-success-subtle {
+  border-color: #d6e9c6;
+}
+
+#notification-toast-container .toast.bg-danger-subtle {
+  border-color: #ebccd1;
 }

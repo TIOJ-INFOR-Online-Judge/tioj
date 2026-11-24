@@ -47,13 +47,24 @@ $headings-font-weight: 700;
 
 // Navbar
 
-$navbar-padding-y:                 1.125rem;
-$navbar-nav-link-padding-x:        1.125rem;
+// Match the previous 53px desktop navbar with 40px navigation links.
+$navbar-padding-y:                 .40625rem;
+$navbar-nav-link-padding-x:        .875rem;
 $navbar-dark-color:                $white;
 $navbar-dark-hover-color:          $primary;
 $navbar-dark-active-color:         $primary;
 $navbar-dark-brand-color:          $white;
 $navbar-dark-brand-hover-color:    $primary;
+
+// Keep panel-like cards visually close to the previous Bootstrap 3 theme.
+$card-border-color:                #ddd;
+$card-border-radius:               4px;
+$card-spacer-y:                    15px;
+$card-spacer-x:                    15px;
+$card-cap-padding-y:               10px;
+$card-cap-padding-x:               15px;
+$card-cap-bg:                      #f5f5f5;
+$toast-box-shadow:                  none;
 
 // Pagination
 
@@ -101,6 +112,7 @@ $link-color: shift-color($primary, 20%);
 // Tables
 
 $table-striped-bg: #f8f8f8;
+$table-cell-padding-y-sm: .3125rem;
 $table-hover-bg: #f5f5f5;
 $table-striped-bg-factor: .02;
 $table-hover-bg-factor: .03;

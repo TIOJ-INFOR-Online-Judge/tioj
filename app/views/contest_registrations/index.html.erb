@@ -59,10 +59,12 @@
     </div>
 
     <div class="col-md-auto mb-1">
-      <%= f.check_box :use_regex, class: 'form-check-input' %>
-      <%= f.label :use_regex, class: 'form-check-label' do %>
-        Register all matched users (by regex)
-      <% end %>
+      <div class="d-flex align-items-center gap-2">
+        <%= f.check_box :use_regex, class: 'form-check-input m-0' %>
+        <%= f.label :use_regex, class: 'form-check-label mb-0' do %>
+          Register all matched users (by regex)
+        <% end %>
+      </div>
     </div>
 
     <div class="col-md-auto my-3">
