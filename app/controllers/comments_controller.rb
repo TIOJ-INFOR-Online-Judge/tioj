@@ -46,7 +46,7 @@ class CommentsController < ApplicationController
         format.html { redirect_to @page_path, notice: 'Comment was successfully created.' }
         format.json { render action: 'show', status: :created, location: polymorphic_path(target) }
       else
-        format.html { render @page_path }
+        format.html { render action: 'new' }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
   def check_user!
     if not effective_admin? and (@contest or (@comment and current_user.id != @comment.user_id))
       flash[:alert] = 'Insufficient User Permissions.'
-      redirect_to action:'index'
+      redirect_to @page_path
       return
     end
   end
