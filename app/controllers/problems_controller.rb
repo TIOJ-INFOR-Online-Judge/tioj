@@ -233,6 +233,7 @@ class ProblemsController < ApplicationController
       :sjcode,
       :judge_between_stages,
       :judge_abnormally_terminated,
+      :judge_re_as_wa,
       :default_scoring_args,
       :interlib_type,
       :interlib,
