@@ -20,6 +20,16 @@ class AnnouncementsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to announcements_url
   end
 
+  test "should list announcements as JSON" do
+    sign_in users(:adminOne)
+    get announcements_url(format: :json)
+    assert_response :success
+
+    titles = response.parsed_body.map { |announcement| announcement["title"] }
+    assert_equal %w[MyString1 MyString2], titles.sort
+    assert response.parsed_body.all? { |announcement| announcement["url"].present? }
+  end
+
   test "should get edit" do
     sign_in users(:adminOne)
     get edit_announcement_url(@announcement)

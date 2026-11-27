@@ -18,6 +18,23 @@ class ContestRegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "registered teams table keeps every member row in one body" do
+    contest = contests(:four)
+    sign_in users(:adminOne)
+    get contest_contest_registrations_url(contest)
+    assert_response :success
+
+    # Parse like a browser does: a stray </tbody> splits later rows into implicit bodies.
+    document = Nokogiri::HTML5(response.body)
+    table = document.xpath("//table[.//*[normalize-space()='Unregister All']]").first
+    assert table, "registered teams table should be rendered"
+
+    member_rows = table.css("tr").select { |row| row.at_css("a[data-method='patch']") }
+    assert_equal 2, member_rows.size
+    assert_equal 1, table.css("tbody").size
+    assert_equal 1, member_rows.map(&:parent).uniq.size
+  end
+
   test "should get new" do
     sign_in users(:adminOne)
     get batch_new_contest_contest_registrations_url(@contest)

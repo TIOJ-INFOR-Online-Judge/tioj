@@ -81,6 +81,16 @@ class ProblemsControllerTest < ActionDispatch::IntegrationTest
     assert_no_permission
   end
 
+  test "help collapse toggles announce their collapsed state" do
+    sign_in users(:adminOne)
+    get new_problem_url
+    assert_response :success
+
+    %w[stagesDescription problemProgDescription scoringArgsDescription summaryDescription].each do |target|
+      assert_select "a[role=button][href='##{target}'][aria-expanded=false]", 1
+    end
+  end
+
   test "normal user should not delete submissions" do
     sign_in users(:userOne)
 
