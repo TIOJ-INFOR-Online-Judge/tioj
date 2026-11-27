@@ -1,6 +1,7 @@
 <h4 class="page-header">New Problem</h4>
 
-<% @isNewProblem = true %>
 <%= render 'form' %>
 
-<%= link_to 'Back to Problems List', problems_path, class: 'btn btn-default btn-xs' %>
+<div class="mt-2">
+  <%= link_to 'Back to Problems List', problems_path, class: 'btn btn-secondary btn-sm' %>
+</div>

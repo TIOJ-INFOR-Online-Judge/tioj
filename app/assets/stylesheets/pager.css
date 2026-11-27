@@ -1,0 +1,10 @@
+.pager {
+  background-color: #34495e;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-block;
+}
+.pager span.pagecount { margin-left: 5px; margin-right: 5px; }
+.pager a.current-page { color: #eefffc; }

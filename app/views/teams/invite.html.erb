@@ -5,9 +5,7 @@
 <%= form_with url: invite_team_path(@team), html: {class: 'form', id: 'team-form'} do |f| %>
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
   <%= f.hidden_field :token, value: @token %>
-  <div class="actions">
-    <span class="flex-container-bottom-align">
-      <%= f.submit 'Confirm', class: 'btn btn-success btn-lg', id: 'submit-btn' %>
-    </span>
+  <div>
+    <%= f.submit 'Confirm', class: 'btn btn-success' %>
   </div>
 <% end %>

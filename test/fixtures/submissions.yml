@@ -39,7 +39,7 @@
 #
 
 ac:
-  problem: one
+  problem_id: 1
   user: userOne
   total_time: 3
   total_memory: 1040
@@ -50,7 +50,7 @@ ac:
   compiler: c99
 
 invisible:
-  problem: invisible
+  problem_id: 2
   user: adminOne
   total_time: 0
   total_memory: 0
@@ -62,7 +62,7 @@ invisible:
 
 team_submission_one:
   user: userOne
-  problem: one
+  problem_id: 1
   compiler: c99
   contest: four
   result: AC
@@ -71,7 +71,7 @@ team_submission_one:
 
 team_submission_two:
   user: userTwo
-  problem: one
+  problem_id: 1
   compiler: c99
   contest: four
   result: AC
@@ -80,7 +80,7 @@ team_submission_two:
 
 non_team_submission:
   user: userThree
-  problem: one
+  problem_id: 1
   compiler: c99
   contest: four
   result: AC

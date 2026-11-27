@@ -18,9 +18,9 @@
 #
 
 one_1:
-  problem: one
+  problem_id: 1
   position: 0
 
 one_2:
-  problem: one
+  problem_id: 1
   position: 1

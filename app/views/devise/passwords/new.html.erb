@@ -1,17 +1,17 @@
 <h4 class="page-header">Forgot your password?</h4>
 
-<div class="col-xs-12 col-md-6">
+<div class="col-md-6">
 <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :email %><br />
-    <%= f.email_field :email, class: 'form-control flat', autofocus: true %>
+    <%= f.email_field :email, class: 'form-control', autofocus: true %>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :username %><br />
-    <%= f.text_field :username, class: 'form-control flat' %>
+    <%= f.text_field :username, class: 'form-control' %>
   </div>
 
   <div><%= f.submit "Send me reset password instructions", class: 'btn btn-lg btn-success' %></div>

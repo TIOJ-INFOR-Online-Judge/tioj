@@ -1,4 +1,3 @@
-
 <% if @team.persisted? %>
   <% set_page_title "Edit " + @team.name %>
 <% else %>
@@ -9,38 +8,38 @@
   <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
 
-  <div class="form-group">
+  <div class="mb-3">
     <div class="row">
       <div class="col-md-7">
         <%= f.label :name %>
-        <%= f.text_field :name, class: 'form-control flat' %>
+        <%= f.text_field :name, class: 'form-control' %>
       </div>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <div class="row">
       <div class="col-md-7">
         <%= f.label :school %>
-        <%= f.text_field :school, class: 'form-control flat' %>
+        <%= f.text_field :school, class: 'form-control' %>
       </div>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <div class="row">
       <div class="col-md-7">
         <%= f.label :motto %>
-        <%= f.text_field :motto, class: "form-control flat" %>
+        <%= f.text_field :motto, class: "form-control" %>
       </div>
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <div class="row">
       <div class="col-md-7">
         <%= f.label :avatar %>
-        <%= f.file_field :avatar, class: "form-control flat" %>
+        <%= f.file_field :avatar, class: "form-control" %>
         <%= f.hidden_field :avatar_cache %>
       </div>
     </div>
@@ -54,14 +53,12 @@
     <pre class="code-block"><code class="language-url" id="submission_code"><%= invite_team_url(@team, token: @team.token) %></code></pre>
 
     <div style="margin-bottom: 8px;">
-      <%= link_to 'Renew Invitation URL', renew_token_team_path(@team), method: :post, class: 'btn btn-danger btn-xs' %>
+      <%= link_to 'Renew Invitation URL', renew_token_team_path(@team), method: :post, class: 'btn btn-danger btn-sm' %>
     </div>
   <% end %>
 
-  <div class="actions">
-    <span class="flex-container-bottom-align">
-      <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
-    </span>
+  <div class="mb-3">
+    <%= f.submit class: 'btn btn-success btn-lg', id: 'submit-btn' %>
   </div>
 <% end %>
 

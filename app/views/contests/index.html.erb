@@ -2,11 +2,11 @@
 <h4 class="page-header">Contests</h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn-sm' %>
+  <%= link_to 'New Contest', new_contest_path, class: 'btn btn-success btn' %>
   <br>
 <% end %>
 <%= paginate @contests %>
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-sm table-striped">
   <thead>
     <tr>
       <th>Title</th>
@@ -29,7 +29,7 @@
     <% @contests.each do |contest| %>
       <tr>
         <td><%= contest.title %></td>
-        <td style="text-align: right;">
+        <td class="text-end">
           <%= contest_link(contest) %>
         </td>
         <% if contest.is_ended? %>
@@ -42,7 +42,7 @@
           <td>Not yet</td>
         <% end %>
         <% if user_signed_in? %>
-          <td style="white-space: nowrap;">
+          <td class="text-nowrap">
             <%= contest_register_status(@registrations[contest.id], false) %>
             <%= contest_registration_page_button(contest, @registrations[contest.id], false) %>
           </td>
@@ -53,8 +53,8 @@
         <td><%= contest.dashboard_during_contest ? "Yes" : "No" %></td>
         <% if current_user&.admin? %>
           <td>
-            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-xs' %>
-            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
+            <%= link_to 'Edit', edit_contest_path(contest), class: 'btn btn-info btn-sm' %>
+            <%= link_to 'Destroy', contest, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
           </td>
         <% end %>
       </tr>

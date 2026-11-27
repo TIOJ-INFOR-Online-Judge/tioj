@@ -7,21 +7,27 @@
 </h4>
 
 <% if current_user&.admin? %>
-  <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success btn-sm' %><br>
+  <div class="mb-3">
+    <%= link_to 'New Problem', new_problem_path, class: 'btn btn-success' %><br>
+  </div>
 <% end %>
 
-<form class="form-inline search-form" accept-charset="UTF-8" method="get">
-  <label for="search_id">Search Problems</label>
-  <div class="form-group">
-    <input style="width:150px" id="search_id" name="search_id" class="form-control input-sm flat" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
+<form class="search-form row align-items-center gap-1 mb-3" accept-charset="UTF-8" method="get">
+  <div class="col-lg-auto">
+    <label class="" for="search_id">Search Problems</label>
   </div>
-  <div class="form-group">
-    <input id="search_name" name="search_name" class="form-control input-sm flat" type="text" placeholder="Enter Problem Name">
+  <div class="col-lg-2 px-lg-0">
+    <input id="search_id" name="search_id" class="form-control form-control-sm" type="number" min="<%= Problem.order(id: :asc).first&.id %>" max="<%= Problem.order(id: :desc).first&.id %>" placeholder="Enter Problem ID">
   </div>
-  <div class="form-group">
-    <input id="tag" name="tag" class="form-control input-sm flat" type="text" placeholder="Enter tag">
+  <div class="col-lg-2 px-lg-0">
+    <input id="search_name" name="search_name" class="form-control form-control-sm" type="text" placeholder="Enter Problem Name">
   </div>
-  <button type="submit" id="quick_search" class="btn btn-inverse btn-xs">Search</button>
+  <div class="col-lg-2 px-lg-0">
+    <input id="tag" name="tag" class="form-control form-control-sm" type="text" placeholder="Enter tag">
+  </div>
+  <div class="col-lg-auto">
+    <button type="submit" id="quick_search" class="btn btn-dark btn-sm">Search</button>
+  </div>
 </form>
 
 <%# remove empty fields %>
@@ -43,8 +49,13 @@ window.onpageshow = function(e){
     <tr>
       <th></th>
       <th>#</th>
-      <th style="width: 45%;">Name
-        <div style="float:right"><button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">Show solution-related tags</button></div>
+      <th style="width: 45%;">
+        Name
+        <div class="float-end">
+          <button id="toggle-solution-tag" type="button" class="btn btn-primary btn-xs">
+            Show solution-related tags
+          </button>
+        </div>
       </th>
       <th class="text-center">TopCoder</th>
       <th>AC Ratio (user)</th>
@@ -65,14 +76,14 @@ window.onpageshow = function(e){
           <td><%= user_problem_status_with_infor(problem, @attr_map) if user_signed_in? %></td>
           <td><%= link_to problem.id, problem_path(problem.id) %></td>
           <td>
-            <div style="float:left"><%= link_to problem.name, problem_path(problem.id) %></div>
-            <div style="float:right"><%= tag_list_html(problem) %></div>
+            <div class="float-start"><%= link_to problem.name, problem_path(problem.id) %></div>
+            <div class="float-end"><%= tag_list_html(problem) %></div>
           </td>
           <td class="text-center">
             <% begin %>
               <% tcoder = topcoders[problem.id] %>
               <% if tcoder %>
-                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(tcoder) %>
+                <%= link_to image_tag(tcoder.avatar.mini_thumb.to_s, class: "rounded"), user_path(tcoder) %>
               <% end %>
             <% end %>
           </td>
@@ -82,11 +93,11 @@ window.onpageshow = function(e){
             <td><%= problem.visible_state.capitalize %></td>
           <% end %>
           <% if user_signed_in? %>
-            <td style="white-space: nowrap;">
+            <td class="text-nowrap">
               <% if current_user.admin? %>
-                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-xs' %>
+                <%= link_to 'Edit', edit_problem_path(problem), class: 'btn btn-info btn-sm' %>
               <% end %>
-              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-xs' %>
+              <%= link_to 'Submit', new_problem_submission_path(problem), class: 'btn btn-success btn-sm' %>
             </td>
           <% end %>
         </tr>

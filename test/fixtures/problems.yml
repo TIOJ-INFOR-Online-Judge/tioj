@@ -54,6 +54,7 @@
 #
 
 one:
+  id: 1
   name: ProblemOne
   description: String1-1
   input: String1-2
@@ -67,6 +68,7 @@ one:
   summary_type: none
 
 invisible:
+  id: 2
   name: ProblemInvisible
   description: String1-1
   input: String1-2

@@ -1,13 +1,13 @@
 var toggleChevron = function(e) {
-  if (this.classList.contains('no-display')) {
+  if (this.classList.contains('d-none')) {
     e.preventDefault();
   } else {
-    $(e.target).prev('.panel-heading').find('i.indicator').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+    $(e.target).prev('.card-header').find('span.indicator').toggleClass('bi-chevron-down bi-chevron-up');
   }
 };
 
 var immediateToggle = function(e) {
-  if (!this.classList.contains('no-display')) {
+  if (!this.classList.contains('d-none')) {
     $(e.target).toggle();
   }
 };

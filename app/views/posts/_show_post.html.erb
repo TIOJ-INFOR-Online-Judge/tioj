@@ -30,29 +30,36 @@
     (private post)
   <% end %>
 </div>
-  <%= link_to "View Post", contest_adaptive_polymorphic_path([post]), class:'btn btn-primary btn-xs'%>
+<%= link_to "View Post", contest_adaptive_polymorphic_path([post]), class:'btn btn-primary btn-sm'%>
 <% if allow_edit(post) %>
-  <%= link_to "Edit Post", contest_adaptive_polymorphic_path([post], action: :edit), class:'btn btn-info btn-xs'%>
-  <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, class:'btn btn-danger btn-xs' %>
+  <%= link_to "Edit Post", contest_adaptive_polymorphic_path([post], action: :edit), class:'btn btn-info btn-sm'%>
+  <%= link_to "Delete Post", polymorphic_path(post_object), method: :delete, data: {confirm:"Sure?"}, class:'btn btn-danger btn-sm' %>
 <% end %>
+
 <% if post.comments.present? %>
-  <div class="comments">
+  <div class="comments mt-3">
     <h5>Comments: </h5>
     <% comments = post.comments %>
     <% count = 0;%>
     <% comments.each do |comment| %>
       <% count += 1 %>
-      <div class="comment well well-lg">
-        <%= render partial: 'comments/show_comment', locals: {post: post, comment: comment, count: count}  %>
+      <div class="card bg-light mb-3"><div class="card-body">
+          <%= render partial: 'comments/show_comment', locals: {post: post, comment: comment, count: count}  %>
+        </div>
       </div>
     <% end %><%# comments.each %>
   </div><%# comments %>
 <% end %><%# if post.comments.present? %>
+
 <% if user_signed_in? and (effective_admin? or not @contest) and (not @problem or @problem.discussion_enabled?) %>
-  <div class="new_comment" style="display:inline">
-    <button class="new_comment btn btn-success btn-xs">New Comment</button>
-    <div class="new_comment_form well well-lg" style="margin-top: 1rem; margin-bottom: 0; padding-top: 1rem;">
-      <%= render partial: 'comment_form', locals: {post: post}  %>
-    </div><%# new_comment_form %>
-  </div><%# new_comment %>
+  <div class="d-inline-block">
+    <button class="btn btn-success btn-sm" data-bs-toggle="collapse" data-bs-target="#<%= dom_id(post, :new_comment_form) %>" aria-expanded="false" aria-controls="<%= dom_id(post, :new_comment_form) %>">
+      New Comment
+    </button>
+  </div>
+  <div class="collapse" id="<%= dom_id(post, :new_comment_form) %>">
+    <div class="card card-body bg-light mt-3">
+      <%= render partial: 'comment_form', locals: {post: post} %>
+    </div>
+  </div>
 <% end %>

@@ -205,6 +205,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orchidjs/sifter@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@orchidjs/sifter@npm:1.1.0"
+  dependencies:
+    "@orchidjs/unicode-variants": "npm:^1.1.2"
+  checksum: 10c0/615f4c8f340c062d1a944ae88d7d745353e45d14d002c6966bc02ef44aca13c904942836f9ad89cbe2b5d8fa3b885c2b00b65be8d318cabc75f440949068ed6a
+  languageName: node
+  linkType: hard
+
+"@orchidjs/unicode-variants@npm:^1.1.2":
+  version: 1.2.2
+  resolution: "@orchidjs/unicode-variants@npm:1.2.2"
+  checksum: 10c0/e1f0dd5c77b4fda9b95a6ab9e5de67f2eb6fa5f2302afef277dac328d54f5ac9978890802f5384f283a2bffafef09d13be78c2863c0482e3be638774577fa817
+  languageName: node
+  linkType: hard
+
 "@popperjs/core@npm:^2.11.7":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
@@ -236,21 +252,20 @@ __metadata:
     "@rails/actioncable": "npm:^8.1.401"
     animate.css: "npm:^4.1.1"
     binary-search-bounds: "npm:^2.0.5"
-    blueimp-file-upload: "npm:^10.32.0"
-    bootstrap: "npm:^3"
-    bootstrap-notify: "npm:^3.1.3"
-    bootstrap-select: "npm:^1.13.18"
+    bootstrap: "npm:^5.3.8"
+    bootstrap-icons: "npm:^1.13.1"
     decimal.js: "npm:^10.4.3"
     esbuild: "npm:^0.28.1"
     jquery: "npm:^3.7.1"
     jquery-placeholder: "npm:^2.3.1"
-    jquery-ui: "npm:^1.13.2"
+    jquery-ui: "npm:^1.14.1"
     jquery-ujs: "npm:^1.2.3"
     jszip: "npm:^3.10.1"
     mathjax: "npm:^4.1.3"
     prismjs: "npm:^1.30.0"
     prismjs-components-importer: "npm:^0.2.0"
     tablesorter: "npm:^2.31.3"
+    tom-select: "npm:^2.4.3"
   languageName: unknown
   linkType: soft
 
@@ -261,70 +276,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"blueimp-canvas-to-blob@npm:3":
-  version: 3.29.0
-  resolution: "blueimp-canvas-to-blob@npm:3.29.0"
-  checksum: 10c0/6c44cf20aa8287d4b31b2a6133074add338e4b8de092d2f7072a48cd5e04dead04814ffd34607f71dd7b3a285b5c8322c2e8c17776cfa20a1357df395862d646
+"bootstrap-icons@npm:^1.13.1":
+  version: 1.13.2
+  resolution: "bootstrap-icons@npm:1.13.2"
+  checksum: 10c0/865f6e036836432cbbf7587406a2822674bcb79d4e5f454c081d6c664ee3b429ec9e5807851be6245a2059be32055790a6e23cceacc1badd38d2d271aff9c77b
   languageName: node
   linkType: hard
 
-"blueimp-file-upload@npm:^10.32.0":
-  version: 10.32.0
-  resolution: "blueimp-file-upload@npm:10.32.0"
-  dependencies:
-    blueimp-canvas-to-blob: "npm:3"
-    blueimp-load-image: "npm:5"
-    blueimp-tmpl: "npm:3"
+"bootstrap@npm:^5.3.8":
+  version: 5.3.9
+  resolution: "bootstrap@npm:5.3.9"
   peerDependencies:
-    jquery: ">=1.7"
-  dependenciesMeta:
-    blueimp-canvas-to-blob:
-      optional: true
-    blueimp-load-image:
-      optional: true
-    blueimp-tmpl:
-      optional: true
-  checksum: 10c0/1dd563f41c5cb231a94b0dc5d809b37c4fae8e83632aadd4bba74684d713a998f6330d30e217bc9dea80549d9fd8ed599078330e56f05dd6c19ff66b3c36382f
-  languageName: node
-  linkType: hard
-
-"blueimp-load-image@npm:5":
-  version: 5.16.0
-  resolution: "blueimp-load-image@npm:5.16.0"
-  checksum: 10c0/17d37d811ec6778f494fbaf62414ae7b470412106c17a6ebc9805d95c3cf4f88c31f5609cd51b007076e247b99088c6ed157eee9f5e247e03482cbc2951e1611
-  languageName: node
-  linkType: hard
-
-"blueimp-tmpl@npm:3":
-  version: 3.20.0
-  resolution: "blueimp-tmpl@npm:3.20.0"
-  bin:
-    tmpl.js: js/compile.js
-  checksum: 10c0/02984cf13be502fde3dc27d94af0e568e3b284c68d634fef703b4cb64a249adaabba821927987ec6c65cbf5a96ae4148725f1d5f04330a5d87a3986744806dab
-  languageName: node
-  linkType: hard
-
-"bootstrap-notify@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "bootstrap-notify@npm:3.1.3"
-  checksum: 10c0/20321ae4ec05cd5abec790e4d606857525a67883015958346e0ffa85468a17dbf1c407a4b017c7b1c1d45a92ba22e6e7db41bb2c6236901c8f431265a5a9329b
-  languageName: node
-  linkType: hard
-
-"bootstrap-select@npm:^1.13.18":
-  version: 1.13.18
-  resolution: "bootstrap-select@npm:1.13.18"
-  peerDependencies:
-    bootstrap: ">=3.0.0"
-    jquery: 1.9.1 - 3
-  checksum: 10c0/84a569bc6a66dbffb80003f66b9525a84f20207cc00dc6f8a6f791a46ee8ae055011a5168d0f203f3f19b7c08e42ca7d60dd302b28b9a3ba4896dcce6a9821d8
-  languageName: node
-  linkType: hard
-
-"bootstrap@npm:^3":
-  version: 3.4.1
-  resolution: "bootstrap@npm:3.4.1"
-  checksum: 10c0/3ac443985a432fd77f1d6df2972d8f0a06e93bb0e10893fa890e6503e6d2b36e601f4a9894429223afa867c2232ead1af5c55ded4c23a64dc706ca25e49dc2da
+    "@popperjs/core": ^2.11.8
+  checksum: 10c0/6c707349e7db52b44f72c7b5e1e7973c9518adf3843748186d79fc6c38dd956cf0164be15192e3a1dfa8b2151cc6cb5dc13e74d1241e5666009bf651a631c0be
   languageName: node
   linkType: hard
 
@@ -461,7 +425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery-ui@npm:^1.13.2, jquery-ui@npm:^1.14.2":
+"jquery-ui@npm:^1.14.1, jquery-ui@npm:^1.14.2":
   version: 1.14.2
   resolution: "jquery-ui@npm:1.14.2"
   dependencies:
@@ -590,6 +554,16 @@ __metadata:
   dependencies:
     jquery: "npm:>=1.2.6"
   checksum: 10c0/2471a77bbfed893f8848ed5cf9cc6124952c92051b4bc94e37fd3e89a20194b1d063704846a233328eb46fdb37ba00ad9bb848e4aa0da627397a7936bae24ebf
+  languageName: node
+  linkType: hard
+
+"tom-select@npm:^2.4.3":
+  version: 2.7.0
+  resolution: "tom-select@npm:2.7.0"
+  dependencies:
+    "@orchidjs/sifter": "npm:^1.1.0"
+    "@orchidjs/unicode-variants": "npm:^1.1.2"
+  checksum: 10c0/82290a1ac6b59b880d06c4a708bc4a4767477a359268b363426599c09fbd13d758a866e6a5e966db7ba1425b7154d8109e76d6418435cf70d5d1dc42bd031c2d
   languageName: node
   linkType: hard
 

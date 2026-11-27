@@ -2,76 +2,87 @@
 
 <%= render partial: "shared/errors", locals: {errors: @team.errors, item: 'team'} %>
 
-<div class="col-md-4">
-  <%= image_tag(@team.avatar.square.to_s, class: "img-rounded img-responsive", style: 'max-width: 14em') %><br/>
-  <h4><%= @team.name %></h4>
+<div class="row">
+  <div class="col-md-4">
+    <%= image_tag(@team.avatar.square.to_s, class: "rounded img-fluid mb-3", style: 'max-width: 14em') %><br/>
+    <h4><%= @team.name %></h4>
 
-  <table>
-    <tr>
-      <td class="col-md-5">School:</td>
-      <td class="col-md-7"><%= @team.school %></td>
-    </tr>
-    <tr>
-      <td class="col-md-5">Created at:</td>
-      <td class="col-md-7"><%= @team.created_at.to_fs(:clean) %></td>
-    </tr>
-  </table>
+    <table>
+      <tr>
+        <td class="col-md-5">School:</td>
+        <td class="col-md-7"><%= @team.school %></td>
+      </tr>
+      <tr>
+        <td class="col-md-5">Created at:</td>
+        <td class="col-md-7"><%= @team.created_at.to_fs(:clean) %></td>
+      </tr>
+    </table>
 
-  <p>
+    <p>
 
-  <% if effective_admin? or @team.users.include?(current_user) %>
-    <div class="copy-group">
-      <button class="btn btn-success btn-xs copy-group-btn">Copy invitation link</button>
-      <span class="no-display copy-group-code"><%= invite_team_url(@team, token: @team.token) %></span>
-      <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-xs' %>
-      <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs' %>
+    <% if effective_admin? or @team.users.include?(current_user) %>
+      <div class="copy-group mb-1">
+        <button class="btn btn-success btn-sm copy-group-btn">Copy invitation link</button>
+        <span class="d-none copy-group-code"><%= invite_team_url(@team, token: @team.token) %></span>
+        <%= link_to 'Edit', edit_team_path(@team), class: 'btn btn-info btn-sm' %>
+        <%= link_to 'Destroy', @team, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-sm' %>
+      </div>
+    <% end %>
+    <div>
+      <%= link_to 'Back to teams List', teams_path, class: 'btn btn-secondary btn-sm' %>
     </div>
-  <% end %>
-  <div>
-    <%= link_to 'Back to teams List', teams_path, class: 'btn btn-default btn-xs' %>
+  </div>
+
+  <div class="col-md-8">
+    <% if effective_admin? %>
+      <%= form_with url: add_user_team_path(@team) do |f| %>
+        <div class="row align-items-center gap-1 mb-3">
+          <div class="col-md-auto">
+            <%= f.label :username, "Add user" %>
+          </div>
+          <div class="col-md-3 px-md-0">
+            <%= f.text_field :username, class: 'form-control form-control-sm' %>
+          </div>
+          <div class="col-md-auto">
+            <%= f.submit 'Submit', class: 'btn btn-success btn-sm' %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <table class="table table-hover table-striped">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th></th>
+          <th>Username</th>
+          <th>Nickname</th>
+          <% if effective_admin? or @team.users.include?(current_user) %>
+            <th></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @team.users.each_with_index do |user, index| %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "rounded"), user_path(user) %></td>
+            <td><%= link_to user.username, user_path(user) %></td>
+            <td><%= user.nickname %></td>
+            <% if effective_admin? or @team.users.include?(current_user) %>
+              <td>
+                <% if @team.users.count > 1 %>
+                  <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-sm" %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+      </tbody>
+    <% end %>
+    </table>
   </div>
 </div>
 
-<div class="col-md-8">
-  <% if effective_admin? %>
-    <%= form_with url: add_user_team_path(@team), class: 'form-inline' do |f| %>
-      <div class="form-group">
-        <%= f.label :username, "Add user" %>
-        <%= f.text_field :username, class: 'form-control input-sm flat' %>
-      </div>
-      <%= f.submit 'Submit', class: 'btn btn-success btn-xs' %>
-    <% end %>
-  <% end %>
-
-  <table class ="table table-hover table-striped">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th></th>
-        <th>Username</th>
-        <th>Nickname</th>
-        <% if effective_admin? or @team.users.include?(current_user) %>
-          <th></th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @team.users.each_with_index do |user, index| %>
-        <tr>
-          <td><%= index + 1 %></td>
-          <td><%= link_to image_tag(user.avatar.mini_thumb.to_s, class: "img-rounded"), user_path(user) %></td>
-          <td><%= link_to user.username, user_path(user) %></td>
-          <td><%= user.nickname %></td>
-        <% if effective_admin? or @team.users.include?(current_user) %>
-          <td>
-            <% if @team.users.count > 1 %>
-              <%= link_to "Remove", remove_user_team_path(@team, user_id: user.id), method: :delete, data: { confirm: "Are you sure you want to remove this user from the team?" }, class: "btn btn-danger btn-xs" %>
-            <% end %>
-          </td>
-        <% end %>
-        </tr>
-    </tbody>
-  <% end %>
-  </table>
-</div>
-
+<script>
+  copyButtonSetup();
+</script>

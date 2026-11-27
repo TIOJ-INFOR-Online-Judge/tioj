@@ -5,17 +5,17 @@
 <% end %>
 
 <%= semantic_form_for form_target do |f| %>
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :title %><br>
-    <%= f.text_field :title, class: "form-control flat" %><br>
+    <%= f.text_field :title, class: "form-control" %><br>
   </div>
 
-  <div class="form-group">
+  <div class="mb-3">
     <%= f.label :body %><br>
-    <%= f.text_field :body, class: "form-control flat" %><br>
+    <%= f.text_field :body, class: "form-control" %><br>
   </div>
 
-  <div class="actions">
+  <div>
     <%= f.submit class: 'btn btn-success btn-lg' %>
   </div>
 <% end %>
