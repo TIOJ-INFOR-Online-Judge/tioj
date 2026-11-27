@@ -57,6 +57,19 @@ class ProblemsControllerTest < ActionDispatch::IntegrationTest
     assert_match /\/problems\/[0-9]+/, @response.redirect_url
   end
 
+  test "should update whether a special judge crash counts as WA" do
+    sign_in users(:adminOne)
+    assert_not @problem.judge_re_as_wa
+
+    patch problem_url(@problem), params: { problem: { judge_re_as_wa: "1" } }
+    assert_redirected_to problem_url(@problem)
+    assert @problem.reload.judge_re_as_wa
+
+    patch problem_url(@problem), params: { problem: { judge_re_as_wa: "0" } }
+    assert_redirected_to problem_url(@problem)
+    assert_not @problem.reload.judge_re_as_wa
+  end
+
   test "should not destroy problem" do
     sign_in users(:adminOne)
     assert_difference("Problem.count", 0) do
